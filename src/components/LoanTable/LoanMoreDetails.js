@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import PropTypes from 'prop-types';
 import {
@@ -11,15 +11,11 @@ import {
   Input,
   TabContent,
   TabPane,
-  Nav,
-  NavItem,
-  NavLink,
   Button,
   Modal,
   ModalBody,
   ModalHeader,
   ModalFooter,
-  Card,
   CardBody,
 } from 'reactstrap';
 import moment from 'moment';
@@ -28,10 +24,11 @@ import ComponentCard from '../ComponentCard';
 import PreviousEarlierLoan from './PreviousEarlierLoan';
 import AttachmentModalV2 from '../Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../ProjectModal/ViewFileComponentV2';
+import Tab from '../ProjectTabs/Tab';
 
 export default function LoanMoreDetails({
   activeTab,
-  toggle,
+  setActiveTab,
   dataForAttachment,
   setAttachmentModal,
   attachmentModal,
@@ -45,10 +42,11 @@ export default function LoanMoreDetails({
   newpaymentData,
   addpaymentModal,
   loan,
+  loanDetails
 }) {
   LoanMoreDetails.propTypes = {
     activeTab: PropTypes.string,
-    toggle: PropTypes.func,
+    setActiveTab: PropTypes.string,
     dataForAttachment: PropTypes.func,
     setAttachmentModal: PropTypes.func,
     attachmentModal: PropTypes.bool,
@@ -62,59 +60,44 @@ export default function LoanMoreDetails({
     newpaymentData: PropTypes.any,
     addpaymentModal: PropTypes.bool,
     loan: PropTypes.any,
+    loanDetails: PropTypes.any,
   };
 
-  const [RoomName, setRoomName] = useState('')
-  const [fileTypes, setFileTypes] = useState('')
+  const [RoomName, setRoomName] = useState('');
+  const [fileTypes, setFileTypes] = useState('');
+  const [update, setUpdate] = useState(false);
+    // Start for tab refresh navigation #Renuka 1-06-23
+    const tabs =  [
+      {id:'1',name:'Attachment'},
+      {id:'2',name:'Payment History'},
+      {id:'3',name:'Previous/EarlierLoan'},
+    ];
+    const toggle = (tab) => {
+      setActiveTab(tab);
+    };
+    // End for tab refresh navigation #Renuka 1-06-23
+
+
   return (
     <ComponentCard title="More Details">
       <ToastContainer></ToastContainer>
-      <Nav tabs>
-        <NavItem>
-          <NavLink
-            className={activeTab === '1' ? 'active' : ''}
-            onClick={() => {
-              toggle('1');
-            }}
-          >
-            Attachment
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={activeTab === '2' ? 'active' : ''}
-            onClick={() => {
-              toggle('2');
-            }}
-          >
-            Payment History
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={activeTab === '3' ? 'active' : ''}
-            onClick={() => {
-              toggle('3');
-            }}
-          >
-            Previous/EarlierLoan
-          </NavLink>
-        </NavItem>
-      </Nav>
+      <Tab toggle={toggle} tabs={tabs} />
       <TabContent className="p-4" activeTab={activeTab}>
         <TabPane tabId="1">
-        <ComponentCard title="Attachments">
             <Row>
               <Col xs="12" md="3" className="mb-3">
                 <Button
                   className="shadow-none"
                   color="primary"
                   onClick={() => {
-                    setRoomName('Booking')
-                    setFileTypes(["JPG", "PNG", "GIF","PDF"]);
+                    setRoomName('Booking');
+                    setFileTypes(['JPG','JPEG', 'PNG', 'GIF', 'PDF']);
                     dataForAttachment();
                     setAttachmentModal(true);
-                  }}><Icon.File className="rounded-circle" width="20" /></Button>
+                  }}
+                >
+                  <Icon.File className="rounded-circle" width="20" />
+                </Button>
               </Col>
             </Row>
             <AttachmentModalV2
@@ -127,13 +110,13 @@ export default function LoanMoreDetails({
               desc="BookingRelated Data"
               recordType="RelatedPicture"
               mediaType={attachmentData.modelType}
+              update={update}
+                    setUpdate={setUpdate}
             />
-            <ViewFileComponentV2 moduleId={id} roomName="Booking" recordType="RelatedPicture" />
-        
-          </ComponentCard>
+            <ViewFileComponentV2 moduleId={id} roomName="Booking" recordType="RelatedPicture" update={update}
+                    setUpdate={setUpdate} />
         </TabPane>
         <TabPane tabId="2">
-          <ComponentCard title="Payment History">
             <Row>
               <div className="container">
                 <Table id="example" className="display border border-secondary rounded">
@@ -146,7 +129,7 @@ export default function LoanMoreDetails({
                   </thead>
                   <tbody>
                     {paymentdetails &&
-                      paymentdetails.map((element,index) => {
+                      paymentdetails.map((element, index) => {
                         return (
                           <tr key={element.loan__repayment_history_id}>
                             <td>{index + 1}</td>
@@ -161,23 +144,22 @@ export default function LoanMoreDetails({
               </div>
             </Row>
             <Row>
-              <Col md="6">
+             {loanDetails && loanDetails.amount_payable !==0 && <Col md="6">
                 <Button
                   className="shadow-none"
                   color="primary"
                   to=""
                   onClick={addpaymentToggle.bind(null)}
                 >
-                  Payment History
+                  Make Payment
                 </Button>
-              </Col>
+              </Col>}
             </Row>
             <Modal size="l" isOpen={addpaymentModal} toggle={addpaymentToggle.bind(null)}>
               <ModalHeader toggle={addpaymentToggle.bind(null)}>Payment Details</ModalHeader>
               <ModalBody>
                 <Row>
                   <Col md="12">
-                    <Card>
                       <CardBody>
                         <Form>
                           <Row>
@@ -199,6 +181,7 @@ export default function LoanMoreDetails({
                                 type="number"
                                 name="loan_repayment_amount_per_month"
                                 onChange={handlePaymentInputs}
+                                max={loanDetails && loanDetails.amount_payable}
                                 value={
                                   newpaymentData && newpaymentData.loan_repayment_amount_per_month
                                 }
@@ -216,7 +199,6 @@ export default function LoanMoreDetails({
                           </Row>
                         </Form>
                       </CardBody>
-                    </Card>
                   </Col>
                 </Row>
               </ModalBody>
@@ -239,10 +221,9 @@ export default function LoanMoreDetails({
                 </Button>
               </ModalFooter>
             </Modal>
-          </ComponentCard>
         </TabPane>
         <TabPane tabId="3">
-          <PreviousEarlierLoan loan={loan}></PreviousEarlierLoan>
+          <PreviousEarlierLoan loan={loan} loanDetails={loanDetails}></PreviousEarlierLoan>
         </TabPane>
       </TabContent>
     </ComponentCard>

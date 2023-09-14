@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Button,Form,FormGroup } from 'reactstrap';
 import { useNavigate, useParams, } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import random from 'random'
+import random from 'random';
 import * as $ from "jquery";
 import * as Icon from 'react-feather';
 import Select from 'react-select';
@@ -14,7 +14,7 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import TrainingCompany from '../../components/Training/TrainingCompany';
 import TrainingMainDetails from '../../components/Training/TrainingMainDetails';
-import TrainingButton from '../../components/Training/TrainingButton';
+//import TrainingButton from '../../components/Training/TrainingButton';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
 import ApiButton from '../../components/ApiButton';
@@ -31,15 +31,16 @@ const TrainingEdit = () => {
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
   });
-
+  const [update, setUpdate] = useState(false);
+  const [apiedit, setApiEdit] = useState(false);
     // Navigation and Parameter Constants
     const { id } = useParams();
     const navigate = useNavigate();
 
   //Button fuctions
-  const applyChanges = () => {};
+ // const applyChanges = () => {};
   const backToList = () => {
-    navigate('/Finance');
+    navigate('/Training');
   };
     //setting data in training details
    const handleInputs = (e) => {
@@ -120,8 +121,9 @@ const TrainingEdit = () => {
   }
   //edit data in link employee 
   const insertTrainingStaff = (trainingId, staffObj) => {
+    if((new Date(staffObj.to_date) > new Date(staffObj.from_date))){
     api.post('/training/insertTrainingStaff', {
-      training_id: trainingId
+        training_id: trainingId
       , employee_id: staffObj.employee_id
       , staff_id: ''
       , created_by: '1'
@@ -131,21 +133,34 @@ const TrainingEdit = () => {
     })
       .then(() => {
         message('TrainingStaff Added!', 'success')
+        setApiEdit(!apiedit)
       })
       .catch(() => {
         message('Unable to insert record.', 'error')
-      })
+      })}
+      else{
+        message('The To date should be the future date of From date', 'error');
+      }
   }
   //insert training staff
-  const insertStaff = (formalArray) => {
-    formalArray.forEach(pItems => {
+  const insertStaff = async(formalArray) => {
+    try{
+   await formalArray.forEach(pItems => {
       if (pItems.item !== '') {
         if (pItems.employee_id !== '') {
           insertTrainingStaff(id, pItems)
         }
       }
-    }) 
-   
+    })
+      
+    // await setTimeout(() => {
+    //     window.location.reload()
+    //   }, 1000);
+    }
+    catch(err) {
+      message('Unable to delete record.', 'error')
+    }
+
   }
   //Insert Training
   const insertTrainingData = () => {
@@ -162,30 +177,39 @@ const TrainingEdit = () => {
     result.forEach(obj => {
          if (obj.id) {
         /* eslint-disable */
-        // const objId = parseInt(obj.id)
         const foundObj = oldArray.find(el => el.id === parseInt(obj.id))
         if (foundObj) {
           obj.employee_id = foundObj.employee_id
         }
       }
     })
+    if((new Date(trainingDetails.to_date) > new Date(trainingDetails.from_date))){
+      if (
+        trainingDetails.title!=='' 
+        
+      ) {
     //Update training
     api.post('/training/edit-Training', trainingDetails)
-      .then((res) => {
+      .then(() => {
         message('Record editted successfully', 'success')
         insertStaff(result)
 
       })
       .catch(() => {
         message('Unable to edit record.', 'error')
-      })
-     
+      })}
+    else {
+      message('Please fill all required fields', 'warning');
+    }  } 
+      else{
+        message('The To date should be the future date of From date', 'error');
+      }
    }
 
       //Attachments
       const dataForAttachment = () => {
         setDataForAttachment({
-   modelType: 'attachment',
+        modelType: 'attachment',
  });
 };
 
@@ -194,6 +218,19 @@ const TrainingEdit = () => {
     getLinkedEmployee();
     getTrainingeById();
   }, [id])
+
+  useEffect(() => {
+    getEmployee();
+    getLinkedEmployee();
+    getTrainingeById();
+    setAddLineItem([{
+      "id": random.int(1, 99),
+      "employee_name": "",
+      "employee_id": "",
+      "from_date": "",
+      "to_date": ""
+     }])
+  }, [apiedit])
 
 //Delete Training staff data by training staff id
   const deleteTrainingStaffData = (staffId) => {
@@ -212,13 +249,12 @@ const TrainingEdit = () => {
     <>
       <BreadCrumbs heading={trainingDetails && trainingDetails.title} />
         {/* Save,Apply Buttons */}
-        <TrainingButton navigate={navigate} insertTrainingData={insertTrainingData} applyChanges={applyChanges} backToList={backToList}></TrainingButton>
+        {/* <TrainingButton navigate={navigate} insertTrainingData={insertTrainingData} applyChanges={applyChanges} backToList={backToList}></TrainingButton> */}
         <ApiButton
               editData={insertTrainingData}
               navigate={navigate}
               applyChanges={insertTrainingData}
               backToList={backToList}
-              // deleteData={deleteUserGroupData}
               module="Training"
             ></ApiButton>
         <ToastContainer></ToastContainer>
@@ -240,7 +276,7 @@ const TrainingEdit = () => {
                   color="primary"
                   onClick={() => {
                     setRoomName('Training');
-                    setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                    setFileTypes(['JPG', 'JPEG','PNG', 'GIF', 'PDF']);
                     dataForAttachment();
                     setAttachmentModal(true);
                   }}
@@ -259,8 +295,11 @@ const TrainingEdit = () => {
               desc="TrainingRelated Data"
               recordType="TrainingRelatedPicture"
               mediaType={attachmentData.modelType}
+              update={update}
+              setUpdate={setUpdate}
             />
-            <ViewFileComponentV2 moduleId={id} roomName="Training" recordType="TrainingRelatedPicture" />
+            <ViewFileComponentV2 moduleId={id} roomName="Training" recordType="TrainingRelatedPicture"  update={update}
+              setUpdate={setUpdate}/>
           </ComponentCard>
         </FormGroup>
       </Form>
@@ -284,9 +323,6 @@ const TrainingEdit = () => {
                       <Select
                         key={item.id}
                         defaultValue={{ value: item.employee_id, label: item.employee_name }}
-                        // onChange={(e) => {
-                        //   onchangeItem(e, item.id)
-                        // }}
                         isDisabled={false}
                         options={employeeLinked}/>
                       <Input value={item.employee_id.toString()} type="hidden" name="employee_id"></Input>
@@ -344,12 +380,12 @@ const TrainingEdit = () => {
                     </td>
                     <td data-label="From Date">
                       <Input type='date'
-                        defaultValue={item.from_date}
+                        defaultValue={item && item.from_date}
                         name="from_date"
                       />
                     </td>
                     <td data-label="To Date">
-                      <Input type='date' defaultValue={item.to_date} name="to_date"/>
+                      <Input type='date' defaultValue={item && item.to_date} min={new Date(item && item.from_date)} name="to_date"/>
                     </td>
                     <td>
                       <Input type='hidden' name="id" defaultValue={item.id}></Input>

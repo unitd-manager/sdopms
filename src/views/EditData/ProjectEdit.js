@@ -138,7 +138,7 @@ const ProjectEdit = () => {
   const getTaskById = () => {
     
     api
-      .post('/projecttask/getProjectTaskfiltersById', { project_id: id })
+      .post('/projecttask/getProjectTaskfilterById', { project_id: id })
       .then((res) => {
         setTaskById(res.data.data);
         setUserSearchData(res.data.data);

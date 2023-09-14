@@ -5,18 +5,16 @@ import { FileUploader } from 'react-drag-drop-files';
 import api from '../../constants/api';
 import message from '../Message';
 
-const AttachmentModalV2 = ({
+const AttachmentModal = ({
   attachmentModal,
   setAttachmentModal,
   moduleId,
   roomName,
   fileTypes,
   altTagData,
-  desc,
-  update,
-  setUpdate
+  desc
 }) => {
-  AttachmentModalV2.propTypes = {
+  AttachmentModal.propTypes = {
     attachmentModal: PropTypes.bool,
     setAttachmentModal: PropTypes.func,
     moduleId: PropTypes.string,
@@ -24,8 +22,6 @@ const AttachmentModalV2 = ({
     altTagData: PropTypes.string,
     desc: PropTypes.string,
     fileTypes: PropTypes.any,
-    setUpdate: PropTypes.func,
-    update: PropTypes.bool,
   };
 
   const [file, setFile] = useState([]);
@@ -60,12 +56,12 @@ const AttachmentModalV2 = ({
           message('Files Uploaded Successfully', 'success');
           
           setAttachmentModal(false);
-          setUpdate(!update)
+          window.location.reload();
         })
         .catch(() => {
           setAttachmentModal(false);
           message('Unable to upload File', 'error');
-          setUpdate(!update)
+          window.location.reload();
         });
     } else {
       message('No files selected', 'info');
@@ -130,4 +126,4 @@ const AttachmentModalV2 = ({
   );
 };
 
-export default AttachmentModalV2;
+export default AttachmentModal;

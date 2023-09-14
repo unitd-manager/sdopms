@@ -9,9 +9,6 @@ import {
   CardTitle,
   TabContent,
   TabPane,
-  NavItem,
-  NavLink,
-  Nav,
 } from 'reactstrap';
 import Swal from 'sweetalert2';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -36,6 +33,8 @@ import ViewNote from '../../components/Tender/ViewNote';
 import AddNote from '../../components/Tender/AddNote';
 import JobTermination from '../../components/JobInformation/JobInformationTermination';
 import JobBank from '../../components/JobInformation/Job';
+import Tab from '../../components/ProjectTabs/Tab';
+
 
 const JobInformationEdit = () => {
   //All state variable
@@ -50,6 +49,7 @@ const JobInformationEdit = () => {
   const [allBank, setAllBank] = useState();
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
+const[update,setUpdate]=useState(false);
 
   //navigation and parameters
   const { id } = useParams();
@@ -64,7 +64,6 @@ const JobInformationEdit = () => {
     api
       .post('/jobinformation/EditjobinformationById', { job_information_id: id })
       .then((res) => {
-        // console.log(res.data.data)
         setJob(res.data.data[0]);
         setOverTimeRate(res.data.data[0].overtime_pay_rate);
       })
@@ -107,10 +106,21 @@ const JobInformationEdit = () => {
       message('Please fill all required fields.', 'error');
     }
   };
-  //  toggle
+
+  // Start for tab refresh navigation #Renuka 1-06-23
+  const tabs = [
+    { id: '1', name: 'Working hours' },
+    { id: '2', name: 'Leave and Medical' },
+    { id: '3', name: 'Probation Details (KET)' },
+    { id: '4', name: 'Salary Information' },
+    { id: '5', name: 'CPF Information' },
+    { id: '6', name: 'Bank Information' },
+    { id: '7', name: 'Termination Information' },
+  ];
   const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
+    setActiveTab(tab);
   };
+  // End for tab refresh navigation #Renuka 1-06-23
 
   //for duplicating job information
   const insertJobInformation = () => {
@@ -125,7 +135,6 @@ const JobInformationEdit = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         api.post('/jobinformation/edit-jobinformation', { job_information_id: id }).then(() => {
-          // console.log(res);
           Swal.fire('Your Job Information duplicated successfully', 'success').then(() => {
             setJobInformationEditModal(true);
           });
@@ -140,7 +149,6 @@ const JobInformationEdit = () => {
     setDataForAttachment({
       modelType: 'attachment',
     });
-    console.log('inside DataForAttachment');
   };
   const BankDetails = () => {
     api
@@ -188,125 +196,57 @@ const JobInformationEdit = () => {
             handleInputsJobInformation={handleInputsJobInformation}
             job={job}
           ></JobKeyDetails>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={activeTab === '1' ? 'active' : ''}
-                onClick={() => {
-                  toggle('1');
-                }}
-              >
-                Working hours
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '2' ? 'active' : ''}
-                onClick={() => {
-                  toggle('2');
-                }}
-              >
-                Leave and Medical
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '3' ? 'active' : ''}
-                onClick={() => {
-                  toggle('3');
-                }}
-              >
-                Probation Details (KET)
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '4' ? 'active' : ''}
-                onClick={() => {
-                  toggle('4');
-                }}
-              >
-                Salary Information
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '5' ? 'active' : ''}
-                onClick={() => {
-                  toggle('5');
-                }}
-              >
-                CPF Information
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '6' ? 'active' : ''}
-                onClick={() => {
-                  toggle('6');
-                }}
-              >
-                Bank Information
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '7' ? 'active' : ''}
-                onClick={() => {
-                  toggle('7');
-                }}
-              >
-                Termination Information
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent className="p-4" activeTab={activeTab}>
-            <TabPane tabId="1">
-              <JobWorkingHours
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-              ></JobWorkingHours>
-            </TabPane>
-            <TabPane tabId="2">
-              <JobLeaveandMedical
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-              ></JobLeaveandMedical>
-            </TabPane>
-            <TabPane tabId="3">
-              <JobProbation
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-              ></JobProbation>
-            </TabPane>
-            <TabPane tabId="4">
-              <JobInformationSalary
-                handleInputsJobInformation={handleInputsJobInformation}
-                handleRadioGst={handleRadioGst}
-                job={job}
-                overTimeRate={overTimeRate}
-              ></JobInformationSalary>
-            </TabPane>
-            <TabPane tabId="5">
-              <JobSalary
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-              ></JobSalary>
-            </TabPane>
-            <TabPane tabId="6">
-              <JobBank
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-                allBank={allBank}
-              ></JobBank>
-            </TabPane>
-            <TabPane tabId="7">
-              <JobTermination
-                handleInputsJobInformation={handleInputsJobInformation}
-                job={job}
-              ></JobTermination>
-            </TabPane>
-          </TabContent>
+
+          <ComponentCard title="More Details">
+            <Tab toggle={toggle} tabs={tabs} />
+            <TabContent className="p-4" activeTab={activeTab}>
+              <TabPane tabId="1">
+                <JobWorkingHours
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                ></JobWorkingHours>
+              </TabPane>
+              <TabPane tabId="2">
+                <JobLeaveandMedical
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                ></JobLeaveandMedical>
+              </TabPane>
+              <TabPane tabId="3">
+                <JobProbation
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                ></JobProbation>
+              </TabPane>
+              <TabPane tabId="4">
+                <JobInformationSalary
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  handleRadioGst={handleRadioGst}
+                  job={job}
+                  overTimeRate={overTimeRate}
+                ></JobInformationSalary>
+              </TabPane>
+              <TabPane tabId="5">
+                <JobSalary
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                ></JobSalary>
+              </TabPane>
+              <TabPane tabId="6">
+                <JobBank
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                  allBank={allBank}
+                ></JobBank>
+              </TabPane>
+              <TabPane tabId="7">
+                <JobTermination
+                  handleInputsJobInformation={handleInputsJobInformation}
+                  job={job}
+                ></JobTermination>
+              </TabPane>
+            </TabContent>
+          </ComponentCard>
         </FormGroup>
       </Form>
 
@@ -320,7 +260,7 @@ const JobInformationEdit = () => {
                   color="primary"
                   onClick={() => {
                     setRoomName('Booking');
-                    setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                    setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                     dataForAttachment();
                     setAttachmentModal(true);
                   }}
@@ -339,8 +279,11 @@ const JobInformationEdit = () => {
               desc="BookingRelated Data"
               recordType="RelatedPicture"
               mediaType={attachmentData.modelType}
+              update={update}
+              setUpdate={setUpdate}
             />
-            <ViewFileComponentV2 moduleId={id} roomName="Booking" recordType="RelatedPicture" />
+            <ViewFileComponentV2 moduleId={id} roomName="Booking" recordType="RelatedPicture"  update={update}
+              setUpdate={setUpdate} />
           </ComponentCard>
         </FormGroup>
       </Form>

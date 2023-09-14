@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import { useEffect, useState } from 'react';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import EmployeeCard from '../../components/dashboard/extraDashboard/EmployeeCard';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -36,7 +37,7 @@ const Cards = () => {
         <BreadCrumbs />
         <CommonTable
           loading={loading}
-          title="Employee List"
+          title="Employee    List"
           Button={
             <>
               <Row>
@@ -56,7 +57,7 @@ const Cards = () => {
                 </Col>
                 <Col md="4">
                   <a
-                    href="http://43.228.126.245/pms-shimi/storage/excelsheets/Employee.xlsx"
+                    href="http://43.228.126.245/smartco-api/storage/excelsheets/Employee.xlsx"
                     download
                   >
                     <Button color="primary" className="shadow-none">
@@ -73,7 +74,7 @@ const Cards = () => {
           {employees.map((blg) => (
             <Col sm="6" lg="6" xl="3" key={blg.employee_id_duplicate}>
               <EmployeeCard
-                onClick={`/EmployeeDetailsData/${blg.employee_id_duplicate}`}
+                onClick={`/EmployeeEdit/${blg.employee_id_duplicate}?tab=1`}
                 image={Image}
                 id={blg.employee_id_duplicate}
                 title={blg.first_name.charAt(0).toUpperCase() + blg.first_name.slice(1)}

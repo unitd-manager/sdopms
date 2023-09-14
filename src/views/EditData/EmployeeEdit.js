@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Row, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Row, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import TabPassTypeTab from '../../components/EmployeeTable/TabPassTypeTab';
 import EducationalQualificationTab from '../../components/EmployeeTable/EducationalQualificationTab';
 import ContactInformationTab from '../../components/EmployeeTable/ContactInformationTab';
@@ -12,37 +13,16 @@ import EmployeePart from '../../components/EmployeeTable/EmployeePart';
 import AttachmentPortalsTab from '../../components/EmployeeTable/AttachmentPortalsTab';
 import LinkedPortalsTab from '../../components/EmployeeTable/LinkedPortalsTab';
 import LoginDetailsTab from '../../components/EmployeeTable/LoginDetailsTab';
-import EmployeeButtons from '../../components/EmployeeTable/EmployeeButtons';
+//import EmployeeButtons from '../../components/Employee/EmployeeButtons';
 import api from '../../constants/api';
 import message from '../../components/Message';
+import Tab from '../../components/ProjectTabs/Tab';
+import ApiButton from '../../components/ApiButton';
 
-const EmployeeDetailsData = () => {
+const EmployeeEdit = () => {
   //state variables
   const [activeTab, setActiveTab] = useState('1');
   const [employeeDetails, setEmployeeDetails] = useState();
-  // employee_id: "",
-  //   emp_code: "",
-  //   first_name: "",
-  //   salutation: "",
-  //   gender: "",
-  //   status: "",
-  //   date_of_birth: "",
-  //   passport: "",
-  //   date_of_expiry: null,
-  //   marital_status: null,
-  //   nationality: null,
-  //   race: null,
-  //   religion: null,
-  //   project_designation: "",
-  //   project_manager: null,
-  //   admin_staff: null,
-  //   team: null,
-  //   country_name: "",
-  //   login_email: null,
-  //   login_pass_word: null,
-  //   staff_user_group_id: null,
-  //   staff_published: null,
-  //   notes:''
   const [contactInformationDetails, setContactInformationDetails] = useState({
     employee_id: '',
     address_area: '',
@@ -100,15 +80,19 @@ const EmployeeDetailsData = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
+  
 
   //params and routing
   const { id } = useParams();
   const navigate = useNavigate();
   // Route Change
-  const applyChanges = () => {};
-  const saveChanges = () => {
-    navigate('/Employee');
-  };
+  // const applyChanges = () => {};
+  // const saveChanges = () => {
+  //   setTimeout(()=>{
+  //     navigate('/Employee');
+  //   },1800)
+    
+  // };
   const backToList = () => {
     navigate('/Employee');
   };
@@ -122,7 +106,6 @@ const EmployeeDetailsData = () => {
   const handleCiInputs = (e) => {
     setContactInformationDetails({ ...contactInformationDetails, [e.target.name]: e.target.value });
   };
-
   const handleEcInputs = (e) => {
     setEmergencyContactDetails({ ...emergencyContactDetails, [e.target.name]: e.target.value });
   };
@@ -132,10 +115,22 @@ const EmployeeDetailsData = () => {
       [e.target.name]: e.target.value,
     });
   };
-  //tab toggle
+
+  // Start for tab refresh navigation #Renuka 1-06-23
+  const tabs =  [
+    {id:'1',name:'Login Details'},
+    {id:'2',name:'Pass Type'},
+    {id:'3',name:'Educational Qualification'},
+    {id:'4',name:'Contact Information'},
+    {id:'5',name:'Emergency Contact'},
+    {id:'6',name:'Attachment Portals'},
+    {id:'7',name:'Linked Portals'},
+  ];
   const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
+    setActiveTab(tab);
   };
+  // End for tab refresh navigation #Renuka 1-06-23
+
   //get apis
   // Get Employee data By Employee id
   const getEmployeeById = () => {
@@ -231,10 +226,9 @@ const EmployeeDetailsData = () => {
   //edit employeedata
   const editEmployeeData = () => {
     if (
-      employeeDetails.first_name !== '' &&
+      employeeDetails.first_name!=='' &&
       employeeDetails.date_of_birth !== '' &&
-      employeeDetails.nationality !== '' &&
-      employeeDetails.gender !== ''
+      employeeDetails.nationality !== '' 
     ) {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
@@ -247,6 +241,7 @@ const EmployeeDetailsData = () => {
     } else {
       message('Please fill the required fields', 'warning');
     }
+
   };
 
   //update tab data
@@ -353,27 +348,38 @@ const EmployeeDetailsData = () => {
   };
 
   useEffect(() => {
-    getEmployeeById();
-    getTabPassTypeById();
-    getContactInformationById();
-    getEducationalQualificationById();
-    getEmergencyContactById();
-    getAllCountries();
-    getQualifications();
-    getAllCompanies();
+    const getAlldata=async()=>{
+      await getEmployeeById();
+      await getTabPassTypeById();
+      await getContactInformationById();
+      await getEducationalQualificationById();
+      await getEmergencyContactById();
+      await getAllCountries();
+      await getQualifications();
+      await getAllCompanies();
+    }
+    getAlldata();
   }, [id]);
 
   return (
     <>
       <ToastContainer></ToastContainer>
       <BreadCrumbs />
-      <EmployeeButtons
+      {/* <EmployeeButtons
         applyChanges={applyChanges}
         saveChanges={saveChanges}
         backToList={backToList}
         deleteEmployeeData={deleteEmployeeData}
         editEmployeeData={updateData}
-      />
+      /> */}
+      <ApiButton
+              editData={updateData}
+              navigate={navigate}
+              applyChanges={updateData}
+              backToList={backToList}
+              deleteData={deleteEmployeeData}
+              module="Employee"
+            ></ApiButton>
       <Row>
         <EmployeePart
           employeeDetails={employeeDetails}
@@ -383,78 +389,8 @@ const EmployeeDetailsData = () => {
         />
       </Row>
       <ComponentCard title="More Details">
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={activeTab === '1' ? 'active' : ''}
-              onClick={() => {
-                toggle('1');
-              }}
-            >
-              Login Details
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '2' ? 'active' : ''}
-              onClick={() => {
-                toggle('2');
-              }}
-            >
-              Pass Type
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '3' ? 'active' : ''}
-              onClick={() => {
-                toggle('3');
-              }}
-            >
-              Educational Qualification
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '4' ? 'active' : ''}
-              onClick={() => {
-                toggle('4');
-              }}
-            >
-              Contact Information
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '5' ? 'active' : ''}
-              onClick={() => {
-                toggle('5');
-              }}
-            >
-              Emergency Contact
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '6' ? 'active' : ''}
-              onClick={() => {
-                toggle('6');
-              }}
-            >
-              Attachment Portals
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={activeTab === '7' ? 'active' : ''}
-              onClick={() => {
-                toggle('7');
-              }}
-            >
-              Linked Portals
-            </NavLink>
-          </NavItem>
-        </Nav>
+
+        <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
           <TabPane tabId="1">
             <LoginDetailsTab
@@ -524,4 +460,4 @@ const EmployeeDetailsData = () => {
   );
 };
 
-export default EmployeeDetailsData;
+export default EmployeeEdit;

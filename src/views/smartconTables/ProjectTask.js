@@ -75,6 +75,7 @@ export default function ProjectTask({
   const [attachmentModal, setAttachmentModal] = useState(false);
 
   const [employee, setEmployee] = useState();
+  const [employees, setEmployees] = useState();
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
   const [moduleId, setModuleId] = useState('');
@@ -88,6 +89,14 @@ export default function ProjectTask({
       .get('/jobinformation/getEmployee')
       .then((res) => {
         console.log(res.data.data);
+        setEmployees(res.data.data);
+      })
+      .catch(() => {});
+  };
+  const getStaffName = () => {
+    api
+      .post('projecttask/getEmployeeByID', { project_id: id })
+      .then((res) => {
         setEmployee(res.data.data);
       })
       .catch(() => {});
@@ -122,14 +131,20 @@ export default function ProjectTask({
           console.log(insertedDataId);
           message('Task inserted successfully.', 'success');
           getTaskById();
-          // setTimeout(() => {
-          //   addContactToggle(false);
-          // }, 300);
-          //setFormSubmitted(true)
-          setTimeout(() => {
-            addContactToggle(false);
-          }, 300);
-          window.location.reload();
+          getStaffName();
+          addContactToggle(false);
+          // Clear the form fields by resetting the state
+          setInsertTask({
+            task_title: '',
+            employee_id: '',
+            start_date: '',
+            end_date: '',
+            completion: '',
+            status: '',
+            task_type: '',
+            description: '',
+            project_milestone_id: '',
+          });
         })
         .catch(() => {
           message('Network connection error.', 'error');
@@ -138,7 +153,7 @@ export default function ProjectTask({
           setIsSubmitting(false); // Reset submission status
         });
     } else {
-      message('error');
+      message('Please fill all required fields', 'warning');
     }
   };
   console.log(filteredData);
@@ -150,11 +165,45 @@ export default function ProjectTask({
     // Store the filtered data in the state variable
     setFilteredData(newData);
   };
+
+  const [sortColumn, setSortColumn] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedData = [...userSearchData];
+
+  if (sortColumn === 'Title') {
+    sortedData.sort((a, b) => {
+      const order = sortOrder === 'asc' ? 1 : -1;
+      return order * a.task_title.localeCompare(b.task_title);
+    });
+  } else if (sortColumn === 'startdate') {
+    sortedData.sort((a, b) => {
+      const order = sortOrder === 'asc' ? 1 : -1;
+      return order * moment(a.start_date).diff(moment(b.start_date));
+    });
+  } else if (sortColumn === 'Status') {
+    sortedData.sort((a, b) => {
+      const order = sortOrder === 'asc' ? 1 : -1;
+      const statusA = a.status || '';
+      const statusB = b.status || '';
+      return order * statusA.localeCompare(statusB);
+    });
+  }
+  // Pagination
   const [page, setPage] = useState(0);
 
-  const employeesPerPage = 20;
+  const employeesPerPage = 10;
   const numberOfEmployeesVistited = page * employeesPerPage;
-  const displayEmployees = userSearchData.slice(
+  const displayEmployees = sortedData.slice(
     numberOfEmployeesVistited,
     numberOfEmployeesVistited + employeesPerPage,
   );
@@ -164,44 +213,40 @@ export default function ProjectTask({
   const changePage = ({ selected }) => {
     setPage(selected);
   };
-  // Step 1: Define state variables for sorting
-  const [sortColumn, setSortColumn] = useState(''); // Column to sort by
-  const [sortOrder, setSortOrder] = useState('asc'); // Sorting order (asc or desc)
 
-  // Step 2: Create a function to handle sorting
-  const handleSort = (column) => {
-    // If clicking on the same column, toggle sorting order
-    if (sortColumn === column) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      // If clicking on a different column, set it as the new sorting column
-      setSortColumn(column);
-      setSortOrder('asc'); // Default to ascending order
-    }
+  const [searchQuery, setSearchQuery] = useState('');
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  // Step 4: Apply sorting to your data
-  const sortedData = [...displayEmployees]; // Create a copy of your data
+  // const handleSearchData = () => {
+  //   const newData = taskById.filter((task) => {
+  //     // Perform case-insensitive search on task title and employee name
+  //     return (
+  //       task.task_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       task.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+        
+  //     );
+  //   });
 
-  if (sortColumn === 'Title') {
-    sortedData.sort((a, b) => {
-      const order = sortOrder === 'asc' ? 1 : -1;
-      return order * a.task_title.localeCompare(b.task_title);
+  //   setUserSearchData(newData);
+  //   setFilteredData(newData);
+  // };
+  const handleSearchData = () => {
+    const newData = taskById.filter((task) => {
+      // Check if task.title exists and perform a case-insensitive search
+      const titleMatches = task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
+  
+      // Check if task.first_name exists and perform a case-insensitive search
+      const firstNameMatches = task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
+  
+      // Include the task in newData if either title or first_name matches
+      return titleMatches || firstNameMatches;
     });
-  } else if (sortColumn === 'Start Date') {
-    sortedData.sort((a, b) => {
-      const order = sortOrder === 'asc' ? 1 : -1;
-      return order * moment(a.start_date).diff(moment(b.start_date));
-    });
-  } else if (sortColumn === 'Status') {
-    sortedData.sort((a, b) => {
-      const order = sortOrder === 'asc' ? 1 : -1;
-      // Handle null values by treating them as empty strings for comparison
-      const statusA = a.status || '';
-      const statusB = b.status || '';
-      return order * statusA.localeCompare(statusB);
-    });
-  }
+  
+    setUserSearchData(newData);
+    setFilteredData(newData);
+  };
 
   // Api call for getting milestone dropdown based on project ID
   const getMilestoneTitle = () => {
@@ -223,22 +268,16 @@ export default function ProjectTask({
     console.log('inside DataForAttachment');
   };
   useEffect(() => {
+    getStaffName();
     editJobById();
     dataForAttachment();
     getMilestoneTitle();
   }, [id]);
 
-  // const handleBackToList = () => {
-  //   // Clear the filter criteria
-  //   setCompanyName('');
-  //   setCategoryName(''); // Reset the status dropdown to "Please Select"
+  useEffect(() => {
+    handleSearchData();
+  }, [searchQuery]);
 
-  //   // Restore the full data
-  //   setUserSearchData(taskById);
-
-  //   // Clear the filtered data
-  //   setFilteredData([]);
-  // };
   //Structure of projectTask list view
   const Projecttaskcolumn = [
     {
@@ -257,7 +296,7 @@ export default function ProjectTask({
       name: 'Staff',
     },
     {
-      name:'startdate',
+      name: 'startdate',
       sortable: true,
     },
     {
@@ -305,7 +344,7 @@ export default function ProjectTask({
             <Row>
               <Col md="2">
                 <FormGroup>
-                  <Label>Select Staff</Label>
+                  <Label>Select Staff </Label>
                   <Input
                     type="select"
                     name="employee_id"
@@ -384,122 +423,144 @@ export default function ProjectTask({
                 >
                   Add New Task{' '}
                 </Button>
-                <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
-                  <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
-                  <ModalBody>
-                    <Row>
-                      <Col md="12">
-                        <Card>
-                          <CardBody>
-                            <Form>
-                              <Row>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Milestone</Label>
-                                    <Input
-                                      type="select"
-                                      name="project_milestone_id"
-                                      onChange={handleInputsTask}
-                                    >
-                                      <option>Select Milestone</option>
-                                      {milestoneDetail &&
-                                        milestoneDetail.map((e) => (
-                                          <option key={e.project_id} value={e.project_milestone_id}>
-                                            {e.milestone_title}
-                                          </option>
-                                        ))}
-                                    </Input>
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Title</Label>
-                                    <Input
-                                      type="text"
-                                      name="task_title"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.task_title}
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Staff</Label>
-                                    <Input
-                                      type="select"
-                                      name="employee_id"
-                                      onChange={(e) => {
-                                        handleInputsTask(e);
-                                      }}
-                                    >
-                                      <option value="" selected>
-                                        Please Select
-                                      </option>
-                                      {employee &&
-                                        employee.map((ele) => {
-                                          return (
-                                            ele.e_count === 0 && (
-                                              <option key={ele.employee_id} value={ele.employee_id}>
-                                                {ele.first_name}
-                                              </option>
-                                            )
-                                          );
-                                        })}
-                                    </Input>
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Start date</Label>
-                                    <Input
-                                      type="date"
-                                      onChange={handleInputsTask}
-                                      value={
-                                        insertTask &&
-                                        moment(insertTask.start_date).format('YYYY-MM-DD')
-                                      }
-                                      name="start_date"
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>End date</Label>
-                                    <Input
-                                      type="date"
-                                      onChange={handleInputsTask}
-                                      value={
-                                        insertTask &&
-                                        moment(insertTask.end_date).format('YYYY-MM-DD')
-                                      }
-                                      name="end_date"
-                                    />
-                                  </FormGroup>
-                                </Col>
+              </FormGroup>
+            </Col>
+            <Col md="2">
+              <FormGroup>
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          {/* <Col md="1" className="mt-3">
+              <Button color="primary" className="shadow-none" onClick={handleSearchData}>
+                Search
+              </Button>
+            </Col> */}
+          <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
+            <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col md="12">
+                  <Card>
+                    <CardBody>
+                      <Form>
+                        <Row>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Milestone <span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="select"
+                                name="project_milestone_id"
+                                onChange={handleInputsTask}
+                              >
+                                <option>Select Milestone</option>
+                                {milestoneDetail &&
+                                  milestoneDetail.map((e) => (
+                                    <option key={e.project_id} value={e.project_milestone_id}>
+                                      {e.milestone_title}
+                                    </option>
+                                  ))}
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Title <span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="task_title"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.task_title}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Staff<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="select"
+                                name="employee_id"
+                                onChange={(e) => {
+                                  handleInputsTask(e);
+                                }}
+                              >
+                                <option value="" selected>
+                                  Please Select
+                                </option>
+                                {employees &&
+                                  employees.map((ele) => {
+                                    return (
+                                      ele.e_count === 0 && (
+                                        <option key={ele.employee_id} value={ele.employee_id}>
+                                          {ele.first_name}
+                                        </option>
+                                      )
+                                    );
+                                  })}
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Start date</Label>
+                              <Input
+                                type="date"
+                                onChange={handleInputsTask}
+                                value={
+                                  insertTask && moment(insertTask.start_date).format('YYYY-MM-DD')
+                                }
+                                name="start_date"
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>End date</Label>
+                              <Input
+                                type="date"
+                                onChange={handleInputsTask}
+                                value={
+                                  insertTask && moment(insertTask.end_date).format('YYYY-MM-DD')
+                                }
+                                name="end_date"
+                              />
+                            </FormGroup>
+                          </Col>
 
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Est Hours</Label>
-                                    <Input
-                                      type="text"
-                                      name="estimated_hours"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.estimated_hours}
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Completion</Label>
-                                    <Input
-                                      type="text"
-                                      name="completion"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.completion}
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                {/* {(TaskStatus === 'Completed' ) && ( 
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Est Hours</Label>
+                              <Input
+                                type="text"
+                                name="estimated_hours"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.estimated_hours}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Completion</Label>
+                              <Input
+                                type="text"
+                                name="completion"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.completion}
+                              />
+                            </FormGroup>
+                          </Col>
+                          {/* {(TaskStatus === 'Completed' ) && ( 
                                 <Col md="4">
                                   <FormGroup>
                                     <Label>Status</Label>
@@ -521,86 +582,84 @@ export default function ProjectTask({
                                   </FormGroup>
                                 </Col>
                                 {/* )} */}
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Task Type</Label>
-                                    <Input
-                                      type="select"
-                                      name="task_type"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.task_type}
-                                    >
-                                      {' '}
-                                      <option value="" selected="selected">
-                                        Please Select
-                                      </option>
-                                      <option value="Development">Development</option>
-                                      <option value="ChangeRequest">ChangeRequest</option>
-                                      <option value="Issues">Issues</option>
-                                    </Input>
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Priority</Label>
-                                    <Input
-                                      type="select"
-                                      name="priority"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.priority}
-                                    >
-                                      {' '}
-                                      <option value="" selected="selected">
-                                        Please Select
-                                      </option>
-                                      <option value="1">1</option>
-                                      <option value="2">2</option>
-                                      <option value="3">3</option>
-                                      <option value="4">4</option>
-                                      <option value="5">5</option>
-                                    </Input>
-                                  </FormGroup>
-                                </Col>
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Descrition</Label>
-                                    <Input
-                                      type="textarea"
-                                      name="description"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.description}
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                            </Form>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button
-                      className="shadow-none"
-                      color="primary"
-                      onClick={() => {
-                        insertTaskData();
-                      }}
-                    >
-                      Submit
-                    </Button>
-                    <Button
-                      color="secondary"
-                      className="shadow-none"
-                      onClick={addContactToggle.bind(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </ModalFooter>
-                </Modal>
-              </FormGroup>
-            </Col>
-          </Row>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Task Type</Label>
+                              <Input
+                                type="select"
+                                name="task_type"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.task_type}
+                              >
+                                {' '}
+                                <option value="" selected="selected">
+                                  Please Select
+                                </option>
+                                <option value="Development">Development</option>
+                                <option value="ChangeRequest">ChangeRequest</option>
+                                <option value="Issues">Issues</option>
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Priority</Label>
+                              <Input
+                                type="select"
+                                name="priority"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.priority}
+                              >
+                                {' '}
+                                <option value="" selected="selected">
+                                  Please Select
+                                </option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Descrition</Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.description}
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                className="shadow-none"
+                color="primary"
+                onClick={() => {
+                  insertTaskData();
+                }}
+              >
+                Submit
+              </Button>
+              <Button
+                color="secondary"
+                className="shadow-none"
+                onClick={addContactToggle.bind(null)}
+              >
+                Cancel
+              </Button>
+            </ModalFooter>
+          </Modal>
+
           <Table
             id="example"
             className="display border border-secondary rounded"
@@ -611,13 +670,6 @@ export default function ProjectTask({
                 {Projecttaskcolumn.map((cell) => {
                   return (
                     <th key={cell.name} onClick={() => cell.sortable && handleSort(cell.name)}>
-                      <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start', // Adjust this for desired alignment
-            }}
-          ></div>
                       {cell.name}
                       {cell.sortable && ( // Render sorting indicator if the column is sortable
                         <span className="sort-indicator">
@@ -638,10 +690,9 @@ export default function ProjectTask({
                 })}
               </tr>
             </thead>
-         
             <tbody>
-              {sortedData &&
-                sortedData.map((element, index) => {
+              {displayEmployees &&
+                displayEmployees.map((element, index) => {
                   return (
                     <>
                       <tr key={element.project_task_id}>

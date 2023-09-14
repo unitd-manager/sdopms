@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import message from '../../components/Message';
-
 
 const LoanDetails = () => {
   //state variable
@@ -41,15 +41,14 @@ const LoanDetails = () => {
   //Logic for adding Loan in db
   const insertLoan = () => {
     if (loanForms.employee_id !== '' && loanForms.amount !== '' && loanForms.month_amount !== '') {
-
-      loanForms.date = moment()
+      loanForms.date = moment();
       api
         .post('/loan/insertLoan', loanForms)
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
           message('Loan inserted successfully.', 'success');
           setTimeout(() => {
-            navigate(`/LoanEdit/${insertedDataId}`);
+            navigate(`/LoanEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {
@@ -76,7 +75,9 @@ const LoanDetails = () => {
                 <Row>
                   <Col md="12">
                     <FormGroup>
-                      <Label>Employee Name <span className="required"> *</span></Label>
+                      <Label>
+                        Employee Name <span className="required"> *</span>
+                      </Label>
                       <Input
                         type="select"
                         name="employee_id"
@@ -95,7 +96,9 @@ const LoanDetails = () => {
                   </Col>
                   <Col md="12">
                     <FormGroup>
-                      <Label>Total Loan Amount<span className="required"> *</span></Label>
+                      <Label>
+                        Total Loan Amount<span className="required"> *</span>
+                      </Label>
                       <Input
                         type="number"
                         onChange={handleLoanForms}
@@ -106,7 +109,9 @@ const LoanDetails = () => {
                   </Col>
                   <Col md="12">
                     <FormGroup>
-                      <Label>Amount Payable(per month)<span className="required"> *</span></Label>
+                      <Label>
+                        Amount Payable(per month)<span className="required"> *</span>
+                      </Label>
                       <Input
                         type="number"
                         onChange={handleLoanForms}
@@ -118,9 +123,10 @@ const LoanDetails = () => {
                 </Row>
               </FormGroup>
               <FormGroup>
-                <Row>
-                  <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                    <Button color="primary"
+              <Row>
+                  <div className="d-flex align-items-center gap-2">
+                    <Button
+                      color="primary"
                       onClick={() => {
                         insertLoan();
                       }}
@@ -130,17 +136,24 @@ const LoanDetails = () => {
                       Save & Continue
                     </Button>
                     <Button
+                      className="shadow-none"
+                      color="dark"
                       onClick={() => {
-                        navigate(-1);
+                        if (
+                          window.confirm(
+                            'Are you sure you want to cancel  \n  \n You will lose any changes made',
+                          )
+                        ) {
+                          navigate(-1);
+                        }
                       }}
-                      type="button"
-                      className="btn btn-dark shadow-none"
                     >
                       Cancel
                     </Button>
                   </div>
                 </Row>
               </FormGroup>
+               
             </Form>
           </ComponentCard>
         </Col>

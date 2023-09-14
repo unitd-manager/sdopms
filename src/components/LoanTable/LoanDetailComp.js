@@ -56,10 +56,10 @@ export default function LoanDetailComp({ loanDetails, loanStatus, handleInputs }
                 <FormGroup>
                   <Label>Status</Label>
                   <Input
-                  type="select"
-                  defaultValue={loanDetails && loanDetails.status}
-                  disabled
-                  name="status"
+                    type="select"
+                    defaultValue={loanDetails && loanDetails.status}
+                    disabled
+                    name="status"
                   >
                     <option>Please Select</option>
                     <option value="Approved">Approved</option>
@@ -151,27 +151,27 @@ export default function LoanDetailComp({ loanDetails, loanStatus, handleInputs }
             </Col>
             <Col md="3">
               <FormGroup>
-                <Label>
-                  Loan Start Date</Label>
+                <Label>Loan Start Date</Label>
                 <br />
                 {loanDetails && loanDetails.loan_start_date && (
                   <span>
-                    {moment(loanDetails.loan_start_date && loanDetails.loan_start_date).format(
-                      'YYYY-MM-DD',
-                    )}
+                    {loanDetails.loan_start_date
+                      ? moment(loanDetails.loan_start_date).format('DD-MM-YYYY')
+                      : ''}
                   </span>
                 )}
               </FormGroup>
             </Col>
+
             <Col md="3">
               <FormGroup>
-                <Label>Actual loan closing date</Label>
+                <Label>Actual Loan Closing Date</Label>
                 <br />
                 {loanDetails && loanDetails.loan_closing_date && (
                   <span>
-                    {moment(loanDetails.loan_closing_date && loanDetails.loan_closing_date).format(
-                      'YYYY-MM-DD',
-                    )}
+                    {loanDetails.loan_closing_date
+                      ? moment(loanDetails.loan_closing_date).format('DD-MM-YYYY')
+                      : ''}
                   </span>
                 )}
               </FormGroup>
@@ -179,7 +179,8 @@ export default function LoanDetailComp({ loanDetails, loanStatus, handleInputs }
             <Col md="3">
               <FormGroup>
                 <Label>Amount Payable</Label>
-                <br/>
+                <br />
+
                 <span>{loanDetails && loanDetails.amount_payable}</span>
               </FormGroup>
             </Col>

@@ -1,20 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
-import ComponentCard from '../ComponentCard';
 
-export default function JobBank({
-    handleInputsJobInformation, job ,allBank
-}) {
-    JobBank.propTypes = {
-        handleInputsJobInformation: PropTypes.any,
-        job: PropTypes.any,
-        allBank: PropTypes.any
+export default function JobBank({ handleInputsJobInformation, job, allBank }) {
+  JobBank.propTypes = {
+    handleInputsJobInformation: PropTypes.any,
+    job: PropTypes.any,
+    allBank: PropTypes.any,
   };
   return (
-    <FormGroup>
-   
-    <ComponentCard title="Bank Information">
       <FormGroup>
         <Row>
           <Col md="4">
@@ -27,9 +21,7 @@ export default function JobBank({
                 name="mode_of_payment"
                 onChange={handleInputsJobInformation}
               >
-                <option defaultValue="selected">
-                  Please Select
-                </option>
+                <option defaultValue="selected">Please Select</option>
                 <option value="cheque">Cheque</option>
                 <option value="cash">Cash</option>
                 <option value="giro payment transfer">giro payment transfer</option>
@@ -48,20 +40,24 @@ export default function JobBank({
             </FormGroup>
           </Col>
           <Col md="4">
-                <FormGroup>
-                <Label>Bank Name</Label>
-                  <Input
-                    type="select"
-                    name="bank_name"
-                    onChange={handleInputsJobInformation}
-                    value={job && job.bank_name}>
-                    <option defaultValue="selected">
-                      Please Select
+            <FormGroup>
+              <Label>Bank Name</Label>
+              <Input
+                type="select"
+                name="bank_name"
+                onChange={handleInputsJobInformation}
+                value={job && job.bank_name}
+              >
+                <option defaultValue="selected">Please Select</option>
+                {allBank &&
+                  allBank.map((bank) => (
+                    <option key={bank.bank_name} value={bank.bank_name}>
+                      {bank.bank_name}
                     </option>
-                    {allBank && allBank.map(bank=>(<option key={bank.bank_name} value={bank.bank_name}>{bank.bank_name}</option>))}
-          </Input>
-                </FormGroup>
-              </Col>
+                  ))}
+              </Input>
+            </FormGroup>
+          </Col>
           <Col md="4">
             <FormGroup>
               <Label>Bank Code</Label>
@@ -86,8 +82,5 @@ export default function JobBank({
           </Col>
         </Row>
       </FormGroup>
-    </ComponentCard>
-   
-    </FormGroup>
   );
 }

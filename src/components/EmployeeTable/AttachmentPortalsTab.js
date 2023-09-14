@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Row, Col, Form, FormGroup, Button } from 'reactstrap';
 import * as Icon from 'react-feather';
 import PropTypes from 'prop-types';
-import api from '../../constants/api';
 import ComponentCard from '../ComponentCard';
-import AttachmentModalV2 from '../Tender/AttachmentModalV2';
-import ViewFileComponentV2 from '../ProjectModal/ViewFileComponentV2';
+import AttachmentModal from './AttachmentModal';
+import ViewFileComponent from './ViewFileComponent';
 
 function AttachmentPortalsTab({
   dataForPicture,
@@ -27,19 +26,15 @@ function AttachmentPortalsTab({
   };
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState('');
-  const [getFile, setGetFile] = useState(null);
+ const[update,setUpdate]=useState(false);
 
-  const getFiles = (RoomName) => {
-    api.post('/file/getListOfFiles', { record_id: id, room_name: RoomName }).then((res) => {
-      setGetFile(res.data);
-
-      if (res.data) {
-        return 1;
-      }
-      console.log(getFile)
-      return 0;
-    });
-  };
+  // const[empPicUpdate,setEmpPicUpdate]=useState(false);
+  // const[workPermitUpdate,setWorkPermitUpdate]=useState(false);
+  // const[otherFilesUpdate,setOtherFilesUpdate]=useState(false);
+  // const[csocUpdate,setCsocUpdate]=useState(false);
+  // const[wsqUpdate,setWsqUpdate]=useState(false);
+  // const[housingUpdate,setHousingUpdate]=useState(false);
+  // const[digitalSignUpdate,setDigitalSignUpdate]=useState(false);
 
   return (
     <div>
@@ -51,25 +46,23 @@ function AttachmentPortalsTab({
                 <ComponentCard title="Picture">
                   <Row>
                     <Col xs="5" md="5" className="mb-3">
-                      {getFiles('EmployeePicture') ? (
-                        ''
-                      ) : (
+                      
                         <Button
                           className="shadow-none"
                           color="primary"
                           onClick={() => {
                             setRoomName('EmployeePicture');
-                            setFileTypes(['JPG', 'PNG', 'GIF']);
+                            setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF']);
                             dataForPicture();
                             setAttachmentModal(true);
                           }}
                         >
                           <Icon.Image className="rounded-circle" width="20" />
                         </Button>
-                      )}{' '}
+                     
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     recordType="EmployeePicture"
                     roomName={roomName}
@@ -79,11 +72,15 @@ function AttachmentPortalsTab({
                     modelType={pictureData.modelType}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2
+                  <ViewFileComponent
                     moduleId={id}
                     roomName="Employeepicture"
                     recordType="EmployeePicture"
+                    update={update}
+                    setUpdate={setUpdate}
                   />
                 </ComponentCard>
               </Col>
@@ -96,7 +93,7 @@ function AttachmentPortalsTab({
                         color="primary"
                         onClick={() => {
                           setRoomName('Employeeworkpermit');
-                          setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                          setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
                           setAttachmentModal(true);
                         }}
@@ -105,7 +102,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -115,11 +112,15 @@ function AttachmentPortalsTab({
                     desc="workPermit"
                     recordType="Employeeworkpermit"
                     mediaType={attachmentData.modelType}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2
+                  <ViewFileComponent
                     moduleId={id}
                     roomName="Employeeworkpermit"
                     recordType="Employeeworkpermit"
+                    update={update}
+                    setUpdate={setUpdate}
                   />
                 </ComponentCard>
               </Col>
@@ -141,7 +142,7 @@ function AttachmentPortalsTab({
                         color="primary"
                         onClick={() => {
                           setRoomName('wsq');
-                          setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                          setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
                           setAttachmentModal(true);
                         }}
@@ -150,7 +151,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -160,8 +161,11 @@ function AttachmentPortalsTab({
                     desc="wsq Data"
                     recordType="WsqAttachment"
                     mediaType={attachmentData.modelType}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2 moduleId={id} roomName="wsq" recordType="WsqAttachment" />
+                  <ViewFileComponent moduleId={id} roomName="wsq" recordType="WsqAttachment"  update={update}
+                    setUpdate={setUpdate}/>
                 </ComponentCard>
               </Col>
               <Col md="6">
@@ -173,7 +177,7 @@ function AttachmentPortalsTab({
                         color="primary"
                         onClick={() => {
                           setRoomName('digitalSign');
-                          setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                          setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
                           setAttachmentModal(true);
                         }}
@@ -182,7 +186,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -192,11 +196,15 @@ function AttachmentPortalsTab({
                     desc="digitalSign Data"
                     recordType="digitalSign"
                     mediaType={attachmentData.modelType}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2
+                  <ViewFileComponent
                     moduleId={id}
                     roomName="digitalSign"
                     recordType="digitalSign"
+                    update={update}
+                    setUpdate={setUpdate}
                   />
                 </ComponentCard>
               </Col>
@@ -219,7 +227,7 @@ function AttachmentPortalsTab({
                         color="primary"
                         onClick={() => {
                           setRoomName('csoc');
-                          setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                          setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
                           setAttachmentModal(true);
                         }}
@@ -228,7 +236,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -238,8 +246,11 @@ function AttachmentPortalsTab({
                     desc="csoc Data"
                     recordType="csoc"
                     mediaType={attachmentData.modelType}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2 moduleId={id} roomName="csoc" recordType="csoc" />
+                  <ViewFileComponent moduleId={id} roomName="csoc" recordType="csoc"  update={update}
+                    setUpdate={setUpdate}/>
                 </ComponentCard>
               </Col>
               <Col md="6">
@@ -251,7 +262,7 @@ function AttachmentPortalsTab({
                         color="primary"
                         onClick={() => {
                           setRoomName('EmployeeOtherFiles');
-                          setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                          setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
                           setAttachmentModal(true);
                         }}
@@ -260,7 +271,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  <AttachmentModal
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -270,11 +281,15 @@ function AttachmentPortalsTab({
                     desc="otherFiles Data"
                     recordType="EmployeeOtherFiles"
                     mediaType={attachmentData.modelType}
+                    update={update}
+                    setUpdate={setUpdate}
                   />
-                  <ViewFileComponentV2
+                  <ViewFileComponent
                     moduleId={id}
                     roomName="EmployeeOtherFiles"
                     recordType="EmployeeOtherFiles"
+                    update={update}
+                    setUpdate={setUpdate}
                   />
                 </ComponentCard>
               </Col>
@@ -294,7 +309,7 @@ function AttachmentPortalsTab({
                     color="primary"
                     onClick={() => {
                       setRoomName('housing');
-                      setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                      setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                       dataForAttachment();
                       setAttachmentModal(true);
                     }}
@@ -303,7 +318,7 @@ function AttachmentPortalsTab({
                   </Button>
                 </Col>
               </Row>
-              <AttachmentModalV2
+              <AttachmentModal
                 moduleId={id}
                 attachmentModal={attachmentModal}
                 setAttachmentModal={setAttachmentModal}
@@ -313,8 +328,11 @@ function AttachmentPortalsTab({
                 desc="housing Data"
                 recordType="housing"
                 mediaType={attachmentData.modelType}
+                update={update}
+                    setUpdate={setUpdate}
               />
-              <ViewFileComponentV2 moduleId={id} roomName="housing" recordType="housing" />
+              <ViewFileComponent moduleId={id} roomName="housing" recordType="housing" update={update}
+                    setUpdate={setUpdate}/>
             </ComponentCard>
           </FormGroup>
         </Form>

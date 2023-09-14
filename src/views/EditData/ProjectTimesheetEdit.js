@@ -9,6 +9,7 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
@@ -32,7 +33,6 @@ const ProjectTimesheetEdit = () => {
   const [fileTypes, setFileTypes] = useState();
   const [description, setDescription] = useState('');
 
-
   //navigation and parameters
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,22 +43,22 @@ const ProjectTimesheetEdit = () => {
   };
 
   // data in Description Modal
-const handleDataEditor = (e, type) => {
-  setProjectTimesheet({
-    ...timeSheet,
-    [type]: draftToHtml(convertToRaw(e.getCurrentContent())),
-  });
-};
+  const handleDataEditor = (e, type) => {
+    setProjectTimesheet({
+      ...timeSheet,
+      [type]: draftToHtml(convertToRaw(e.getCurrentContent())),
+    });
+  };
 
- //Description Modal
- const convertHtmlToDraft = (existingQuoteformal) => {
-  const contentBlock = htmlToDraft(existingQuoteformal && existingQuoteformal);
-  if (contentBlock) {
-    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-    const editorState = EditorState.createWithContent(contentState);
-    setDescription(editorState);
-  }
-};
+  //Description Modal
+  const convertHtmlToDraft = (existingQuoteformal) => {
+    const contentBlock = htmlToDraft(existingQuoteformal && existingQuoteformal);
+    if (contentBlock) {
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      const editorState = EditorState.createWithContent(contentState);
+      setDescription(editorState);
+    }
+  };
 
   //timeSheet data in timeSheet
   const handleInputs = (e) => {
@@ -74,10 +74,10 @@ const handleDataEditor = (e, type) => {
         convertHtmlToDraft(timeSheetData.description);
       }
     });
-  };  
+  };
 
-   //  Gettind data from Job By Id
-   const JobTime = () => {
+  //  Gettind data from Job By Id
+  const JobTime = () => {
     api
       .get('/jobinformation/getEmployee')
       .then((res) => {
@@ -117,7 +117,7 @@ const handleDataEditor = (e, type) => {
         <FormGroup>
           <ToastContainer></ToastContainer>
           <ComponentCardV2>
-          <ApiButton
+            <ApiButton
               editData={editTimesheet}
               navigate={navigate}
               applyChanges={editTimesheet}
@@ -190,153 +190,148 @@ const handleDataEditor = (e, type) => {
       {/* timesheet Details */}
       <Form>
         <FormGroup>
-          <ComponentCard title="ProjectTimesheetDetails">
+          <ComponentCard title="TimesheetDetails">
             {' '}
             <ToastContainer></ToastContainer>
             <div>
-              <BreadCrumbs />
+              <Form>
+                <Row>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Project Title</Label>
+                      <br />
+                      <span>{timeSheet && timeSheet.title}</span>
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Milestone Title</Label>
+                      <br />
+                      <span>{timeSheet && timeSheet.milestone_title}</span>
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Title</Label>
+                      <br />
+                      <span>{timeSheet && timeSheet.task_title}</span>
+                    </FormGroup>
+                  </Col>
 
-              <ComponentCard title="Timesheet">
-                <Form>
-                  <Row>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Project Title</Label>
-                        <br />
-              <span>{timeSheet && timeSheet.title}</span>
-                      </FormGroup>
-                    </Col>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Milestone Title</Label>
-                        <br />
-              <span>{timeSheet && timeSheet.milestone_title}</span>
-                      </FormGroup>
-                    </Col>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Title</Label>
-                        <br />
-              <span>{timeSheet && timeSheet.task_title}</span>
-                      </FormGroup>
-                    </Col>
-
-
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>date</Label>
-                        <Input
-                          type="date"
-                          onChange={handleInputs}
-                          value={moment(timeSheet && timeSheet.date).format(
-                            'YYYY-MM-DD',
-                          )}                           
-                          name="date"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Name</Label>
-                        <Input
-                          type="select"
-                          name="employee_id"
-                          onChange={handleInputs}
-                          value={timeSheet && timeSheet.employee_id}
-                        >
-                          <option value="" defaultValue="selected"></option>
-                          {employeeTimesheet &&
-                            employeeTimesheet.map((ele) => {
-                              return (
-                                <option key={ele.employee_id} value={ele.employee_id}>
-                                  {ele.first_name}
-                                </option>
-                              );
-                            })}
-                        </Input>
-                      </FormGroup>
-                    </Col>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Hours</Label>
-                        <Input
-                          type="text"
-                          onChange={handleInputs}
-                          value={timeSheet && timeSheet.hours}
-                          name="hours"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col md="3">
-                      <FormGroup>
-                        <Label>Status</Label>
-                        <Input
-                          type="select"
-                          onChange={handleInputs}
-                          value={timeSheet && timeSheet.status}
-                          name="status"
-                        >
-                           <option value="" selected="selected">
-                                          Please Select
-                                        </option>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>date</Label>
+                      <Input
+                        type="date"
+                        onChange={handleInputs}
+                        value={moment(timeSheet && timeSheet.date).format('YYYY-MM-DD')}
+                        name="date"
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Name</Label>
+                      <Input
+                        type="select"
+                        name="employee_id"
+                        onChange={handleInputs}
+                        value={timeSheet && timeSheet.employee_id}
+                      >
+                        <option value="" defaultValue="selected"></option>
+                        {employeeTimesheet &&
+                          employeeTimesheet.map((ele) => {
+                            return (
+                              <option key={ele.employee_id} value={ele.employee_id}>
+                                {ele.first_name}
+                              </option>
+                            );
+                          })}
+                      </Input>
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Hours</Label>
+                      <Input
+                        type="text"
+                        onChange={handleInputs}
+                        value={timeSheet && timeSheet.hours}
+                        name="hours"
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Status</Label>
+                      <Input
+                        type="select"
+                        onChange={handleInputs}
+                        value={timeSheet && timeSheet.status}
+                        name="status"
+                      >
+                        <option value="" selected="selected">
+                          Please Select
+                        </option>
                         <option value="Completed">Completed</option>
                         <option value="Cancelled">Cancelled</option>
-                        <option value="Started">Started</option></Input>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Form>
-              </ComponentCard>
-              <ComponentCard title="Description">
-                <Editor
-                  editorState={description}
-                  wrapperClassName="demo-wrapper mb-0"
-                  editorClassName="demo-editor border mb-4 edi-height"
-                  onEditorStateChange={(e) => {
-                    handleDataEditor(e, 'description');
-                    setDescription(e);
-                  }}
-                />
-              </ComponentCard>
-              <Form>
-                <FormGroup>
-                  <ComponentCard title="Attachments">
-                    <Row>
-                      <Col xs="12" md="3" className="mb-3">
-                        <Button
-                          className="shadow-none"
-                          color="primary"
-                          onClick={() => {
-                            setRoomName('Timesheet');
-                            setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
-                            dataForAttachment();
-                            setAttachmentModal(true);
-                          }}
-                        >
-                          <Icon.File className="rounded-circle" width="20" />
-                        </Button>
-                      </Col>
-                    </Row>
-                    <AttachmentModalV2
-                      moduleId={id}
-                      roomName={roomName}
-                      fileTypes={fileTypes}
-                      altTagData="MilsestoneRelated Data"
-                      recordType="RelatedPicture"
-                      desc="TimesheetRelated Data"
-                      modelType={attachmentData.modelType}
-                      attachmentModal={attachmentModal}
-                      setAttachmentModal={setAttachmentModal}
-                    />
-                    <ViewFileComponentV2
-                      moduleId={id}
-                      roomName="TimesheetList"
-                      recordType="RelatedPicture"
-                    />
-                  </ComponentCard>
-                </FormGroup>
+                        <option value="Started">Started</option>
+                      </Input>
+                    </FormGroup>
+                  </Col>
+                </Row>
               </Form>
             </div>
+          </ComponentCard>
+        </FormGroup>
+      </Form>
+      <ComponentCard title="Description">
+        <Editor
+          editorState={description}
+          wrapperClassName="demo-wrapper mb-0"
+          editorClassName="demo-editor border mb-4 edi-height"
+          onEditorStateChange={(e) => {
+            handleDataEditor(e, 'description');
+            setDescription(e);
+          }}
+        />
+      </ComponentCard>
+
+      <Form>
+        <FormGroup>
+          <ComponentCard title="Attachments">
+            <Row>
+              <Col xs="12" md="3" className="mb-3">
+                <Button
+                  className="shadow-none"
+                  color="primary"
+                  onClick={() => {
+                    setRoomName('Timesheet');
+                    setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                    dataForAttachment();
+                    setAttachmentModal(true);
+                  }}
+                >
+                  <Icon.File className="rounded-circle" width="20" />
+                </Button>
+              </Col>
+            </Row>
+            <AttachmentModalV2
+              moduleId={id}
+              roomName={roomName}
+              fileTypes={fileTypes}
+              altTagData="MilsestoneRelated Data"
+              recordType="RelatedPicture"
+              desc="TimesheetRelated Data"
+              modelType={attachmentData.modelType}
+              attachmentModal={attachmentModal}
+              setAttachmentModal={setAttachmentModal}
+            />
+            <ViewFileComponentV2
+              moduleId={id}
+              roomName="TimesheetList"
+              recordType="RelatedPicture"
+            />
           </ComponentCard>
         </FormGroup>
       </Form>

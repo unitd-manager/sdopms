@@ -24,7 +24,7 @@ function PayslipSummary({payroll,handleInputs}) {
                     </Label>
                     <Input
                       type="date"
-                      value={payroll && moment(payroll.payslip_start_date,'YYYY-MM-DD').format('YYYY-MM-DD')}
+                      value={payroll && moment(payroll.payslip_start_date).format('YYYY-MM-DD')}
                       onChange={handleInputs}
                       name="payslip_start_date"
                       disabled
@@ -36,7 +36,7 @@ function PayslipSummary({payroll,handleInputs}) {
                     <Label>End Date</Label>
                     <Input
                       type="Date"
-                      value={payroll && moment( payroll.payslip_end_date,'YYYY-MM-DD').format('YYYY-MM-DD')}
+                      value={payroll && moment( payroll.payslip_end_date).format('YYYY-MM-DD')}
                       onChange={handleInputs}
                       name="payslip_end_date"
                       disabled
@@ -106,7 +106,7 @@ function PayslipSummary({payroll,handleInputs}) {
                     <Label>Generated Date</Label>
                     <Input
                       type="Date"
-                      value={moment(payroll && payroll.generated_date,'YYYY-MM-DD').format('YYYY-MM-DD')}
+                      value={moment(payroll && payroll.generated_date).format('YYYY-MM-DD')}
                       onChange={handleInputs}
                       name="generated_date"
                     />

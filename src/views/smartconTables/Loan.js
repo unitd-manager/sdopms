@@ -18,27 +18,32 @@ import CommonTable from '../../components/CommonTable';
 const Loan = () => {
   //state variale
   const [loan, setLoan] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   //getting loan data in db
   const getLoan = () => {
-    setLoading(true)
-    api.get('/loan/getLoan').then((res) => {
-      setLoan(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+    setLoading(true);
+    api
+      .get('/loan/getLoan')
+      .then((res) => {
+        setLoan(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          buttons: [
+            {
+              extend: 'print',
+              text: 'Print',
+              className: 'shadow-none btn btn-primary',
+            },
+          ],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
 
   useEffect(() => {
@@ -115,12 +120,11 @@ const Loan = () => {
 
   return (
     <div className="MainDiv">
-      
       <div className=" pt-xs-25">
-      <BreadCrumbs />
+        <BreadCrumbs />
 
         <CommonTable
-        loading={loading}
+          loading={loading}
           title="Loan List"
           Button={
             <Link to="/LoanDetails">
@@ -144,12 +148,12 @@ const Loan = () => {
                   <tr key={element.loan_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/LoanEdit/${element.loan_id}`}>
+                      <Link to={`/LoanEdit/${element.loan_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
                     <td>{element.employee_name}</td>
-                    <td>{element.date ? moment(element.date).format('YYYY-MM-DD') : ''}</td>
+                    <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                     <td>{element.amount}</td>
                     <td>{element.month_amount}</td>
                     <td>{element.total_repaid_amount}</td>
@@ -159,7 +163,7 @@ const Loan = () => {
                 );
               })}
           </tbody>
-          </CommonTable>
+        </CommonTable>
       </div>
     </div>
   );

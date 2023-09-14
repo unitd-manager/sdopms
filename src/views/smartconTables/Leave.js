@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import {Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -8,41 +8,43 @@ import $ from 'jquery';
 import moment from 'moment';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
-// import ApiButton from '../../components/ApiButton'
 
 const Leaves = () => {
   //Const Variables
   const [leaves, setLeaves] = useState(null);
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   // get Leave
   const getLeave = () => {
-    api.get('/leave/getLeave').then((res) => {
-      setLeaves(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+    api
+      .get('/leave/getLeave')
+      .then((res) => {
+        setLeaves(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
-
 
   useEffect(() => {
     getLeave();
@@ -124,10 +126,9 @@ const Leaves = () => {
   return (
     <div className="MainDiv">
       <div className=" pt-xs-25">
-        <BreadCrumbs/>
-        {/* <ApiButton></ApiButton> */}
+        <BreadCrumbs />
         <CommonTable
-                loading={loading}
+          loading={loading}
           title="Leave List"
           Button={
             <Link to="/LeaveDetails">
@@ -137,7 +138,7 @@ const Leaves = () => {
             </Link>
           }
         >
-           <thead>
+          <thead>
             <tr>
               {columns.map((cell) => {
                 return <td key={cell.name}>{cell.name}</td>;
@@ -146,20 +147,20 @@ const Leaves = () => {
           </thead>
           <tbody>
             {leaves &&
-              leaves.map((element,i) => {
+              leaves.map((element, i) => {
                 return (
                   <tr key={element.leave_id}>
-                    <td>{i+1}</td>
+                    <td>{i + 1}</td>
                     <td>
-                      <Link to={`/LeavesEdit/${element.leave_id}`}>
+                      <Link to={`/LeavesEdit/${element.leave_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
                     <td>{element.employee_name}</td>
                     <td>{element.designation}</td>
                     <td>{element.status}</td>
-                    <td>{moment(element.from_date).format('YYYY-MM-DD')}</td>
-                    <td>{moment(element.to_date).format('YYYY-MM-DD')}</td>
+                    <td>{element.from_date ? moment(element.from_date).format('DD-MM-YYYY') : ''}</td>
+                    <td>{element.to_date ? moment(element.to_date).format('DD-MM-YYYY') : ''}</td>
                     <td>{element.no_of_days}</td>
                     <td>{element.no_of_days_next_month}</td>
                     <td>{element.leave_type}</td>
@@ -167,7 +168,7 @@ const Leaves = () => {
                 );
               })}
           </tbody>
-          </CommonTable>
+        </CommonTable>
       </div>
     </div>
   );

@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as Icon from 'react-feather';
-import { Row, Col, FormGroup, Button, Form, Table } from 'reactstrap';
+import { Row, Col, FormGroup, Button, Form } from 'reactstrap';
 import moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 import message from '../../components/Message';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
-import ViewAnnualLeaveModal from '../../components/ParollManagementTable/AnnualLeaveModal';
-import LoanPaymentHistoryModal from '../../components/ParollManagementTable/LoanPaymentHistoryModal';
-import ViewMonthlyLeaveModal from '../../components/ParollManagementTable/MonthlyLeaveModal';
+import LoanPaymentHistoryModal from '../../components/PayrollManagementTable/LoanPaymentHistoryModal';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import PdfPaySlip from '../../components/PDF/PdfPaySlip';
 import PdfTimeSheet from '../../components/PDF/PdfTimeSheet';
 import AddNote from '../../components/Tender/AddNote';
 import ViewNote from '../../components/Tender/ViewNote';
-import PayslipSummary from '../../components/ParollManagementTable/PayslipSummary';
-import EarningDeductions from '../../components/ParollManagementTable/EarningDeductions';
+import PayslipSummary from '../../components/PayrollManagementTable/PayslipSummary';
+import EarningDeductions from '../../components/PayrollManagementTable/EarningDeductions';
+import PayrollLeaveSummary from '../../components/PayrollManagementTable/PayrollLeaveSummary';
 
 
 function PayrollManagementDetails() {
@@ -30,6 +30,7 @@ function PayrollManagementDetails() {
     payslip_end_date: '',
     payroll_year: '',
     basic_pay: '',
+    ot_hours:'',
     ot_amount: '',
     cpf_employer: '',
     cpf_employee: '',
@@ -68,8 +69,7 @@ function PayrollManagementDetails() {
     total_basic_pay_for_month: '',
     employee_name: '',
   });
-  const [annualLeaveModal, setAnnualLeaveModal] = useState(false);
-  const [monthlyLeaveModal, setMonthlyLeaveModal] = useState(false);
+
   const [loanPaymentHistoryModal, setLoanPaymentHistoryModal] = useState(false);
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
@@ -77,26 +77,16 @@ function PayrollManagementDetails() {
   });
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
-  const [leave, setLeave] = useState([]);
   const [loan, setLoan] = useState([]);
   const [totalMonthPay, setTotalMonthPay] = useState();
   const [totalDeductions, setTotalDeductions] = useState();
   const [otAmount, setOtAmount] = useState();
-  const [filteredMonthData, setFilteredMonthData] = useState([]);
-  const [filteredYearData, setFilteredYearData] = useState([]);
-  const [absentLeaves, setAbsentLeaves] = useState();
-  const [hospitalLeaves, setHospitalLeaves] = useState();
-  const [sickLeaves, setSickLeaves] = useState();
-  const [annualLeaves, setAnnualLeaves] = useState();
-  const [monthlyAbsentLeaves, setMonthlyAbsentLeaves] = useState();
-  const [monthlyHospitalLeaves, setMonthlyHospitalLeaves] = useState();
-  const [monthlySickLeaves, setMonthlySickLeaves] = useState();
-  const [monthlyAnnualLeaves, setMonthlyAnnualLeaves] = useState();
-
+  const [update, setUpdate] = useState(false);
+  const[leave,setLeave]=useState([])
+  const [editTotalDeduction, setEditTotalDeduction] = useState(false);
   //handle inputs
   const handleInputs = (e) => {
     setPayroll({ ...payroll, [e.target.name]: e.target.value });
-  
   };
 
   //Attachments
@@ -104,71 +94,6 @@ function PayrollManagementDetails() {
     setDataForAttachment({
       modelType: 'attachment',
     });
-    console.log('inside DataForAttachment');
-  };
-
-  const calculateYearlyLeaveTypes = (arr) => {
-    let leaveannual = 0;
-    let leaveabsent = 0;
-    let leavesick = 0;
-    let leavehospital = 0;
-
-    arr.forEach((element) => {
-      if (element.leave_type === 'Annual Leave') {
-        leaveannual += element.no_of_days;
-      }
-      if (element.leave_type === 'Hospitalization Leave') {
-        leavehospital += element.no_of_days;
-      }
-      if (element.leave_type === 'Sick Leave') {
-        leavesick += element.no_of_days;
-      }
-      if (element.leave_type === 'Absent') {
-        leaveabsent += element.no_of_days;
-      }
-    });
-    setAbsentLeaves(leaveabsent);
-    setAnnualLeaves(leaveannual);
-    setHospitalLeaves(leavehospital);
-    setSickLeaves(leavesick);
-  };
-  const calculateMonthlyLeaveTypes = (arr) => {
-    let leaveannual = 0;
-    let leaveabsent = 0;
-    let leavesick = 0;
-    let leavehospital = 0;
-
-    arr.forEach((element) => {
-      if (element.leave_type === 'Annual Leave') {
-        leaveannual += element.no_of_days;
-      }
-      if (element.leave_type === 'Hospitalization Leave') {
-        leavehospital += element.no_of_days;
-      }
-      if (element.leave_type === 'Sick Leave') {
-        leavesick += element.no_of_days;
-      }
-      if (element.leave_type === 'Absent') {
-        leaveabsent += element.no_of_days;
-      }
-    });
-    setMonthlyAbsentLeaves(leaveabsent);
-    setMonthlyAnnualLeaves(leaveannual);
-    setMonthlyHospitalLeaves(leavehospital);
-    setMonthlySickLeaves(leavesick);
-  };
-
-  //Leaves
-  const getLeaves = async () => {
-    api
-      .post('/payrollmanagement/getPastLeaveHistory', { employee_id: id })
-      .then((res) => {
-        setLeave(res.data.data);
-        // getAnnualLeave(res.data.data);
-      })
-      .catch(() => {
-        message('Unable to get leave record.', 'error');
-      });
   };
 
   const handleOtAmount = (otRate, otHours) => {
@@ -183,6 +108,9 @@ function PayrollManagementDetails() {
     cpf,
     sDl,
     euCf,
+    cdac,
+    mbmf,
+    sinda,
     incomeTax,
     deductions1,
     deductions2,
@@ -201,6 +129,9 @@ function PayrollManagementDetails() {
     if (!deductions3) deductions3 = 0;
     if (!deductions4) deductions4 = 0;
     if (!euCf) euCf = 0;
+    if (!sinda) sinda = 0;
+    if (!cdac) cdac = 0;
+    if (!mbmf) mbmf = 0;
 
     setTotalDeductions(
       parseFloat(totalDeduction) +
@@ -212,9 +143,12 @@ function PayrollManagementDetails() {
         parseFloat(deductions2) +
         parseFloat(deductions3) +
         parseFloat(deductions4) +
-        parseFloat(euCf),
+        parseFloat(euCf)+
+        parseFloat(cdac)+
+        parseFloat(sinda)+
+        parseFloat(mbmf),
     );
-  
+    setEditTotalDeduction(true)
   };
   // calculation earnings
   const handleEarnings = (
@@ -247,46 +181,73 @@ function PayrollManagementDetails() {
         parseFloat(allowances5) +
         parseFloat(totalMonthPay),
     );
-  
+    
   };
+
+
+  // Calculate and update Gross Pay whenever relevant fields change
+  useEffect(() => {
+    const basicPay = parseFloat(payroll.basic_pay) || 0;
+    const allowance1 = parseFloat(payroll.allowance1) || 0;
+    const allowance2 = parseFloat(payroll.allowance2) || 0;
+    const allowance3 = parseFloat(payroll.allowance3) || 0;
+    const allowance4 = parseFloat(payroll.allowance4) || 0;
+    const allowance5 = parseFloat(payroll.allowance5) || 0;
+    const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
+
+    const newGrossPay =
+      basicPay +
+      allowance1 +
+      allowance2 +
+      allowance3 +
+      allowance4 +
+      allowance5 +
+      otAmountValue;
+
+      setTotalMonthPay(newGrossPay);
+  }, [payroll.basic_pay, payroll.allowance1, payroll.allowance2, payroll.allowance3, payroll.allowance4, payroll.allowance5, otAmount || (payroll && payroll.ot_amount)]);
+
+
 
   //edit payroll
   const editPayrollData = () => {
-   
     payroll.total_basic_pay_for_month = totalMonthPay;
-    payroll.total_deductions = totalDeductions;
+    if(editTotalDeduction){
+      payroll.total_deductions = totalDeductions;
+    }
+    
     payroll.net_total =
       parseFloat(totalMonthPay) +
       parseFloat(payroll.director_fee) +
       parseFloat(payroll.reimbursement) -
       parseFloat(totalDeductions);
-
-    
+      payroll.ot_amount = otAmount;
     api
       .post('/payrollmanagement/editpayrollmanagementMain', payroll)
       .then(() => {
         message('Record editted successfully', 'success');
+        navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
+        getPayroll();
+        setEditTotalDeduction(false)
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
+        setEditTotalDeduction(false)
       });
   };
+  
 
   //getting lastmonth first and last date
   const getlastmonthdates = () => {
-   
     const lastmonthfirstdate = moment(new Date())
       .subtract(1, 'months')
       .startOf('month')
       .format('DD-MM-YYYY');
-  
 
-   
     const lastmonthlastdate = moment(new Date())
       .subtract(1, 'months')
       .endOf('month')
       .format('DD-MM-YYYY');
-  
   };
   //Method for getting data by LoanId and Employee Id
   const getPreviousEarlierLoan = (empId) => {
@@ -294,6 +255,8 @@ function PayrollManagementDetails() {
       .post('/loan/TabPreviousEarlierLoanById', { employee_id: empId })
       .then((res) => {
         setLoan(res.data.data);
+        setOtAmount(res.data.data[0].ot_amount);
+        
       })
       .catch(() => {
         message('Loan not found', 'info');
@@ -308,44 +271,35 @@ function PayrollManagementDetails() {
         setPayroll(res.data.data[0]);
 
         getPreviousEarlierLoan(res.data.data[0].employee_id);
+        getLeaves(res.data.data[0].employee_id)
       })
       .catch(() => {
         message('Loan Data Not Found', 'info');
       });
   };
 
+  const getLeaves = async (empid) => {
+    api
+      .post('/payrollmanagement/getPastLeaveHistory', { employee_id: empid })
+      .then((res) => {
+        setLeave(res.data.data);
+      })
+      .catch(() => {
+        message('Unable to get leave record.', 'error');
+      });
+  };
+
   useEffect(() => {
     getlastmonthdates();
     getPayroll();
-    getLeaves();
   }, [id]);
-  useEffect(() => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-    const filteredMonth = leave.filter((item) => {
-      const itemDate = new Date(item.from_date);
-      const itemYear = itemDate.getFullYear();
-      const itemMonth = itemDate.getMonth() + 1;
-      return itemYear === currentYear && itemMonth === currentMonth;
-    });
-    const filteredYear = leave.filter((item) => {
-      const itemDate = new Date(item.from_date);
-      const itemYear = itemDate.getFullYear();
-      // const itemMonth = itemDate.getMonth() + 1;
-      return itemYear === currentYear;
-    });
-    setFilteredMonthData(filteredMonth);
-    setFilteredYearData(filteredYear);
-    calculateYearlyLeaveTypes(filteredYear);
-    calculateMonthlyLeaveTypes(filteredMonth);
-  }, [leave]);
 
   return (
     <>
       <BreadCrumbs />
 
       <FormGroup>
+      <ToastContainer/>
         <Row>
           <Col md="12">
             <ComponentCardV2>
@@ -359,7 +313,10 @@ function PayrollManagementDetails() {
                 className="btn shadow-none mr-2"
                 onClick={() => {
                   editPayrollData();
-                  navigate('/PayrollManagement');
+                  setTimeout(()=>{
+                    navigate('/PayrollManagement');
+                  },1000)
+                 
                 }}
               >
                 Save{' '}
@@ -380,7 +337,7 @@ function PayrollManagementDetails() {
                 type="submit"
                 color="dark"
                 className="btn shadow-none mr-2"
-                onClick={() => navigate(-1)}
+                onClick={() =>navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`)}
               >
                 Back to List
               </Button>
@@ -391,235 +348,8 @@ function PayrollManagementDetails() {
       </FormGroup>
 
       <ComponentCard title="Main Details">
-        <Form>
-          <FormGroup>
-            <ComponentCard title="Leave Summary">
-              <Row>
-                <Col md="8">
-                  <Table>
-                    <thead>
-                      <tr>
-                        <td>ANNUAL LEAVE AS PER MOM</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span>1st year: 7 days</span>
-                        </td>
-                        <td>
-                          <span>2nd year: 8 days</span>
-                        </td>
-                        <td>
-                          <span>3rd year: 9 days</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>4th year: 10 days</span>
-                        </td>
-                        <td>
-                          <span>5th year: 11 days</span>
-                        </td>
-                        <td>
-                          <span>6th year: 12 days</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>7th year: 13 days</span>
-                        </td>
-                        <td>
-                          <span>8th year thereafter: 14 days</span>
-                        </td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                  <Table>
-                    <thead>
-                      <tr>
-                        <td>SICK LEAVE AS PER MOM</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span>After 3 months: 5 days</span>
-                        </td>
-                        <td>
-                          <span>After 4 months: 8 days</span>
-                        </td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>After 5 months: 11 days</span>
-                        </td>
-                        <td>
-                          <span>6 months and thereafter: 14 days</span>
-                        </td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Col>
-                <Col md="2">
-                  <Table>
-                    <thead>
-                      <tr>
-                        <td>Total No of leave taken this year</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span>
-                            Annual leave :{' '}
-                            <span
-                              onClick={() => {
-                                setAnnualLeaveModal(true);
-                              }}
-                            >
-                              {annualLeaves}
-                            </span>
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {' '}
-                          <span>
-                            Sick leave :{' '}
-                            <span
-                              onClick={() => {
-                                setAnnualLeaveModal(true);
-                              }}
-                            >
-                              {sickLeaves}
-                            </span>
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {' '}
-                          <span>
-                            Hospitalization leave :{' '}
-                            <span
-                              onClick={() => {
-                                setAnnualLeaveModal(true);
-                              }}
-                            >
-                              {hospitalLeaves}
-                            </span>
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span>
-                            Absent leave :{' '}
-                            <span
-                              onClick={() => {
-                                setAnnualLeaveModal(true);
-                              }}
-                            >
-                              {absentLeaves}
-                            </span>
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Col>
-                <Col md="2">
-                  <thead>
-                    <tr>
-                      <td>Total No of leave taken this Month</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        {' '}
-                        <span>
-                          Annual leave :{' '}
-                          <span
-                            onClick={() => {
-                              setMonthlyLeaveModal(true);
-                            }}
-                          >
-                            {monthlyAnnualLeaves}
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {' '}
-                        <span>
-                          Sick leave :{' '}
-                          <span
-                            onClick={() => {
-                              setMonthlyLeaveModal(true);
-                            }}
-                          >
-                            {monthlySickLeaves}
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {' '}
-                        <span>
-                          Hospitalization leave :{' '}
-                          <span
-                            onClick={() => {
-                              setMonthlyLeaveModal(true);
-                            }}
-                          >
-                            {monthlyHospitalLeaves}
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span>
-                          Absent leave :{' '}
-                          <span
-                            onClick={() => {
-                              setMonthlyLeaveModal(true);
-                            }}
-                          >
-                            {monthlyAbsentLeaves}
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Col>
-              </Row>
-            </ComponentCard>
-          </FormGroup>
-        </Form>
+        <PayrollLeaveSummary leave={leave}/>
 
-        {annualLeaveModal && (
-          <ViewAnnualLeaveModal
-            annualLeaveModal={annualLeaveModal}
-            setAnnualLeaveModal={setAnnualLeaveModal}
-            annualLeave={filteredYearData}
-          />
-        )}
-        {monthlyLeaveModal && (
-          <ViewMonthlyLeaveModal
-            monthlyLeaveModal={monthlyLeaveModal}
-            setMonthlyLeaveModal={setMonthlyLeaveModal}
-            monthlyLeave={filteredMonthData}
-          />
-        )}
         {/* Payslip summary */}
 
         <PayslipSummary payroll={payroll} handleInputs={handleInputs} />
@@ -633,6 +363,7 @@ function PayrollManagementDetails() {
           otAmount={otAmount}
           totalDeductions={totalDeductions}
           totalMonthPay={totalMonthPay}
+          setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
         />
         {loanPaymentHistoryModal && (
           <LoanPaymentHistoryModal
@@ -656,40 +387,44 @@ function PayrollManagementDetails() {
       {/* Attachment */}
       <Row>
         <Form>
-        <ComponentCard title="Add">
-          <Row>
-            <Col xs="12" md="10" className="mb-3">
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  setRoomName('PayrollAttachment');
-                  setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
-                  dataForAttachment();
-                  setAttachmentModal(true);
-                }}
-              >
-                <Icon.File className="rounded-circle" width="20" />
-              </Button>
-            </Col>
-          </Row>
-          <AttachmentModalV2
-            moduleId={id}
-            roomName={roomName}
-            fileTypes={fileTypes}
-            altTagData="Payrollmanagement"
-            recordType="PayrollAttachment"
-            desc="Payrollmanagement"
-            modelType={attachmentData.modelType}
-            attachmentModal={attachmentModal}
-            setAttachmentModal={setAttachmentModal}
-          />
-          <ViewFileComponentV2
-            moduleId={id}
-            roomName="PayrollAttachment"
-            recordType="PayrollAttachment"
-          />
-        </ComponentCard>
+          <ComponentCard title="Add">
+            <Row>
+              <Col xs="12" md="10" className="mb-3">
+                <Button
+                  className="shadow-none"
+                  color="primary"
+                  onClick={() => {
+                    setRoomName('PayrollAttachment');
+                    setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
+                    dataForAttachment();
+                    setAttachmentModal(true);
+                  }}
+                >
+                  <Icon.File className="rounded-circle" width="20" />
+                </Button>
+              </Col>
+            </Row>
+            <AttachmentModalV2
+              moduleId={id}
+              roomName={roomName}
+              fileTypes={fileTypes}
+              altTagData="Payrollmanagement"
+              recordType="PayrollAttachment"
+              desc="Payrollmanagement"
+              modelType={attachmentData.modelType}
+              attachmentModal={attachmentModal}
+              setAttachmentModal={setAttachmentModal}
+              update={update}
+              setUpdate={setUpdate}
+            />
+            <ViewFileComponentV2
+              moduleId={id}
+              roomName="PayrollAttachment"
+              recordType="PayrollAttachment"
+              update={update}
+              setUpdate={setUpdate}
+            />
+          </ComponentCard>
         </Form>
       </Row>
     </>

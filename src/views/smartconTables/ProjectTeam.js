@@ -72,6 +72,7 @@ export default function ProjectTeam({
   const handleInputsTime = (e) => {
     setInsertTeam({ ...insertTeam, [e.target.name]: e.target.value });
   };
+  
   //Insert
   const insertTeamMember = () => {
     const newContactWithCompany = insertTeam;

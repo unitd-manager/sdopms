@@ -70,14 +70,24 @@ const TaskJobEdit = () => {
     if (activeTab !== tab) setActiveTab(tab);
   };
   //  Gettind data from Job By Id
-  const editJob = () => {
+  // const editJob = () => {
+  //   api
+  //     .get('/jobinformation/getEmployee')
+  //     .then((res) => {
+  //       console.log(res.data.data);
+  //       setEmployeeTeam(res.data.data);
+  //     })
+  //     .catch(() => {});
+  // };
+  const editJob = (projectId) => {
     api
-      .get('/jobinformation/getEmployee')
+      .post('/projecttimesheet/getStaffByID', { project_task_id: projectId })
       .then((res) => {
-        console.log(res.data.data);
         setEmployeeTeam(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => {
+        message('Task not found', 'info');
+      });
   };
   //TaskJob data in TaskJob
   const handleInputsProjectteam = (e) => {
@@ -303,6 +313,12 @@ const TaskJobEdit = () => {
       getTaskName(selectedTask);
     }
   }, [projectTeam && projectTeam.project_milestone_id]);
+  useEffect(() => {
+    if (projectTeam && projectTeam.project_task_id) {
+      const selectedTask = projectTeam.project_task_id;
+      editJob(selectedTask);
+    }
+  }, [projectTeam && projectTeam.project_task_id]);
 
   return (
     <>
@@ -318,65 +334,6 @@ const TaskJobEdit = () => {
               backToList={backToList}
               module="TaskJob"
             ></ApiButton>
-            {/* <Row>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    editTaskJob();
-                    navigate('/TaskJob');
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    editTaskJob();
-                    applyChanges();
-                  }}
-                >
-                  Apply
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  type="submit"
-                  className="btn btn-dark shadow-none"
-                  onClick={(e) => {
-                    if (window.confirm('Are you sure you want to cancel? ')) {
-                      navigate('/TaskJob');
-                    } else {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Col>
-              <Col>
-                <DeleteButton
-                  id={id}
-                  columnname="project_team_id"
-                  tablename="project_team"
-                ></DeleteButton>
-              </Col>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="dark"
-                  onClick={() => {
-                    backToList();
-                  }}
-                >
-                  Back to List
-                </Button>
-              </Col>
-            </Row> */}
           </ComponentCardV2>
         </FormGroup>
       </Form>
@@ -389,25 +346,6 @@ const TaskJobEdit = () => {
             <div>
               <Form>
                 <Row>
-                  <Col md="4">
-                    <FormGroup>
-                      <Label>Project Title</Label>
-                      <Input
-                        type="select"
-                        onChange={handleInputsProjectteam}
-                        value={projectTeam && projectTeam.project_id}
-                        name="project_id"
-                      >
-                        <option defaultValue="selected">Please Select</option>
-                        {project &&
-                          project.map((e) => (
-                            <option key={e.project_id} value={e.project_id}>
-                              {e.title}
-                            </option>
-                          ))}
-                      </Input>
-                    </FormGroup>
-                  </Col>
                   <Col md="4">
                     <Label>Milestone Title</Label>
                     <FormGroup>
@@ -455,6 +393,25 @@ const TaskJobEdit = () => {
                   </Col>
                   <Col md="4">
                     <FormGroup>
+                      <Label>Project Title</Label>
+                      <Input
+                        type="select"
+                        onChange={handleInputsProjectteam}
+                        value={projectTeam && projectTeam.project_id}
+                        name="project_id"
+                      >
+                        <option defaultValue="selected">Please Select</option>
+                        {project &&
+                          project.map((e) => (
+                            <option key={e.project_id} value={e.project_id}>
+                              {e.title}
+                            </option>
+                          ))}
+                      </Input>
+                    </FormGroup>
+                  </Col>
+                  <Col md="4">
+                    <FormGroup>
                       <Label>Team</Label>
                       <Input
                         type="select"
@@ -462,7 +419,9 @@ const TaskJobEdit = () => {
                         onChange={handleInputsProjectteam}
                         value={projectTeam && projectTeam.employee_id}
                       >
-                        <option value="" defaultValue="selected"></option>
+                        <option value="" selected>
+                          Please Select
+                        </option>
                         {employeeTeam &&
                           employeeTeam.map((ele) => {
                             return (

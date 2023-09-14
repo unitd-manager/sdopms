@@ -4,11 +4,11 @@ import { Button, Col, Row, Card } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { HasAccess ,usePermify} from '@permify/react-role';
 
-const ApiButton = ({ editData, navigate, applyChanges, backToList, module }) => {
+const ApiButton = ({ editData, navigate,  backToList, module }) => {
   ApiButton.propTypes = {
     editData: PropTypes.func,
     navigate: PropTypes.any,
-    applyChanges: PropTypes.func,
+    //applyChanges: PropTypes.func,
     backToList: PropTypes.func,
     module: PropTypes.string,
   };
@@ -30,7 +30,7 @@ const ApiButton = ({ editData, navigate, applyChanges, backToList, module }) => 
       <Card tag="h4" className="border-bottom px-4 py-3 mb-0">
         <div className="d-flex flex-row-reverse">
           <Row>
-            <Col className="d-flex" xl={3} sm={12}>
+            <Col className="d-flex" xl={3} sm={8}>
               {' '}
               <HasAccess
                 roles={null}
@@ -44,7 +44,7 @@ const ApiButton = ({ editData, navigate, applyChanges, backToList, module }) => 
                   }}
                   color="primary"
                 >
-                  {' '}
+                 
                   Save
                 </Button>
               </HasAccess>
@@ -59,7 +59,7 @@ const ApiButton = ({ editData, navigate, applyChanges, backToList, module }) => 
                 <Button
                   onClick={() => {
                     editData();
-                    applyChanges();
+                    //applyChanges();
                   }}
                   color="primary"
                 >

@@ -5,12 +5,10 @@ import * as Icon from 'react-feather';
 import message from '../Message';
 import api from '../../constants/api';
 
-function ViewFileComponentV2({ moduleId, roomName,update,setUpdate }) {
-  ViewFileComponentV2.propTypes = {
+function ViewFileComponent({ moduleId, roomName }) {
+  ViewFileComponent.propTypes = {
     moduleId: PropTypes.string,
     roomName: PropTypes.string,
-    update:PropTypes.bool,
-    setUpdate:PropTypes.func
   };
 
   const tableStyle = {};
@@ -38,7 +36,7 @@ function ViewFileComponentV2({ moduleId, roomName,update,setUpdate }) {
           .then((res) => {
             console.log(res);
             Swal.fire('Deleted!', 'Media has been deleted.', 'success');
-            setUpdate(!update)
+            window.location.reload();
           })
           .catch(() => {
             message('Unable to Delete Media', 'info');
@@ -46,10 +44,6 @@ function ViewFileComponentV2({ moduleId, roomName,update,setUpdate }) {
       }
     });
   };
-
-  useEffect(() => {
-    getFiles();
-  }, [update]);
   
   useEffect(() => {
     getFiles();
@@ -71,7 +65,7 @@ function ViewFileComponentV2({ moduleId, roomName,update,setUpdate }) {
                 <tr key={res.media_id}>
                   <td style={tableStyle}>
                     <a
-                      href={`http://43.228.126.245/sdoApi/storage/uploads/${res.name}`}
+                      href={`http://43.228.126.245/smartco-api/storage/uploads/${res.name}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -105,4 +99,4 @@ function ViewFileComponentV2({ moduleId, roomName,update,setUpdate }) {
   );
 }
 
-export default ViewFileComponentV2;
+export default ViewFileComponent;
