@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -9,6 +9,16 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
     handleInputsJobInformation: PropTypes.any,
     job: PropTypes.any,
   };
+  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    // Show the alert if the status is "archive"
+    if (job && job.status === 'archive') {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [job]);
   return (
       <FormGroup>
         <Row>
@@ -135,30 +145,32 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
             </FormGroup>
           </Col>
           <Col md="4">
-            <FormGroup>
-              <Label>Status</Label>
-
-              <Input
-                type="select"
-                defaultValue={job && job.status}
-                name="status"
-                onChange={handleInputsJobInformation}
-              >
-                <option>Please Select</option>
-                <option value="current" selected="selected">
-                  {' '}
-                  Current
-                </option>
-                <option value="archive">Archive </option>
-                <option value="cancel">Cancel</option>
-              </Input>
-              {job &&
-                job.status === 'archive' &&
-                alert(
-                  'Please enter TERMINATION INFORMATION of employee if employee is leaving company.',
-                )}
-            </FormGroup>
-          </Col>
+          <FormGroup>
+            <Label>Status</Label>
+            <Input
+              type="select"
+              defaultValue={job && job.status}
+              name="status"
+              onChange={handleInputsJobInformation}
+            >
+              <option>Please Select</option>
+              <option value="current" selected={job && job.status === 'current'}>
+                Current
+              </option>
+              <option value="archive" selected={job && job.status === 'archive'}>
+                Archive
+              </option>
+              <option value="cancel" selected={job && job.status === 'cancel'}>
+                Cancel
+              </option>
+            </Input>
+            {showAlert && (
+              <div className="alert alert-warning mt-2">
+                Please enter TERMINATION INFORMATION of the employee if they are leaving the company.
+              </div>
+            )}
+          </FormGroup>
+        </Col>
         </Row>
       </FormGroup>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import { Button } from 'reactstrap';
+import { Badge, Button, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -8,8 +8,8 @@ import $ from 'jquery';
 import moment from 'moment';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -18,7 +18,21 @@ import CommonTable from '../../components/CommonTable';
 const JobInformation = () => {
   //All state variable
   const [jobInformation, setJobInformation] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [empWithoutJobInfo, setEmpWithoutJobInfo] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+ //getting employee list not having jobinformation record
+ const getEmployeesWithoutJobInformation = () => {
+  api
+    .get('/payrollmanagement/getEmployeeWithoutJobinfo')
+    .then((res) => {
+      setEmpWithoutJobInfo(res.data.data);
+    
+    })
+    .catch(() => {
+      
+    });
+};
 
   //getting data from jobinformation
   const getJobInformation = () => {
@@ -31,19 +45,23 @@ const JobInformation = () => {
           pageLength: 20,
           processing: true,
           dom: 'Bfrtip',
-          buttons: [ {
-            extend: 'print',
-            text: "Print",
-            className:"shadow-none btn btn-primary",
-        }],
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
         });
-        setLoading(false)
-      }).catch(()=>{
-        setLoading(false)
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-    };
+  };
   useEffect(() => {
     getJobInformation();
+    getEmployeesWithoutJobInformation();
   }, []);
   //structure of jobinformation list view
   const columns = [
@@ -136,9 +154,20 @@ const JobInformation = () => {
     <div className="MainDiv">
       <div className=" pt-xs-25">
         <BreadCrumbs />
+        <Card style={{padding:'10px'}}>
+          <div>
+            <h5>Please create Job information records for the below employees to make them appear in payroll.</h5>
+          {
+            empWithoutJobInfo.map((el)=>{
+              return(
+                <span style={{marginRight:'5px'}}><Badge> {el.employee_name}</Badge></span>
+              )
+            })
+          }
+          </div>
+        </Card>
         <CommonTable
-                                loading={loading}
-
+          loading={loading}
           title="Job Information List"
           Button={
             <Link to="/JobInformationDetails">
@@ -164,17 +193,17 @@ const JobInformation = () => {
                     <tr key={element.job_information_id}>
                       <td>{index + 1}</td>
                       <td>
-                        <Link to={`/JobInformationEdit/${element.job_information_id}`}>
+                        <Link to={`/JobInformationEdit/${element.job_information_id}?tab=1`}>
                           <Icon.Edit2 />
                         </Link>
                       </td>
                       <td>{element.emp_code}</td>
                       <td>{element.first_name}</td>
                       <td>{element.department}</td>
-                      <td>{element.spass_no}</td>
+                      <td>{element.passport}</td>
                       <td>{element.fin_no}</td>
                       <td>{element.nric_no}</td>
-                      <td>{element.date ? moment(element.date).format('YYYY-MM-DD') : ''}</td>
+                      <td>{element.date_of_birth ? moment(element.date_of_birth).format('DD-MM-YYYY') : ''}</td>
                       <td>{element.basic_pay}</td>
                       <td>{element.citizen}</td>
                       <td>{element.job_information_id}</td>

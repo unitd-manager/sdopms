@@ -55,12 +55,22 @@ const TrainingEdit = () => {
     "to_date": ""
    },])
 //Onchange item in training staff employee name selectfield
-   const onchangeItem = (str, itemId) => {
-    const element = addLineItem.find(el => el.id === itemId)
-    element.employee_name = str.label
-    element.employee_id = str.value.toString()
-    setAddLineItem(addLineItem)
+const onchangeItem = (str, itemId) => {
+  const element = addLineItem.find(el => el.id === itemId);
+
+  // Check if the selected employee name already exists in addLineItem
+  const isEmployeeNameAlreadySelected = addLineItem.some(item => item.employee_name === str.label);
+
+  if (isEmployeeNameAlreadySelected) {
+    alert("Employee name already exists in the list.");
+  } else {
+    // Update the selected employee name
+    element.employee_name = str.label;
+    element.employee_id = str.value.toString();
+    setAddLineItem([...addLineItem]);
   }
+};
+  
   // Add new line item in link Employee
   const AddNewLineItem = () => {
       setAddLineItem([...addLineItem, {
@@ -162,6 +172,7 @@ const TrainingEdit = () => {
     }
 
   }
+  
   //Insert Training
   const insertTrainingData = () => {
     const result = [];

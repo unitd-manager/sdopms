@@ -137,7 +137,7 @@ const SectionEdit = () => {
               applyChanges={editSectionData}
               backToList={backToList}
               deleteData={DeleteSection}
-              module="Section"
+              module="Menu"
             ></ApiButton>
       {/* Main Details */}
       <Form>

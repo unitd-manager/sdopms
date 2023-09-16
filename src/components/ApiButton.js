@@ -1,12 +1,14 @@
 /* eslint-disable */
 import React from 'react';
-import { Button, Col, Row, Card } from 'reactstrap';
+import { Button, Col, Row,Form, FormGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { HasAccess ,usePermify} from '@permify/react-role';
+import ComponentCardV2 from './ComponentCardV2';
 
-const ApiButton = ({ editData, navigate,  backToList, module }) => {
+const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
   ApiButton.propTypes = {
     editData: PropTypes.func,
+    deleteData: PropTypes.func,
     navigate: PropTypes.any,
     //applyChanges: PropTypes.func,
     backToList: PropTypes.func,
@@ -26,11 +28,13 @@ const ApiButton = ({ editData, navigate,  backToList, module }) => {
 };
 
   return (
-    <div>
-      <Card tag="h4" className="border-bottom px-4 py-3 mb-0">
-        <div className="d-flex flex-row-reverse">
+    <Form>
+      {/* <Card tag="h4" className="border-bottom px-4 py-3 mb-0">
+        <div className="d-flex flex-row-reverse"> */}
+        <FormGroup>
+          <ComponentCardV2>
           <Row>
-            <Col className="d-flex" xl={3} sm={8}>
+            <Col >
               {' '}
               <HasAccess
                 roles={null}
@@ -40,16 +44,19 @@ const ApiButton = ({ editData, navigate,  backToList, module }) => {
                 <Button
                   onClick={() => {
                     editData();
-                    navigate('/Leave');
+                    setTimeout(()=>{
+                      navigate(`/${module}`);
+                    },1000)
+                    
                   }}
                   color="primary"
                 >
-                 
+                  {' '}
                   Save
                 </Button>
               </HasAccess>
             </Col>
-            <Col className="d-flex" xl={3} sm={12}>
+            <Col >
               {' '}
               <HasAccess
                 roles={null}
@@ -67,7 +74,7 @@ const ApiButton = ({ editData, navigate,  backToList, module }) => {
                 </Button>
               </HasAccess>
             </Col>
-            <Col className="d-flex" xl={4} sm={12}>
+            <Col >
               {' '}
               <Button
                 onClick={() => {
@@ -78,23 +85,28 @@ const ApiButton = ({ editData, navigate,  backToList, module }) => {
                 Back To List
               </Button>
             </Col>
-            <Col className="d-flex" xl={3} sm={12}>
+            <Col >
               {' '}
               <HasAccess
                 roles={null}
                 permissions={`${module}-remove`}
-                renderAuthFailed={<p>You are not authorized to access!</p>}
+                renderAuthFailed={<p></p>}
               >
-                <Button color="danger" onClick={() => {}}>
+                <Button color="danger" onClick={() => {deleteData();
+                 setTimeout(()=>{
+                  navigate(`/${module}`);
+                },1000)}}>
                   Delete
                 </Button>
               </HasAccess>
             </Col>
           </Row>
-        </div>
-      </Card>
-    </div>
+        
+      </ComponentCardV2>
+      </FormGroup>
+      </Form>
+    
   );
 };
 
-export default ApiButton;
+export default ApiButton;

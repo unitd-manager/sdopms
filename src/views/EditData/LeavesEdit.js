@@ -97,10 +97,10 @@ const LeavesEdit = () => {
   const editLeavesData = () => {
     if (new Date(leavesDetails.to_date) >= new Date(leavesDetails.from_date)) {
       if (
-        leavesDetails.from_date &&
-        leavesDetails.to_date &&
-        leavesDetails.leave_type &&
-        leavesDetails.no_of_days
+        leavesDetails.from_date!=='' &&
+        leavesDetails.to_date!=='' &&
+        leavesDetails.leave_type!=='' &&
+        leavesDetails.no_of_days!==''
       ) {
         api
           .post('/leave/editleave', leavesDetails)

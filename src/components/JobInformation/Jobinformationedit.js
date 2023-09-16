@@ -1,41 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Button, Form, FormGroup } from 'reactstrap';
+import { Row, Col, Form, FormGroup } from 'reactstrap';
 import ComponentCardV2 from '../ComponentCardV2';
 import JobInformation from '../SupplierModal/JobInformationEditModal';
-import PdfKET from '../PDF/PdfKET';
+// import PdfKET from '../PDF/PdfKET';
 import ApiButton from '../ApiButton';
+// import PdfEmployeeContract from '../PDF/PdfEmployeeContract';
 
 export default function Jobinformationedit({
   editJobData,
-  id,
+  //id,
   // applyChanges,
   navigate,
-  insertJobInformation,
+  //insertJobInformation,
   JobInformationEditModal,
   setJobInformationEditModal,
+  // job,
 }) {
   Jobinformationedit.propTypes = {
     // applyChanges: PropTypes.func,
     editJobData: PropTypes.any,
-    id: PropTypes.any,
-    insertJobInformation: PropTypes.any,
+    //id: PropTypes.any,
+    //insertJobInformation: PropTypes.any,
     JobInformationEditModal: PropTypes.any,
     setJobInformationEditModal: PropTypes.any,
     navigate: PropTypes.any,
+    //job: PropTypes.any,
   };
-  const backToList=()=>{
+  const backToList = () => {
     navigate('/JobInformation');
-  }
+  };
   return (
     <Form>
       <FormGroup>
         <ComponentCardV2>
           <Row>
-            
+            {/* <Col>
+              <PdfKET lang="arabic" />
+            </Col>
             <Col>
-              <PdfKET lang= 'arabic'/>
-              </Col>
+              <PdfEmployeeContract job={job}></PdfEmployeeContract>
+            </Col> */}
             {/* <Col>
               <Button
                 className="shadow-none"
@@ -79,15 +84,15 @@ export default function Jobinformationedit({
             <ApiButton
               editData={editJobData}
               navigate={navigate}
-              applyChanges={editJobData}
+              //applyChanges={editJobData}
               backToList={backToList}
               // deleteData={deleteLoanData}
-              module="JobInformation"
+              module="Job Information"
             ></ApiButton>
             <Col>
-              <Button className="shadow-none" onClick={() => insertJobInformation(id)} color="dark">
+              {/* <Button className="shadow-none" onClick={() => insertJobInformation(id)} color="dark">
                 Duplicate
-              </Button>
+              </Button> */}
               <JobInformation
                 JobInformationEditModal={JobInformationEditModal}
                 setJobInformationEditModal={setJobInformationEditModal}
