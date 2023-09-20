@@ -212,6 +212,7 @@ const CPFCalculatorDetails = Loadable(
 const StaffTable = Loadable(lazy(() => import('../views/smartconTables/Staff')));
 const StaffDetailsTable = Loadable(lazy(() => import('../views/detailTable/StaffDetails')));
 const Content = Loadable(lazy(() => import('../views/smartconTables/Content')));
+const Help = Loadable(lazy(() => import('../views/smartconTables/Help')));
 const ContentDetailsTable = Loadable(lazy(() => import('../views/detailTable/ContentDetails')));
 const SubCategoryTable = Loadable(lazy(() => import('../views/smartconTables/SubCategory')));
 const SubCategoryDetailsTable = Loadable(
@@ -263,6 +264,7 @@ const ClientEdit = Loadable(lazy(() => import('../views/EditData/ClientEdit')));
 const LeadEdit = Loadable(lazy(() => import('../views/EditData/LeadEdit')));
 const VehicleEdit = Loadable(lazy(() => import('../views/EditData/VehicleEdit')));
 const ContentEdit = Loadable(lazy(() => import('../views/EditData/ContentEdit')));
+const HelpEdit = Loadable(lazy(() => import('../views/EditData/HelpEdit')));
 const ExpenseHeadEdit = Loadable(lazy(() => import('../views/EditData/ExpenseHeadEdit')));
 const SectionEdit = Loadable(lazy(() => import('../views/EditData/SectionEdit')));
 const LoanEdit = Loadable(lazy(() => import('../views/EditData/LoanEdit')));
@@ -332,6 +334,7 @@ const Routernew = () => {
           <Route path="/FinanceEdit/:id" name="financedata" element={<FinanceEdit />}></Route>
           <Route path="/TrainingEdit/:id" name="trainingdata" element={<TrainingEdit />}></Route>
           <Route path="/ContentEdit/:id" name="contentdata" element={<ContentEdit />}></Route>
+          <Route path="/HelpEdit/:id" name="contentdata" element={<HelpEdit />}></Route>
           <Route path="/VehicleEdit/:id" name="vehicledata" element={<VehicleEdit />}></Route>
           <Route path="/ProjectEdit/:id" name="projectdata" element={<ProjectEdit />}></Route>
           <Route path="/clientEdit/:id" name="clienttdata" element={<ClientEdit />}></Route>
@@ -653,6 +656,7 @@ const Routernew = () => {
             element={<PayrollManagementDetails />}
           ></Route>
           <Route path="/Content" name="contentdata" element={<Content />}></Route>
+          <Route path="/Help" name="contentdata" element={<Help />}></Route>
           <Route
             path="/ContentDetails"
             name="contentdata"
