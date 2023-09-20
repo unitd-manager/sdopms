@@ -64,15 +64,14 @@ const TaskJob = () => {
       name: 'Name',
      
     },
-    {
-      name: 'Designation',
+    // {
+    //   name: 'Designation',
       
-    },
-    {
-      name: 'Department',
+    // },
+    // {
+    //   name: 'Department',
       
-    },
-   
+    // },
     {
       name: 'id',
       
@@ -114,9 +113,7 @@ const TaskJob = () => {
                           <Icon.Edit2 />
                         </Link>
                       </td>
-                      <td>{element.first_name}</td>
-                      <td>{element.designation}</td>
-                      <td>{element.department}</td>
+                      <td>{element.team_title}</td>
                       <td>{element.project_team_id}</td>
                     </tr>
                   );
