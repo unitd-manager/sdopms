@@ -10,7 +10,6 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ComponentCard from '../../components/ComponentCard';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
@@ -28,9 +27,6 @@ const ContentUpdate = () => {
   const [subcategoryLinked, setSubCategoryLinked] = useState();
   const [description, setDescription] = useState('');
   const [attachmentModal, setAttachmentModal] = useState(false);
-  const [attachmentData, setDataForAttachment] = useState({
-    modelType: '',
-  });
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
@@ -112,14 +108,7 @@ const backToList=()=>{
       setSubCategoryLinked(res.data.data);
     });
   };
-
-  //Attachments
-  const dataForAttachment = () => {
-    setDataForAttachment({
-      modelType: 'attachment',
-    });
-    console.log('inside DataForAttachment');
-  };
+ 
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
@@ -379,31 +368,7 @@ const backToList=()=>{
             />
             <ViewFileComponentV2 moduleId={id} roomName="Content" />
           </ComponentCard>
-          <ComponentCard title="Attachments">
-            <Row>
-              <Col xs="12" md="3" className="mb-3">
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    dataForAttachment();
-                    setAttachmentModal(true);
-                  }}
-                >
-                  Add
-                </Button>
-              </Col>
-            </Row>
-            <AttachmentModalV2
-              moduleId={id}
-              roomName="Content"
-              altTagData="Content Data"
-              desc="Content Data"
-              modelType={attachmentData.modelType}
-              attachmentModal={attachmentModal}
-              setAttachmentModal={setAttachmentModal}
-            />
-            <ViewFileComponentV2 moduleId={id} roomName="Content" />
-          </ComponentCard>
+        
         </FormGroup>
       </Form>
 
