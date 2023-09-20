@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import moment from 'moment';
-import ComponentCard from '../ComponentCard';
 
 export default function JobTermination({ handleInputs, jobModal }) {
   JobTermination.propTypes = {
@@ -10,7 +9,7 @@ export default function JobTermination({ handleInputs, jobModal }) {
     jobModal: PropTypes.object,
   };
   return (
-    <ComponentCard title="Termination Information">
+    <>
       <FormGroup>
         <Row>
           <Col md="3">
@@ -70,6 +69,6 @@ export default function JobTermination({ handleInputs, jobModal }) {
           </Col>
         </Row>
       </FormGroup>
-    </ComponentCard>
+    </>
   );
 }

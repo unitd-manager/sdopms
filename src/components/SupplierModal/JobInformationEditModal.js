@@ -130,7 +130,7 @@ const JobInformation = ({ JobInformationEditModal, setJobInformationEditModal })
   }, [id]);
   return (
     <>
-      <Modal size="lg" isOpen={JobInformationEditModal}>
+      <Modal size="xl" isOpen={JobInformationEditModal}>
         <CardTitle>Step 1 (Job Information)</CardTitle>
         <BreadCrumbs />
         <CardTitle>
@@ -305,14 +305,18 @@ const JobInformation = ({ JobInformationEditModal, setJobInformationEditModal })
                 </ComponentCard>
               </TabPane>
               <TabPane tabId="6">
-                <JobBankModal
-                  handleInputs={handleInputs}
-                  jobModal={jobModal}
-                  allBankModal={allBankModal}
-                ></JobBankModal>
+                <ComponentCard title="Bank Information">
+                  <JobBankModal
+                    handleInputs={handleInputs}
+                    jobModal={jobModal}
+                    allBankModal={allBankModal}
+                  ></JobBankModal>
+                </ComponentCard>
               </TabPane>
               <TabPane tabId="7">
-                <JobTermination handleInputs={handleInputs} jobModal={jobModal}></JobTermination>
+                <ComponentCard title="Termination Information">
+                  <JobTermination handleInputs={handleInputs} jobModal={jobModal}></JobTermination>
+                </ComponentCard>
               </TabPane>
             </TabContent>
           </FormGroup>

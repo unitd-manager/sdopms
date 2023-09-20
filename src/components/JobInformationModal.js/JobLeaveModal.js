@@ -15,6 +15,7 @@ export default function JobLeave({ handleInputs, jobModal }) {
           <Col md="3">
             <FormGroup>
               <Label>Paid Annual Leave per year</Label>
+              <br/>
               <Input
                 type="text"
                 onChange={handleInputs}

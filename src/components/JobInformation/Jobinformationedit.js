@@ -84,7 +84,7 @@ export default function Jobinformationedit({
             <ApiButton
               editData={editJobData}
               navigate={navigate}
-              //applyChanges={editJobData}
+              applyChanges={editJobData}
               backToList={backToList}
               // deleteData={deleteLoanData}
               module="Job Information"

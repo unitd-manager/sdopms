@@ -160,7 +160,7 @@ const JobInformation = () => {
           {
             empWithoutJobInfo.map((el)=>{
               return(
-                <span style={{marginRight:'5px'}}><Badge> {el.employee_name}</Badge></span>
+                <span style={{marginRight:'5px'}}><Badge> {el.first_name}</Badge></span>
               )
             })
           }

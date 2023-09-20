@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Form,FormGroup } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,6 +11,7 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import LoanMoreDetails from '../../components/LoanTable/LoanMoreDetails';
 import LoanDetailComp from '../../components/LoanTable/LoanDetailComp';
+import ComponentCardV2 from '../../components/ComponentCardV2';
 //import LoanButtons from '../../components/LoanTable/LoanButton';
 import ApiButton from '../../components/ApiButton';
 
@@ -110,7 +112,6 @@ const LoanEdit = () => {
             message('Record edited successfully', 'success');
             setRecordEdited(true); // Set the state variable to true to indicate that the message has been shown
           }
-          
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -134,16 +135,17 @@ const LoanEdit = () => {
         loan_closing_date: closingDate,
         status: 'Closed',
       });
-    
-    api.post('/loan/editLoanClosingDate', { loan_id: id, closing_date: closingDate })
-      .then(() => {
-        // Handle the API call success
-        console.log('Loan closing date updated successfully.');
-      })
-      .catch((error) => {
-        // Handle the API call error
-        console.error('Failed to update loan closing date:', error);
-      });
+
+      api
+        .post('/loan/editLoanClosingDate', { loan_id: id, closing_date: closingDate })
+        .then(() => {
+          // Handle the API call success
+          console.log('Loan closing date updated successfully.');
+        })
+        .catch((error) => {
+          // Handle the API call error
+          console.error('Failed to update loan closing date:', error);
+        });
     }
   }, [loanDetails.amount_payable, loanDetails.loan_closing_date, loanDetails.status]);
 
@@ -266,19 +268,24 @@ const LoanEdit = () => {
   return (
     <>
       <BreadCrumbs />
-      <ToastContainer />
+      <Form>
+        <FormGroup>
+          <ToastContainer></ToastContainer>
+          <ComponentCardV2>
+            {/* Button */}
 
-      {/* Button */}
-
-      <ApiButton
-        saveChanges={saveChanges}
-        editData={editLoanData}
-        navigate={navigate}
-        //applyChanges={editLoanData}
-        backToList={backToList}
-        deleteData={deleteLoanData}
-        module="Loan"
-      ></ApiButton>
+            <ApiButton
+              saveChanges={saveChanges}
+              editData={editLoanData}
+              navigate={navigate}
+              //applyChanges={editLoanData}
+              backToList={backToList}
+              deleteData={deleteLoanData}
+              module="Loan"
+            ></ApiButton>
+          </ComponentCardV2>
+        </FormGroup>
+      </Form>
       {/*Main Details*/}
       <LoanDetailComp
         handleInputs={handleInputs}

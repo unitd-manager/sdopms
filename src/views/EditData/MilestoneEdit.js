@@ -45,18 +45,27 @@ const MilestoneEdit = () => {
   //All state variable
   const [milestone, setMilestoneEdit] = useState();
   const [projectdetails, setProjectDetails] = useState();
-  const [attachmentModal, setAttachmentModal] = useState(false);
-  const [attachmentData, setDataForAttachment] = useState({
-    modelType: '',
-  });
-  const [roomName, setRoomName] = useState('');
-  const [fileTypes, setFileTypes] = useState();
+
   const [description, setDescription] = useState('');
   const [addTaskModal, setAddTaskModal] = useState(false);
   const [employeeTeam, setEmployeeTeam] = useState();
   const [activeTab, setActiveTab] = useState('1');
   const [actualCompletedDate, setActualCompletedDate] = useState('');
+  const [update, setUpdate] = useState(false);
+  const [attachmentModal, setAttachmentModal] = useState(false);
+  const [RoomName, setRoomName] = useState('');
+  const [fileTypes, setFileTypes] = useState('');
+  //  AttachmentModal
+  const [attachmentData, setDataForAttachment] = useState({
+    modelType: '',
+  });
 
+  //attachment for upload file
+  const dataForAttachment = () => {
+    setDataForAttachment({
+      modelType: 'attachment',
+    });
+  };
   //navigation and parameters
   const { id } = useParams();
   const navigate = useNavigate();
@@ -172,12 +181,7 @@ const MilestoneEdit = () => {
       });
   };
   //attachments
-  const dataForAttachment = () => {
-    setDataForAttachment({
-      modelType: 'attachment',
-    });
-    console.log('inside DataForAttachment');
-  };
+ 
   const handleTaskInputs = (e) => {
     setTaskEditData({ ...taskeditData, [e.target.name]: e.target.value });
   };
@@ -671,38 +675,45 @@ const MilestoneEdit = () => {
                 <Form>
                   <FormGroup>
                     <ComponentCard title="Attachments">
-                      <Row>
-                        <Col xs="12" md="3" className="mb-3">
-                          <Button
-                            className="shadow-none"
-                            color="primary"
-                            onClick={() => {
-                              setRoomName('TaskJob');
-                              setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
-                              dataForAttachment();
-                              setAttachmentModal(true);
-                            }}
-                          >
-                            <Icon.File className="rounded-circle" width="20" />
-                          </Button>
-                        </Col>
-                      </Row>
-                      <AttachmentModalV2
-                        moduleId={id}
-                        roomName={roomName}
-                        fileTypes={fileTypes}
-                        altTagData="TaskJobRelated Data"
-                        recordType="RelatedPicture"
-                        desc="TaskJobRelated Data"
-                        modelType={attachmentData.modelType}
-                        attachmentModal={attachmentModal}
-                        setAttachmentModal={setAttachmentModal}
-                      />
-                      <ViewFileComponentV2
-                        moduleId={id}
-                        roomName="TimesheetList"
-                        recordType="RelatedPicture"
-                      />
+                      <div>
+                        {' '}
+                        <Row>
+                          <Col xs="12" md="3" className="mb-3">
+                            <Button
+                              className="shadow-none"
+                              color="primary"
+                              onClick={() => {
+                                setRoomName('GoodsDelivery');
+                                setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
+                                dataForAttachment();
+                                setAttachmentModal(true);
+                              }}
+                            >
+                              <Icon.File className="rounded-circle" width="20" />
+                            </Button>
+                          </Col>
+                        </Row>
+                        <AttachmentModalV2
+                          moduleId={id}
+                          attachmentModal={attachmentModal}
+                          setAttachmentModal={setAttachmentModal}
+                          roomName={RoomName}
+                          fileTypes={fileTypes}
+                          altTagData="GoodsRelated Data"
+                          desc="GoodsRelated Data"
+                          recordType="RelatedPicture"
+                          mediaType={attachmentData.modelType}
+                          update={update}
+                          setUpdate={setUpdate}
+                        />
+                        <ViewFileComponentV2
+                          moduleId={id}
+                          roomName="GoodsDelivery"
+                          recordType="RelatedPicture"
+                          update={update}
+                          setUpdate={setUpdate}
+                        />
+                      </div>
                     </ComponentCard>
                   </FormGroup>
                 </Form>

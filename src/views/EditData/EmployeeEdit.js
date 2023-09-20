@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, TabContent, TabPane } from 'reactstrap';
+import { Row, TabContent, TabPane,Form,FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -13,6 +13,7 @@ import EmployeePart from '../../components/EmployeeTable/EmployeePart';
 import AttachmentPortalsTab from '../../components/EmployeeTable/AttachmentPortalsTab';
 import LinkedPortalsTab from '../../components/EmployeeTable/LinkedPortalsTab';
 import LoginDetailsTab from '../../components/EmployeeTable/LoginDetailsTab';
+import ComponentCardV2 from '../../components/ComponentCardV2';
 //import EmployeeButtons from '../../components/Employee/EmployeeButtons';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -80,7 +81,6 @@ const EmployeeEdit = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
-  
 
   //params and routing
   const { id } = useParams();
@@ -91,7 +91,7 @@ const EmployeeEdit = () => {
   //   setTimeout(()=>{
   //     navigate('/Employee');
   //   },1800)
-    
+
   // };
   const backToList = () => {
     navigate('/Employee');
@@ -117,14 +117,14 @@ const EmployeeEdit = () => {
   };
 
   // Start for tab refresh navigation #Renuka 1-06-23
-  const tabs =  [
-    {id:'1',name:'Login Details'},
-    {id:'2',name:'Pass Type'},
-    {id:'3',name:'Educational Qualification'},
-    {id:'4',name:'Contact Information'},
-    {id:'5',name:'Emergency Contact'},
-    {id:'6',name:'Attachment Portals'},
-    {id:'7',name:'Linked Portals'},
+  const tabs = [
+    { id: '1', name: 'Login Details' },
+    { id: '2', name: 'Pass Type' },
+    { id: '3', name: 'Educational Qualification' },
+    { id: '4', name: 'Contact Information' },
+    { id: '5', name: 'Emergency Contact' },
+    { id: '6', name: 'Attachment Portals' },
+    { id: '7', name: 'Linked Portals' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -226,9 +226,9 @@ const EmployeeEdit = () => {
   //edit employeedata
   const editEmployeeData = () => {
     if (
-      employeeDetails.first_name!=='' &&
+      employeeDetails.first_name !== '' &&
       employeeDetails.date_of_birth !== '' &&
-      employeeDetails.nationality !== '' 
+      employeeDetails.nationality !== ''
     ) {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
@@ -241,7 +241,6 @@ const EmployeeEdit = () => {
     } else {
       message('Please fill the required fields', 'warning');
     }
-
   };
 
   //update tab data
@@ -348,7 +347,7 @@ const EmployeeEdit = () => {
   };
 
   useEffect(() => {
-    const getAlldata=async()=>{
+    const getAlldata = async () => {
       await getEmployeeById();
       await getTabPassTypeById();
       await getContactInformationById();
@@ -357,13 +356,12 @@ const EmployeeEdit = () => {
       await getAllCountries();
       await getQualifications();
       await getAllCompanies();
-    }
+    };
     getAlldata();
   }, [id]);
 
   return (
     <>
-      <ToastContainer></ToastContainer>
       <BreadCrumbs />
       {/* <EmployeeButtons
         applyChanges={applyChanges}
@@ -372,7 +370,12 @@ const EmployeeEdit = () => {
         deleteEmployeeData={deleteEmployeeData}
         editEmployeeData={updateData}
       /> */}
-      <ApiButton
+      <Form>
+        <FormGroup>
+          <ToastContainer></ToastContainer>
+          <ComponentCardV2>
+            {/* Button */}
+            <ApiButton
               editData={updateData}
               navigate={navigate}
               applyChanges={updateData}
@@ -380,6 +383,9 @@ const EmployeeEdit = () => {
               deleteData={deleteEmployeeData}
               module="Employee"
             ></ApiButton>
+          </ComponentCardV2>
+        </FormGroup>
+      </Form>
       <Row>
         <EmployeePart
           employeeDetails={employeeDetails}
@@ -389,7 +395,6 @@ const EmployeeEdit = () => {
         />
       </Row>
       <ComponentCard title="More Details">
-
         <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
           <TabPane tabId="1">

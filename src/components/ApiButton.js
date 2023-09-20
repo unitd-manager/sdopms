@@ -31,8 +31,8 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
     <Form>
       {/* <Card tag="h4" className="border-bottom px-4 py-3 mb-0">
         <div className="d-flex flex-row-reverse"> */}
-        <FormGroup>
-          <ComponentCardV2>
+        {/* <FormGroup>
+          <ComponentCardV2> */}
           <Row>
             <Col >
               {' '}
@@ -102,8 +102,8 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
             </Col>
           </Row>
         
-      </ComponentCardV2>
-      </FormGroup>
+      {/* </ComponentCardV2>
+      </FormGroup> */}
       </Form>
     
   );

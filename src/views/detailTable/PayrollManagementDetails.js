@@ -252,7 +252,7 @@ function PayrollManagementDetails() {
   //Method for getting data by LoanId and Employee Id
   const getPreviousEarlierLoan = (empId) => {
     api
-      .post('/loan/TabPreviousEarlierLoanById', { employee_id: empId })
+      .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId })
       .then((res) => {
         setLoan(res.data.data);
         setOtAmount(res.data.data[0].ot_amount);
@@ -274,7 +274,7 @@ function PayrollManagementDetails() {
         getLeaves(res.data.data[0].employee_id)
       })
       .catch(() => {
-        message('Loan Data Not Found', 'info');
+        //message('Loan Data Not Found', 'info');
       });
   };
 
@@ -370,6 +370,9 @@ function PayrollManagementDetails() {
             loanPaymentHistoryModal={loanPaymentHistoryModal}
             setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
             loanHistories={loan}
+            payroll={payroll}
+            editPayrollData={editPayrollData}
+            handleInputs={handleInputs}
           />
         )}
 

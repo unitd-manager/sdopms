@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import moment from 'moment';
-import ComponentCard from '../ComponentCard';
 
 export default function JobProbationModal({ handleInputs, jobModal }) {
   JobProbationModal.propTypes = {
@@ -11,67 +10,8 @@ export default function JobProbationModal({ handleInputs, jobModal }) {
     jobModal: PropTypes.object,
   };
   return (
-    <ComponentCard>
+    <>
       <FormGroup>
-        <Row>
-          <Col md="3">
-            <FormGroup>
-              <Label> Under Probation</Label>
-              <br></br>
-              <Label> Yes </Label>
-              <Input
-                name="probationary"
-                value="1"
-                type="radio"
-                defaultChecked={jobModal && jobModal.probationary === 1 && true}
-                onChange={handleInputs}
-              />
-              <Label> No </Label>
-              <Input
-                name="probationary"
-                value="0"
-                type="radio"
-                defaultChecked={jobModal && jobModal.probationary === 0 && true}
-                onChange={handleInputs}
-              />
-            </FormGroup>
-          </Col>
-          {jobModal && jobModal.probationary === '1' && (
-            <Col md="3">
-              <FormGroup>
-                <Label>Length of Probation</Label>
-                <Input
-                  type="text"
-                  onChange={handleInputs}
-                  value={jobModal && jobModal.length_of_probation}
-                  name="length_of_probation"
-                />
-              </FormGroup>
-            </Col>
-          )}
-          {jobModal && jobModal.probationary === '1' && (
-            <Col md="3">
-              <Label>Probation Start Date</Label>
-              <Input
-                type="date"
-                onChange={handleInputs}
-                value={jobModal && moment(jobModal.probation_start_date).format('YYYY-MM-DD')}
-                name="probation_start_date"
-              />
-            </Col>
-          )}
-          {jobModal && jobModal.probationary === '1' && (
-            <Col md="3">
-              <Label>Probation End Date</Label>
-              <Input
-                type="date"
-                onChange={handleInputs}
-                value={jobModal && moment(jobModal.probation_end_date).format('YYYY-MM-DD')}
-                name="probation_end_date"
-              />
-            </Col>
-          )}
-        </Row>
         <Row>
           <Col md="3">
             <FormGroup>
@@ -164,8 +104,70 @@ export default function JobProbationModal({ handleInputs, jobModal }) {
                 )}
             </FormGroup>
           </Col>
+          <Col md="3">
+            <FormGroup>
+              <Label> Under Probation</Label>
+              <br></br>
+              <Label> Yes </Label>
+              <Input
+                name="probationary"
+                value="1"
+                type="radio"
+                defaultChecked={jobModal && jobModal.probationary === 1 && true}
+                onChange={handleInputs}
+              />
+              <Label> No </Label>
+              <Input
+                name="probationary"
+                value="0"
+                type="radio"
+                defaultChecked={jobModal && jobModal.probationary === 0 && true}
+                onChange={handleInputs}
+              />
+            </FormGroup>
+          </Col>
+          {jobModal && jobModal.probationary === '1' && (
+            <Col md="3">
+              <FormGroup>
+                <Label>Length of Probation</Label>
+                <Input
+                  type="text"
+                  onChange={handleInputs}
+                  value={jobModal && jobModal.length_of_probation}
+                  name="length_of_probation"
+                />
+              </FormGroup>
+            </Col>
+          )}
+          {jobModal && jobModal.probationary === '1' && (
+            <Col md="3">
+              <FormGroup>
+                <Label>Probation Start Date</Label>
+                <Input
+                  type="date"
+                  onChange={handleInputs}
+                  value={jobModal && moment(jobModal.probation_start_date).format('YYYY-MM-DD')}
+                  name="probation_start_date"
+                />
+              </FormGroup>
+            </Col>
+          )}
+          {jobModal && jobModal.probationary === '1' && (
+            <Col md="3">
+              <FormGroup>
+                <Label>Probation End Date</Label>
+                <Input
+                  type="date"
+                  onChange={handleInputs}
+                  value={jobModal && moment(jobModal.probation_end_date).format('YYYY-MM-DD')}
+                  name="probation_end_date"
+                />
+              </FormGroup>
+            </Col>
+          )}
+        
         </Row>
       </FormGroup>
-    </ComponentCard>
+    </>
   );
 }

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import * as Icon from 'react-feather';
-import { Row, Col, Button, Card,Badge,Input,CardBody,FormGroup } from 'reactstrap';
+import { Row, Col, Button, Card, Badge, Input, CardBody, FormGroup } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-import { useNavigate,useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import $ from 'jquery';
 import moment from 'moment';
 import message from '../../components/Message';
 import 'datatables.net-buttons/js/buttons.colVis';
-import 'datatables.net-buttons/js/buttons.flash';
+// import 'datatables.net-buttons/js/buttons.flash';
 // import 'datatables.net-buttons/js/buttons.html5';
 // import 'datatables.net-buttons/js/buttons.print';
 import api from '../../constants/api';
@@ -30,25 +30,25 @@ const Payrollmanagement = () => {
   const [terminatingPayslip, setTerminatingPayslip] = useState([]);
   const [printPayslipModal, setPrintPayslipModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const [empWithoutJobInfo, setEmpWithoutJobInfo] = useState([]);
   //handleinputs
 
   const handleInputs = (e) => {
     setPayrollManagementsdata({ ...payrollManagementsdata, [e.target.name]: e.target.value });
   };
- // Initialize default values for month and year
- const defaultMonth = moment(new Date()).subtract(1, 'months').format('MM');
- const defaultYear = moment(new Date()).format('YYYY');
+  // Initialize default values for month and year
+  const defaultMonth = moment(new Date()).subtract(1, 'months').format('MM');
+  const defaultYear = moment(new Date()).format('YYYY');
 
-  const[filterPeriod, setFilterPeriod]=useState({
-    month:defaultMonth,
-    year:defaultYear,
-  })
-  
-  const handleFilterInputs=(e)=>{
-  setFilterPeriod({...filterPeriod,[e.target.name]:e.target.value})
-  }
+  const [filterPeriod, setFilterPeriod] = useState({
+    month: defaultMonth,
+    year: defaultYear,
+  });
+
+  const handleFilterInputs = (e) => {
+    setFilterPeriod({ ...filterPeriod, [e.target.name]: e.target.value });
+  };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +57,7 @@ const Payrollmanagement = () => {
     const queryParams = new URLSearchParams(location.search);
     const month = queryParams.get('month');
     const year = queryParams.get('year');
-  
+
     if (month && year) {
       // Fetch data based on the query parameters
       setFilterPeriod({ month, year });
@@ -65,7 +65,6 @@ const Payrollmanagement = () => {
       // Example: getAllPayrollManagements();
     }
   }, [location.search]);
-  
 
   //edit update ot
   //edit payroll
@@ -96,7 +95,7 @@ const Payrollmanagement = () => {
       .then(() => {
         message('Record editted successfully', 'success');
         setTimeout(() => {
-          window.location.reload()
+          window.location.reload();
         }, 300);
       })
       .catch(() => {
@@ -111,15 +110,32 @@ const Payrollmanagement = () => {
         params: {
           month: filterPeriod.month,
           year: filterPeriod.year,
-       
         },
       })
       .then((res) => {
-        res.data.data.forEach((element)=>{
-const totalallowance =element.allowance1?parseFloat(element.allowance1):0+element.allowance2?parseFloat(element.allowance2):0+element.allowance3?parseFloat(element.allowance3):0+element.allowance4?parseFloat(element.allowance4):0+element.allowance5?parseFloat(element.allowance5):0+element.allowance6?parseFloat(element.allowance6):0
-element.total_allowance=totalallowance? parseFloat(totalallowance):''  
-})
+        res.data.data.forEach((element) => {
+          const totalallowance = element.allowance1
+            ? parseFloat(element.allowance1)
+            : 0 + element.allowance2
+            ? parseFloat(element.allowance2)
+            : 0 + element.allowance3
+            ? parseFloat(element.allowance3)
+            : 0 + element.allowance4
+            ? parseFloat(element.allowance4)
+            : 0 + element.allowance5
+            ? parseFloat(element.allowance5)
+            : 0 + element.allowance6
+            ? parseFloat(element.allowance6)
+            : 0;
+          element.total_allowance = totalallowance ? parseFloat(totalallowance) : '';
+        });
         setPayrollManagementsdata(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',         
+        });
         setLoading(false);
       })
       .catch(() => {
@@ -139,19 +155,19 @@ element.total_allowance=totalallowance? parseFloat(totalallowance):''
       });
   };
   const lastmonthfirst = moment(new Date())
-      .subtract(1, 'months')
-      .startOf('month')
-      .format('YYYY-MM-DD');
+    .subtract(1, 'months')
+    .startOf('month')
+    .format('YYYY-MM-DD');
 
-    const lastmonthlast = moment(new Date())
-      .subtract(1, 'months')
-      .endOf('month')
-      .format('YYYY-MM-DD');
+  const lastmonthlast = moment(new Date())
+    .subtract(1, 'months')
+    .endOf('month')
+    .format('YYYY-MM-DD');
 
-console.log('last month first date',lastmonthfirst)
-console.log('last month last date',lastmonthlast)
+  console.log('last month first date', lastmonthfirst);
+  console.log('last month last date', lastmonthlast);
   //create payroll api
-  const createPayrollManagements = async(Arr) => {
+  const createPayrollManagements = async (Arr) => {
     const lastmonthfirstdate = moment(new Date())
       .subtract(1, 'months')
       .startOf('month')
@@ -163,18 +179,18 @@ console.log('last month last date',lastmonthlast)
       .format('YYYY-MM-DD');
     const payrollMonth = moment(lastmonthfirstdate).format('MM');
     const payrollYear = moment(lastmonthfirstdate).format('YYYY');
-console.log('last month first date',lastmonthfirstdate)
-console.log('last month last date',lastmonthlastdate)
-   
+    console.log('last month first date', lastmonthfirstdate);
+    console.log('last month last date', lastmonthlastdate);
+
     console.log('filtered', Arr);
-    await Arr.forEach(async(obj) => {
+    await Arr.forEach(async (obj) => {
       obj.payslip_start_date = lastmonthfirstdate;
       obj.payslip_end_date = lastmonthlastdate;
       obj.payroll_month = payrollMonth;
       obj.payroll_year = payrollYear;
       obj.status = 'generated';
 
-     await api
+      await api
         .post('/payrollmanagement/insertpayroll_management', obj)
         .then(() => {
           message('Payrolls created successfully.', 'success');
@@ -206,103 +222,107 @@ console.log('last month last date',lastmonthlastdate)
     });
   };
 
-
- //getting employee list not having jobinformation record
- const getEmployeesWithoutJobInformation = () => {
-  api
-    .get('/payrollmanagement/getEmployeeWithoutJobinfo')
-    .then((res) => {
-      setEmpWithoutJobInfo(res.data.data);
-    
-    })
-    .catch(() => {
-      
-    });
-};
-
-  useEffect(() => {
-     let table;
-  
-  const initializeDataTable = () => {
-    table = $('#example').DataTable({
-      pagingType: 'full_numbers',
-      pageLength: 20,
-      processing: true,
-      dom: 'Bfrtip',
-      searching: true,
-    });
+  //getting employee list not having jobinformation record
+  const getEmployeesWithoutJobInformation = () => {
+    api
+      .get('/payrollmanagement/getEmployeeWithoutJobinfo')
+      .then((res) => {
+        setEmpWithoutJobInfo(res.data.data);
+      })
+      .catch(() => {});
   };
 
-  initializeDataTable();
+  useEffect(() => {
+    let table;
 
- 
+    const initializeDataTable = () => {
+      table = $('#example').DataTable({
+        pagingType: 'full_numbers',
+        pageLength: 20,
+        processing: true,
+        dom: 'Bfrtip',
+        searching: true,
+      });
+    };
+
+    initializeDataTable();
 
     getAllPayrollManagements();
     getArchiveEmployees();
     getEmployeesWithoutJobInformation();
 
-
-     // Make sure to destroy the DataTable before reinitializing it
-  return () => {
-    if (table) {
-      table.destroy();
-    }
-  };
+    // Make sure to destroy the DataTable before reinitializing it
+    return () => {
+      if (table) {
+        table.destroy();
+      }
+    };
   }, [filterPeriod]);
-
 
   return (
     <div className="MainDiv">
       <div className=" pt-xs-25">
         <BreadCrumbs />
-        <Card className="p-2"> 
+        <Card className="p-2">
           <CardBody>
             <Row>
-        <Col md="4">
-                    <FormGroup>
-                      <Input name="month" type="select" value={filterPeriod.month}
-                      onChange={handleFilterInputs}>
-                        <option value="">Please Select</option>
-                        <option value="01">January</option>
-                        <option value="02">February</option>
-                        <option value="03">March</option>
-                        <option value="04">April</option>
-                        <option value="05">May</option>
-                        <option value="06">June</option>
-                        <option value="07">July</option>
-                        <option value="08">August</option>
-                        <option value="09">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                  <Col md="4">
-            <Input type="select" name="year" value={filterPeriod.year} onChange={handleFilterInputs}>
-              <option value="">Select Year</option>
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-            </Input>
-          </Col>
-                  </Row>
-                  </CardBody>
-                  </Card>
-        <Card style={{padding:'10px'}}>
+              <Col md="4">
+                <FormGroup>
+                  <Input
+                    name="month"
+                    type="select"
+                    value={filterPeriod.month}
+                    onChange={handleFilterInputs}
+                  >
+                    <option value="">Please Select</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <Input
+                  type="select"
+                  name="year"
+                  value={filterPeriod.year}
+                  onChange={handleFilterInputs}
+                >
+                  <option value="">Select Year</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                </Input>
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
+        <Card style={{ padding: '10px' }}>
           <div>
-            <h5>Please create Job information records for the below employees to make them appear in payroll.</h5>
-          {
-            empWithoutJobInfo.map((el)=>{
-              return(
-                <span style={{marginRight:'5px'}}><Badge> {el.first_name}</Badge></span>
-              )
-            })
-          }
+            <h5>
+              Please create Job information records for the below employees to make them appear in
+              payroll.
+            </h5>
+            {empWithoutJobInfo.map((el) => {
+              return (
+                <span style={{ marginRight: '5px' }}>
+                  <Badge> {el.first_name}</Badge>
+                </span>
+              );
+            })}
           </div>
         </Card>
-       
+
         <Card className="p-2">
           <Row>
             <Col md="2">
@@ -329,7 +349,7 @@ console.log('last month last date',lastmonthlastdate)
                   setPrintPayslipModal(true);
                 }}
               >
-                 All Payslip
+                All Payslip
               </Button>
             </Col>
             <Col md="3">
@@ -423,7 +443,7 @@ console.log('last month last date',lastmonthlastdate)
                     </td>
                     <td>{element.first_name}</td>
                     <td>
-                 <PdfPaySlipList payroll={element}></PdfPaySlipList>
+                      <PdfPaySlipList payroll={element}></PdfPaySlipList>
                     </td>
                     <td>{element.payroll_month}</td>
                     <td>{element.payroll_year}</td>
@@ -431,7 +451,7 @@ console.log('last month last date',lastmonthlastdate)
                     <td>{element.ot_amount}</td>
                     <td>{element.cpf_employer}</td>
                     <td>{element.cpf_employee}</td>
-                    <td>{element.total_allowance}</td>
+                    <td>{element.total_alowance}</td>
                     <td>{element.total_deductions}</td>
                     <td>{element.net_total}</td>
                     <td>{element.status}</td>

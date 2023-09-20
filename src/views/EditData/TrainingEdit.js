@@ -8,6 +8,7 @@ import * as Icon from 'react-feather';
 import Select from 'react-select';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
@@ -17,6 +18,7 @@ import TrainingMainDetails from '../../components/Training/TrainingMainDetails';
 //import TrainingButton from '../../components/Training/TrainingButton';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
+import ComponentCardV2 from '../../components/ComponentCardV2';
 import ApiButton from '../../components/ApiButton';
 
 const TrainingEdit = () => {
@@ -56,21 +58,49 @@ const TrainingEdit = () => {
    },])
 //Onchange item in training staff employee name selectfield
 const onchangeItem = (str, itemId) => {
-  const element = addLineItem.find(el => el.id === itemId);
-
-  // Check if the selected employee name already exists in addLineItem
-  const isEmployeeNameAlreadySelected = addLineItem.some(item => item.employee_name === str.label);
+  // Check if the selected employee name already exists in prevEmployee
+  const isEmployeeNameAlreadySelected = prevEmployee.some(item => item.employee_name === str.label);
 
   if (isEmployeeNameAlreadySelected) {
     alert("Employee name already exists in the list.");
+    // Reset addLineItem
+    setAddLineItem([
+      {
+        id: random.int(1, 99),
+        employee_name: "",
+        employee_id: "",
+        from_date: "",
+        to_date: ""
+      }
+    ]);
   } else {
-    // Update the selected employee name
-    element.employee_name = str.label;
-    element.employee_id = str.value.toString();
-    setAddLineItem([...addLineItem]);
+    const element = addLineItem.find(el => el.id === itemId);
+    const isNameInAddLineItem = addLineItem.some(item => item.employee_name === str.label);
+
+    if (!isNameInAddLineItem) {
+      // Update the selected employee name
+      element.employee_name = str.label;
+      element.employee_id = str.value.toString();
+      setAddLineItem([...addLineItem]);
+    } else {
+      alert("Employee name already exists in the addLineItem.");
+      // Reset addLineItem
+      setAddLineItem([
+        {
+          id: random.int(1, 99),
+          employee_name: "",
+          employee_id: "",
+          from_date: "",
+          to_date: ""
+        }
+      ]);
+    }
   }
 };
-  
+
+
+
+
   // Add new line item in link Employee
   const AddNewLineItem = () => {
       setAddLineItem([...addLineItem, {
@@ -259,6 +289,10 @@ const onchangeItem = (str, itemId) => {
   return (
     <>
       <BreadCrumbs heading={trainingDetails && trainingDetails.title} />
+      <Form>
+        <FormGroup>
+          <ToastContainer></ToastContainer>
+          <ComponentCardV2>
         {/* Save,Apply Buttons */}
         {/* <TrainingButton navigate={navigate} insertTrainingData={insertTrainingData} applyChanges={applyChanges} backToList={backToList}></TrainingButton> */}
         <ApiButton
@@ -268,7 +302,10 @@ const onchangeItem = (str, itemId) => {
               backToList={backToList}
               module="Training"
             ></ApiButton>
-        <ToastContainer></ToastContainer>
+             </ComponentCardV2>
+        </FormGroup>
+      </Form>
+        
 
     
       {/* Main Details */}
