@@ -272,6 +272,7 @@ const LeavesEdit = Loadable(lazy(() => import('../views/EditData/LeavesEdit')));
 const SubConEdit = Loadable(lazy(() => import('../views/EditData/SubConEdit')));
 const SupplierEdit = Loadable(lazy(() => import('../views/EditData/SupplierEdit')));
 const JobInformationEdit = Loadable(lazy(() => import('../views/EditData/JobInformationEdit')));
+const CpfCalculatorEdit = Loadable(lazy(() => import('../views/EditData/CpfCalculatorEdit')));
 const EmployeeEdit = Loadable(lazy(() => import('../views/EditData/EmployeeEdit')));
 const StaffEdit = Loadable(lazy(() => import('../views/EditData/StaffEdit')));
 const Login = Loadable(lazy(() => import('../views/detailTable/Login')));
@@ -356,6 +357,11 @@ const Routernew = () => {
             path="/JobInformationEdit/:id"
             name="jobinformationdata"
             element={<JobInformationEdit />}
+          ></Route>
+           <Route
+            path="/CpfCalculatorEdit/:id"
+            name="cpfcalculatordata"
+            element={<CpfCalculatorEdit />}
           ></Route>
           <Route
             path="/EmployeeEdit/:id"

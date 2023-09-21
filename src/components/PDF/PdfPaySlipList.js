@@ -155,7 +155,7 @@ console.log('payroll',payroll)
               ],
               [
                 {
-                  text: `${payroll.employee_name ? payroll.employee_name : ''}`,
+                  text: `${payroll.first_name ? payroll.first_name : ''}`,
                   alignment: 'left',
                   style: 'tableBody',
                 },
@@ -319,7 +319,7 @@ console.log('payroll',payroll)
 
                 {
                   text: `${
-                    payroll.total_basic_pay_for_month ? payroll.total_basic_pay_for_month : ''
+                    payroll.total_allowance ? payroll.total_allowance : ''
                   }                                                               (B)`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
@@ -460,7 +460,7 @@ console.log('payroll',payroll)
                 },
 
                 {
-                  text: `${payroll.loan_deduction ? payroll.loan_deduction : ''}`,
+                  text: `${payroll.loan_amount ? payroll.loan_amount : ''}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',

@@ -283,7 +283,7 @@ const TaskEdit = () => {
               navigate={navigate}
               applyChanges={editTask}
               backToList={backToList}
-              module="Task"
+              module="ProjectTask"
             ></ApiButton>
           </ComponentCardV2>
         </FormGroup>

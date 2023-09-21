@@ -318,7 +318,7 @@ const MilestoneEdit = () => {
             <ApiButton
               editData={editMilestone}
               navigate={navigate}
-              applyChanges={editMilestone}
+              //applyChanges={editMilestone}
               backToList={backToList}
               //deleteData={DeleteSection}
               module="Milestone"

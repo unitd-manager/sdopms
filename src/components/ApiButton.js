@@ -95,7 +95,8 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
                 <Button color="danger" onClick={() => {deleteData();
                  setTimeout(()=>{
                   navigate(`/${module}`);
-                },1000)}}>
+                },1000)
+                }}>
                   Delete
                 </Button>
               </HasAccess>

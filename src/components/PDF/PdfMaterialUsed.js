@@ -5,7 +5,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { Button } from 'reactstrap';
 import api from '../../constants/api';
-import message from '../Message';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
@@ -15,11 +14,9 @@ const PdfMaterialUsed = () => {
   const [materialusedportal, setMaterialusedportal] = React.useState();
   const [ addMaterialsUsed, setAddMaterialsUsed ] = React. useState();
 
-  // console.log(hfdata);
   React.useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
       setHeaderFooterData(res.data.data);
-      // console.log(res.data);
     });
   }, []);
  
@@ -36,7 +33,7 @@ const PdfMaterialUsed = () => {
         
       })
       .catch(() => {
-        message('PurchaseOrder Data Not Found', 'info');
+         
       });
   };
 
@@ -48,7 +45,7 @@ const PdfMaterialUsed = () => {
         setAddMaterialsUsed(res.data.data);
       })
       .catch(() => {
-        message('PurchaseOrder Data Not Found', 'info');
+         
       });
   };
   React.useEffect(() => {
@@ -150,11 +147,8 @@ const PdfMaterialUsed = () => {
               return '#eaeaea';
             },
             hLineStyle: () => {
-              // if (i === 0 || i === node.table.body.length) {
               return null;
-              //}
             },
-            // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
             paddingLeft: () => {
               return 10;
             },
@@ -224,11 +218,8 @@ const PdfMaterialUsed = () => {
               return '#eaeaea';
             },
             hLineStyle: () => {
-              // if (i === 0 || i === node.table.body.length) {
               return null;
-              //}
             },
-            // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
             paddingLeft: () => {
               return 10;
             },

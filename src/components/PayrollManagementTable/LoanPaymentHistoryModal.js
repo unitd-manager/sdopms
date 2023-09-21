@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -9,11 +9,13 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Table,
+Form,
+FormGroup,Label,
   Input,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import ComponentCard from '../ComponentCard';
+
 
 function LoanPaymentHistoryModal({
   loanPaymentHistoryModal,
@@ -22,54 +24,34 @@ function LoanPaymentHistoryModal({
   payroll,
   editPayrollData,
   handleInputs,
-
+  handleLoanInputs,
+  updatedata,
 }) {
   LoanPaymentHistoryModal.propTypes = {
     loanPaymentHistoryModal: PropTypes.bool,
     setLoanPaymentHistoryModal: PropTypes.func,
     loanHistories: PropTypes.array,
-    payroll:PropTypes.any,
-    editPayrollData:PropTypes.any,
-    handleInputs:PropTypes.any,
+    payroll: PropTypes.any,
+    editPayrollData: PropTypes.any,
+    handleInputs: PropTypes.any,
+    handleLoanInputs: PropTypes.any,
+    updatedata: PropTypes.any,
   };
-  const [loanAmount, setLoanAmount] = useState(''); // State for loan_amount input field
-  const [amountPayable, setAmountPayable] = useState(0); // State for Amount Payable
+  // const [loanAmount, setLoanAmount] = useState(''); // State for loan_amount input field
+  //const [amountPayable, setAmountPayable] = useState(0); // State for Amount Payable
+
+  // const calculateAmountPayable = () => {
+  //   const loanAmountValue = parseFloat(loanAmount || 0);
+  //   const totalAmountPaid = parseFloat(loanHistories[0].total_repaid_amount || 0);
+  //   const newAmountPayable = totalAmountPaid - loanAmountValue;
+  //   setAmountPayable(newAmountPayable);
+  // };
+
+  // useEffect(() => {
+  //   calculateAmountPayable(); // Initial calculation
+  // }, [loanAmount]); // State for notes text area
 
 
-  const calculateAmountPayable = () => {
-    const loanAmountValue = parseFloat(loanAmount || 0);
-    const totalAmountPaid = parseFloat(loanHistories[0].total_repaid_amount || 0);
-    const newAmountPayable = totalAmountPaid - loanAmountValue;
-    setAmountPayable(newAmountPayable);
-  };
-  
-  useEffect(() => {
-    calculateAmountPayable(); // Initial calculation
-  }, [loanAmount]); // State for notes text area
-
-  const columns = [
-    {
-      name: 'SN.No',
-    },
-    {
-      name: 'Loan Type/Date',
-    },
-    {
-      name: 'Total Loan Amount',
-    },
-    {
-      name: ' Total Amount Paid',
-    },
-    {
-      name: 'Amount Paid Now',
-    },
-    {
-      name: 'Remarks',
-    },
-    {
-      name: 'Amount Payable',
-    },
-  ];
   useEffect(() => {}, []);
 
   return (
@@ -81,47 +63,73 @@ function LoanPaymentHistoryModal({
             <Col md="12">
               <Card className="shadow-none">
                 <CardBody className="shadow-none">
-                  <Table id="example" className="display border border-secondary rounded">
-                    <thead>
-                      <tr>
-                        {columns.map((cell) => {
-                          return <td key={cell.name}>{cell.name}</td>;
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loanHistories &&
-                        loanHistories.map((element, index) => {
-                          return (
-                            <tr key={element.loan_id}>
-                              <td>{index + 1}</td>
-                              <td>
-                                {element.type}/
-                                {element.date ? moment(element.date).format('YYYY-MM-DD') : ''}
-                              </td>
-                              <td>{element.amount}</td>
-                              <td>{element.total_repaid_amount}</td>
-                              <td>
-                                {' '}
-                                <Input
-                                  type="text"
-                                  value={payroll && loanAmount.loan_amount}
-                                  onChange={(e) => setLoanAmount(e.target.value)}
-                                ></Input>
-                              </td>
-                              <td>
-                                <Input
-                                  type="textarea"
-                                  value={payroll && payroll.notes}
-                                  onChange={handleInputs}
-                                ></Input>
-                              </td>
-                              <td>{amountPayable}</td> {/* Display the calculated Amount Payable */}
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </Table>
+                  <Form>
+                    <FormGroup>
+                      <ComponentCard
+                       
+                      >
+                        <Row>
+                          <Col md="3">
+                            <FormGroup>
+                              <Label>
+                                Title<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                value={loanHistories && loanHistories.title}
+                                onChange={handleInputs}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="3">
+                            <FormGroup>
+                              <Label>
+                                Amount<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="amount"
+                                value={loanHistories && loanHistories.amount}
+                                onChange={handleInputs}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="3">
+                            <FormGroup>
+                              <Label>
+                                type<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="type"
+                                value={loanHistories && loanHistories.type}
+                                onChange={handleInputs}
+                              />
+                            </FormGroup>
+                          </Col>{' '}
+                          <Input
+                            type="text"
+                            value={payroll && payroll.loan_amount}
+                            onChange={handleInputs}
+                            name="loan_amount"
+                          ></Input>
+                          <Input
+                            type="textarea"
+                            value={payroll && payroll.notes}
+                            onChange={handleInputs}
+                            name="notes"
+                          ></Input>
+                          <Input
+                            type="text"
+                            value={payroll && payroll.loan_repayment_amount_per_month}
+                            onChange={handleLoanInputs}
+                            name="loan_repayment_amount_per_month"
+                          ></Input>
+                        </Row>
+                      </ComponentCard>
+                    </FormGroup>
+                  </Form>
                 </CardBody>
               </Card>
             </Col>
@@ -133,6 +141,7 @@ function LoanPaymentHistoryModal({
             color="primary"
             onClick={() => {
               editPayrollData();
+              updatedata();
             }}
           >
             submit

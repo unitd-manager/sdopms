@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import * as Icon from 'react-feather';
 import { Row, Col, FormGroup, Button, Form } from 'reactstrap';
 import moment from 'moment';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import message from '../../components/Message';
 import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -19,7 +20,8 @@ import ViewNote from '../../components/Tender/ViewNote';
 import PayslipSummary from '../../components/PayrollManagementTable/PayslipSummary';
 import EarningDeductions from '../../components/PayrollManagementTable/EarningDeductions';
 import PayrollLeaveSummary from '../../components/PayrollManagementTable/PayrollLeaveSummary';
-
+import ApiButton from '../../components/ApiButton';
+//import Loan from '../smartconTables/Loan';
 
 function PayrollManagementDetails() {
   const { id } = useParams();
@@ -30,7 +32,7 @@ function PayrollManagementDetails() {
     payslip_end_date: '',
     payroll_year: '',
     basic_pay: '',
-    ot_hours:'',
+    ot_hours: '',
     ot_amount: '',
     cpf_employer: '',
     cpf_employee: '',
@@ -49,7 +51,7 @@ function PayrollManagementDetails() {
     status: '',
     cpf_account_no: '',
     govt_donation: '',
-    overtime_pay_rate: '',
+    overtime: '',
     allowance1: '',
     allowance2: '',
     allowance3: '',
@@ -82,13 +84,15 @@ function PayrollManagementDetails() {
   const [totalDeductions, setTotalDeductions] = useState();
   const [otAmount, setOtAmount] = useState();
   const [update, setUpdate] = useState(false);
-  const[leave,setLeave]=useState([])
+  const [leave, setLeave] = useState([]);
   const [editTotalDeduction, setEditTotalDeduction] = useState(false);
   //handle inputs
   const handleInputs = (e) => {
     setPayroll({ ...payroll, [e.target.name]: e.target.value });
   };
-
+  const backToList = () => {
+    navigate('/PayrollManagement');
+  };
   //Attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -143,12 +147,12 @@ function PayrollManagementDetails() {
         parseFloat(deductions2) +
         parseFloat(deductions3) +
         parseFloat(deductions4) +
-        parseFloat(euCf)+
-        parseFloat(cdac)+
-        parseFloat(sinda)+
+        parseFloat(euCf) +
+        parseFloat(cdac) +
+        parseFloat(sinda) +
         parseFloat(mbmf),
     );
-    setEditTotalDeduction(true)
+    setEditTotalDeduction(true);
   };
   // calculation earnings
   const handleEarnings = (
@@ -181,61 +185,87 @@ function PayrollManagementDetails() {
         parseFloat(allowances5) +
         parseFloat(totalMonthPay),
     );
-    
   };
 
-
   // Calculate and update Gross Pay whenever relevant fields change
-  useEffect(() => {
-    const basicPay = parseFloat(payroll.basic_pay) || 0;
-    const allowance1 = parseFloat(payroll.allowance1) || 0;
-    const allowance2 = parseFloat(payroll.allowance2) || 0;
-    const allowance3 = parseFloat(payroll.allowance3) || 0;
-    const allowance4 = parseFloat(payroll.allowance4) || 0;
-    const allowance5 = parseFloat(payroll.allowance5) || 0;
-    const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
+  // useEffect(() => {
+  //   const basicPay = parseFloat(payroll.basic_pay) || 0;
+  //   const allowance1 = parseFloat(payroll.allowance1) || 0;
+  //   const allowance2 = parseFloat(payroll.allowance2) || 0;
+  //   const allowance3 = parseFloat(payroll.allowance3) || 0;
+  //   const allowance4 = parseFloat(payroll.allowance4) || 0;
+  //   const allowance5 = parseFloat(payroll.allowance5) || 0;
+  //   const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
 
-    const newGrossPay =
-      basicPay +
-      allowance1 +
-      allowance2 +
-      allowance3 +
-      allowance4 +
-      allowance5 +
-      otAmountValue;
+  //   const newGrossPay =
+  //     basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
 
-      setTotalMonthPay(newGrossPay);
-  }, [payroll.basic_pay, payroll.allowance1, payroll.allowance2, payroll.allowance3, payroll.allowance4, payroll.allowance5, otAmount || (payroll && payroll.ot_amount)]);
+  //   setTotalMonthPay(newGrossPay);
+  // }, [
+  //   payroll.basic_pay,
+  //   payroll.allowance1,
+  //   payroll.allowance2,
+  //   payroll.allowance3,
+  //   payroll.allowance4,
+  //   payroll.allowance5,
+  //   otAmount || (payroll && payroll.ot_amount),
+  // ]);
 
-
-
-  //edit payroll
+  // Edit Payroll Data Function
   const editPayrollData = () => {
-    payroll.total_basic_pay_for_month = totalMonthPay;
-    if(editTotalDeduction){
+    if (editTotalDeduction) {
       payroll.total_deductions = totalDeductions;
     }
-    
-    payroll.net_total =
-      parseFloat(totalMonthPay) +
-      parseFloat(payroll.director_fee) +
-      parseFloat(payroll.reimbursement) -
-      parseFloat(totalDeductions);
-      payroll.ot_amount = otAmount;
+    // Calculate and update totalMonthPay with the latest values
+    const newTotalMonthPay =
+      parseFloat(payroll.basic_pay || 0) +
+      parseFloat(otAmount || 0) +
+      parseFloat(payroll.allowance1 || 0) +
+      parseFloat(payroll.allowance2 || 0) +
+      parseFloat(payroll.allowance3 || 0) +
+      parseFloat(payroll.allowance4 || 0) +
+      parseFloat(payroll.allowance5 || 0);
+
+    // Calculate and update totalDeductions with the latest values
+    const newTotalDeductions =
+      parseFloat(payroll.deduction1 || 0) +
+      parseFloat(payroll.deduction2 || 0) +
+      parseFloat(payroll.deduction3 || 0) +
+      parseFloat(payroll.deduction4 || 0) +
+      parseFloat(payroll.sdl || 0) +
+      parseFloat(payroll.income_tax_amount || 0) +
+      parseFloat(payroll.loan_amount || 0) +
+      parseFloat(payroll.pay_eucf || 0) +
+      parseFloat(payroll.pay_cdac || 0) +
+      parseFloat(payroll.pay_mbmf || 0) +
+      parseFloat(payroll.pay_sinda || 0);
+
+    const newNetTotal =
+      newTotalMonthPay +
+      parseFloat(payroll.director_fee || 0) +
+      parseFloat(payroll.reimbursement || 0) -
+      newTotalDeductions;
+
+    const updatedPayrollData = {
+      ...payroll,
+      total_basic_pay_for_month: newTotalMonthPay,
+      total_deductions: newTotalDeductions,
+      net_total: newNetTotal,
+      ot_amount: otAmount || 0, // Ensure ot_amount is always included
+    };
+
     api
-      .post('/payrollmanagement/editpayrollmanagementMain', payroll)
+      .post('/payrollmanagement/editpayrollmanagementMain', updatedPayrollData)
       .then(() => {
-        message('Record editted successfully', 'success');
-        navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
+        message('Record edited successfully', 'success');
+        //navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
         getPayroll();
-        setEditTotalDeduction(false)
+        setEditTotalDeduction(false);
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
-        setEditTotalDeduction(false)
       });
   };
-  
 
   //getting lastmonth first and last date
   const getlastmonthdates = () => {
@@ -255,11 +285,24 @@ function PayrollManagementDetails() {
       .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId })
       .then((res) => {
         setLoan(res.data.data);
-        setOtAmount(res.data.data[0].ot_amount);
-        
+        //setOtAmount(res.data.data[0].ot_amount);
       })
       .catch(() => {
         message('Loan not found', 'info');
+      });
+  };
+  const handleLoanInputs = (e) => {
+    setLoan({ ...loan, [e.target.name]: e.target.value });
+  };
+  const updatedata = () => {
+    api
+      .post('/payrollmanagement/editLoanCalulation', loan)
+      .then((res) => {
+        message('Record editted successfully', 'success');
+        //getProjectById();
+      })
+      .catch(() => {
+        //message('Loan Data Not Found', 'info');
       });
   };
 
@@ -271,7 +314,7 @@ function PayrollManagementDetails() {
         setPayroll(res.data.data[0]);
 
         getPreviousEarlierLoan(res.data.data[0].employee_id);
-        getLeaves(res.data.data[0].employee_id)
+        getLeaves(res.data.data[0].employee_id);
       })
       .catch(() => {
         //message('Loan Data Not Found', 'info');
@@ -297,58 +340,30 @@ function PayrollManagementDetails() {
   return (
     <>
       <BreadCrumbs />
-
-      <FormGroup>
-      <ToastContainer/>
-        <Row>
-          <Col md="12">
-            <ComponentCardV2>
-              <PdfPaySlip payroll={payroll}></PdfPaySlip>
-              &nbsp;&nbsp;
-              <PdfTimeSheet payroll={payroll}></PdfTimeSheet>
-              &nbsp;&nbsp;
-              <Button
-                type="submit"
-                color="primary"
-                className="btn shadow-none mr-2"
-                onClick={() => {
-                  editPayrollData();
-                  setTimeout(()=>{
-                    navigate('/PayrollManagement');
-                  },1000)
-                 
-                }}
-              >
-                Save{' '}
-              </Button>
-              &nbsp;&nbsp;
-              <Button
-                type="submit"
-                color="primary"
-                className="btn shadow-none mr-2"
-                onClick={() => {
-                  editPayrollData();
-                }}
-              >
-                Apply
-              </Button>
-              &nbsp;&nbsp;
-              <Button
-                type="submit"
-                color="dark"
-                className="btn shadow-none mr-2"
-                onClick={() =>navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`)}
-              >
-                Back to List
-              </Button>
-              &nbsp;&nbsp;
-            </ComponentCardV2>
-          </Col>
-        </Row>
-      </FormGroup>
+      <Form>
+        <FormGroup>
+          <ToastContainer></ToastContainer>
+          <ComponentCardV2>
+            {/* Save,Apply Buttons */}
+            <ApiButton
+              editData={editPayrollData}
+              navigate={navigate}
+              //applyChanges={editPayrollData}
+              backToList={backToList}
+              module="Payroll Management"
+            ></ApiButton>
+          </ComponentCardV2>
+        </FormGroup>
+      </Form>
+      <ComponentCardV2>
+        <PdfPaySlip payroll={payroll}></PdfPaySlip>
+        &nbsp;&nbsp;
+        <PdfTimeSheet payroll={payroll}></PdfTimeSheet>
+        &nbsp;&nbsp;
+      </ComponentCardV2>
 
       <ComponentCard title="Main Details">
-        <PayrollLeaveSummary leave={leave}/>
+        <PayrollLeaveSummary leave={leave} />
 
         {/* Payslip summary */}
 
@@ -373,6 +388,8 @@ function PayrollManagementDetails() {
             payroll={payroll}
             editPayrollData={editPayrollData}
             handleInputs={handleInputs}
+            handleLoanInputs={handleLoanInputs}
+            updatedata={updatedata}
           />
         )}
 

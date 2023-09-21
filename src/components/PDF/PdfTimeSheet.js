@@ -4,7 +4,7 @@ import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
 import api from '../../constants/api';
-import message from '../Message';
+//import message from '../Message';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
@@ -12,7 +12,7 @@ const PdfTimeSheet = () => {
   const { id } = useParams();
   const [hfdata, setHeaderFooterData] = React.useState();
   const [payroll, setPayroll] = React.useState();
-  const [timesheet, setTimeSheet] = React.useState();
+  const [timesheet, setTimeSheet] = React.useState([]);
 
   React.useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
@@ -33,7 +33,7 @@ const PdfTimeSheet = () => {
         setPayroll(res.data.data[0]);
       })
       .catch(() => {
-        message('Payroll data Not Found', 'info');
+        //message('Payroll data Not Found', 'info');
       });
   };
 
@@ -44,7 +44,7 @@ const PdfTimeSheet = () => {
         setTimeSheet(res.data.data);
       })
       .catch(() => {
-        message('Payroll data Not Found', 'info');
+        //message('Payroll data Not Found', 'info');
       });
   };
 

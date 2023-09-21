@@ -67,9 +67,9 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
         <Col md="9">Overtime Pay Rate/ Hour</Col>
         <Col md="3">
           <Input
-            name="overtime_pay_rate"
+            name="overtime"
             type="text"
-            value={payroll && payroll.overtime_pay_rate}
+            value={payroll && payroll.overtime}
             disabled
             onChange={handleInputs}
           />
@@ -84,7 +84,7 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
             value={payroll && payroll.ot_hours}
             onChange={(e) => {
               handleInputs(e);
-              handleOtAmount(e.target.value, payroll.overtime_pay_rate);
+              handleOtAmount(e.target.value, payroll.overtime);
             }}
           />
         </Col>

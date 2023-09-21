@@ -178,7 +178,7 @@ const PdfPaySlip = () => {
               ],
               [
                 {
-                  text: `${payroll.employee_name ? payroll.employee_name : ''}`,
+                  text: `${payroll.first_name ? payroll.first_name : ''}`,
                   alignment: 'left',
                   style: 'tableBody',
                 },
@@ -333,7 +333,7 @@ const PdfPaySlip = () => {
                 {
                   text: `${payroll.basic_pay.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
-                  })}                                                             (A)`,
+                  })}                                                        (A)`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -348,7 +348,7 @@ const PdfPaySlip = () => {
 
                 {
                   text: `${
-                    payroll.total_basic_pay_for_month ? payroll.total_basic_pay_for_month : ''
+                    payroll.total_allowance ? payroll.total_allowance : ''
                   }                                                               (B)`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
@@ -443,30 +443,28 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${
-                    payroll.total_deductions ? payroll.total_deductions : ''
-                  }                                                               (C)`,
+                  text: `${payroll.total_deductions.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                               (C)`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                 },
               ],
-              [
-                {
-                  text: 'Employees CPF deduction',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
+              // [
+              //   {
+              //     text: 'Employees CPF deduction',
+              //     border: [false, false, false, true],
+              //     style: 'tableBody',
+              //   },
 
-                {
-                  text: `${payroll.cpf_employee.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })}`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                },
-              ],
+              //   {
+              //     text: `${payroll.cpf_employee.toLocaleString('en-IN', {
+              //       minimumFractionDigits: 2,
+              //     })}`,
+              //     border: [false, false, false, true],
+              //     fillColor: '#f5f5f5',
+              //     style: 'tableBody',
+              //   },
+              // ],
               [
                 {
                   text: 'SDL',
@@ -489,7 +487,7 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.loan_deduction ? payroll.loan_deduction : ''}`,
+                  text: `${payroll.loan_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -791,9 +789,7 @@ const PdfPaySlip = () => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${
-                    payroll.ot_amount ? payroll.ot_amount : ''
-                  }                                                     (D)`,
+                  text: ` ${payroll.ot_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                     (D)`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -860,16 +856,14 @@ const PdfPaySlip = () => {
               ],
               [
                 {
-                  text: `Other Additional Payment(Breakdown Shown below)
-                    Reimbursement  \n Director Fees `,
+                  text: `Other Additional Payment(Breakdown Shown below)\n
+                    Reimbursement  \n\n Director Fees `,
                   border: [false, false, false, true],
                   style: 'tableBody',
                 },
 
                 {
-                  text: ` \n ${payroll.reimbursement ? payroll.reimbursement : ''} \n  ${
-                    payroll.director_fee ? payroll.director_fee : ''
-                  } `,
+                  text: ` \n\n ${payroll.reimbursement.toLocaleString('en-IN', { minimumFractionDigits: 2 })}  \n\n  ${payroll.director_fee.toLocaleString('en-IN', { minimumFractionDigits: 2 })} `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -884,7 +878,7 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: ` ${payroll.net_total ? payroll.net_total : ''}`,
+                  text: ` ${payroll.net_total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -948,34 +942,34 @@ const PdfPaySlip = () => {
                   style: 'tableHead',
                 },
               ],
-              [
-                {
-                  text: 'Employers Contribution',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
+              // [
+              //   {
+              //     text: 'Employers Contribution',
+              //     border: [false, false, false, true],
+              //     style: 'tableBody',
+              //   },
 
-                {
-                  text: `${payroll.cpf_employer ? payroll.cpf_employer : ''}`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                },
-              ],
-              [
-                {
-                  text: 'Employee Contribution',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
+              //   {
+              //     text: `${payroll.cpf_employer ? payroll.cpf_employer : ''}`,
+              //     border: [false, false, false, true],
+              //     fillColor: '#f5f5f5',
+              //     style: 'tableBody',
+              //   },
+              // ],
+              // [
+              //   {
+              //     text: 'Employee Contribution',
+              //     border: [false, false, false, true],
+              //     style: 'tableBody',
+              //   },
 
-                {
-                  text: `${payroll.cpf_employee ? payroll.cpf_employee : ''}`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                },
-              ],
+              //   {
+              //     text: `${payroll.cpf_employee ? payroll.cpf_employee : ''}`,
+              //     border: [false, false, false, true],
+              //     fillColor: '#f5f5f5',
+              //     style: 'tableBody',
+              //   },
+              // ],
             ],
           },
         },
