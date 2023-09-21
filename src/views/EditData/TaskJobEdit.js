@@ -12,25 +12,26 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Table,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  Card,
-  CardBody,
+  // Table,
+  // Modal,
+  // ModalBody,
+  // ModalHeader,
+  // ModalFooter,
+  // Card,
+  // CardBody,
 } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import moment from 'moment';
+// import moment from 'moment';
 import * as Icon from 'react-feather';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
+import ProjectEmployeeLinked from '../../components/ProjectEmployeeLinked';
 import api from '../../constants/api';
 //import DeleteButton from '../../components/DeleteButton';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
@@ -40,19 +41,19 @@ import ApiButton from '../../components/ApiButton';
 const TaskJobEdit = () => {
   //All state variable
   const [projectTeam, setProjectTeam] = useState();
-  const [projecttaskdetails, setProjectTaskDetails] = useState([]);
+  // const [projecttaskdetails, setProjectTaskDetails] = useState([]);
   const [activeTab, setActiveTab] = useState('1');
   const [attachmentModal, setAttachmentModal] = useState(false);
-  const [addTaskModal, setAddTaskModal] = useState(false);
+  // const [addTaskModal, setAddTaskModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
   });
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
-  const [employeeTeam, setEmployeeTeam] = useState();
-  const [milestonesTeam, setMilestonesTeam] = useState([]);
-  const [taskdetailTeam, setTaskDetailTeam] = useState([]);
-  const [project, setProject] = useState([]);
+  // const [employeeTeam, setEmployeeTeam] = useState();
+  // const [milestonesTeam, setMilestonesTeam] = useState([]);
+  // const [taskdetailTeam, setTaskDetailTeam] = useState([]);
+  // const [project, setProject] = useState([]);
 
   //navigation and parameters
   const { id } = useParams();
@@ -79,16 +80,16 @@ const TaskJobEdit = () => {
   //     })
   //     .catch(() => {});
   // };
-  const editJob = (projectId) => {
-    api
-      .post('/projecttimesheet/getStaffByID', { project_task_id: projectId })
-      .then((res) => {
-        setEmployeeTeam(res.data.data);
-      })
-      .catch(() => {
-        message('Task not found', 'info');
-      });
-  };
+  // const editJob = (projectId) => {
+  //   api
+  //     .post('/projecttimesheet/getStaffByID', { project_task_id: projectId })
+  //     .then((res) => {
+  //       setEmployeeTeam(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       message('Task not found', 'info');
+  //     });
+  // };
   //TaskJob data in TaskJob
   const handleInputsProjectteam = (e) => {
     setProjectTeam({ ...projectTeam, [e.target.name]: e.target.value });
@@ -112,28 +113,28 @@ const TaskJobEdit = () => {
         message('Unable to edit record.', 'error');
       });
   };
-  const [taskeditData, setTaskEditData] = useState();
-  //getting  data By  Id
-  const getProjectTaskById = () => {
-    api
-      .post('/projectteam/getTeamTaskById', { project_team_id: id })
-      .then((res) => {
-        setTaskEditData(res.data.data[0]);
-      })
-      .catch(() => {
-        message('Team Data Not Found', 'info');
-      });
-  };
-  const getTaskById = () => {
-    api
-      .post('/projectteam/getTeamTaskById', { project_team_id: id })
-      .then((res) => {
-        setProjectTaskDetails(res.data.data);
-      })
-      .catch(() => {
-        message('Team Data Not Found', 'info');
-      });
-  };
+  // const [taskeditData, setTaskEditData] = useState();
+  // //getting  data By  Id
+  // const getProjectTaskById = () => {
+  //   api
+  //     .post('/projectteam/getTeamTaskById', { project_team_id: id })
+  //     .then((res) => {
+  //       setTaskEditData(res.data.data[0]);
+  //     })
+  //     .catch(() => {
+  //       message('Team Data Not Found', 'info');
+  //     });
+  // };
+  // const getTaskById = () => {
+  //   api
+  //     .post('/projectteam/getTeamTaskById', { project_team_id: id })
+  //     .then((res) => {
+  //       setProjectTaskDetails(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       message('Team Data Not Found', 'info');
+  //     });
+  // };
   //attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -143,182 +144,182 @@ const TaskJobEdit = () => {
   };
 
   //Api call for getting project name dropdown
-  const getProjectTeam = () => {
-    api
-      .get('/projecttask/getProjectTitle')
-      .then((res) => {
-        setProject(res.data.data);
-      })
-      .catch(() => {
-        message('Company not found', 'info');
-      });
-  };
+  // const getProjectTeam = () => {
+  //   api
+  //     .get('/projecttask/getProjectTitle')
+  //     .then((res) => {
+  //       setProject(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       message('Company not found', 'info');
+  //     });
+  // };
   // Api call for getting milestone dropdown based on project ID
-  const getMilestoneName = () => {
-    api
-      .post('/projecttimesheet/getMilestoneTitle', { project_id: projectTeam.project_id })
-      .then((res) => {
-        // Assuming the response data is an array of milestones with keys: milestone_id and milestone_title
-        const milestones = res.data.data;
-        setMilestonesTeam(milestones);
-      })
-      .catch(() => {
-        message('Milestone not found', 'info');
-      });
-  };
+  // const getMilestoneName = () => {
+  //   api
+  //     .post('/projecttimesheet/getMilestoneTitle', { project_id: projectTeam.project_id })
+  //     .then((res) => {
+  //       // Assuming the response data is an array of milestones with keys: milestone_id and milestone_title
+  //       const milestones = res.data.data;
+  //       setMilestonesTeam(milestones);
+  //     })
+  //     .catch(() => {
+  //       message('Milestone not found', 'info');
+  //     });
+  // };
 
   // Api call for getting milestone dropdown based on project ID
-  const getTaskName = (projectId) => {
-    api
-      .post('/projecttimesheet/getTaskByID', { project_milestone_id: projectId })
-      .then((res) => {
-        setTaskDetailTeam(res.data.data);
-      })
-      .catch(() => {
-        message('Task not found', 'info');
-      });
-  };
+  // const getTaskName = (projectId) => {
+  //   api
+  //     .post('/projecttimesheet/getTaskByID', { project_milestone_id: projectId })
+  //     .then((res) => {
+  //       setTaskDetailTeam(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       message('Task not found', 'info');
+  //     });
+  // };
 
-  const handleTaskInputs = (e) => {
-    setTaskEditData({ ...taskeditData, [e.target.name]: e.target.value });
-  };
+  // const handleTaskInputs = (e) => {
+  //   setTaskEditData({ ...taskeditData, [e.target.name]: e.target.value });
+  // };
 
-  //Logic for edit data in db
+  // //Logic for edit data in db
 
-  const editTaskData = () => {
-    api
-      .post('/projecttask/editTask', taskeditData)
-      .then(() => {
-        message('Record editted successfully', 'success');
-        window.location.reload();
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
-  };
+  // const editTaskData = () => {
+  //   api
+  //     .post('/projecttask/editTask', taskeditData)
+  //     .then(() => {
+  //       message('Record editted successfully', 'success');
+  //       window.location.reload();
+  //     })
+  //     .catch(() => {
+  //       message('Unable to edit record.', 'error');
+  //     });
+  // };
 
-  const columns = [
-    {
-      name: '#',
-      selector: 'project_task_id',
-      grow: 0,
-      wrap: true,
-      width: '4%',
-    },
-    {
-      name: 'Edit',
-      selector: 'edit',
-      cell: () => <Icon.Edit2 />,
-      grow: 0,
-      width: 'auto',
-      button: true,
-      sortable: false,
-    },
-    {
-      name: 'Title',
-      selector: 'task_title',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Start date',
-      selector: 'start_date',
-      sortable: true,
-      grow: 2,
-      wrap: true,
-    },
-    {
-      name: 'End Date',
-      selector: 'end_date',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Completion',
-      selector: 'completion',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Status',
-      selector: 'status',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Task Type',
-      selector: 'task_type',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Priority',
-      selector: 'priority',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Actual Hours',
-      selector: '',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Est Hours',
-      selector: 'estimated_hours',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Name',
-      selector: 'first_name',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-    {
-      name: 'Description',
-      selector: 'description',
-      sortable: true,
-      grow: 0,
-      wrap: true,
-    },
-  ];
+  // const columns = [
+  //   {
+  //     name: '#',
+  //     selector: 'project_task_id',
+  //     grow: 0,
+  //     wrap: true,
+  //     width: '4%',
+  //   },
+  //   {
+  //     name: 'Edit',
+  //     selector: 'edit',
+  //     cell: () => <Icon.Edit2 />,
+  //     grow: 0,
+  //     width: 'auto',
+  //     button: true,
+  //     sortable: false,
+  //   },
+  //   {
+  //     name: 'Title',
+  //     selector: 'task_title',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Start date',
+  //     selector: 'start_date',
+  //     sortable: true,
+  //     grow: 2,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'End Date',
+  //     selector: 'end_date',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Completion',
+  //     selector: 'completion',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Status',
+  //     selector: 'status',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Task Type',
+  //     selector: 'task_type',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Priority',
+  //     selector: 'priority',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Actual Hours',
+  //     selector: '',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Est Hours',
+  //     selector: 'estimated_hours',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Name',
+  //     selector: 'first_name',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  //   {
+  //     name: 'Description',
+  //     selector: 'description',
+  //     sortable: true,
+  //     grow: 0,
+  //     wrap: true,
+  //   },
+  // ];
 
   useEffect(() => {
     getTeamById();
-    editJob();
-    getProjectTaskById();
-    getTaskById();
-    getProjectTeam();
+    // editJob();
+    // getProjectTaskById();
+    // getTaskById();
+    // getProjectTeam();
   }, [id]);
-  useEffect(() => {
-    if (projectTeam && projectTeam.project_id) {
-      const selectedProject = projectTeam.project_id;
-      getMilestoneName(selectedProject);
-    }
-  }, [projectTeam && projectTeam.project_id]);
+  // useEffect(() => {
+  //   if (projectTeam && projectTeam.project_id) {
+  //     const selectedProject = projectTeam.project_id;
+  //     getMilestoneName(selectedProject);
+  //   }
+  // }, [projectTeam && projectTeam.project_id]);
 
-  useEffect(() => {
-    if (projectTeam && projectTeam.project_milestone_id) {
-      const selectedTask = projectTeam.project_milestone_id;
-      getTaskName(selectedTask);
-    }
-  }, [projectTeam && projectTeam.project_milestone_id]);
-  useEffect(() => {
-    if (projectTeam && projectTeam.project_task_id) {
-      const selectedTask = projectTeam.project_task_id;
-      editJob(selectedTask);
-    }
-  }, [projectTeam && projectTeam.project_task_id]);
+  // useEffect(() => {
+  //   if (projectTeam && projectTeam.project_milestone_id) {
+  //     const selectedTask = projectTeam.project_milestone_id;
+  //     getTaskName(selectedTask);
+  //   }
+  // }, [projectTeam && projectTeam.project_milestone_id]);
+  // useEffect(() => {
+  //   if (projectTeam && projectTeam.project_task_id) {
+  //     const selectedTask = projectTeam.project_task_id;
+  //     editJob(selectedTask);
+  //   }
+  // }, [projectTeam && projectTeam.project_task_id]);
 
   return (
     <>
@@ -346,7 +347,7 @@ const TaskJobEdit = () => {
             <div>
               <Form>
                 <Row>
-                  <Col md="4">
+                  {/* <Col md="4">
                     <Label>Milestone Title</Label>
                     <FormGroup>
                       <Input
@@ -409,31 +410,21 @@ const TaskJobEdit = () => {
                           ))}
                       </Input>
                     </FormGroup>
-                  </Col>
+                  </Col> */}
                   <Col md="4">
                     <FormGroup>
                       <Label>Team</Label>
                       <Input
-                        type="select"
-                        name="employee_id"
+                        type="text"
+                        name="team_title"
                         onChange={handleInputsProjectteam}
-                        value={projectTeam && projectTeam.employee_id}
+                        value={projectTeam && projectTeam.team_title}
                       >
-                        <option value="" selected>
-                          Please Select
-                        </option>
-                        {employeeTeam &&
-                          employeeTeam.map((ele) => {
-                            return (
-                              <option key={ele.employee_id} value={ele.employee_id}>
-                                {ele.first_name}
-                              </option>
-                            );
-                          })}
+                       
                       </Input>
                     </FormGroup>
                   </Col>
-                  <Col md="4">
+                  {/* <Col md="4">
                     <FormGroup>
                       <Label>Designation</Label>
                       <br />
@@ -446,7 +437,7 @@ const TaskJobEdit = () => {
                       <br />
                       <span>{projectTeam && projectTeam.department}</span>
                     </FormGroup>
-                  </Col>
+                  </Col> */}
                 </Row>
               </Form>
             </div>
@@ -461,7 +452,7 @@ const TaskJobEdit = () => {
                     toggle('1');
                   }}
                 >
-                  Task
+                  Linked Employees
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -476,7 +467,11 @@ const TaskJobEdit = () => {
               </NavItem>
             </Nav>
             <TabContent className="p-4" activeTab={activeTab}>
-              <TabPane tabId="1">
+            <TabPane tabId="1">
+            <ProjectEmployeeLinked projectId={id}></ProjectEmployeeLinked>
+            
+          </TabPane>
+              {/* <TabPane tabId="1">
                 <Row>
                   <Col md="6">
                     <Modal size="lg" isOpen={addTaskModal}>
@@ -668,7 +663,7 @@ const TaskJobEdit = () => {
                     </Table>
                   </div>
                 </Row>
-              </TabPane>
+              </TabPane> */}
               <TabPane tabId="2">
                 <Form>
                   <FormGroup>
