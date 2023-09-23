@@ -108,7 +108,7 @@ const LeaveDetails = () => {
                 <Row>
                   <Col md="6">
                     <Label>
-                      Employee_name<span className="required"> *</span>
+                      Employee Name<span className="required"> *</span>
                     </Label>
                     <Input
                       type="select"
