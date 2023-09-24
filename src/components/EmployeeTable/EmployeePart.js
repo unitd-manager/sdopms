@@ -62,7 +62,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
             <Col md="3">
               <FormGroup>
                 <Label>
-                  Gender <span style={{ color: 'red' }}>*</span>
+                  Gender 
                 </Label>
                 <Input
                   name="gender"
@@ -123,7 +123,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
             </Col>
             <Col md="3">
               <FormGroup>
-                <Label>Passport Expiry</Label>
+                <Label>Passport Expiry <span style={{ color: 'red' }}>*</span></Label>
                 <Input
                   type="date"
                   onChange={handleInputChange}

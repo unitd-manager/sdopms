@@ -65,7 +65,7 @@ console.log('filterPeriod',filterPeriod)
                   <Col>
                     <FormGroup>
                       <Input name="year" type="select"
-                      value={filterPeriod && filterPeriod.year}
+                      value={ filterPeriod.year}
                       onChange={handleFilterInputs}>
                         <option value="">Please Select</option>
                         <option value={2022}>2022</option>
@@ -85,7 +85,7 @@ console.log('filterPeriod',filterPeriod)
                   <Col>
                     <FormGroup>
                       <Input name="month" type="select" 
-                      value={filterPeriod && filterPeriod.month}
+                      value={filterPeriod.month}
                       onChange={handleFilterInputs}>
                         <option value="">Please Select</option>
                         <option value="01">January</option>
