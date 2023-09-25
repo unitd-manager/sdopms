@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,10 +13,11 @@ import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
 import api from '../../constants/api';
-import CreationAndModification from '../../components/ProductTable/CreationAndModification';
-//import ProductEditButtons from '../../components/ProductTable/ProductEditButtons';
+import creationdatetime from '../../constants/creationdatetime';
+//import ProductEditButtons from '../../components/Product/ProductEditButtons';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
+import AppContext from '../../context/AppContext';
 import ApiButton from '../../components/ApiButton';
 
 const ProductUpdate = () => {
@@ -25,8 +26,11 @@ const ProductUpdate = () => {
   const [productDetails, setProductDetails] = useState();
   const [categoryLinked, setCategoryLinked] = useState([]);
   const [description, setDescription] = useState('');
-  const [RoomName, setRoomName] = useState('');
-  const [fileTypes, setFileTypes] = useState('');
+  const [pictureroomname, setPictureRoomName] = useState('');
+  const [attachmentroomname, setAttachmentRoomName] = useState('');
+  const [picturefiletypes, setPictureFileTypes] = useState('');
+  const [attachmentfiletypes, setAttachmentFileTypes] = useState('');
+  const [picturemodal, setPictureModal] = useState(false);
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
@@ -34,13 +38,21 @@ const ProductUpdate = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
-
+const [pictureupdate, setPictureUpdate] = useState(false);
+const [attachmentupdate, setAttachmentUpdate] = useState(false);
+const [unitdetails, setUnitDetails] = useState();
+// const [updatepic, setUpdatePic] = useState(false);
   // Navigation and Parameter Constants
   const { id } = useParams();
   const navigate = useNavigate();
-const backToList=()=>{
-  navigate('/product')
-}
+
+  //const applyChanges = () => {};
+  const backToList = () => {
+    navigate('/Product');
+  };
+  //get staff details
+  const { loggedInuser } = useContext(AppContext);
+
   //Setting data in productDetails
   const handleInputs = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
@@ -70,12 +82,14 @@ const backToList=()=>{
         convertHtmlToDraft(res.data.data[0].description);
       })
       .catch(() => {
-        message('Product Data Not Found', 'info');
+        
       });
   };
   //Edit Product
   const editProductData = () => {
     if (productDetails.title !== '') {
+      productDetails.modification_date = creationdatetime;
+      productDetails.modified_by= loggedInuser.first_name; 
       api
         .post('/product/edit-Product', productDetails)
         .then(() => {
@@ -98,7 +112,19 @@ const backToList=()=>{
         setCategoryLinked(res.data.data);
       })
       .catch(() => {
-        message('Unable to get categories', 'error');
+        
+      });
+  };
+
+  //Api call for getting Unit From Valuelist
+  const getUnit = () => {
+    api
+      .get('/product/getUnitFromValueList')
+      .then((res) => {
+        setUnitDetails(res.data.data);
+      })
+      .catch(() => {
+        message('Staff Data Not Found', 'info');
       });
   };
 
@@ -107,19 +133,18 @@ const backToList=()=>{
     setDataForAttachment({
       modelType: 'attachment',
     });
-    console.log('inside DataForAttachment');
   };
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
       modelType: 'picture',
     });
-    console.log('inside DataForPicture');
   };
   //useEffect
   useEffect(() => {
     getCategory();
     getProductById();
+    getUnit();
   }, [id]);
 
   return (
@@ -133,7 +158,6 @@ const backToList=()=>{
               navigate={navigate}
               applyChanges={editProductData}
               backToList={backToList}
-              //deleteData={DeleteSection}
               module="Product"
             ></ApiButton>
           {/* Content Details Form */}
@@ -154,7 +178,7 @@ const backToList=()=>{
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label> Product Name </Label>
+                  <Label> Product Name <span className="required"> *</span> </Label>
                   <Input
                     type="text"
                     onChange={handleInputs}
@@ -229,11 +253,27 @@ const backToList=()=>{
                 <FormGroup>
                   <Label> Unit </Label>
                   <Input
+                  type="select"
+                  name="unit"
+                  onChange={handleInputs}
+                  value={productDetails && productDetails.unit}
+                >
+                  <option defaultValue="selected">Please Select</option>
+                  {unitdetails &&
+                    unitdetails.map((ele) => {
+                      return (
+                        <option key={ele.value} value={ele.value}>
+                          {ele.value}
+                        </option>
+                      );
+                    })}
+                </Input>
+                  {/* <Input
                     type="text"
                     onChange={handleInputs}
                     value={productDetails && productDetails.unit}
                     name="unit"
-                  />
+                  /> */}
                 </FormGroup>
               </Col>
               <Col md="3">
@@ -294,79 +334,85 @@ const backToList=()=>{
           </ComponentCard>
         </FormGroup>
       </Form>
+{/* Picture and Attachments Form */}
 
-      {/* Picture and Attachments Form */}
+<Form>
+              <FormGroup>
+              <ComponentCard title="Picture">
+                  <Row>
+                    <Col xs="12" md="3" className="mb-3">
+                      <Button
+                        className="shadow-none"
+                        color="primary"
+                        onClick={() => {
+                          setPictureRoomName('ProductPic');
+                          setPictureFileTypes(['JPG','JPEG', 'PNG', 'GIF']);
+                          dataForPicture();
+                          setPictureModal(true);
+                        }}
+                      >
+                        <Icon.File className="rounded-circle" width="20" />
+                      </Button>
+                    </Col>
+                  </Row>
+                  <AttachmentModalV2
+                    moduleId={id}
+                    attachmentModal={picturemodal}
+                    setAttachmentModal={setPictureModal}
+                    roomName={pictureroomname}
+                    fileTypes={picturefiletypes}
+                    altTagData="Product Data"
+                    desc="Product Data"
+                    recordType="Picture"
+                    mediaType={pictureData.modelType}
+                    update={pictureupdate}
+                    setUpdate={setPictureUpdate}
+                  />
+                  <ViewFileComponentV2 moduleId={id} roomName="ProductPic" recordType="Picture" update={pictureupdate}
+                    setUpdate={setPictureUpdate}/>
+                    </ComponentCard>
+              </FormGroup>
+            </Form>
+      
       <Form>
-        <FormGroup>
-          <ComponentCard title="Picture">
-            <Row>
-              <Col xs="12" md="3" className="mb-3">
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    setRoomName('ProductPic');
-                    setFileTypes(['JPG', 'PNG', 'GIF']);
-                    dataForPicture();
-                    setAttachmentModal(true);
-                  }}
-                >
-                  <Icon.Image className="rounded-circle" width="20" />
-                </Button>
-              </Col>
-            </Row>
-            <AttachmentModalV2
-              moduleId={id}
-              attachmentModal={attachmentModal}
-              setAttachmentModal={setAttachmentModal}
-              roomName={RoomName}
-              fileTypes={fileTypes}
-              altTagData="Product Data"
-              desc="Product Data"
-              recordType="Picture"
-              mediaType={pictureData.modelType}
-            />
-            <ViewFileComponentV2 moduleId={id} roomName="ProductPic" recordType="Picture" />
-          </ComponentCard>
-        </FormGroup>
-      </Form>
-      <Form>
-        <FormGroup>
-          <ComponentCard title="Attachments">
-            <Row>
-              <Col xs="12" md="3" className="mb-3">
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    setRoomName('Product');
-                    setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
-                    dataForAttachment();
-                    setAttachmentModal(true);
-                  }}
-                >
-                  <Icon.File className="rounded-circle" width="20" />
-                </Button>
-              </Col>
-            </Row>
-            <AttachmentModalV2
-              moduleId={id}
-              attachmentModal={attachmentModal}
-              setAttachmentModal={setAttachmentModal}
-              roomName={RoomName}
-              fileTypes={fileTypes}
-              altTagData="ProductRelated Data"
-              desc="ProductRelated Data"
-              recordType="RelatedPicture"
-              mediaType={attachmentData.modelType}
-            />
-            <ViewFileComponentV2 moduleId={id} roomName="Product" recordType="RelatedPicture" />
-          </ComponentCard>
-        </FormGroup>
-      </Form>
+              <FormGroup>
+              <ComponentCard title="Attachments">
+                  <Row>
+                    <Col xs="12" md="3" className="mb-3">
+                      <Button
+                        className="shadow-none"
+                        color="primary"
+                        onClick={() => {
+                          setAttachmentRoomName('Product');
+                          setAttachmentFileTypes(['JPG','JPEG', 'PNG', 'GIF', 'PDF']);
+                          dataForAttachment();
+                          setAttachmentModal(true);
+                        }}
+                      >
+                        <Icon.File className="rounded-circle" width="20" />
+                      </Button>
+                    </Col>
+                  </Row>
+                  <AttachmentModalV2
+                    moduleId={id}
+                    attachmentModal={attachmentModal}
+                    setAttachmentModal={setAttachmentModal}
+                    roomName={attachmentroomname}
+                    fileTypes={attachmentfiletypes}
+                    altTagData="ProductRelated Data"
+                    desc="ProductRelated Data"
+                    recordType="RelatedPicture"
+                    mediaType={attachmentData.modelType}
+                    update={attachmentupdate}
+                    setUpdate={setAttachmentUpdate}
+                  />
+                  <ViewFileComponentV2 moduleId={id} roomName="Product" recordType="RelatedPicture" update={attachmentupdate}
+                    setUpdate={setAttachmentUpdate}/>
+                    </ComponentCard>
+              </FormGroup>
+            </Form>
 
       <br />
-      <CreationAndModification producteditdetails={productDetails} />
     </>
   );
 };

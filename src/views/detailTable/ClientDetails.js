@@ -9,8 +9,7 @@ import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
 
 const ClientDetails = () => {
-  
-    // Navigation and Parameter Constants
+  // Navigation and Parameter Constants
   const navigate = useNavigate();
 
   //  insertClient
@@ -25,29 +24,27 @@ const ClientDetails = () => {
 
   // Client Insert
   const insertClient = () => {
-    if(clientForms.company_name !== ''){
-      clientForms.creation_date = creationdatetime
-    api
-      .post('/clients/insertCompany', clientForms)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message('Client inserted successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/ClientEdit/${insertedDataId}`);
-        }, 300);
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-    }else{
-      message('Please fill all required fields','warning');
-  }
+    if (clientForms.company_name !== '') {
+      clientForms.creation_date = creationdatetime;
+      api
+        .post('/clients/insertCompany', clientForms)
+        .then((res) => {
+          const insertedDataId = res.data.data.insertId;
+          message('Client inserted successfully.', 'success');
+          setTimeout(() => {
+            navigate(`/ClientEdit/${insertedDataId}`);
+          }, 300);
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    } else {
+      message('Please fill all required fields', 'warning');
+    }
   };
 
-  useEffect(() => {
-  }, []);
- 
+  useEffect(() => {}, []);
+
   return (
     <div>
       <BreadCrumbs />
@@ -59,7 +56,9 @@ const ClientDetails = () => {
               <FormGroup>
                 <Row>
                   <Col md="12">
-                    <Label>Company Name {' '}<span className='required'> *</span>{' '}</Label>
+                    <Label>
+                      Company Name <span className="required"> *</span>{' '}
+                    </Label>
 
                     <Input
                       type="text"
@@ -74,7 +73,8 @@ const ClientDetails = () => {
               <FormGroup>
                 <Row>
                   <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                    <Button color="primary"
+                    <Button
+                      color="primary"
                       onClick={() => {
                         insertClient();
                       }}
@@ -83,14 +83,14 @@ const ClientDetails = () => {
                     >
                       Save & Continue
                     </Button>
-                    <Button 
+                    <Button
                       onClick={() => {
                         navigate(-1);
                       }}
                       type="button"
                       className="btn btn-dark shadow-none"
                     >
-                      Cancel
+                      Go to List
                     </Button>
                   </div>
                 </Row>

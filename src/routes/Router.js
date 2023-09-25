@@ -14,6 +14,7 @@ const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const EditCostingSummaryModal = Loadable(
   lazy(() => import('../components/Tender/EditCostingSummaryModal')),
 );
+const EnquiryTable = Loadable(lazy(() => import('../views/smartconTables/Enquiry')));
 const AddLineItemModal = Loadable(lazy(() => import('../components/Tender/AddLineItemModal')));
 const EditQuoteModal = Loadable(lazy(() => import('../components/Tender/EditQuoteModal')));
 const EditLineItemModal = Loadable(lazy(() => import('../components/Tender/EditLineItemModal')));
@@ -133,13 +134,12 @@ const AddProjects = Loadable(lazy(() => import('../views/cubosale/AddProjects'))
 const EditProject = Loadable(lazy(() => import('../views/cubosale/EditProject')));
 
 // Tender
-const TenderTable = Loadable(lazy(() => import('../views/smartconTables/Tender')));
+
 const InvoiceTable = Loadable(lazy(() => import('../views/smartconTables/Invoice')));
 const TaskTable = Loadable(lazy(() => import('../views/smartconTables/Task')));
 const ProjectTable = Loadable(lazy(() => import('../views/smartconTables/Project')));
 const ClientTable = Loadable(lazy(() => import('../views/smartconTables/Client')));
 const LeadTable = Loadable(lazy(() => import('../views/smartconTables/Lead')));
-const BookingTable = Loadable(lazy(() => import('../views/smartconTables/Booking')));
 const TimesheetTable = Loadable(lazy(() => import('../views/smartconTables/Timesheet')));
 const ProductTable = Loadable(lazy(() => import('../views/smartconTables/product')));
 const TestTable = Loadable(lazy(() => import('../views/smartconTables/Test')));
@@ -161,11 +161,10 @@ const PayslipGeneratedReports = Loadable(
 const IR8AReport = Loadable(lazy(() => import('../views/smartconTables/IR8AReport')));
 
 // Details Table
-const TenderDetailsTable = Loadable(lazy(() => import('../views/detailTable/TenderDetails')));
+const EnquiryDetails = Loadable(lazy(() => import('../views/detailTable/EnquiryDetails')));
 const ProductDetailsTable = Loadable(lazy(() => import('../views/detailTable/ProductDetails')));
 const ClientDetailsTable = Loadable(lazy(() => import('../views/detailTable/ClientDetails')));
 const LeadDetailsTable = Loadable(lazy(() => import('../views/detailTable/LeadDetails')));
-const BookingDetails = Loadable(lazy(() => import('../views/detailTable/BookingDetails')));
 const TimesheetDetailsTable = Loadable(lazy(() => import('../views/detailTable/TimesheetDetails')));
 // Finance Admin
 const FinanceTable = Loadable(lazy(() => import('../views/smartconTables/Finance')));
@@ -254,12 +253,11 @@ const PurchaseOrderDetails = Loadable(
 );
 
 // Table Edit's
-const TenderEdit = Loadable(lazy(() => import('../views/EditData/TenderEdit')));
+
 const ProductEdit = Loadable(lazy(() => import('../views/EditData/ProductEdit')));
 const FinanceEdit = Loadable(lazy(() => import('../views/EditData/FinanceEdit')));
 const TrainingEdit = Loadable(lazy(() => import('../views/EditData/TrainingEdit')));
 const ProjectEdit = Loadable(lazy(() => import('../views/EditData/ProjectEdit')));
-const BookingEdit = Loadable(lazy(() => import('../views/EditData/BookingEdit')));
 const ClientEdit = Loadable(lazy(() => import('../views/EditData/ClientEdit')));
 const LeadEdit = Loadable(lazy(() => import('../views/EditData/LeadEdit')));
 const VehicleEdit = Loadable(lazy(() => import('../views/EditData/VehicleEdit')));
@@ -290,7 +288,7 @@ const MilestoneEdit = Loadable(lazy(() => import('../views/EditData/MilestoneEdi
 const TaskEdit = Loadable(lazy(() => import('../views/EditData/TaskEdit')));
 const ProjectTimesheetEdit = Loadable(lazy(() => import('../views/EditData/ProjectTimesheetEdit')));
 const TaskJobEdit = Loadable(lazy(() => import('../views/EditData/TaskJobEdit')));
-
+const EnquiryEdit = Loadable(lazy(() => import('../views/EditData/EnquiryEdit')));
 //Reports
 const ProjectReportTable = Loadable(lazy(() => import('../views/Reports/ProjectReport')));
 const OverallSalesReportTable = Loadable(
@@ -321,6 +319,7 @@ const Routernew = () => {
             name="editcostingsummary"
             element={<EditCostingSummaryModal />}
           ></Route>
+           <Route path="/EnquiryDetails" name="clienttdata" element={<EnquiryDetails />}></Route>
           <Route path="/addlineitem" name="addlineitem" element={<AddLineItemModal />}></Route>
           <Route path="/editquote" name="editquote" element={<EditQuoteModal />}></Route>
           <Route path="/editlineitem" name="editlineitem" element={<EditLineItemModal />}></Route>
@@ -330,7 +329,7 @@ const Routernew = () => {
           <Route path="/invoiceModal/:id" name="invoiceModal" element={<InvoiceModal />}></Route>
           <Route path="/receiptModal/:id" name="invoiceModal" element={<ReceiptModal />}></Route>
           {/* Table Edit's */}
-          <Route path="/TenderEdit/:id" name="tenderdata" element={<TenderEdit />}></Route>
+        
           <Route path="/ProductEdit/:id" name="productdata" element={<ProductEdit />}></Route>
           <Route path="/FinanceEdit/:id" name="financedata" element={<FinanceEdit />}></Route>
           <Route path="/TrainingEdit/:id" name="trainingdata" element={<TrainingEdit />}></Route>
@@ -343,8 +342,7 @@ const Routernew = () => {
           <Route path="/sectionEdit/:id" name="sectiondata" element={<SectionEdit />}></Route>
           <Route path="/AccountsEdit/:id" name="accountdata" element={<AccountsEdit />}></Route>
           <Route path="/LeavesEdit/:id" name="leavedata" element={<LeavesEdit />}></Route>
-
-          <Route path="/BookingEdit/:id" name="bookingdata" element={<BookingEdit />}></Route>
+          <Route path="/EnquiryEdit/:id" name="clienttdata" element={<EnquiryEdit />}></Route>
           <Route
             path="/expenseHeadEdit/:id"
             name="expenseheaddata"
@@ -432,6 +430,7 @@ const Routernew = () => {
           <Route path="/ecom/shop" name="email" element={<Shop />}></Route>
           <Route path="/ecom/shopdetail" name="email" element={<ShopDetail />}></Route>
           <Route path="/tickt/ticket-list" name="ticket list" element={<TicketList />}></Route>
+          <Route path="/Enquiry" name="tenderdata" element={<EnquiryTable />}></Route>
           <Route
             path="/tickt/ticket-detail"
             name="ticket detail"
@@ -504,9 +503,9 @@ const Routernew = () => {
           ></Route>
           <Route path="/InvoiceByYear" name="reports" element={<InvoiceByYearTable />}></Route>
           {/* Tender */}
-          <Route path="/Tender" name="tenderdata" element={<TenderTable />}></Route>
+        
           <Route path="/Task" name="taskdata" element={<TaskTable />}></Route>
-          <Route path="/TenderDetails" name="tenderdata" element={<TenderDetailsTable />}></Route>
+          
           <Route
             path="/ProductDetails"
             name="productdata"
@@ -518,8 +517,6 @@ const Routernew = () => {
           <Route path="/ClientDetails" name="clienttdata" element={<ClientDetailsTable />}></Route>
           <Route path="/Lead" name="leaddata" element={<LeadTable />}></Route>
           <Route path="/LeadDetails" name="leaddata" element={<LeadDetailsTable />}></Route>
-          <Route path="/Booking" name="bookingdata" element={<BookingTable />}></Route>
-          <Route path="/BookingDetails" name="bookingdata" element={<BookingDetails />}></Route>
           <Route path="/Product" name="productdata" element={<ProductTable />}></Route>
           <Route path="/Timesheet" name="timesheetdata" element={<TimesheetTable />}></Route>
           <Route
