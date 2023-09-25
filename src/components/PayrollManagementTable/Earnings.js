@@ -112,9 +112,8 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
             onChange={(e) => {
               handleInputs(e);
               handleEarnings(
-                e.target.value,
                 payroll.basic_pay,
-               
+                e.target.value,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
@@ -137,9 +136,10 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
             onChange={(e) => {
               handleInputs(e);
               handleEarnings(
-                e.target.value,
+               
                 payroll.basic_pay,
-                payroll.ot_amount,
+                otAmount || (payroll && payroll.ot_amount),
+                e.target.value,
                 payroll.allowance2,
                 payroll.allowance3,
                 payroll.allowance4,

@@ -198,29 +198,29 @@ function PayrollManagementDetails() {
   //   }
   // };
 
-  // Calculate and update Gross Pay whenever relevant fields change
-  // useEffect(() => {
-  //   const basicPay = parseFloat(payroll.basic_pay) || 0;
-  //   const allowance1 = parseFloat(payroll.allowance1) || 0;
-  //   const allowance2 = parseFloat(payroll.allowance2) || 0;
-  //   const allowance3 = parseFloat(payroll.allowance3) || 0;
-  //   const allowance4 = parseFloat(payroll.allowance4) || 0;
-  //   const allowance5 = parseFloat(payroll.allowance5) || 0;
-  //   const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
+  //Calculate and update Gross Pay whenever relevant fields change
+  useEffect(() => {
+    const basicPay = parseFloat(payroll.basic_pay) || 0;
+    const allowance1 = parseFloat(payroll.allowance1) || 0;
+    const allowance2 = parseFloat(payroll.allowance2) || 0;
+    const allowance3 = parseFloat(payroll.allowance3) || 0;
+    const allowance4 = parseFloat(payroll.allowance4) || 0;
+    const allowance5 = parseFloat(payroll.allowance5) || 0;
+    const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
 
-  //   const newGrossPay =
-  //     basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
+    const newGrossPay =
+      basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
 
-  //   setTotalMonthPay(newGrossPay);
-  // }, [
-  //   payroll.basic_pay,
-  //   payroll.allowance1,
-  //   payroll.allowance2,
-  //   payroll.allowance3,
-  //   payroll.allowance4,
-  //   payroll.allowance5,
-  //   otAmount || (payroll && payroll.ot_amount),
-  // ]);
+    setTotalMonthPay(newGrossPay);
+  }, [
+    payroll.basic_pay,
+    payroll.allowance1,
+    payroll.allowance2,
+    payroll.allowance3,
+    payroll.allowance4,
+    payroll.allowance5,
+    otAmount || (payroll && payroll.ot_amount),
+  ]);
   const [loan, setLoan] = useState([]);
   const calculateBasicPayPercentage = () => {
     if (
@@ -312,7 +312,7 @@ function PayrollManagementDetails() {
     // Calculate and update totalMonthPay with the latest values
     const newTotalMonthPay =
       parseFloat(payroll.total_basic_pay_for_month || 0) +
-      parseFloat(otAmount || 0) +
+      parseFloat(otAmount || (payroll && payroll.ot_amount) ||0) +
       parseFloat(payroll.allowance1 || 0) +
       parseFloat(payroll.allowance2 || 0) +
       parseFloat(payroll.allowance3 || 0) +
@@ -338,30 +338,22 @@ function PayrollManagementDetails() {
       parseFloat(payroll.director_fee || 0) +
       parseFloat(payroll.reimbursement || 0) -
       newTotalDeductions;
+      //payroll.ot_amount= otAmount;
 
     const updatedPayrollData = {
       ...payroll,
       total_basic_pay_for_month: newTotalMonthPay,
       total_deductions: newTotalDeductions,
       net_total: newNetTotal,
-      //ot_amount: otAmount || 0, // Ensure ot_amount is always included
+      ot_amount: otAmount ||(payroll && payroll.ot_amount)  || 0, // Ensure ot_amount is always included
     };
-    //  const remainingAmountPayable = element.amount_payable - (payroll.loan_amount || 0);
-
-    // // Check if the loan_amount exceeds the amount_payable
-    // if (remainingAmountPayable < 0) {
-    //   // Show an alert message indicating the loan_amount exceeds the amount_payable
-    //   window.alert('Loan amount cannot exceed the remaining amount payable.');
-    //   return; // Stop further execution of the function
-    // }
-    // Check if loan_amount is provided
 
     api
       .post('/payrollmanagement/editpayrollmanagementMain', updatedPayrollData)
       .then(() => {
         message('Record edited successfully', 'success');
         //navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
-        //getPayroll();
+        getPayroll();
         //getPreviousEarlierLoan();
         setEditTotalDeduction(false);
       })
@@ -371,73 +363,77 @@ function PayrollManagementDetails() {
   };
 
   // Loan amount is provided, proceed with loan record update
-  const updatedLoanData = {
-    ...loan,
-    loan_repayment_amount_per_month: payroll.loan_amount,
-    payroll_management_id: id,
-    employee_id: loan.empId,
-    // Insert the payroll_management_id
-  };
+ //Method for getting data by LoanId and Employee Id
+ const getPreviousEarlierLoan = (empId,loanId) => {
+  //const loanRecord =loan.loan_id
+  api
+    .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId ,loan_id:loanId})
+    .then((res) => {
+      const loanData = res.data.data;   
+
+      // Update the payroll_management_id and loan_id for each loan record
+      const updatedLoanData = loanData.map((loanRecord) => ({
+        ...loanRecord,
+        payroll_management_id: id, // Replace with the actual payroll_management_id
+        loan_id: loan.loan_id, // Assuming 'id' is the loan_id field in your data
+      }));
+
+      setLoan(updatedLoanData);
+    })
+    .catch(() => {
+      //message('Loan not found', 'info');
+    });
+};
+
+// Get payroll By Id
+const getPayroll = () => {
+  api
+    .post('/payrollmanagement/getpayrollmanagementById', { payroll_management_id: id })
+    .then((res) => {
+      setPayroll(res.data.data[0]);
+
+      getPreviousEarlierLoan(res.data.data[0].employee_id);
+      getLeaves(res.data.data[0].employee_id);
+    })
+    .catch(() => {
+      //message('Loan Data Not Found', 'info');
+    });
+};
 
   // Call the API to update the loan record
-  const insertLoanRepayment = (empId) => {
+  const insertLoanRepayment = ( ) =>{
+    const updatedLoanData = {
+      ...loan,
+      loan_repayment_amount_per_month: payroll.loan_amount,
+      payroll_management_id: id,
+      employee_id: loan.empId,
+      loan_id: loan.loanId, 
+      // Insert the payroll_management_id
+    };
     api
       .post('/loan/insertLoanRepaymenthistory', updatedLoanData)
       .then(() => {
-        // Loan record updated successfully
+        getPreviousEarlierLoan(loan.loanId,empId);
+        message( 'Loan record updated successfully')
       })
       .catch(() => {
         message('Unable to update loan record.', 'error');
       });
   };
 
-  // //getting lastmonth first and last date
-  // const getlastmonthdates = () => {
-  //   const lastmonthfirstdate = moment(new Date())
-  //     .subtract(1, 'months')
-  //     .startOf('month')
-  //     .format('DD-MM-YYYY');
+  //getting lastmonth first and last date
+  const getlastmonthdates = () => {
+    const lastmonthfirstdate = moment(new Date())
+      .subtract(1, 'months')
+      .startOf('month')
+      .format('DD-MM-YYYY');
 
-  //   const lastmonthlastdate = moment(new Date())
-  //     .subtract(1, 'months')
-  //     .endOf('month')
-  //     .format('DD-MM-YYYY');
-  // };
-  //Method for getting data by LoanId and Employee Id
-  const getPreviousEarlierLoan = (empId) => {
-    api
-      .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId })
-      .then((res) => {
-        const loanData = res.data.data;
-
-        // Update the payroll_management_id and loan_id for each loan record
-        const updatedLoanData = loanData.map((loanRecord) => ({
-          ...loanRecord,
-          payroll_management_id: id, // Replace with the actual payroll_management_id
-          loan_id: loanRecord.loan_id, // Assuming 'id' is the loan_id field in your data
-        }));
-
-        setLoan(updatedLoanData);
-      })
-      .catch(() => {
-        //message('Loan not found', 'info');
-      });
+    const lastmonthlastdate = moment(new Date())
+      .subtract(1, 'months')
+      .endOf('month')
+      .format('DD-MM-YYYY');
   };
-
-  // Get payroll By Id
-  const getPayroll = () => {
-    api
-      .post('/payrollmanagement/getpayrollmanagementById', { payroll_management_id: id })
-      .then((res) => {
-        setPayroll(res.data.data[0]);
-
-        getPreviousEarlierLoan(res.data.data[0].employee_id);
-        getLeaves(res.data.data[0].employee_id);
-      })
-      .catch(() => {
-        //message('Loan Data Not Found', 'info');
-      });
-  };
+  
 
   const getLeaves = async (empid) => {
     api
