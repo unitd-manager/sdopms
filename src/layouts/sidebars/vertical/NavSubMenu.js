@@ -1,7 +1,9 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { Collapse, NavItem, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
+import { HasAccess,usePermify } from '@permify/react-role';
 
 const NavSubMenu = ({ icon, title, items, suffixColor, suffix }) => {
   const location = useLocation();
@@ -11,6 +13,21 @@ const NavSubMenu = ({ icon, title, items, suffixColor, suffix }) => {
   const toggle = () => {
     setCollapsed(!collapsed);
   };
+
+  const { isAuthorized, isLoading } = usePermify();
+
+  const fetchData = async () => {
+items.forEach(async(module)=>{
+   // Pass roles and permissions accordingly
+    // You can send empty array or null for first param to check permissions only
+    if (await isAuthorized(null, `${module.section_title}-list`)) {
+      return true
+   }
+     return false
+})
+   
+    
+};
 
   useEffect(() => {
     // Initialize the state based on local storage or default to closed
@@ -58,6 +75,12 @@ const NavSubMenu = ({ icon, title, items, suffixColor, suffix }) => {
 
       <Collapse isOpen={!collapsed} navbar tag="ul" className="subMenu">
         {items.map((item) => (
+           <HasAccess
+           roles={null}
+           permissions={`${item.section_title}-list`}
+           renderAuthFailed={<p></p>}
+           key={item.section_title}
+         >
           <NavItem
             key={item.section_title}
             className={`hide-mini  ${location.pathname === item.internal_link ? 'activeLink' : ''}`}
@@ -69,6 +92,7 @@ const NavSubMenu = ({ icon, title, items, suffixColor, suffix }) => {
               </span>
             </NavLink>
           </NavItem>
+          </HasAccess>
         ))}
       </Collapse>
     </NavItem>
