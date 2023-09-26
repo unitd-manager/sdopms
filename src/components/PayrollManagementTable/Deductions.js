@@ -459,13 +459,15 @@ function Deductions({
       <Row>
         <Col md="9"></Col>
         <Col md="3">
-          <Input name="" type="text" onChange={handleInputs} />
+          <Input name="" type="text" onChange={handleInputs}  disabled/>
+         
         </Col>
       </Row>
       <Row>
         <Col md="9"></Col>
         <Col md="3">
-          <Input name="" type="text" onChange={handleInputs} />
+          <Input name="" type="text" onChange={handleInputs}
+          disabled />
         </Col>
       </Row>
       <Row>

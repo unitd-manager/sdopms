@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmount }) {
+function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmount,calculateBasicPayPercentage }) {
   Earnings.propTypes = {
     payroll: PropTypes.object,
     handleEarnings: PropTypes.func,
     handleInputs: PropTypes.func,
     handleOtAmount: PropTypes.func,
     otAmount: PropTypes.any,
+    calculateBasicPayPercentage:PropTypes.func,
   };
 
   const [grossPay, setGrossPay] = useState(0);
@@ -34,8 +35,20 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
     payroll.allowance3,
     payroll.allowance4,
     payroll.allowance5,
-    otAmount || (payroll && payroll.ot_amount),
+    payroll.ot_amount,
   ]);
+  // const calculateBasicPayPercentage = () => {
+  //   if (payroll && payroll.total_basic_pay_for_month && payroll.actual_working_days) {
+  //     const totalBasicPay = parseFloat(payroll.basic_pay);
+  //     const actualWorkingDays = parseFloat(payroll.actual_working_days);
+
+  //     if (actualWorkingDays > 0) {
+  //       const basicPayPercentage = (totalBasicPay / actualWorkingDays).toFixed(2);
+  //       return `${basicPayPercentage}`;
+  //     }
+  //   }
+  //   return '';
+  // };
 
   return (
     <div>
@@ -44,9 +57,9 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
         <Col md="3">
           <Input
             disabled
-            name="basic_pay"
+            name="total_basic_pay_for_month"
             type="text"
-            value={payroll && payroll.basic_pay}
+            value={calculateBasicPayPercentage()}
             onChange={(e) => {
               handleInputs(e);
               handleEarnings(
@@ -101,6 +114,7 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleEarnings(
                 e.target.value,
                 payroll.basic_pay,
+               
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,

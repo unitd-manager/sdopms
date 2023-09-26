@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { TabPane, TabContent } from 'reactstrap';
+import { TabPane, TabContent, Form, FormGroup, Row } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 //import ClientButton from '../../components/ClientTable/ClientButton';
 import ClientMainDetails from '../../components/ClientTable/ClientMainDetails';
 import ContactEditModal from '../../components/Tender/ContactEditModal';
@@ -13,14 +13,16 @@ import ClientTenderDataGet from '../../components/ClientTable/ClientTenderDataGe
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import '../form-editor/editor.scss'; 
+import '../form-editor/editor.scss';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
-import NavTabs from '../../components/ClientTable/NavTabs';
+// import NavTabs from '../../components/ClientTable/NavTabs';
 import AddNote from '../../components/Tender/AddNote';
 import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
+import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
+import ComponentCardV2 from '../../components/ComponentCardV2';
 
 const ClientsEdit = () => {
   //Const Variables
@@ -43,7 +45,16 @@ const ClientsEdit = () => {
   const backToList = () => {
     navigate('/client');
   };
-  //  toggle
+
+  // Start for tab refresh navigation  #Renuka 1-06-23  
+  const tabs =  [
+    {id:'1',name:'Contacts Linked'},
+    {id:'2',name:'Projects Linked'},
+    {id:'3',name:'Invoice Linked'},
+    {id:'4',name:'Tender Linked'},
+    {id:'5',name:'Add notes'},
+  ];
+
   const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
@@ -64,19 +75,19 @@ const ClientsEdit = () => {
         setClientsDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Clients Data Not Found', 'info');
+        //message('Clients Data Not Found', 'info');
       });
   };
 
   //Logic for edit data in db
   const editClientsData = () => {
     if (clientsDetails.company_name !== '') {
-      clientsDetails.modification_date = creationdatetime
+      clientsDetails.modification_date = creationdatetime;
       api
         .post('/clients/editClients', clientsDetails)
         .then(() => {
           message('Record editted successfully', 'success');
-          editClientsById()
+          editClientsById();
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -98,28 +109,23 @@ const ClientsEdit = () => {
       });
   };
   //Email
-  // const sendMail = () => {
-  //   if (
-  //     window.confirm(
-  //       ' Are you sure do you want to send Mail to this Client \n',
-  //     )
-  //   ) {
-  //   const to ="fatema@unitdtechnologies.com";
-  //   const text = "Hello";
-  //   const subject ="Test Mail";
-  //   api
-  //     .post('/email/sendemail',{to,text,subject})
-  //     .then(() => {
-  //       message('Email sent successfully.', 'success');
-  //     })
-  //     .catch(() => {
-  //       message('Email Data Not Found', 'info');
-  //     });
-  //   }
-  //  else {
-  //   applyChanges();
-  // }
-  // };
+  const sendMail = () => {
+    if (window.confirm(' Are you sure do you want to send Mail to this Client \n')) {
+      const to = 'fatema@unitdtechnologies.com';
+      const text = 'Hello';
+      const subject = 'Test Mail';
+      api
+        .post('/email/sendemail', { to, text, subject })
+        .then(() => {
+          message('Email sent successfully.', 'success');
+        })
+        .catch(() => {
+          message('Email Data Not Found', 'info');
+        });
+    } else {
+      applyChanges();
+    }
+  };
 
   // insert Contact
   const [newContactData, setNewContactData] = useState({
@@ -134,19 +140,27 @@ const ClientsEdit = () => {
   });
 
   const AddNewContact = () => {
-    const newContactWithCompanyId = newContactData;
+  
+        const newContactWithCompanyId = newContactData;
     newContactWithCompanyId.company_id = id;
+    if (
+      newContactWithCompanyId.salutation !== '' &&
+      newContactWithCompanyId.first_name !== '' 
+    
+    ) {
     api
       .post('/clients/insertContact', newContactWithCompanyId)
       .then(() => {
-        // const insertedDataId = res.data.data.insertId;
         message('Contact inserted successfully.', 'success');
         window.location.reload();
       })
       .catch(() => {
         message('Network connection error.', 'error');
       });
-  };
+  }else {
+    message('Please fill all required fields', 'warning');
+  }
+};
 
   //Contact Functions/Methods
   const handleAddNewContact = (e) => {
@@ -172,7 +186,7 @@ const ClientsEdit = () => {
         setProjectDetails(res.data.data);
       })
       .catch(() => {
-        message('Project Data Not Found', 'info');
+        //message('Project Data Not Found', 'info');
       });
   };
 
@@ -184,7 +198,7 @@ const ClientsEdit = () => {
         setInvoiceDetails(res.data.data);
       })
       .catch(() => {
-        message('Invoice Data Not Found', 'info');
+       // message('Invoice Data Not Found', 'info');
       });
   };
 
@@ -196,7 +210,7 @@ const ClientsEdit = () => {
         setTenderDetails(res.data.data);
       })
       .catch(() => {
-        message('Tender Data Not Found', 'info');
+        // message('Tender Data Not Found', 'info');
       });
   };
   //Api for getting all countries
@@ -207,7 +221,7 @@ const ClientsEdit = () => {
         setallCountries(res.data.data);
       })
       .catch(() => {
-        message('Country Data Not Found', 'info');
+        //message('Country Data Not Found', 'info');
       });
   };
 
@@ -220,26 +234,21 @@ const ClientsEdit = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-    api
-      .post('/clients/deleteContact', { contact_id: staffId })
-      .then((res) => {
-        console.log(res)
-        Swal.fire(
-          'Deleted!',
-          'Contact has been deleted.',
-          'success'
-        )
-        message('Record deleted successfully', 'success');
-        window.location.reload();
-      })
-      .catch(() => {
-        message('Unable to delete record.', 'error');
-      });
+        api
+          .post('/clients/deleteContact', { contact_id: staffId })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
       }
-    })
+    });
   };
 
   useEffect(() => {
@@ -249,50 +258,41 @@ const ClientsEdit = () => {
     editInvoiceById();
     editTenderById();
     getAllCountries();
- 
   }, [id]);
 
   return (
     <>
-     {/* BreadCrumbs */}
-     <BreadCrumbs heading={clientsDetails && clientsDetails.company_name} />
-      {/* Button List */}
-      {/* <ClientButton
-        editClientsData={editClientsData}
-        navigate={navigate}
-        applyChanges={applyChanges}
-        DeleteClient={DeleteClient}
-        backToList={backToList}
-        sendMail={sendMail}
-      ></ClientButton> */}
-     <ApiButton
+      {/* BreadCrumbs */}
+      <BreadCrumbs heading={clientsDetails && clientsDetails.company_name} />
+      <Form>
+    <FormGroup>
+      <ComponentCardV2>
+        <Row>
+       <ApiButton
               editData={editClientsData}
               navigate={navigate}
-              applyChanges={applyChanges}
+              applyChanges={editClientsData}
               backToList={backToList}
-             deleteData={DeleteClient}
+              deleteData={DeleteClient}
+              sendMail={sendMail}
               module="Client"
             ></ApiButton>
+            </Row>
+            </ComponentCardV2>
+            </FormGroup>
+            </Form>
       {/* Client Main details */}
-       <ComponentCard
-            title="Client Details"
-            creationModificationDate={clientsDetails}
-          
-          > 
+      <ComponentCard title="Client Details" creationModificationDate={clientsDetails}>
         <ClientMainDetails
           handleInputs={handleInputs}
           clientsDetails={clientsDetails}
           allCountries={allCountries}
         ></ClientMainDetails>
       </ComponentCard>
-      {/* ClientcreationModification */}
-      {/* <ComponentCard>
-        <ClientcreationModification clientsDetails={clientsDetails}></ClientcreationModification>
-      </ComponentCard> */}
       <ComponentCard title="More Details">
         <ToastContainer></ToastContainer>
         {/* Nav Tab */}
-        <NavTabs toggle={toggle} activeTab={activeTab}></NavTabs>
+        <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
           {/* Contact Linked */}
           <TabPane tabId="1">
@@ -328,10 +328,8 @@ const ClientsEdit = () => {
           </TabPane>
           {/* ADD NOTE */}
           <TabPane tabId="5">
-          <ComponentCard title="Add a note">
-            <AddNote recordId={id} roomName="AccountEdit" />
-            <ViewNote recordId={id} roomName="AccountEdit" />
-          </ComponentCard>
+              <AddNote recordId={id} roomName="AccountEdit" />
+              <ViewNote recordId={id} roomName="AccountEdit" />
           </TabPane>
         </TabContent>
       </ComponentCard>

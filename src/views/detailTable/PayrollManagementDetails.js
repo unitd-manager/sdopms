@@ -21,6 +21,7 @@ import PayslipSummary from '../../components/PayrollManagementTable/PayslipSumma
 import EarningDeductions from '../../components/PayrollManagementTable/EarningDeductions';
 import PayrollLeaveSummary from '../../components/PayrollManagementTable/PayrollLeaveSummary';
 import ApiButton from '../../components/ApiButton';
+
 //import Loan from '../smartconTables/Loan';
 
 function PayrollManagementDetails() {
@@ -79,7 +80,6 @@ function PayrollManagementDetails() {
   });
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
-  const [loan, setLoan] = useState([]);
   const [totalMonthPay, setTotalMonthPay] = useState();
   const [totalDeductions, setTotalDeductions] = useState();
   const [otAmount, setOtAmount] = useState();
@@ -87,9 +87,7 @@ function PayrollManagementDetails() {
   const [leave, setLeave] = useState([]);
   const [editTotalDeduction, setEditTotalDeduction] = useState(false);
   //handle inputs
-  const handleInputs = (e) => {
-    setPayroll({ ...payroll, [e.target.name]: e.target.value });
-  };
+
   const backToList = () => {
     navigate('/PayrollManagement');
   };
@@ -187,6 +185,19 @@ function PayrollManagementDetails() {
     );
   };
 
+  // const handleInputs = (e) => {
+  //   const { name, value } = e.target;
+  //   setPayroll({ ...payroll, [name]: value });
+
+  //   // If the input name is "loan_amount," update loan_repayment_amount_per_month as well
+  //   if (name === 'loan_amount') {
+  //     setLoan((prevLoan) => ({
+  //       ...prevLoan,
+  //       loan_repayment_amount_per_month: value,
+  //     }));
+  //   }
+  // };
+
   // Calculate and update Gross Pay whenever relevant fields change
   // useEffect(() => {
   //   const basicPay = parseFloat(payroll.basic_pay) || 0;
@@ -210,6 +221,88 @@ function PayrollManagementDetails() {
   //   payroll.allowance5,
   //   otAmount || (payroll && payroll.ot_amount),
   // ]);
+  const [loan, setLoan] = useState([]);
+  const calculateBasicPayPercentage = () => {
+    if (
+      payroll &&
+      payroll.basic_pay &&
+      payroll.actual_working_days &&
+      payroll.working_days_in_month
+    ) {
+      const totalBasicPay = parseFloat(payroll.basic_pay);
+      const actualWorkingDays = parseFloat(payroll.actual_working_days);
+      const workingDaysInMonth = parseFloat(payroll.working_days_in_month);
+
+      if (actualWorkingDays > 0 && workingDaysInMonth > 0) {
+        const basicPayPercentage = (
+          (totalBasicPay / workingDaysInMonth) *
+          actualWorkingDays
+        ).toFixed(2);
+        return `${basicPayPercentage}`;
+      }
+    }
+    return '';
+  };
+  // const handleInputs = (e) => {
+  //   setPayroll({ ...payroll, [e.target.name]: e.target.value });
+  // };
+  const handleInputs = (e) => {
+    const { name, value } = e.target;
+
+    // Check if the edited field is "actual_working_days" and the value is greater than "workingDaysInMonth"
+    if (name === 'actual_working_days') {
+      const actualWorkingDays = parseFloat(value);
+      if (actualWorkingDays > workingDaysInMonth) {
+        // Show an alert or error message
+        alert('Actual worked days cannot be greater than Working Days in Month');
+        // Reset the input field to the previous valid value
+        e.target.value = payroll.actual_working_days || ''; // You can set an empty string or some default value
+        return; // Do not update the state with an invalid value
+      }
+    }
+
+    // Update the state with the new value
+    setPayroll((prevPayroll) => ({
+      ...prevPayroll,
+      [name]: value,
+    }));
+  };
+  // Function to calculate working days in a month
+  const calculateDaysInRange = () => {
+    const workingDaysInWeek = parseFloat(payroll.working_days);
+    const startDate = moment(payroll.payslip_start_date);
+    const endDate = moment(payroll.payslip_end_date);
+    const daysInRange = endDate.diff(startDate, 'days') + 1;
+    console.log('1', daysInRange);
+    // Calculate the number of weeks between the two dates
+    //const weeksInRange = Math.ceil(endDate.diff(startDate, 'days') / 7);
+    console.log('2', workingDaysInWeek);
+    // Calculate the number of weeks (rounded down)
+    const TotaldaysInRanges = Math.floor(daysInRange / 7);
+
+    // Calculate the remaining days
+    const remainingDays = daysInRange - TotaldaysInRanges * 7;
+
+    // Calculate total working days in the month
+    const workingdaysInRanges = workingDaysInWeek * TotaldaysInRanges + remainingDays;
+    console.log("3",'Total days in range:', daysInRange);
+    console.log("4",'Total weeks in range:', TotaldaysInRanges);
+    console.log("5",'Total weeks in range:', remainingDays);
+    console.log("6",'Total weeks in range:', workingdaysInRanges);
+
+    return workingdaysInRanges;
+  };
+
+  const [workingDaysInMonth, setWorkingDaysInMonth] = useState(calculateDaysInRange());
+
+  useEffect(() => {
+    // Recalculate working days in a month whenever payroll data changes
+    setWorkingDaysInMonth(calculateDaysInRange());
+  }, [payroll]);
+
+  // const handleLoanInputs = (e, element) => {
+  //   setLoan({ ...loan, loan_id: element.loan_id, [e.target.name]: e.target.value });
+  // };
 
   // Edit Payroll Data Function
   const editPayrollData = () => {
@@ -218,7 +311,7 @@ function PayrollManagementDetails() {
     }
     // Calculate and update totalMonthPay with the latest values
     const newTotalMonthPay =
-      parseFloat(payroll.basic_pay || 0) +
+      parseFloat(payroll.total_basic_pay_for_month || 0) +
       parseFloat(otAmount || 0) +
       parseFloat(payroll.allowance1 || 0) +
       parseFloat(payroll.allowance2 || 0) +
@@ -251,15 +344,25 @@ function PayrollManagementDetails() {
       total_basic_pay_for_month: newTotalMonthPay,
       total_deductions: newTotalDeductions,
       net_total: newNetTotal,
-      ot_amount: otAmount || 0, // Ensure ot_amount is always included
+      //ot_amount: otAmount || 0, // Ensure ot_amount is always included
     };
+    //  const remainingAmountPayable = element.amount_payable - (payroll.loan_amount || 0);
+
+    // // Check if the loan_amount exceeds the amount_payable
+    // if (remainingAmountPayable < 0) {
+    //   // Show an alert message indicating the loan_amount exceeds the amount_payable
+    //   window.alert('Loan amount cannot exceed the remaining amount payable.');
+    //   return; // Stop further execution of the function
+    // }
+    // Check if loan_amount is provided
 
     api
       .post('/payrollmanagement/editpayrollmanagementMain', updatedPayrollData)
       .then(() => {
         message('Record edited successfully', 'success');
         //navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
-        getPayroll();
+        //getPayroll();
+        //getPreviousEarlierLoan();
         setEditTotalDeduction(false);
       })
       .catch(() => {
@@ -267,42 +370,57 @@ function PayrollManagementDetails() {
       });
   };
 
-  //getting lastmonth first and last date
-  const getlastmonthdates = () => {
-    const lastmonthfirstdate = moment(new Date())
-      .subtract(1, 'months')
-      .startOf('month')
-      .format('DD-MM-YYYY');
-
-    const lastmonthlastdate = moment(new Date())
-      .subtract(1, 'months')
-      .endOf('month')
-      .format('DD-MM-YYYY');
+  // Loan amount is provided, proceed with loan record update
+  const updatedLoanData = {
+    ...loan,
+    loan_repayment_amount_per_month: payroll.loan_amount,
+    payroll_management_id: id,
+    employee_id: loan.empId,
+    // Insert the payroll_management_id
   };
+
+  // Call the API to update the loan record
+  const insertLoanRepayment = (empId) => {
+    api
+      .post('/loan/insertLoanRepaymenthistory', updatedLoanData)
+      .then(() => {
+        // Loan record updated successfully
+      })
+      .catch(() => {
+        message('Unable to update loan record.', 'error');
+      });
+  };
+
+  // //getting lastmonth first and last date
+  // const getlastmonthdates = () => {
+  //   const lastmonthfirstdate = moment(new Date())
+  //     .subtract(1, 'months')
+  //     .startOf('month')
+  //     .format('DD-MM-YYYY');
+
+  //   const lastmonthlastdate = moment(new Date())
+  //     .subtract(1, 'months')
+  //     .endOf('month')
+  //     .format('DD-MM-YYYY');
+  // };
   //Method for getting data by LoanId and Employee Id
   const getPreviousEarlierLoan = (empId) => {
     api
       .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId })
       .then((res) => {
-        setLoan(res.data.data);
-        //setOtAmount(res.data.data[0].ot_amount);
+        const loanData = res.data.data;
+
+        // Update the payroll_management_id and loan_id for each loan record
+        const updatedLoanData = loanData.map((loanRecord) => ({
+          ...loanRecord,
+          payroll_management_id: id, // Replace with the actual payroll_management_id
+          loan_id: loanRecord.loan_id, // Assuming 'id' is the loan_id field in your data
+        }));
+
+        setLoan(updatedLoanData);
       })
       .catch(() => {
-        message('Loan not found', 'info');
-      });
-  };
-  const handleLoanInputs = (e) => {
-    setLoan({ ...loan, [e.target.name]: e.target.value });
-  };
-  const updatedata = () => {
-    api
-      .post('/payrollmanagement/editLoanCalulation', loan)
-      .then((res) => {
-        message('Record editted successfully', 'success');
-        //getProjectById();
-      })
-      .catch(() => {
-        //message('Loan Data Not Found', 'info');
+        //message('Loan not found', 'info');
       });
   };
 
@@ -333,9 +451,32 @@ function PayrollManagementDetails() {
   };
 
   useEffect(() => {
-    getlastmonthdates();
+    //getlastmonthdates();
     getPayroll();
   }, [id]);
+  const columns = [
+    {
+      name: 'SN.No',
+    },
+    {
+      name: 'Loan Type/Date',
+    },
+    {
+      name: 'Total Loan Amount',
+    },
+    {
+      name: ' Total Amount Paid',
+    },
+    {
+      name: 'Amount Paid Now',
+    },
+    {
+      name: 'Remarks',
+    },
+    {
+      name: 'Amount Payable',
+    },
+  ];
 
   return (
     <>
@@ -367,7 +508,11 @@ function PayrollManagementDetails() {
 
         {/* Payslip summary */}
 
-        <PayslipSummary payroll={payroll} handleInputs={handleInputs} />
+        <PayslipSummary
+          payroll={payroll}
+          handleInputs={handleInputs}
+          workingDaysInMonth={workingDaysInMonth}
+        />
         {/* Earnings and deductions table */}
         <EarningDeductions
           payroll={payroll}
@@ -379,17 +524,16 @@ function PayrollManagementDetails() {
           totalDeductions={totalDeductions}
           totalMonthPay={totalMonthPay}
           setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
+          calculateBasicPayPercentage={calculateBasicPayPercentage}
         />
         {loanPaymentHistoryModal && (
           <LoanPaymentHistoryModal
             loanPaymentHistoryModal={loanPaymentHistoryModal}
             setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
-            loanHistories={loan}
-            payroll={payroll}
-            editPayrollData={editPayrollData}
+            loan={loan}
+            insertLoanRepayment={insertLoanRepayment}
             handleInputs={handleInputs}
-            handleLoanInputs={handleLoanInputs}
-            updatedata={updatedata}
+            payroll={payroll}
           />
         )}
 

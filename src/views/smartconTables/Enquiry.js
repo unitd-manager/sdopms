@@ -1,53 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import moment from 'moment';
 import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
 
-const Booking = () => {
-  //state variable
-  const [bookings, setBookings] = useState(null);
-  const [loading, setLoading] = useState(false)
+const Opportunity = () => {
+  const [tenders, setTenders] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-
-  //getting Booking data in db
-  const getBooking = () => {
-    api.get('/booking/getBooking').then((res) => {
-      setBookings(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+  const getTenders = () => {
+    api
+      .get('/tender/getTenders')
+      .then((res) => {
+        setTenders(res.data.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
-
-
   useEffect(() => {
-    getBooking();
+    getTenders();
   }, []);
 
-  //  stucture of Booking list view
   const columns = [
     {
       name: '#',
@@ -66,50 +48,62 @@ const Booking = () => {
       sortable: false,
     },
     {
-      name: 'Date',
-      selector: 'booking_date',
+      name: 'Enquiry date',
+      selector: 'enquiry_date',
       sortable: true,
       grow: 0,
       wrap: true,
     },
     {
-      name: 'AssignTime',
-      selector: 'assign_time',
+      name: 'Enquiry No',
+      selector: 'opportunity_code',
       sortable: true,
       grow: 2,
       wrap: true,
     },
     {
-      name: 'CustomerName',
+      name: 'Customer',
       selector: 'company_name',
       sortable: true,
       grow: 0,
     },
     {
-      name: 'EmployeeName',
-      selector: 'employee_name',
+      name: 'Reference',
+      selector: 'office_ref_no',
       sortable: true,
       width: 'auto',
       grow: 3,
     },
     {
-      name: 'Address',
-      selector: 'address',
+      name: 'BID Expiry',
+      selector: 'project_end_date',
       sortable: true,
       grow: 2,
+      width: 'auto',
+    },
+    {
+      name: 'Service',
+      selector: 'services',
+      sortable: true,
+      width: 'auto',
+    },
+    {
+      name: 'Enquiry Status',
+      selector: 'status',
+      sortable: true,
       width: 'auto',
     },
   ];
 
   return (
     <div className="MainDiv">
-      <div className="pt-xs-25">
+      <div className=" pt-xs-25">
         <BreadCrumbs />
         <CommonTable
-        loading={loading}
-          title="Booking List"
+          loading={loading}
+          title="Enquiry List"
           Button={
-            <Link to="/BookingDetails">
+            <Link to="/EnquiryDetails">
               <Button color="primary" className="shadow-none">
                 Add New
               </Button>
@@ -124,21 +118,23 @@ const Booking = () => {
             </tr>
           </thead>
           <tbody>
-            {bookings &&
-              bookings.map((element, index) => {
+            {tenders &&
+              tenders.map((element, index) => {
                 return (
-                  <tr key={element.booking_id}>
+                  <tr key={element.opportunity_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/BookingEdit/${element.booking_id}`}>
+                      <Link to={`/EnquiryEdit/${element.opportunity_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{moment(element.booking_date).format('YYYY-MM-DD')}</td>
-                    <td>{element.assign_time}</td>
+                    <td>{element.enquiry_date}</td>
+                    <td>{element.opportunity_code}</td>
                     <td>{element.company_name}</td>
-                    <td>{element.employee_name}</td>
-                    <td>{element.address}</td>
+                    <td>{element.office_ref_no}</td>
+                    <td>{element.project_end_date }</td>
+                    <td>{element.services}</td>
+                    <td>{element.status}</td>
                   </tr>
                 );
               })}
@@ -149,4 +145,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default Opportunity;

@@ -95,12 +95,14 @@ const LeavesEdit = () => {
 
   //Logic for edit data in db
   const editLeavesData = () => {
+    if(leavesDetails.no_of_days!==''){
     if (new Date(leavesDetails.to_date) >= new Date(leavesDetails.from_date)) {
+      
       if (
         leavesDetails.from_date!=='' &&
         leavesDetails.to_date!=='' &&
-        leavesDetails.leave_type!=='' &&
-        leavesDetails.no_of_days!==''
+        leavesDetails.leave_type!==''
+       
       ) {
         api
           .post('/leave/editleave', leavesDetails)
@@ -113,8 +115,12 @@ const LeavesEdit = () => {
       } else {
         message('Please fill all required fields', 'warning');
       }
-    } else {
+    }else{
       message('The To date should be the future date of From date', 'error');
+     
+    }
+    } else {
+      message('Please fill No Of Days(current Month)', 'warning');
     }
   };
 
