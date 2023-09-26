@@ -96,6 +96,7 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
             <Label> Overtime Applicable</Label>
             <br></br>
             <Label> Yes </Label>
+            &nbsp;
             <Input
               name="overtime"
               value="1"
@@ -106,7 +107,10 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
                 handleInputsRadio(jobModal.over_time_rate, e.target.value, jobModal.basic_pay);
               }}
             />
+            &nbsp;
+            &nbsp;
             <Label> No </Label>
+            &nbsp;
             <Input
               name="overtime"
               value="0"
@@ -143,7 +147,7 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
             </FormGroup>
           </Col>
         )}
-        <Col md="3">
+        {/* <Col md="3">
           <FormGroup>
             <Label>Overtime Pay Rate/ Hour</Label>
             <Input
@@ -233,6 +237,28 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
         </Col>
         <Col md="3">
           <FormGroup>
+            <Label>Food</Label>
+            <Input
+              type="numbers"
+              onChange={handleInputs}
+              value={jobModal && jobModal.deduction3}
+              name="deduction3"
+            />
+          </FormGroup>
+        </Col>
+        <Col md="3">
+          <FormGroup>
+            <Label>Others</Label>
+            <Input
+              type="numbers"
+              onChange={handleInputs}
+              value={jobModal && jobModal.deduction4}
+              name="deduction4"
+            />
+          </FormGroup>
+        </Col>
+        <Col md="3">
+          <FormGroup>
             <Label>Levy</Label>
             <Input
               type="numbers"
@@ -241,7 +267,7 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
               name="levy_amount"
             />
           </FormGroup>
-        </Col>
+        </Col> */}
       </Row>
     </FormGroup>
   );

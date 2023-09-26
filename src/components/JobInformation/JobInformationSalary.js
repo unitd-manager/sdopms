@@ -6,13 +6,13 @@ export default function JobProbation({
   handleInputsJobInformation,
   job,
   handleRadioGst,
-  overTimeRate,
+  // overTimeRate,
 }) {
   JobProbation.propTypes = {
     handleInputsJobInformation: PropTypes.any,
     job: PropTypes.any,
     handleRadioGst: PropTypes.any,
-    overTimeRate: PropTypes.any,
+    // overTimeRate: PropTypes.any,
   };
 
   return (
@@ -101,6 +101,7 @@ export default function JobProbation({
               <Label> Overtime Applicable</Label>
               <br></br>
               <Label> Yes </Label>
+              &nbsp;
               <Input
                 name="overtime"
                 value="1"
@@ -111,7 +112,10 @@ export default function JobProbation({
                   handleRadioGst(job.over_time_rate, e.target.value, job.basic_pay);
                 }}
               />
+              &nbsp;
+              &nbsp;
               <Label> No </Label>
+              &nbsp;
               <Input
                 name="overtime"
                 value="0"
@@ -151,7 +155,7 @@ export default function JobProbation({
             <FormGroup>
               <Label>Overtime Pay Rate/ Hour</Label>
               <br />
-              <span>{overTimeRate}</span>
+              <span>{job && job.overtime_pay_rate?job.overtime_pay_rate:''}</span>
             </FormGroup>
           </Col>
 

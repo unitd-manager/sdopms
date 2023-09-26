@@ -43,10 +43,10 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
               >
                 <Button
                   onClick={() => {
-                    editData();
-                    setTimeout(()=>{
-                      navigate(`/${module}`);
-                    },1000)
+                    editData()
+                      setTimeout(()=>{
+                        backToList();
+                      },1000)
                     
                   }}
                   color="primary"
@@ -94,7 +94,7 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
               >
                 <Button color="danger" onClick={() => {deleteData();
                  setTimeout(()=>{
-                  navigate(`/${module}`);
+                  backToList();
                 },1000)
                 }}>
                   Delete
