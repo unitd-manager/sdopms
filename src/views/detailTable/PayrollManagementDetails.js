@@ -161,7 +161,7 @@ function PayrollManagementDetails() {
     allowances3,
     allowances4,
     allowances5,
-    totalMonthPay,
+   
   ) => {
     /* eslint-disable */
     if (!basicPay) basicPay = 0;
@@ -171,7 +171,8 @@ function PayrollManagementDetails() {
     if (!allowances3) allowances3 = 0;
     if (!allowances4) allowances4 = 0;
     if (!allowances5) allowances5 = 0;
-    if (!totalMonthPay) totalMonthPay = 0;
+   
+  
 
     setTotalMonthPay(
       parseFloat(basicPay) +
@@ -180,8 +181,9 @@ function PayrollManagementDetails() {
         parseFloat(allowances2) +
         parseFloat(allowances3) +
         parseFloat(allowances4) +
-        parseFloat(allowances5) +
-        parseFloat(totalMonthPay),
+        parseFloat(allowances5) 
+       
+       
     );
   };
 
@@ -199,28 +201,28 @@ function PayrollManagementDetails() {
   // };
 
   //Calculate and update Gross Pay whenever relevant fields change
-  useEffect(() => {
-    const basicPay = parseFloat(payroll.basic_pay) || 0;
-    const allowance1 = parseFloat(payroll.allowance1) || 0;
-    const allowance2 = parseFloat(payroll.allowance2) || 0;
-    const allowance3 = parseFloat(payroll.allowance3) || 0;
-    const allowance4 = parseFloat(payroll.allowance4) || 0;
-    const allowance5 = parseFloat(payroll.allowance5) || 0;
-    const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
+  // useEffect(() => {
+  //   const basicPay = parseFloat(payroll.total_basic_pay_for_month) || 0;
+  //   const allowance1 = parseFloat(payroll.allowance1) || 0;
+  //   const allowance2 = parseFloat(payroll.allowance2) || 0;
+  //   const allowance3 = parseFloat(payroll.allowance3) || 0;
+  //   const allowance4 = parseFloat(payroll.allowance4) || 0;
+  //   const allowance5 = parseFloat(payroll.allowance5) || 0;
+  //   const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
 
-    const newGrossPay =
-      basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
+  //   const newGrossPay =
+  //     basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
 
-    setTotalMonthPay(newGrossPay);
-  }, [
-    payroll.basic_pay,
-    payroll.allowance1,
-    payroll.allowance2,
-    payroll.allowance3,
-    payroll.allowance4,
-    payroll.allowance5,
-    otAmount || (payroll && payroll.ot_amount),
-  ]);
+  //   setTotalMonthPay(newGrossPay);
+  // }, [
+  //   payroll.basic_pay,
+  //   payroll.allowance1,
+  //   payroll.allowance2,
+  //   payroll.allowance3,
+  //   payroll.allowance4,
+  //   payroll.allowance5,
+  //   otAmount || (payroll && payroll.ot_amount),
+  // ]);
   const [loan, setLoan] = useState([]);
   const calculateBasicPayPercentage = () => {
     if (
@@ -303,46 +305,47 @@ function PayrollManagementDetails() {
   // const handleLoanInputs = (e, element) => {
   //   setLoan({ ...loan, loan_id: element.loan_id, [e.target.name]: e.target.value });
   // };
+   // Calculate and update totalMonthPay with the latest values
+   const newTotalMonthPay =
+   parseFloat(payroll.total_basic_pay_for_month || 0) +
+   parseFloat(otAmount || (payroll && payroll.ot_amount) ||0) +
+   parseFloat(payroll.allowance1 || 0) +
+   parseFloat(payroll.allowance2 || 0) +
+   parseFloat(payroll.allowance3 || 0) +
+   parseFloat(payroll.allowance4 || 0) +
+   parseFloat(payroll.allowance5 || 0);
+
+ // Calculate and update totalDeductions with the latest values
+ const newTotalDeductions =
+   parseFloat(payroll.deduction1 || 0) +
+   parseFloat(payroll.deduction2 || 0) +
+   parseFloat(payroll.deduction3 || 0) +
+   parseFloat(payroll.deduction4 || 0) +
+   parseFloat(payroll.sdl || 0) +
+   parseFloat(payroll.income_tax_amount || 0) +
+   parseFloat(payroll.loan_amount || 0) +
+   parseFloat(payroll.pay_eucf || 0) +
+   parseFloat(payroll.pay_cdac || 0) +
+   parseFloat(payroll.pay_mbmf || 0) +
+   parseFloat(payroll.pay_sinda || 0);
+
+ const newNetTotal =
+   newTotalMonthPay +
+   parseFloat(payroll.director_fee || 0) +
+   parseFloat(payroll.reimbursement || 0) -
+   newTotalDeductions;
 
   // Edit Payroll Data Function
   const editPayrollData = () => {
     if (editTotalDeduction) {
       payroll.total_deductions = totalDeductions;
     }
-    // Calculate and update totalMonthPay with the latest values
-    const newTotalMonthPay =
-      parseFloat(payroll.total_basic_pay_for_month || 0) +
-      parseFloat(otAmount || (payroll && payroll.ot_amount) ||0) +
-      parseFloat(payroll.allowance1 || 0) +
-      parseFloat(payroll.allowance2 || 0) +
-      parseFloat(payroll.allowance3 || 0) +
-      parseFloat(payroll.allowance4 || 0) +
-      parseFloat(payroll.allowance5 || 0);
-
-    // Calculate and update totalDeductions with the latest values
-    const newTotalDeductions =
-      parseFloat(payroll.deduction1 || 0) +
-      parseFloat(payroll.deduction2 || 0) +
-      parseFloat(payroll.deduction3 || 0) +
-      parseFloat(payroll.deduction4 || 0) +
-      parseFloat(payroll.sdl || 0) +
-      parseFloat(payroll.income_tax_amount || 0) +
-      parseFloat(payroll.loan_amount || 0) +
-      parseFloat(payroll.pay_eucf || 0) +
-      parseFloat(payroll.pay_cdac || 0) +
-      parseFloat(payroll.pay_mbmf || 0) +
-      parseFloat(payroll.pay_sinda || 0);
-
-    const newNetTotal =
-      newTotalMonthPay +
-      parseFloat(payroll.director_fee || 0) +
-      parseFloat(payroll.reimbursement || 0) -
-      newTotalDeductions;
+   
       //payroll.ot_amount= otAmount;
 
     const updatedPayrollData = {
       ...payroll,
-      total_basic_pay_for_month: newTotalMonthPay,
+      
       total_deductions: newTotalDeductions,
       net_total: newNetTotal,
       ot_amount: otAmount ||(payroll && payroll.ot_amount)  || 0, // Ensure ot_amount is always included
@@ -517,6 +520,7 @@ const getPayroll = () => {
           handleInputs={handleInputs}
           handleOtAmount={handleOtAmount}
           otAmount={otAmount}
+          newTotalMonthPay={newTotalMonthPay}
           totalDeductions={totalDeductions}
           totalMonthPay={totalMonthPay}
           setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}

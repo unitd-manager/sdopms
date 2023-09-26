@@ -102,19 +102,19 @@ const Payrollmanagement = () => {
         message('Unable to edit record.', 'error');
       });
   };
-// const[cpfem,setCPF]=useState();
-//   const getCPf = () => {
-//     api
-//       .post('/payrollmanagement/getCpfCalculation', { employee_id: payrollManagementsdata.empId })
-//       .then((res) => {
-//         setCPF(res.data.data);
-//         console.log("cpfemp",cpfem);
-//       })
+  // const[cpfem,setCPF]=useState();
+  //   const getCPf = () => {
+  //     api
+  //       .post('/payrollmanagement/getCpfCalculation', { employee_id: payrollManagementsdata.empId })
+  //       .then((res) => {
+  //         setCPF(res.data.data);
+  //         console.log("cpfemp",cpfem);
+  //       })
 
-//       .catch(() => {
-//         message('Loan not found', 'info');
-//       });
-//   };
+  //       .catch(() => {
+  //         message('Loan not found', 'info');
+  //       });
+  //   };
   //get all records
   const getAllPayrollManagements = () => {
     setLoading(true);
@@ -183,110 +183,110 @@ const Payrollmanagement = () => {
   //const [cpfemployees, setCpfEmployees] = useState();
   // const selectedEmployeeId = obj.employee_id;
   // const generatecpfcalculator = (grosspay,age) => {
-    // setLoading(true);
-    // api.post('/payrollmanagement/getCpfCalculation',{
-    //     employee_id:selectedEmployeeId,
-    // })
-    // .then((res) => {
-      
-    //       setCpfEmployees(res.data.data); // Assuming the API returns CPF data
+  // setLoading(true);
+  // api.post('/payrollmanagement/getCpfCalculation',{
+  //     employee_id:selectedEmployeeId,
+  // })
+  // .then((res) => {
 
-    //   const rowPercentageCPF = {
-    //     byEmployer: cpfemployees.byEmployer,
-    //     byEmployee: cpfemployees.byEmployee,
-    //     capAmountEmployer: cpfemployees.capAmountEmployer,
-    //     capAmountEmployee: cpfemployees.capAmountEmployee,
-    //   };
+  //       setCpfEmployees(res.data.data); // Assuming the API returns CPF data
 
-    //   let cpfEmployee = 0;
-    //   //let cpfEmployeeInt = 0;
-    //   if (grosspay >= 501 && grosspay <= 749) {
-    //     if (age >= 0 && age <= 55) {
-    //       cpfEmployee = 0.6 * (grosspay - 500);
-    //       console.log('CPF Employee Contribution:', cpfEmployee);
-    //     } else if (age >= 56 && age <= 60) {
-    //       cpfEmployee = 0.39 * (grosspay - 500);
-    //       console.log('CPF Employee Contribution:', cpfEmployee);
-    //     } else if (age >= 61 && age <= 65) {
-    //       cpfEmployee = 0.225 * (grosspay - 500);
-    //       console.log('CPF Employee Contribution:', cpfEmployee);
-    //     } else if (age >= 66) {
-    //       cpfEmployee = 0.15 * (grosspay - 500);
-    //       console.log('CPF Employee Contribution:', cpfEmployee);
-    //     }
+  //   const rowPercentageCPF = {
+  //     byEmployer: cpfemployees.byEmployer,
+  //     byEmployee: cpfemployees.byEmployee,
+  //     capAmountEmployer: cpfemployees.capAmountEmployer,
+  //     capAmountEmployee: cpfemployees.capAmountEmployee,
+  //   };
 
-    //     const cpfEmployer = (grosspay * rowPercentageCPF.byEmployer) / 100;
-    //     console.log('CPF Employer Contribution1:', cpfEmployer);
+  //   let cpfEmployee = 0;
+  //   //let cpfEmployeeInt = 0;
+  //   if (grosspay >= 501 && grosspay <= 749) {
+  //     if (age >= 0 && age <= 55) {
+  //       cpfEmployee = 0.6 * (grosspay - 500);
+  //       console.log('CPF Employee Contribution:', cpfEmployee);
+  //     } else if (age >= 56 && age <= 60) {
+  //       cpfEmployee = 0.39 * (grosspay - 500);
+  //       console.log('CPF Employee Contribution:', cpfEmployee);
+  //     } else if (age >= 61 && age <= 65) {
+  //       cpfEmployee = 0.225 * (grosspay - 500);
+  //       console.log('CPF Employee Contribution:', cpfEmployee);
+  //     } else if (age >= 66) {
+  //       cpfEmployee = 0.15 * (grosspay - 500);
+  //       console.log('CPF Employee Contribution:', cpfEmployee);
+  //     }
 
-    //     const totalContribution = cpfEmployee + cpfEmployer;
-    //     console.log('Total CPF Contribution2:', totalContribution);
-    //     const totalContributionamount = Math.round(totalContribution);
-    //     // CPF Employee Contribution
-    //     const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
-    //     // CPF Employer contribution
-    //     const cpf = totalContributionamount - cpfEmployeeInt;
-    //     console.log('Total CPF Contributions3:', totalContributionamount);
-    //     console.log('Total CPF Contribution4:', cpfEmployeeInt);
-    //     console.log('Total CPF Contribution5:', cpf);
+  //     const cpfEmployer = (grosspay * rowPercentageCPF.byEmployer) / 100;
+  //     console.log('CPF Employer Contribution1:', cpfEmployer);
 
-    //     console.log('CPF Employee Contribution6:', cpfEmployeeInt.toFixed(2)); // Format as a two-decimal float
-    //     console.log('CPF Employer Contribution7:', cpfEmployer.toFixed(2)); // Format as a two-decimal float
-    //     console.log('Total CPF Contribution:', totalContribution.toFixed(2)); // Format as a two-decimal float
-    //   }
-    //   else {
-    //     /* CPF Total Calculation */
-    //     const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
-    //     const totalContribution = (grosspay * totalCpfPercent) / 100;
-    //     const totalContributionAmount = Math.round(totalContribution);
+  //     const totalContribution = cpfEmployee + cpfEmployer;
+  //     console.log('Total CPF Contribution2:', totalContribution);
+  //     const totalContributionamount = Math.round(totalContribution);
+  //     // CPF Employee Contribution
+  //     const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
+  //     // CPF Employer contribution
+  //     const cpf = totalContributionamount - cpfEmployeeInt;
+  //     console.log('Total CPF Contributions3:', totalContributionamount);
+  //     console.log('Total CPF Contribution4:', cpfEmployeeInt);
+  //     console.log('Total CPF Contribution5:', cpf);
 
-    //     console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
-    //     console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
-    //     console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
-    //     console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
+  //     console.log('CPF Employee Contribution6:', cpfEmployeeInt.toFixed(2)); // Format as a two-decimal float
+  //     console.log('CPF Employer Contribution7:', cpfEmployer.toFixed(2)); // Format as a two-decimal float
+  //     console.log('Total CPF Contribution:', totalContribution.toFixed(2)); // Format as a two-decimal float
+  //   }
+  //   else {
+  //     /* CPF Total Calculation */
+  //     const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
+  //     const totalContribution = (grosspay * totalCpfPercent) / 100;
+  //     const totalContributionAmount = Math.round(totalContribution);
 
-    //     /* CPF Calculation */
-    //     const cpf = (grosspay * rowPercentageCPF.byEmployer) / 100;
-    //     console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
-    //     // CPF Employee contribution
-    //     const cpfEp = (grosspay * rowPercentageCPF.byEmployee) / 100;
-    //     const cpfE = Math.round(cpfEp);
-    //     console.log('CPF Calculation2:', cpfE.toFixed(2));
+  //     console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
+  //     console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
+  //     console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
+  //     console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
 
-    //     // Calculate total_cap_amount_cpf
-    //     const totalCapAmountCpf =
-    //       rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
+  //     /* CPF Calculation */
+  //     const cpf = (grosspay * rowPercentageCPF.byEmployer) / 100;
+  //     console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
+  //     // CPF Employee contribution
+  //     const cpfEp = (grosspay * rowPercentageCPF.byEmployee) / 100;
+  //     const cpfE = Math.round(cpfEp);
+  //     console.log('CPF Calculation2:', cpfE.toFixed(2));
 
-    //     let totalContributionAmountCorrection = totalCapAmountCpf;
+  //     // Calculate total_cap_amount_cpf
+  //     const totalCapAmountCpf =
+  //       rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
 
-    //     if (totalContributionAmount > totalCapAmountCpf) {
-    //       totalContributionAmountCorrection = totalCapAmountCpf;
-    //     } else {
-    //       totalContributionAmountCorrection = totalContributionAmount;
-    //     }
+  //     let totalContributionAmountCorrection = totalCapAmountCpf;
 
-    //     // Calculate CPF Employer contribution
-    //     let cpfEmp = totalContributionAmount - cpfE;
+  //     if (totalContributionAmount > totalCapAmountCpf) {
+  //       totalContributionAmountCorrection = totalCapAmountCpf;
+  //     } else {
+  //       totalContributionAmountCorrection = totalContributionAmount;
+  //     }
 
-    //     if (
-    //       cpf > rowPercentageCPF.capAmountEmployer &&
-    //       rowPercentageCPF.capAmountEmployer !== 0
-    //     ) {
-    //       cpfEmp = rowPercentageCPF.capAmountEmployer;
-    //     }
-    //     if (
-    //       cpfE > rowPercentageCPF.capAmountEmployee &&
-    //       rowPercentageCPF.capAmountEmployee !== 0
-    //     ) {
-    //       cpfEmp = rowPercentageCPF.capAmountEmployee;
-    //     }
+  //     // Calculate CPF Employer contribution
+  //     let cpfEmp = totalContributionAmount - cpfE;
 
-    //     console.log('Total Contribution Amount Correction:', totalCapAmountCpf);
-    //     console.log('Total Contribution Amount Correction:', totalContributionAmountCorrection);
-    //     console.log('Total Contribution Amount Correction:', cpfEmp);
-      
-    // };
+  //     if (
+  //       cpf > rowPercentageCPF.capAmountEmployer &&
+  //       rowPercentageCPF.capAmountEmployer !== 0
+  //     ) {
+  //       cpfEmp = rowPercentageCPF.capAmountEmployer;
+  //     }
+  //     if (
+  //       cpfE > rowPercentageCPF.capAmountEmployee &&
+  //       rowPercentageCPF.capAmountEmployee !== 0
+  //     ) {
+  //       cpfEmp = rowPercentageCPF.capAmountEmployee;
+  //     }
 
-    // });
+  //     console.log('Total Contribution Amount Correction:', totalCapAmountCpf);
+  //     console.log('Total Contribution Amount Correction:', totalContributionAmountCorrection);
+  //     console.log('Total Contribution Amount Correction:', cpfEmp);
+
+  // };
+
+  // });
   // };
 
   //create payroll api
@@ -314,7 +314,7 @@ const Payrollmanagement = () => {
       const endDate = moment(lastmonthlastdate);
       const daysInRange = endDate.diff(startDate, 'days') + 1;
       console.log('1', daysInRange);
-
+      console.log('obj', obj);
       console.log('2', workingDaysInWeek);
 
       const weeksInMonth = Math.floor(daysInRange / 7);
@@ -352,153 +352,173 @@ const Payrollmanagement = () => {
       // calculateCpfContributions(totalBasicPayForMonth, age);
 
       // Ensure it's formatted as a two-decimal float
-      const grosspay = parseFloat(obj.basic_pay); // You may need to adjust this based on the actual field in your obj
-      const age = parseInt(obj.age, 10);
-      
+      const grosspay = parseFloat(obj.basic_pay);
+      const empID = obj.employee_id;
+      console.log('employee', empID);
+      await api
+        .post('/payrollmanagement/getemployeeages', {
+          employee_id: empID,
+        })
 
-     
-          
-        
+        .then((res1) => {
+          console.log('res1', res1.data.data[0]);
+          // You may need to adjust this based on the actual field in your obj
+          const { age } = res1.data.data[0];
+
+          console.log('age', age);
           // Call generatecpfcalculator with empId
           const selectedEmployeeId = obj.employee_id;
           const payrollyear = obj.payroll_year;
-          const basicpays =obj.basic_pay;
-          
+          const basicpays = obj.basic_pay;
+          console.log('payrollyear', basicpays);
+          console.log('payrollyear', payrollyear);
 
-          api.post('/payrollmanagement/getCpfCalculation',{
-            employee_id:selectedEmployeeId,
-            spr_year:3,
-            payroll_year:payrollyear,
-            basic_pay:basicpays
+          api
+            .post('/payrollmanagement/getCpfCalculate', {
+              employee_id: selectedEmployeeId,
+              spr_year: 3,
+              payroll_year: payrollyear,
+              basic_pay: basicpays,
+            })
+            .then((res) => {
+              const { byEmployee, byEmployer } = res.data.data[0];
+               const {capAmountEmployee,capAmountEmployer } = res.data.data[0];
+              console.log('by', byEmployee); // Replace with actual API response structure
+              // Set these values to your rowPercentageCPF object
 
-           
-            
-        })
-        .then((res) => {
-          const { byEmployee,byEmployer } = res.data.data[0];
-          console.log("by",byEmployee); // Replace with actual API response structure
-          // Set these values to your rowPercentageCPF object
-          
               //setCpfEmployees(res.data.data); // Assuming the API returns CPF data
-    
-          const rowPercentageCPF = {
-            byEmployer: byEmployee,
-            byEmployee: byEmployer,
-            capAmountEmployer: obj.capAmountEmployer,
-            capAmountEmployee: obj.capAmountEmployee,
-          };
-          console.log("by1",byEmployee); 
-          rowPercentageCPF.byEmployee = byEmployee;
-          rowPercentageCPF.byEmployer = byEmployer;
-    
-          let cpfEmployee = 0;
-          //let cpfEmployeeInt = 0;
-          if (basicpays >= 501 && basicpays <= 749) {
-            console.log("basicpays",basicpays)
-            if (age >= 0 && age <= 55) {
-              cpfEmployee = 0.6 * (grosspay - 500);
-              console.log('CPF Employee Contribution:', cpfEmployee);
-            } else if (age >= 56 && age <= 60) {
-              cpfEmployee = 0.39 * (grosspay - 500);
-              console.log('CPF Employee Contribution:', cpfEmployee);
-            } else if (age >= 61 && age <= 65) {
-              cpfEmployee = 0.225 * (grosspay - 500);
-              console.log('CPF Employee Contribution:', cpfEmployee);
-            } else if (age >= 66) {
-              cpfEmployee = 0.15 * (grosspay - 500);
-              console.log('CPF Employee Contribution:', cpfEmployee);
-            }
-    
-            const cpfEmployer = (grosspay * rowPercentageCPF.byEmployer) / 100;
-            console.log('CPF Employer Contribution1:', cpfEmployer);
-    
-            const totalContribution = cpfEmployee + cpfEmployer;
-            console.log('Total CPF Contribution2:', totalContribution);
-            const totalContributionamount = Math.round(totalContribution);
-            // CPF Employee Contribution
-            const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
-            // CPF Employer contribution
-            const cpf = totalContributionamount - cpfEmployeeInt;
-            console.log('Total CPF Contributions3:', totalContributionamount);
-            console.log('Total CPF Contribution4:', cpfEmployeeInt);
-            console.log('Total CPF Contribution5:', cpf);
-    
-            console.log('CPF Employee Contribution6:', cpfEmployeeInt.toFixed(2)); // Format as a two-decimal float
-            console.log('CPF Employer Contribution7:', cpfEmployer.toFixed(2)); // Format as a two-decimal float
-            console.log('Total CPF Contribution:', totalContribution.toFixed(2)); // Format as a two-decimal float
-          }
-          else {
-            /* CPF Total Calculation */
-            
-            const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
-            console.log("byEmployee",rowPercentageCPF.byEmployee);
-            console.log("byEmployee",rowPercentageCPF.byEmployee);
-            console.log("row",rowPercentageCPF);
-            const totalContribution = (basicpays * totalCpfPercent) / 100;
-            const totalContributionAmount = Math.round(totalContribution);
-            console.log("basic_pays",basicpays);
-    
-            console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
-            console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
-            console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
-            console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
-    
-            /* CPF Calculation */
-            const cpf = (basicpays * rowPercentageCPF.byEmployer) / 100;
-            console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
-            // CPF Employee contribution
-            const cpfEp = (basicpays * rowPercentageCPF.byEmployee) / 100;
-            const cpfE = Math.round(cpfEp);
-            console.log('CPF Calculation2:', cpfE.toFixed(2));
-    
-            // Calculate total_cap_amount_cpf
-            const totalCapAmountCpf =
-              rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
-   
-            let totalContributionAmountCorrection = totalCapAmountCpf;
-    
-            if (totalContributionAmount > totalCapAmountCpf) {
-              totalContributionAmountCorrection = totalCapAmountCpf;
-            } else {
-              totalContributionAmountCorrection = totalContributionAmount;
-            }
-    
-            // Calculate CPF Employer contribution
-            let cpfEmp = totalContributionAmount - cpfE;
-    
-            if (
-              cpf > rowPercentageCPF.capAmountEmployer &&
-              rowPercentageCPF.capAmountEmployer !== 0
-            ) {
-              cpfEmp = rowPercentageCPF.capAmountEmployer;
-            }
-            if (
-              cpfE > rowPercentageCPF.capAmountEmployee &&
-              rowPercentageCPF.capAmountEmployee !== 0
-            ) {
-              cpfEmp = rowPercentageCPF.capAmountEmployee;
-            }
-    
-            console.log('Total Contribution Amount Correction:', totalCapAmountCpf);
-            console.log('Total Contribution Amount Correction:', totalContributionAmountCorrection);
-            console.log('Total Contribution Amount Correction:', cpfEmp);
-          
-        };
-    
-        });
-        const cpfle=  obj.cpf;
-        const  cpfler=obj.cpfE;
-        obj.cpf_employee = cpfle; // Assign calculated values to payroll data
-        obj.cpf_employer = cpfler;
-        await api
-          .post('/payrollmanagement/insertpayroll_management', obj)
-          .then(() => {
-            // generatecpfcalculator();
-          message('Payrolls created successfully.', 'success');
-          // setLoading(false);
-        })
-        .catch(() => {
-          message('Unable to create record', 'info');
+              let cpfmployee = null;
+              let cpfmployer = null;
+              let totalcontribution = null;
+              const rowPercentageCPF = {
+                byEmployer: byEmployee,
+                byEmployee: byEmployer,
+                capAmountEmployer: capAmountEmployee,
+                capAmountEmployee: capAmountEmployer,
+              };
+              console.log('by1', byEmployer);
+              rowPercentageCPF.byEmployee = byEmployee;
+              rowPercentageCPF.byEmployer = byEmployer;
+              rowPercentageCPF.capAmountEmployee = capAmountEmployee;
+              rowPercentageCPF.capAmountEmployer = capAmountEmployer;
+
+              let cpfEmployee = 0;
+              //let cpfEmployeeInt = 0;
+              if (basicpays >= 501 && basicpays <= 749) {
+                console.log('basicpays', basicpays);
+                if (age >= 0 && age <= 55) {
+                  console.log('age1', age);
+                  cpfEmployee = 0.6 * (grosspay - 500);
+                  console.log('CPF Employee Contribution:', cpfEmployee);
+                } else if (age >= 56 && age <= 60) {
+                  cpfEmployee = 0.39 * (grosspay - 500);
+                  console.log('CPF Employee Contribution:', cpfEmployee);
+                } else if (age >= 61 && age <= 65) {
+                  cpfEmployee = 0.225 * (grosspay - 500);
+                  console.log('CPF Employee Contribution:', cpfEmployee);
+                } else if (age >= 66) {
+                  cpfEmployee = 0.15 * (grosspay - 500);
+                  console.log('CPF Employee Contribution:', cpfEmployee);
+                }
+
+                const cpfEmployer = (grosspay * rowPercentageCPF.byEmployer) / 100;
+                console.log('CPF Employer Contribution1:', cpfEmployer);
+                cpfmployee = cpfEmployee;
+                cpfmployer = cpfEmployer;
+                const totalContribution = cpfEmployee + cpfEmployer;
+                console.log('Total CPF Contribution2:', totalContribution);
+                const totalContributionamount = Math.round(totalContribution);
+                // CPF Employee Contribution
+                const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
+                // CPF Employer contribution
+                totalcontribution=totalContributionamount;
+                const cpf = totalContributionamount - cpfEmployeeInt;
+                console.log('Total CPF Contributions3:', totalContributionamount);
+                console.log('Total CPF Contribution4:', cpfEmployeeInt);
+                console.log('Total CPF Contribution5:', cpf);
+
+                console.log('CPF Employee Contribution6:', cpfEmployeeInt.toFixed(2)); // Format as a two-decimal float
+                console.log('CPF Employer Contribution7:', cpfEmployer.toFixed(2)); // Format as a two-decimal float
+                console.log('Total CPF Contribution:', totalContribution.toFixed(2)); // Format as a two-decimal float
+              } else {
+                /* CPF Total Calculation */
+
+                const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
+                console.log('byEmployee', rowPercentageCPF.byEmployee);
+                console.log('byEmployee', rowPercentageCPF.byEmployee);
+                console.log('row', rowPercentageCPF);
+                const totalContribution = (basicpays * totalCpfPercent) / 100;
+                const totalContributionAmount = Math.round(totalContribution);
+                console.log('basic_pays', basicpays);
+
+                console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
+                console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
+                console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
+                console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
+
+                /* CPF Calculation */
+                const cpf = (basicpays * rowPercentageCPF.byEmployer) / 100;
+                console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
+                // CPF Employee contribution
+                const cpfEp = (basicpays * rowPercentageCPF.byEmployee) / 100;
+                const cpfE = Math.round(cpfEp);
+                console.log('CPF Calculation2:', cpfE.toFixed(2));
+
+                // Calculate total_cap_amount_cpf
+                const totalCapAmountCpf =
+                  rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
+
+                let totalContributionAmountCorrection = totalCapAmountCpf;
+                cpfmployee = cpf;
+                cpfmployer = cpfE;
+                console.log("cpf10",cpf);
+                console.log("cpf11",cpfE);
+                if (totalContributionAmount > totalCapAmountCpf) {
+                  totalContributionAmountCorrection = totalCapAmountCpf;
+                } else {
+                  totalContributionAmountCorrection = totalContributionAmount;
+                }
+                totalcontribution=totalCapAmountCpf;
+                console.log("cpf12",totalCapAmountCpf);
+                // Calculate CPF Employer contribution
+                let cpfEmp = totalContributionAmount - cpfE;
+
+                if (
+                  cpf > rowPercentageCPF.capAmountEmployer &&
+                  rowPercentageCPF.capAmountEmployer !== 0
+                ) {
+                  cpfEmp = rowPercentageCPF.capAmountEmployer;
+                }
+                if (
+                  cpfE > rowPercentageCPF.capAmountEmployee &&
+                  rowPercentageCPF.capAmountEmployee !== 0
+                ) {
+                  cpfEmp = rowPercentageCPF.capAmountEmployee;
+                }
+
+                console.log('Total Contribution Amount Correction:', totalCapAmountCpf);
+                console.log(
+                  'Total Contribution Amount Correction:',
+                  totalContributionAmountCorrection,
+                );
+                console.log('Total Contribution Amount Correction:', cpfEmp);
+              }
+
+              obj.cpf_employee = cpfmployee;
+              obj.cpf_employer = cpfmployer;
+              obj.total_cpf_contribution = totalcontribution;
+
+              api
+                .post('/payrollmanagement/insertpayroll_management', obj)
+                .then(() => {
+                  // generatecpfcalculator();
+                  message('Payrolls created successfully.', 'success');
+                  // setLoading(false);
+                }) 
+                .catch(() => {
+                  message('Unable to create record', 'info');
+                });
+            });
         });
     });
   };
@@ -523,7 +543,6 @@ const Payrollmanagement = () => {
     });
   };
 
-  
   //getting employee list not having jobinformation record
   const getEmployeesWithoutJobInformation = () => {
     api
@@ -754,8 +773,8 @@ const Payrollmanagement = () => {
                     <td>{element.payroll_year}</td>
                     <td>{element.basic_pay}</td>
                     <td>{element.ot_amount}</td>
-                    <td>{element.cpfEmployee}</td>
                     <td>{element.cpf_employee}</td>
+                    <td>{element.cpf_employer}</td>
                     <td>{element.total_alowance}</td>
                     <td>{element.total_deductions}</td>
                     <td>{element.net_total}</td>

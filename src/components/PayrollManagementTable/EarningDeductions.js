@@ -12,10 +12,11 @@ function EarningDeductions({
   handleEarnings,
   handleOtAmount,
   setLoanPaymentHistoryModal,
-  totalMonthPay,
+  newTotalMonthPay,
   totalDeductions,
   otAmount,
   calculateBasicPayPercentage
+  
 }) {
   EarningDeductions.propTypes = {
     payroll: PropTypes.object,
@@ -25,10 +26,9 @@ function EarningDeductions({
     handleOtAmount: PropTypes.func,
     setLoanPaymentHistoryModal: PropTypes.func,
     totalDeductions: PropTypes.any,
-    totalMonthPay: PropTypes.any,
     otAmount: PropTypes.any,
     calculateBasicPayPercentage:PropTypes.any,
-
+    newTotalMonthPay:PropTypes.any,
   };
   return (
     <div>
@@ -43,7 +43,7 @@ function EarningDeductions({
               handleEarnings={handleEarnings}
               handleOtAmount={handleOtAmount}
               setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
-              totalMonthPay={totalMonthPay}
+              newTotalMonthPay={newTotalMonthPay}
               totalDeductions={totalDeductions}
               otAmount={otAmount}
               calculateBasicPayPercentage={calculateBasicPayPercentage}
@@ -57,9 +57,10 @@ function EarningDeductions({
                handleInputs={handleInputs}
                handleDeductions={handleDeductions}
                handleEarnings={handleEarnings}
+               newTotalMonthPay={newTotalMonthPay}
                //handleOtAmount={handleOtAmount}
                setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
-               totalMonthPay={totalMonthPay}
+               //totalMonthPay={totalMonthPay}
                totalDeductions={totalDeductions}
                //otAmount={otAmount}
               />
