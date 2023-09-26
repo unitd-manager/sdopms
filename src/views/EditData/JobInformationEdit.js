@@ -113,13 +113,14 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
+   
     if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
       return; // Exit the function without making the API request
     }
     job.overtime_pay_rate = overTimeRate;
-
+    job.deduction4=parseFloat(job.deduction4);
     if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
       api
         .post('/jobinformation/edit-jobinformation', job)

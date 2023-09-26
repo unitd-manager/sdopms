@@ -21,7 +21,7 @@ const ContentUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 const backToList=()=>{
-  navigate('/Content')
+  navigate('/Help')
 }
   //Setting data in contentDetails
   // Get content data By content id

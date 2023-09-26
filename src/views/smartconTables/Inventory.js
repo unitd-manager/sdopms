@@ -11,13 +11,13 @@ import 'datatables.net-buttons/js/buttons.html5';
 import 'datatables.net-buttons/js/buttons.print';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import readXlsxFile from 'read-excel-file';
 import api from '../../constants/api';
 import message from '../../components/Message';
 import { columns } from '../../data/Tender/InventoryData';
 import ViewAdjustStockHistoryModal from '../../components/InventoryTable/ViewAdjustStockHistoryModal';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
-
 
 
 function Inventory() {
@@ -106,6 +106,68 @@ function Inventory() {
       });
   };
 
+   // TRIGGER TO IMPORT EXCEL SHEET
+   const importExcel = () => {
+    $('#import_excel').trigger('click');
+  }
+
+  // UPLOAD FILE ON THER SERVER
+  const uploadOnServer = (arr) => {
+      api.post('/inventory/import/excel', {data: JSON.stringify(arr)})
+      .then(() => {
+        message('File uploaded successfully', 'success');
+        $('#upload_file').val(null);
+      })
+      .catch(() => {
+        message('Failed to upload.', 'error');
+      });
+  }
+
+  // PROCESSING AND FORMATTING THE DATA
+  const processData = (rows) => {
+    const arr = [];
+    rows.shift();
+
+    for ( let x = 0; x < rows.length; x++ ) {
+      arr.push(
+        {
+          item_code: rows[x][0],
+          title: rows[x][1],
+          type: rows[x][2],
+          quantity: rows[x][3]
+        }
+      )
+    }
+
+    uploadOnServer(arr);
+  }
+
+  // IMPORTING EXCEL FILE
+  const importExcelFile = (e) => {
+    console.log(e.target.id)
+    message('test1', 'success');
+    const reader = new FileReader();
+    reader.onload = () => {
+      console.log(reader.readyState)
+      if (reader.readyState === 2) {
+        readXlsxFile(e.target.files[0])
+          .then((rows) => {
+            processData(rows);
+            message('Uploading File On The Server', 'info');
+          })
+          .finally(() => {
+            $('#upload_file').val(null);
+          }).catch(
+            err => console.log(err)
+          );
+      }
+    };
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+
   useEffect(() => {
     setTimeout(() => {
       $('#example').DataTable({
@@ -140,11 +202,12 @@ function Inventory() {
         Button={<>
         <Row>
           <Col md="6">
-            <Link to="">
-              <Button color="primary" className="shadow-none mr-2">
+            {/* <Link to=""> */}
+            <Button color="primary" className="shadow-none mr-2" onClick={() => importExcel()}>
                 Import
               </Button>
-            </Link>
+            {/* </Link> */}
+            <input type='file' style={{display: 'none'}} id="import_excel" onChange={importExcelFile} />
             </Col>
             <Col md="6">
             <a href="http://43.228.126.245/pms-shimi/storage/excelsheets/Inventory.xlsx" download>

@@ -7,8 +7,8 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import api from '../../constants/api';
@@ -18,52 +18,10 @@ import Flag from '../../components/Flag';
 import message from '../../components/Message';
 
 const Clients = () => {
-  //Const Variables
   const [clients, setClients] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [arabic, setArabic] = useState({});
+  const [loading, setLoading] = useState(false);
 
-
-  // get Clients
-  const getClients = () => {
-    api.get('/clients/getClients').then((res) => {
-      setClients(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
-      });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
-  };
-
-    
-  // update publish
-  const updateFlag = (obj) => {
-    obj.flag = !obj.flag;
-    api
-      .post('/clients/update-flag', obj)
-      .then(() => {
-        getClients();
-        message('Flag updated successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
-  };
-
-  useEffect(() => {
-  
-    getClients();
-  }, []);
-  //  stucture of client list view
   const columns = [
     {
       name: 'id',
@@ -91,7 +49,7 @@ const Clients = () => {
       sortable: false,
     },
     {
-      name: 'Name',
+      name: arabic.length > 0 && arabic[0].value,
       selector: 'company_name',
       sortable: true,
       grow: 0,
@@ -119,14 +77,67 @@ const Clients = () => {
     },
   ];
 
+  const getClients = () => {
+    api
+      .get('/clients/getClients')
+      .then((res) => {
+        setClients(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const getArabicCompanyName = () => {
+    api
+      .get('/translation/getTranslationForCompany')
+      .then((res) => {
+        setArabic(res.data.data);
+      })
+      .catch(() => {
+        // Handle error if needed
+      });
+  };
+
+  const updateFlag = (obj) => {
+    obj.flag = !obj.flag;
+    api
+      .post('/clients/update-flag', obj)
+      .then(() => {
+        getClients();
+        message('Flag updated successfully', 'success');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+
+  useEffect(() => {
+    getClients();
+    getArabicCompanyName();
+  }, []);
+
   return (
     <div className="MainDiv">
-      <div className=" pt-xs-25">
+      <div className="pt-xs-25">
         <BreadCrumbs />
-        {/* ClientDetailsn Add Button */}
         <ToastContainer></ToastContainer>
         <CommonTable
-        loading={loading}
+          loading={loading}
           title="Client List"
           Button={
             <Link to="/ClientDetails">
@@ -138,41 +149,38 @@ const Clients = () => {
         >
           <thead>
             <tr>
-              {columns.map((cell) => {
-                return <td key={cell.name}>{cell.name}</td>;
-              })}
+              {columns.map((col) => (
+                <th key={col.selector}>{col.name}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {clients &&
-              clients.map((element, i) => {
-                return (
-                  <tr key={element.company_id}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <Link to={`/ClientEdit/${element.company_id}`}>
-                        <Icon.Edit2 />
-                      </Link>
-                    </td>
-                    <td>
-                      <span
-                        onClick={() => {
-                          updateFlag(element);
-                        }}
-                      >
-                        <Flag value={element.flag ? 1 : 0} />
-                      </span>
-                    </td>
-                    <td>{element.company_name}</td>
-                    <td>{element.email}</td>
-                    <td>{element.status}</td>
-                    <td>{element.phone}</td>
-                  </tr>
-                );
-              })}
+              clients.map((element, i) => (
+                <tr key={element.company_id}>
+                  <td>{i + 1}</td>
+                  <td>
+                    <Link to={`/ClientEdit/${element.company_id}?tab=1`}>
+                      <Icon.Edit2 />
+                    </Link>
+                  </td>
+                  <td>
+                    <span
+                      onClick={() => {
+                        updateFlag(element);
+                      }}
+                    >
+                      <Flag value={element.flag ? 1 : 0} />
+                    </span>
+                  </td>
+                  <td>{element.company_name}</td>
+                  <td>{element.email}</td>
+                  <td>{element.status}</td>
+                  <td>{element.phone}</td>
+                </tr>
+              ))}
           </tbody>
         </CommonTable>
-
       </div>
     </div>
   );
