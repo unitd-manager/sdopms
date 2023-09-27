@@ -13,7 +13,6 @@ import EmployeePart from '../../components/EmployeeTable/EmployeePart';
 import AttachmentPortalsTab from '../../components/EmployeeTable/AttachmentPortalsTab';
 import LinkedPortalsTab from '../../components/EmployeeTable/LinkedPortalsTab';
 import LoginDetailsTab from '../../components/EmployeeTable/LoginDetailsTab';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 //import EmployeeButtons from '../../components/Employee/EmployeeButtons';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -140,7 +139,7 @@ const EmployeeEdit = () => {
         setEmployeeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Employee Data Not Found', 'info');
+       // message('Employee Data Not Found', 'info');
       });
   };
   //get Contact Information data
@@ -151,7 +150,7 @@ const EmployeeEdit = () => {
         setContactInformationDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('contact info Data Not Found', 'info');
+        //message('contact info Data Not Found', 'info');
       });
   };
   //get EmergencyContact data
@@ -162,7 +161,7 @@ const EmployeeEdit = () => {
         setEmergencyContactDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Emergency contact info Data Not Found', 'info');
+       // message('Emergency contact info Data Not Found', 'info');
       });
   };
 
@@ -174,7 +173,7 @@ const EmployeeEdit = () => {
         setEducationalQualificationDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Educational Qualification Data Not Found', 'info');
+       // message('Educational Qualification Data Not Found', 'info');
       });
   };
   //get tabPassType data
@@ -185,7 +184,7 @@ const EmployeeEdit = () => {
         setTabPassTypeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('TabPass Type Data Not Found', 'info');
+        //message('TabPass Type Data Not Found', 'info');
       });
   };
   //Api for getting all countries
@@ -196,7 +195,7 @@ const EmployeeEdit = () => {
         setallCountries(res.data.data);
       })
       .catch(() => {
-        message('Country Data Not Found', 'info');
+        //message('Country Data Not Found', 'info');
       });
   };
   //Api for getting all countries
@@ -207,7 +206,7 @@ const EmployeeEdit = () => {
         setCompanies(res.data.data);
       })
       .catch(() => {
-        message('Country Data Not Found', 'info');
+        //message('Country Data Not Found', 'info');
       });
   };
   //Api for getting Qualification
@@ -218,7 +217,7 @@ const EmployeeEdit = () => {
         setQualifications(res.data.data);
       })
       .catch(() => {
-        message('qualification Data Not Found', 'info');
+        //message('qualification Data Not Found', 'info');
       });
   };
 
@@ -234,7 +233,7 @@ const EmployeeEdit = () => {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
         .then(() => {
-          message('Record editted successfully', 'success');
+          // message('Record editted successfully', 'success');
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -249,7 +248,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-ContactInformation', contactInformationDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+        // message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -260,7 +259,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-EmergencyContact', emergencyContactDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+       // message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -274,7 +273,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-EducationalQualification', educationalQualificationDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+        //message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -290,7 +289,7 @@ const EmployeeEdit = () => {
         api
           .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
           .then(() => {
-            message('Record editted successfully', 'success');
+            //message('Record editted successfully', 'success');
           })
           .catch(() => {
             message('Unable to edit record.', 'error');
@@ -308,7 +307,7 @@ const EmployeeEdit = () => {
         api
           .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
           .then(() => {
-            message('Record editted successfully', 'success');
+            //message('Record editted successfully', 'success');
           })
           .catch(() => {
             message('Unable to edit record.', 'error');
@@ -380,7 +379,7 @@ const EmployeeEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             {/* Button */}
             <ApiButton
               editData={updateData}
@@ -390,7 +389,7 @@ const EmployeeEdit = () => {
               deleteData={deleteEmployeeData}
               module="Employee"
             ></ApiButton>
-          </ComponentCardV2>
+          
         </FormGroup>
       </Form>
       <Row>

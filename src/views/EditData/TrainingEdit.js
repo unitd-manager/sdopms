@@ -19,7 +19,7 @@ import TrainingMainDetails from '../../components/Training/TrainingMainDetails';
 //import TrainingButton from '../../components/Training/TrainingButton';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import ApiButton from '../../components/ApiButton';
 
 const TrainingEdit = () => {
@@ -340,7 +340,7 @@ const TrainingEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+          
             {/* Save,Apply Buttons */}
             {/* <TrainingButton navigate={navigate} insertTrainingData={insertTrainingData} applyChanges={applyChanges} backToList={backToList}></TrainingButton> */}
             <ApiButton
@@ -351,7 +351,7 @@ const TrainingEdit = () => {
               module="Training"
               deleteData={deleteData}
             ></ApiButton>
-          </ComponentCardV2>
+         
         </FormGroup>
       </Form>
 

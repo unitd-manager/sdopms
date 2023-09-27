@@ -68,7 +68,7 @@ const JobInformationEdit = () => {
         setOverTimeRate(res.data.data[0].overtime_pay_rate);
       })
       .catch(() => {
-        message('JobInformation Data Not Found', 'info');
+       // message('JobInformation Data Not Found', 'info');
       });
   };
   //jobinformation data in jobinformationDetails
@@ -185,7 +185,7 @@ const JobInformationEdit = () => {
         setAllBank(res.data.data);
       })
       .catch(() => {
-        message('JobInformation Data Not Found', 'info');
+        //message('JobInformation Data Not Found', 'info');
       });
   };
 

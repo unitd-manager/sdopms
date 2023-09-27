@@ -8,7 +8,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
 import api from '../../constants/api';
 //import DeleteButton from '../../components/DeleteButton';
@@ -107,7 +107,7 @@ const LeadEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
           <ApiButton
         editData={editLead}
         navigate={navigate}
@@ -174,7 +174,7 @@ const LeadEdit = () => {
                 </Button>
               </Col>
             </Row> */}
-          </ComponentCardV2>
+         
         </FormGroup>
       </Form>
       {/* milestone Details */}

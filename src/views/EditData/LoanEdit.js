@@ -11,7 +11,7 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import LoanMoreDetails from '../../components/LoanTable/LoanMoreDetails';
 import LoanDetailComp from '../../components/LoanTable/LoanDetailComp';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 //import LoanButtons from '../../components/LoanTable/LoanButton';
 import ApiButton from '../../components/ApiButton';
 
@@ -271,7 +271,7 @@ const LoanEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             {/* Button */}
 
             <ApiButton
@@ -283,7 +283,7 @@ const LoanEdit = () => {
               deleteData={deleteLoanData}
               module="Loan"
             ></ApiButton>
-          </ComponentCardV2>
+         
         </FormGroup>
       </Form>
       {/*Main Details*/}

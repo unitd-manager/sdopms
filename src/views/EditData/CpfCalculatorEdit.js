@@ -14,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import api from '../../constants/api';
 import CpfCalculatorMainDetails from '../../components/CpfCalculatorTable/CpfCalculatorMainDetails';
 import ApiButton from '../../components/ApiButton';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 
 const CpfCalculatorEdit = () => {
   //Const Variables
@@ -108,7 +108,7 @@ const CpfCalculatorEdit = () => {
       {/* Button */}
       <Form>
         <FormGroup>
-          <ComponentCardV2>
+          
             <ApiButton
               editData={editCpfCalculator}
               navigate={navigate}
@@ -116,7 +116,7 @@ const CpfCalculatorEdit = () => {
               backToList={backToList}
               module="CPF Calculater"
             ></ApiButton>
-          </ComponentCardV2>
+      
         </FormGroup>
       </Form>
       <ToastContainer></ToastContainer>

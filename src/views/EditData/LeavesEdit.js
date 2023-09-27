@@ -10,7 +10,7 @@ import LeavePastHistory from '../../components/LeaveTable/LeavePastHistory';
 import ComponentCard from '../../components/ComponentCard';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
@@ -136,7 +136,7 @@ const LeavesEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+          
             <ApiButton
               editData={editLeavesData}
               navigate={navigate}
@@ -144,7 +144,7 @@ const LeavesEdit = () => {
               backToList={backToList}
               module="Leave"
             ></ApiButton>
-          </ComponentCardV2>
+          
         </FormGroup>
       </Form>
 
