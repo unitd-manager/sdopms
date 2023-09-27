@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Button, Col, Input, Table, Card, CardBody } from 'reactstrap';
+import { Row, Button, Col, Input, Table, Card, CardBody, CardHeader } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -22,7 +22,7 @@ function CpfSummaryReports() {
     month: null,
     year: null,
   });
-
+ const exportValue="CPFSummaryReport"
   const handleInputs = (e) => {
     setPeriod({ ...period, [e.target.name]: e.target.value });
   };
@@ -35,7 +35,7 @@ function CpfSummaryReports() {
       .post('/payrollmanagement/getCpfSummaryReport', period)
       .then((res) => {
         setSummaries(res.data.data);
-        console.log("Summaries",res.data.data)
+        console.log('Summaries', res.data.data);
         let cpfEmployee = 0;
         let cpfEmployer = 0;
         let cpf = 0;
@@ -150,10 +150,11 @@ function CpfSummaryReports() {
         </Row>
       </div>
 
-      <div className="card p-2 text-center shadow-none mt-0">
+      <Card >
+        <CardHeader className="card p-2 text-center">
         <b>CPF Summary Report</b>
-      </div>
-      <div className="card p-2 shadow-none mt-0">
+      </CardHeader>
+      <CardBody>
         <Row>
           <Col md="6">
             <b>Month:</b> &nbsp; <span>{period.month}</span>
@@ -162,13 +163,14 @@ function CpfSummaryReports() {
             <b>year:</b> &nbsp; <span>{period.year}</span>
           </Col>
         </Row>
-      </div>
+      </CardBody>
+      </Card>
 
       <Card>
         <CardBody>
           <Row>
             <Col>
-              <ExportReport columns={columns} data={summaries} />
+              <ExportReport columns={columns} data={summaries} exportValue={exportValue} />
             </Col>
           </Row>
         </CardBody>
@@ -207,10 +209,10 @@ function CpfSummaryReports() {
                   <b>Total</b>
                 </td>
                 <td>
-                  <b>{totalCpfEmployee}</b>
+                  <b>{totalCpfEmployer}</b>
                 </td>
                 <td>
-                  <b>{totalCpfEmployer}</b>
+                  <b>{totalCpfEmployee}</b>
                 </td>
                 <td>
                   <b>{totalCpf}</b>
