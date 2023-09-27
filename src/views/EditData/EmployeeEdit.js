@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, TabContent, TabPane,Form,FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -18,6 +19,7 @@ import api from '../../constants/api';
 import message from '../../components/Message';
 import Tab from '../../components/ProjectTabs/Tab';
 import ApiButton from '../../components/ApiButton';
+
 
 const EmployeeEdit = () => {
   //state variables
@@ -328,17 +330,6 @@ const EmployeeEdit = () => {
     await editCIData();
   };
 
-  //Api call for Deleting Employee Data
-  const deleteEmployeeData = () => {
-    api
-      .post('/employeeModule/deleteEmployee', { employee_id: id })
-      .then(() => {
-        message('Record deleted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to delete record.', 'error');
-      });
-  };
   //Attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -352,7 +343,26 @@ const EmployeeEdit = () => {
       modelType: 'picture',
     });
   };
-
+  const deleteEmployeeData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/employeeModule/deleteEmployee', { employee_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your Employee has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
   useEffect(() => {
     const getAlldata = async () => {
       await getEmployeeById();

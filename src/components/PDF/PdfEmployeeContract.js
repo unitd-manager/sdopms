@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import api from '../../constants/api'
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
-import message from '../Message';
 
 
 const PdfEmployeeContract= () => {
@@ -31,7 +30,7 @@ const PdfEmployeeContract= () => {
         setEmployeeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Invoice Data Not Found', 'info');
+        //message('Invoice Data Not Found', 'info');
       });
   };
   React.useEffect(() => {

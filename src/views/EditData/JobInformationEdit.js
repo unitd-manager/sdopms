@@ -135,6 +135,26 @@ const JobInformationEdit = () => {
     }
   };
 
+  const deletejobData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/jobinformation/deletejob_information', { job_information_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your job has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
   // Start for tab refresh navigation #Renuka 1-06-23
   const tabs = [
     { id: '1', name: 'Working hours' },
@@ -227,7 +247,8 @@ const JobInformationEdit = () => {
         applyChanges={applyChanges}
         navigate={navigate}
         backToList={backToList}
-        // insertJobInformation={insertJobInformation}
+        deletejobData={deletejobData}
+                // insertJobInformation={insertJobInformation}
         JobInformationEditModal={JobInformationEditModal}
         setJobInformationEditModal={setJobInformationEditModal}
         job={job}

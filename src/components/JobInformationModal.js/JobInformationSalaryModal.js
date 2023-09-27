@@ -48,8 +48,8 @@ export default function JobProbation({ handleInputs, jobModal, handleInputsRadio
             <Input
               type="textbox"
               onChange={handleInputs}
-              value={jobModal && jobModal.overtime_payment_date}
-              name="overtime_payment_date"
+              value={jobModal && jobModal.overtime_payment_dates}
+              name="overtime_payment_dates"
             />
           </FormGroup>
         </Col>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, FormGroup, Button, TabPane, TabContent } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 import { ToastContainer } from 'react-toastify';
 import * as Icon from 'react-feather';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
@@ -127,6 +128,26 @@ const LeavesEdit = () => {
   useEffect(() => {
     editLeavesById();
   }, [id]);
+  const deleteLeaveData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/leave/deleteLeave', { leave_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your Leave has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
 
   return (
     <>
@@ -143,6 +164,7 @@ const LeavesEdit = () => {
               applyChanges={applyChanges}
               backToList={backToList}
               module="Leave"
+              deleteData={deleteLeaveData}
             ></ApiButton>
           
         </FormGroup>
