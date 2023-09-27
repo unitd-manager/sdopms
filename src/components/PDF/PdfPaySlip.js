@@ -122,7 +122,7 @@ const PdfPaySlip = () => {
             ],
           },
         },
-        '\n\n\n',
+        '\n',
 
         {
           layout: {
@@ -178,7 +178,7 @@ const PdfPaySlip = () => {
               ],
               [
                 {
-                  text: `${payroll.first_name ? payroll.first_name : ''}`,
+                  text: `${payroll.employee_name ? payroll.employee_name : ''}`,
                   alignment: 'left',
                   style: 'tableBody',
                 },
@@ -304,6 +304,8 @@ const PdfPaySlip = () => {
                 {
                   text: 'Amount S$',
                   style: 'tableHead',
+                  alignment:'center',
+                  margin:[0,0,150,0]
                 },
               ],
 
@@ -320,6 +322,8 @@ const PdfPaySlip = () => {
                   })}`,
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -331,12 +335,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.basic_pay.toLocaleString('en-IN', {
+                  text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
-                  })}                                                        (A)`,
+                  })}                                                        `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -347,12 +353,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${
-                    payroll.total_allowance ? payroll.total_allowance : ''
-                  }                                                               (B)`,
+                  text: `${payroll.total_allowance.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  })}                                                             `  ,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -369,6 +377,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -385,6 +395,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -401,6 +413,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -417,6 +431,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -433,6 +449,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -443,10 +461,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.total_deductions.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                               (C)`,
+                  text: `${payroll.total_deductions.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  })}                                                              `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               // [
@@ -473,10 +495,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.sdl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  text: `${
+                    payroll.sdl ? payroll.sdl : ''
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -484,6 +510,7 @@ const PdfPaySlip = () => {
                   text: 'Advance/Loan',
                   border: [false, false, false, true],
                   style: 'tableBody',
+                  
                 },
 
                 {
@@ -491,6 +518,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -507,6 +536,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -523,6 +554,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -539,6 +572,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -555,6 +590,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -767,6 +804,7 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  
                 },
               ],
               [
@@ -776,10 +814,12 @@ const PdfPaySlip = () => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_hours ? payroll.ot_hours : ''}`,
+                  text: ` ${payroll.ot_hours.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -789,10 +829,12 @@ const PdfPaySlip = () => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                     (D)`,
+                  text: ` ${payroll.ot_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                     `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -867,6 +909,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -882,6 +926,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -942,34 +988,38 @@ const PdfPaySlip = () => {
                   style: 'tableHead',
                 },
               ],
-              // [
-              //   {
-              //     text: 'Employers Contribution',
-              //     border: [false, false, false, true],
-              //     style: 'tableBody',
-              //   },
+              [
+                {
+                  text: 'Employers Contribution',
+                  border: [false, false, false, true],
+                  style: 'tableBody',
+                },
 
-              //   {
-              //     text: `${payroll.cpf_employer ? payroll.cpf_employer : ''}`,
-              //     border: [false, false, false, true],
-              //     fillColor: '#f5f5f5',
-              //     style: 'tableBody',
-              //   },
-              // ],
-              // [
-              //   {
-              //     text: 'Employee Contribution',
-              //     border: [false, false, false, true],
-              //     style: 'tableBody',
-              //   },
+                {
+                  text: `${payroll.cpf_employer ? payroll.cpf_employer : ''}`,
+                  border: [false, false, false, true],
+                  fillColor: '#f5f5f5',
+                  style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
+                },
+              ],
+              [
+                {
+                  text: 'Employee Contribution',
+                  border: [false, false, false, true],
+                  style: 'tableBody',
+                },
 
-              //   {
-              //     text: `${payroll.cpf_employee ? payroll.cpf_employee : ''}`,
-              //     border: [false, false, false, true],
-              //     fillColor: '#f5f5f5',
-              //     style: 'tableBody',
-              //   },
-              // ],
+                {
+                  text: `${payroll.cpf_employee.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  border: [false, false, false, true],
+                  fillColor: '#f5f5f5',
+                  style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
+                },
+              ],
             ],
           },
         },

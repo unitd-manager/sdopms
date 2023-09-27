@@ -36,8 +36,8 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
                   Full Name <span style={{ color: 'red' }}>*</span>
                 </Label>
                 <Input
-                  name="first_name"
-                  value={employeeDetails && employeeDetails.first_name}
+                  name="employee_name"
+                  value={employeeDetails && employeeDetails.employee_name}
                   onChange={handleInputChange}
                   type="text"
                 />
@@ -62,7 +62,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
             <Col md="3">
               <FormGroup>
                 <Label>
-                  Gender 
+                  Gender <span style={{ color: 'red' }}>*</span>
                 </Label>
                 <Input
                   name="gender"
@@ -123,7 +123,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
             </Col>
             <Col md="3">
               <FormGroup>
-                <Label>Passport Expiry <span style={{ color: 'red' }}>*</span></Label>
+                <Label>Passport Expiry</Label>
                 <Input
                   type="date"
                   onChange={handleInputChange}

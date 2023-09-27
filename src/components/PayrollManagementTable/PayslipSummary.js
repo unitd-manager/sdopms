@@ -123,7 +123,7 @@ function PayslipSummary({ payroll, handleInputs, workingDaysInMonth }) {
                     value={
                       payroll && payroll.employee_name
                         ? payroll && payroll.employee_name
-                        : payroll && payroll.first_name
+                        : payroll && payroll.employee_name
                     }
                     onChange={handleInputs}
                     name="employee_name"

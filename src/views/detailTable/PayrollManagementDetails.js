@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as Icon from 'react-feather';
-import { Row, Col, FormGroup, Button, Form } from 'reactstrap';
+import {
+  Row,
+  Col,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Table,
+  Input,
+  Form,
+  FormGroup
+} from 'reactstrap';
 import moment from 'moment';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Swal from 'sweetalert2';
 import { ToastContainer } from 'react-toastify';
 import message from '../../components/Message';
 import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -11,7 +24,7 @@ import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
-import LoanPaymentHistoryModal from '../../components/PayrollManagementTable/LoanPaymentHistoryModal';
+//import LoanPaymentHistoryModal from '../../components/PayrollManagementTable/LoanPaymentHistoryModal';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import PdfPaySlip from '../../components/PDF/PdfPaySlip';
 import PdfTimeSheet from '../../components/PDF/PdfTimeSheet';
@@ -161,7 +174,6 @@ function PayrollManagementDetails() {
     allowances3,
     allowances4,
     allowances5,
-    totalMonthPay,
   ) => {
     /* eslint-disable */
     if (!basicPay) basicPay = 0;
@@ -171,7 +183,6 @@ function PayrollManagementDetails() {
     if (!allowances3) allowances3 = 0;
     if (!allowances4) allowances4 = 0;
     if (!allowances5) allowances5 = 0;
-    if (!totalMonthPay) totalMonthPay = 0;
 
     setTotalMonthPay(
       parseFloat(basicPay) +
@@ -180,8 +191,7 @@ function PayrollManagementDetails() {
         parseFloat(allowances2) +
         parseFloat(allowances3) +
         parseFloat(allowances4) +
-        parseFloat(allowances5) +
-        parseFloat(totalMonthPay),
+        parseFloat(allowances5),
     );
   };
 
@@ -198,9 +208,9 @@ function PayrollManagementDetails() {
   //   }
   // };
 
-  // Calculate and update Gross Pay whenever relevant fields change
+  //Calculate and update Gross Pay whenever relevant fields change
   // useEffect(() => {
-  //   const basicPay = parseFloat(payroll.basic_pay) || 0;
+  //   const basicPay = parseFloat(payroll.total_basic_pay_for_month) || 0;
   //   const allowance1 = parseFloat(payroll.allowance1) || 0;
   //   const allowance2 = parseFloat(payroll.allowance2) || 0;
   //   const allowance3 = parseFloat(payroll.allowance3) || 0;
@@ -221,7 +231,6 @@ function PayrollManagementDetails() {
   //   payroll.allowance5,
   //   otAmount || (payroll && payroll.ot_amount),
   // ]);
-  const [loan, setLoan] = useState([]);
   const calculateBasicPayPercentage = () => {
     if (
       payroll &&
@@ -285,10 +294,10 @@ function PayrollManagementDetails() {
 
     // Calculate total working days in the month
     const workingdaysInRanges = workingDaysInWeek * TotaldaysInRanges + remainingDays;
-    console.log("3",'Total days in range:', daysInRange);
-    console.log("4",'Total weeks in range:', TotaldaysInRanges);
-    console.log("5",'Total weeks in range:', remainingDays);
-    console.log("6",'Total weeks in range:', workingdaysInRanges);
+    console.log('3', 'Total days in range:', daysInRange);
+    console.log('4', 'Total weeks in range:', TotaldaysInRanges);
+    console.log('5', 'Total weeks in range:', remainingDays);
+    console.log('6', 'Total weeks in range:', workingdaysInRanges);
 
     return workingdaysInRanges;
   };
@@ -300,68 +309,64 @@ function PayrollManagementDetails() {
     setWorkingDaysInMonth(calculateDaysInRange());
   }, [payroll]);
 
-  // const handleLoanInputs = (e, element) => {
-  //   setLoan({ ...loan, loan_id: element.loan_id, [e.target.name]: e.target.value });
-  // };
+  // Calculate and update totalMonthPay with the latest values
+  const newTotalMonthPay =
+    parseFloat(payroll.total_basic_pay_for_month || 0) +
+    parseFloat(otAmount || (payroll && payroll.ot_amount) || 0) +
+    parseFloat(payroll.allowance1 || 0) +
+    parseFloat(payroll.allowance2 || 0) +
+    parseFloat(payroll.allowance3 || 0) +
+    parseFloat(payroll.allowance4 || 0) +
+    parseFloat(payroll.allowance5 || 0);
+
+  // Calculate and update totalDeductions with the latest values
+  const newTotalDeductions =
+    parseFloat(payroll.deduction1 || 0) +
+    parseFloat(payroll.deduction2 || 0) +
+    parseFloat(payroll.deduction3 || 0) +
+    parseFloat(payroll.deduction4 || 0) +
+    parseFloat(payroll.sdl || 0) +
+    parseFloat(payroll.income_tax_amount || 0) +
+    parseFloat(payroll.loan_amount || 0) +
+    parseFloat(payroll.pay_eucf || 0) +
+    parseFloat(payroll.pay_cdac || 0) +
+    parseFloat(payroll.pay_mbmf || 0) +
+    parseFloat(payroll.pay_sinda || 0);
+
+  const newNetTotal =
+    newTotalMonthPay +
+    parseFloat(payroll.director_fee || 0) +
+    parseFloat(payroll.reimbursement || 0) -
+    newTotalDeductions;
 
   // Edit Payroll Data Function
   const editPayrollData = () => {
     if (editTotalDeduction) {
       payroll.total_deductions = totalDeductions;
     }
-    // Calculate and update totalMonthPay with the latest values
-    const newTotalMonthPay =
-      parseFloat(payroll.total_basic_pay_for_month || 0) +
-      parseFloat(otAmount || 0) +
-      parseFloat(payroll.allowance1 || 0) +
-      parseFloat(payroll.allowance2 || 0) +
-      parseFloat(payroll.allowance3 || 0) +
-      parseFloat(payroll.allowance4 || 0) +
-      parseFloat(payroll.allowance5 || 0);
 
-    // Calculate and update totalDeductions with the latest values
-    const newTotalDeductions =
-      parseFloat(payroll.deduction1 || 0) +
-      parseFloat(payroll.deduction2 || 0) +
-      parseFloat(payroll.deduction3 || 0) +
-      parseFloat(payroll.deduction4 || 0) +
-      parseFloat(payroll.sdl || 0) +
-      parseFloat(payroll.income_tax_amount || 0) +
-      parseFloat(payroll.loan_amount || 0) +
-      parseFloat(payroll.pay_eucf || 0) +
-      parseFloat(payroll.pay_cdac || 0) +
-      parseFloat(payroll.pay_mbmf || 0) +
-      parseFloat(payroll.pay_sinda || 0);
-
-    const newNetTotal =
-      newTotalMonthPay +
-      parseFloat(payroll.director_fee || 0) +
-      parseFloat(payroll.reimbursement || 0) -
-      newTotalDeductions;
+    //payroll.ot_amount= otAmount;
 
     const updatedPayrollData = {
       ...payroll,
-      total_basic_pay_for_month: newTotalMonthPay,
+
       total_deductions: newTotalDeductions,
       net_total: newNetTotal,
-      //ot_amount: otAmount || 0, // Ensure ot_amount is always included
+      ot_amount: otAmount || (payroll && payroll.ot_amount) || 0, // Ensure ot_amount is always included
     };
-    //  const remainingAmountPayable = element.amount_payable - (payroll.loan_amount || 0);
 
-    // // Check if the loan_amount exceeds the amount_payable
-    // if (remainingAmountPayable < 0) {
-    //   // Show an alert message indicating the loan_amount exceeds the amount_payable
-    //   window.alert('Loan amount cannot exceed the remaining amount payable.');
-    //   return; // Stop further execution of the function
-    // }
-    // Check if loan_amount is provided
-
+  //   let newLoanAmount = 0;
+  //   loanamountdata.forEach((elem) => {
+  //     newLoanAmount += parseFloat(elem.loan_repayment_amount_per_month || 0);
+  //   });
+  //   // Update payroll with the new loan amount
+  // payroll.loan_amount = newLoanAmount;
     api
       .post('/payrollmanagement/editpayrollmanagementMain', updatedPayrollData)
       .then(() => {
         message('Record edited successfully', 'success');
         //navigate(`/PayrollManagement?month=${payroll.payroll_month}&year=${payroll.payroll_year}`);
-        //getPayroll();
+        getPayroll();
         //getPreviousEarlierLoan();
         setEditTotalDeduction(false);
       })
@@ -369,58 +374,19 @@ function PayrollManagementDetails() {
         message('Unable to edit record.', 'error');
       });
   };
+  const [loanamountdata, setLoanamountData] = useState([]);
 
-  // Loan amount is provided, proceed with loan record update
-  const updatedLoanData = {
-    ...loan,
-    loan_repayment_amount_per_month: payroll.loan_amount,
-    payroll_management_id: id,
-    employee_id: loan.empId,
-    // Insert the payroll_management_id
-  };
-
-  // Call the API to update the loan record
-  const insertLoanRepayment = (empId) => {
-    api
-      .post('/loan/insertLoanRepaymenthistory', updatedLoanData)
-      .then(() => {
-        // Loan record updated successfully
-      })
-      .catch(() => {
-        message('Unable to update loan record.', 'error');
-      });
-  };
-
-  // //getting lastmonth first and last date
-  // const getlastmonthdates = () => {
-  //   const lastmonthfirstdate = moment(new Date())
-  //     .subtract(1, 'months')
-  //     .startOf('month')
-  //     .format('DD-MM-YYYY');
-
-  //   const lastmonthlastdate = moment(new Date())
-  //     .subtract(1, 'months')
-  //     .endOf('month')
-  //     .format('DD-MM-YYYY');
-  // };
-  //Method for getting data by LoanId and Employee Id
   const getPreviousEarlierLoan = (empId) => {
+   
     api
-      .post('/payrollmanagement/TabPreviousEarlierLoanById', { employee_id: empId })
+      .post('/payrollmanagement/TabPreviousEarlierLoanById', {
+        employee_id: empId,
+      })
       .then((res) => {
-        const loanData = res.data.data;
-
-        // Update the payroll_management_id and loan_id for each loan record
-        const updatedLoanData = loanData.map((loanRecord) => ({
-          ...loanRecord,
-          payroll_management_id: id, // Replace with the actual payroll_management_id
-          loan_id: loanRecord.loan_id, // Assuming 'id' is the loan_id field in your data
-        }));
-
-        setLoan(updatedLoanData);
+        setLoanamountData(res.data.data);
       })
       .catch(() => {
-        //message('Loan not found', 'info');
+        
       });
   };
 
@@ -439,6 +405,19 @@ function PayrollManagementDetails() {
       });
   };
 
+  //getting lastmonth first and last date
+  const getlastmonthdates = () => {
+    const lastmonthfirstdate = moment(new Date())
+      .subtract(1, 'months')
+      .startOf('month')
+      .format('DD-MM-YYYY');
+
+    const lastmonthlastdate = moment(new Date())
+      .subtract(1, 'months')
+      .endOf('month')
+      .format('DD-MM-YYYY');
+  };
+
   const getLeaves = async (empid) => {
     api
       .post('/payrollmanagement/getPastLeaveHistory', { employee_id: empid })
@@ -449,11 +428,71 @@ function PayrollManagementDetails() {
         message('Unable to get leave record.', 'error');
       });
   };
+  const deletePayrollData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/payrollmanagement/deletepayroll_management', { payroll_management_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your payroll has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
+  // Function to handle changes in loan_repayment_amount_per_month input
+  const handleLoanRepaymentAmountChange = (index, value) => {
+    const copyLoanAmountData = [...loanamountdata];
+    copyLoanAmountData[index].loan_repayment_amount_per_month = value;
+    setLoanamountData(copyLoanAmountData);
 
+    // Calculate the total loan amount
+    const totalLoanAmount = copyLoanAmountData.reduce((acc, item) => {
+      return acc + parseFloat(item.loan_repayment_amount_per_month || 0);
+    }, 0);
+
+    // Update the loan_amount field in the payroll state
+    setPayroll((prevPayroll) => ({
+      ...prevPayroll,
+      loan_amount: totalLoanAmount,
+    }));
+  };
   useEffect(() => {
     //getlastmonthdates();
     getPayroll();
   }, [id]);
+  // Call the API to update the loan record
+  const insertLoanRepayment = () => {
+   
+    loanamountdata.forEach((elem) => {
+      elem.payroll_management_id= id;
+      elem.generated_date = moment();
+    payroll.loan_amount = elem.loan_repayment_amount_per_month;
+      api
+        .post('/loan/insertLoanRepaymenthistory', elem)
+        .then(() => {
+          message('Loan record updated successfully');
+        })
+        .catch(() => {
+          message('Unable to update loan record.', 'error');
+        });
+    });
+  };
+  function updateState(index, property, e) {
+    const copyloanDetails = [...loanamountdata];
+    const updatedObject = { ...copyloanDetails[index], [property]: e.target.value };
+    copyloanDetails[index] = updatedObject;
+    setLoanamountData(copyloanDetails);
+  }
+
   const columns = [
     {
       name: 'SN.No',
@@ -477,6 +516,7 @@ function PayrollManagementDetails() {
       name: 'Amount Payable',
     },
   ];
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -489,6 +529,7 @@ function PayrollManagementDetails() {
             <ApiButton
               editData={editPayrollData}
               navigate={navigate}
+              deleteData={deletePayrollData}
               //applyChanges={editPayrollData}
               backToList={backToList}
               module="Payroll Management"
@@ -520,21 +561,103 @@ function PayrollManagementDetails() {
           handleInputs={handleInputs}
           handleOtAmount={handleOtAmount}
           otAmount={otAmount}
+          newTotalMonthPay={newTotalMonthPay}
           totalDeductions={totalDeductions}
           totalMonthPay={totalMonthPay}
           setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
           calculateBasicPayPercentage={calculateBasicPayPercentage}
         />
-        {loanPaymentHistoryModal && (
+        {/* {loanPaymentHistoryModal && (
           <LoanPaymentHistoryModal
             loanPaymentHistoryModal={loanPaymentHistoryModal}
             setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
-            loan={loan}
-            insertLoanRepayment={insertLoanRepayment}
-            handleInputs={handleInputs}
             payroll={payroll}
+            id={id}
+            handleInputs={handleInputs}
+            loanamountdata={loanamountdata}
+            setLoanamountData={setLoanamountData}
           />
-        )}
+        )} */}
+              <Modal isOpen={loanPaymentHistoryModal} size="xl">
+        <ModalHeader>Loan Payment History</ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col md="12">
+              {/* <Card className="shadow-none">
+                  <CardBody className="shadow-none"> */}
+              <Table id="example" className="display border border-secondary rounded">
+                <thead>
+                  <tr>
+                    {columns.map((cell) => {
+                      return <td key={cell.name}>{cell.name}</td>;
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {loanamountdata &&
+                    loanamountdata.map((element, index) => {
+                      return (
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>
+                            {element.type}/
+                            {element.date ? moment(element.date).format('DD-MM-YYYY') : ''}
+                          </td>
+                          <td>{element.amount}</td>
+                          <td>{element.total_repaid_amount}</td>
+                          <td>
+                            {' '}
+                            <Input
+                              type="text"
+                              value={element.loan_repayment_amount_per_month}
+                              onChange={(e) =>
+                                handleLoanRepaymentAmountChange(index, e.target.value)
+                              }
+                              name="loan_repayment_amount_per_month"
+                            ></Input>
+                          </td>
+                          <td>
+                            <Input
+                              type="textarea"
+                              value={element.remarks}
+                              onChange={(e) => updateState(index, 'remarks', e)}
+                              name="remarks"
+                            ></Input>
+                          </td>
+                          <td>{element.amount_payable}</td>{' '}
+                          {/* Display the calculated Amount Payable */}
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </Table>
+              {/* </CardBody>
+                </Card> */}
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            className="shadow-none"
+            color="primary"
+            onClick={() => {
+              insertLoanRepayment();
+            }}
+          >
+            submit
+          </Button>
+          <Button
+            color="dark"
+            className="shadow-none"
+            onClick={() => {
+              setLoanPaymentHistoryModal(false);
+            }}
+          >
+            {' '}
+            Close{' '}
+          </Button>
+        </ModalFooter>
+      </Modal>
 
         {/* Notes */}
         <Form>

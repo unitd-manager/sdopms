@@ -2,21 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmount,calculateBasicPayPercentage }) {
+function Earnings({
+  payroll,
+  handleInputs,
+  handleEarnings,
+  handleOtAmount,
+  otAmount,
+  calculateBasicPayPercentage,
+}) {
   Earnings.propTypes = {
     payroll: PropTypes.object,
     handleEarnings: PropTypes.func,
     handleInputs: PropTypes.func,
     handleOtAmount: PropTypes.func,
     otAmount: PropTypes.any,
-    calculateBasicPayPercentage:PropTypes.func,
+    calculateBasicPayPercentage: PropTypes.any,
   };
 
   const [grossPay, setGrossPay] = useState(0);
 
   // Calculate and update Gross Pay whenever relevant fields change
   useEffect(() => {
-    const basicPay = parseFloat(payroll.basic_pay) || 0;
+    const basicPay = parseFloat(payroll.total_basic_pay_for_month) || 0;
     const allowance1 = parseFloat(payroll.allowance1) || 0;
     const allowance2 = parseFloat(payroll.allowance2) || 0;
     const allowance3 = parseFloat(payroll.allowance3) || 0;
@@ -29,26 +36,14 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
 
     setGrossPay(newGrossPay);
   }, [
-    payroll.basic_pay,
+    payroll.total_basic_pay_for_month,
     payroll.allowance1,
     payroll.allowance2,
     payroll.allowance3,
     payroll.allowance4,
     payroll.allowance5,
-    payroll.ot_amount,
+    otAmount || (payroll && payroll.ot_amount),
   ]);
-  // const calculateBasicPayPercentage = () => {
-  //   if (payroll && payroll.total_basic_pay_for_month && payroll.actual_working_days) {
-  //     const totalBasicPay = parseFloat(payroll.basic_pay);
-  //     const actualWorkingDays = parseFloat(payroll.actual_working_days);
-
-  //     if (actualWorkingDays > 0) {
-  //       const basicPayPercentage = (totalBasicPay / actualWorkingDays).toFixed(2);
-  //       return `${basicPayPercentage}`;
-  //     }
-  //   }
-  //   return '';
-  // };
 
   return (
     <div>
@@ -70,7 +65,6 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
                 payroll.allowance3,
                 payroll.allowance4,
                 payroll.allowance5,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />
@@ -113,8 +107,7 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
-               
+                payroll.total_basic_pay_for_month,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
@@ -138,13 +131,12 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
+                payroll.total_basic_pay_for_month,
                 payroll.ot_amount,
                 payroll.allowance2,
                 payroll.allowance3,
                 payroll.allowance4,
                 payroll.allowance5,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />
@@ -161,13 +153,12 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
+                payroll.total_basic_pay_for_month,
                 payroll.allowance1,
                 payroll.ot_amount,
                 payroll.allowance3,
                 payroll.allowance4,
                 payroll.allowance5,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />
@@ -184,13 +175,12 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
+                payroll.total_basic_pay_for_month,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.ot_amount,
                 payroll.allowance4,
                 payroll.allowance5,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />
@@ -207,13 +197,12 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
+                payroll.total_basic_pay_for_month,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
                 payroll.ot_amount,
                 payroll.allowance5,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />
@@ -230,13 +219,12 @@ function Earnings({ payroll, handleInputs, handleEarnings, handleOtAmount, otAmo
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.basic_pay,
+                payroll.total_basic_pay_for_month,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
                 payroll.allowance4,
                 payroll.ot_amount,
-                payroll.total_basic_pay_for_month,
               );
             }}
           />

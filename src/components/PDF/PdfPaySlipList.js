@@ -302,7 +302,7 @@ console.log('payroll',payroll)
                 },
 
                 {
-                  text: `${payroll.basic_pay?payroll.basic_pay.toLocaleString('en-IN', {
+                  text: `${payroll.total_basic_pay_for_month?payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   }):0.00}                                                             (A)`,
                   border: [false, false, false, true],
@@ -446,7 +446,9 @@ console.log('payroll',payroll)
                 },
 
                 {
-                  text: `${payroll.sdl?payroll.sdl.toLocaleString('en-IN', { minimumFractionDigits: 2 }):0.00}`,
+                  text: `${payroll.sdl?payroll.sdl.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  }):0.00}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -460,7 +462,9 @@ console.log('payroll',payroll)
                 },
 
                 {
-                  text: `${payroll.loan_amount ? payroll.loan_amount : ''}`,
+                  text: `${payroll.loan_amount?payroll.loan_amount.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  }):0.00}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',

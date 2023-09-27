@@ -127,7 +127,7 @@ const TrainingEdit = () => {
         resData.forEach((element) => {
           empArray.push({
             id: random.int(1, 99),
-            employee_name: element.first_name,
+            employee_name: element.employee_name,
             employee_id: element.employee_id,
             from_date: element.from_date && element.from_date.substring(0, 10),
             to_date: element.to_date && element.to_date.substring(0, 10),
@@ -158,7 +158,7 @@ const TrainingEdit = () => {
       const items = res.data.data;
       const finaldat = [];
       items.forEach((item) => {
-        finaldat.push({ value: item.employee_id, label: item.first_name });
+        finaldat.push({ value: item.employee_id, label: item.employee_name });
       });
       setEmployeeLinked(finaldat);
     });

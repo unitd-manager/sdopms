@@ -144,6 +144,8 @@ const JobInformationEdit = () => {
     { id: '5', name: 'CPF Information' },
     { id: '6', name: 'Bank Information' },
     { id: '7', name: 'Termination Information' },
+    { id: '8', name: 'Attachment' },
+    { id: '9', name: 'Add a note' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
