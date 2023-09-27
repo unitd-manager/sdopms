@@ -8,10 +8,11 @@ import PdfHeader from '../PDF/PdfHeader';
 import PdfFooter from '../PDF/PdfFooter';
 import api from '../../constants/api';
 
-const ExportReport = ({ data, columns }) => {
+const ExportReport = ({ data, columns, exportValue }) => {
   ExportReport.propTypes = {
     data: PropTypes.any,
     columns: PropTypes.array,
+    exportValue: PropTypes.any,
   };
 
   const [hfdata, setHeaderFooterData] = React.useState();
@@ -39,17 +40,16 @@ const ExportReport = ({ data, columns }) => {
       selectors.push(singleColumn.selector);
     });
 
-    console.log(keys);
     result = '';
     result += keys.join(columnDelimiter);
     result += lineDelimiter;
 
-    array.forEach((item,index) => {
+    array.forEach((item, index) => {
       let ctr = 0;
       selectors.forEach((key) => {
         if (ctr > 0) result += columnDelimiter;
 
-        result += key === 's_no' ?  index + 1 : (item[key] ? item[key] : '');
+        result += key === 's_no' ? index + 1 : item[key] ? item[key] : '';
 
         ctr++;
       });
@@ -64,8 +64,14 @@ const ExportReport = ({ data, columns }) => {
     let csv = convertArrayOfObjectsToCSV(data);
     if (csv == null) return;
 
-    const filename = 'export.csv';
-
+function getCurrentDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${day}-${month}-${year}`;
+}
+const filename = `${exportValue}_${getCurrentDate()}.csv`;
     if (!csv.match(/^data:text\/csv/i)) {
       csv = `data:text/csv;charset=utf-8,${csv}`;
     }
@@ -82,10 +88,10 @@ const ExportReport = ({ data, columns }) => {
     const header = [];
     columns.forEach((singleColumn) => {
       selectors.push(singleColumn.selector);
-      header.push( {
+      header.push({
         text: singleColumn.name,
-        style:'tableHead',
-      })
+        style: 'tableHead',
+      });
     });
     body.push(header);
 
@@ -93,8 +99,10 @@ const ExportReport = ({ data, columns }) => {
       const dataRow = [];
 
       selectors.forEach((column) => {
-
-        dataRow.push({text:column === 's_no' ? index + 1 : (row[column] !== undefined ? row[column] : ''),style:'tableBody',});
+        dataRow.push({
+          text: column === 's_no' ? index + 1 : row[column] !== undefined ? row[column] : '',
+          style: 'tableBody',
+        });
       });
 
       body.push(dataRow);
@@ -109,7 +117,6 @@ const ExportReport = ({ data, columns }) => {
     for (let i = 0; i < LEN; i++) {
       arry.push(`${columnWidth}%`);
     }
-    console.log(arry);
     return arry;
   };
   function table() {
@@ -120,7 +127,7 @@ const ExportReport = ({ data, columns }) => {
         widths: getWidthOfColumns(),
         body: buildTableBody(),
       },
-      layout: 'lightHorizontalLines'
+      layout: 'lightHorizontalLines',
     };
   }
   const downloadPdf = () => {
@@ -130,35 +137,43 @@ const ExportReport = ({ data, columns }) => {
       pageMargins: [40, 110, 40, 80],
       footer: PdfFooter,
       content: [
-
-      table()],
-      styles:{
-        tableHead:{
+        table(),
+      ],
+      styles: {
+        tableHead: {
           border: [false, true, false, true],
           fillColor: '#eaf2f5',
           margin: [0, 5, 0, 5],
           fontSize: 10,
-          bold:'true',
-    },
-    tableBody:{
-      border: [false, true, false, true],
-      margin: [0, 5, 0, 5],
-      fontSize: 10,
-},
-      }
+          bold: 'true',
+        },
+        tableBody: {
+          border: [false, true, false, true],
+          margin: [0, 5, 0, 5],
+          fontSize: 10,
+        },
+      },
     };
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     pdfMake.createPdf(dd, null, null, pdfFonts.pdfMake.vfs).open();
   };
   return (
     <>
-      <Row >
-        <Col style={{display:'flex',justifyContent:'flex-end'}}>
-          <Button style={{background:'green',border:'none',marginRight:'10px'}} className="shadow-none" onClick={downloadCSV}>
-          <Icon.Table /> Excel
+      <Row>
+        <Col style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            style={{ background: 'green', border: 'none', marginRight: '10px' }}
+            className="shadow-none"
+            onClick={downloadCSV}
+          >
+            <Icon.Table /> Excel
           </Button>
-          <Button style={{background:'#D11606',border:'none'}} className="shadow-none" onClick={downloadPdf}>
-          <Icon.File /> PDF
+          <Button
+            style={{ background: '#D11606', border: 'none' }}
+            className="shadow-none"
+            onClick={downloadPdf}
+          >
+            <Icon.File /> PDF
           </Button>
         </Col>
       </Row>
