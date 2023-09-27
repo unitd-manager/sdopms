@@ -140,7 +140,7 @@ const Payrollmanagement = () => {
         setLoading(false);
       })
       .catch(() => {
-        message('Payrollmanagement Data Not Found', 'info');
+        //message('Payrollmanagement Data Not Found', 'info');
         setLoading(false);
       });
   };
