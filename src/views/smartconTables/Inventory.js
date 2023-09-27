@@ -131,10 +131,14 @@ function Inventory() {
     for ( let x = 0; x < rows.length; x++ ) {
       arr.push(
         {
-          item_code: rows[x][0],
-          title: rows[x][1],
-          type: rows[x][2],
-          quantity: rows[x][3]
+          ProductCode: rows[x][0],
+          ProductName: rows[x][1],
+          Description: rows[x][2],
+          Price: rows[x][3],
+          Unit: rows[x][4],
+          Category: rows[x][5],
+          Stock: rows[x][6]
+         
         }
       )
     }
