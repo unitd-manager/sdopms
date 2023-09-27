@@ -102,19 +102,7 @@ const Payrollmanagement = () => {
         message('Unable to edit record.', 'error');
       });
   };
-  // const[cpfem,setCPF]=useState();
-  //   const getCPf = () => {
-  //     api
-  //       .post('/payrollmanagement/getCpfCalculation', { employee_id: payrollManagementsdata.empId })
-  //       .then((res) => {
-  //         setCPF(res.data.data);
-  //         console.log("cpfemp",cpfem);
-  //       })
-
-  //       .catch(() => {
-  //         message('Loan not found', 'info');
-  //       });
-  //   };
+ 
   //get all records
   const getAllPayrollManagements = () => {
     setLoading(true);
@@ -179,115 +167,6 @@ const Payrollmanagement = () => {
 
   console.log('last month first date', lastmonthfirst);
   console.log('last month last date', lastmonthlast);
-
-  //const [cpfemployees, setCpfEmployees] = useState();
-  // const selectedEmployeeId = obj.employee_id;
-  // const generatecpfcalculator = (grosspay,age) => {
-  // setLoading(true);
-  // api.post('/payrollmanagement/getCpfCalculation',{
-  //     employee_id:selectedEmployeeId,
-  // })
-  // .then((res) => {
-
-  //       setCpfEmployees(res.data.data); // Assuming the API returns CPF data
-
-  //   const rowPercentageCPF = {
-  //     byEmployer: cpfemployees.byEmployer,
-  //     byEmployee: cpfemployees.byEmployee,
-  //     capAmountEmployer: cpfemployees.capAmountEmployer,
-  //     capAmountEmployee: cpfemployees.capAmountEmployee,
-  //   };
-
-  //   let cpfEmployee = 0;
-  //   //let cpfEmployeeInt = 0;
-  //   if (grosspay >= 501 && grosspay <= 749) {
-  //     if (age >= 0 && age <= 55) {
-  //       cpfEmployee = 0.6 * (grosspay - 500);
-  //       console.log('CPF Employee Contribution:', cpfEmployee);
-  //     } else if (age >= 56 && age <= 60) {
-  //       cpfEmployee = 0.39 * (grosspay - 500);
-  //       console.log('CPF Employee Contribution:', cpfEmployee);
-  //     } else if (age >= 61 && age <= 65) {
-  //       cpfEmployee = 0.225 * (grosspay - 500);
-  //       console.log('CPF Employee Contribution:', cpfEmployee);
-  //     } else if (age >= 66) {
-  //       cpfEmployee = 0.15 * (grosspay - 500);
-  //       console.log('CPF Employee Contribution:', cpfEmployee);
-  //     }
-
-  //     const cpfEmployer = (grosspay * rowPercentageCPF.byEmployer) / 100;
-  //     console.log('CPF Employer Contribution1:', cpfEmployer);
-
-  //     const totalContribution = cpfEmployee + cpfEmployer;
-  //     console.log('Total CPF Contribution2:', totalContribution);
-  //     const totalContributionamount = Math.round(totalContribution);
-  //     // CPF Employee Contribution
-  //     const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
-  //     // CPF Employer contribution
-  //     const cpf = totalContributionamount - cpfEmployeeInt;
-  //     console.log('Total CPF Contributions3:', totalContributionamount);
-  //     console.log('Total CPF Contribution4:', cpfEmployeeInt);
-  //     console.log('Total CPF Contribution5:', cpf);
-
-  //     console.log('CPF Employee Contribution6:', cpfEmployeeInt.toFixed(2)); // Format as a two-decimal float
-  //     console.log('CPF Employer Contribution7:', cpfEmployer.toFixed(2)); // Format as a two-decimal float
-  //     console.log('Total CPF Contribution:', totalContribution.toFixed(2)); // Format as a two-decimal float
-  //   }
-  //   else {
-  //     /* CPF Total Calculation */
-  //     const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
-  //     const totalContribution = (grosspay * totalCpfPercent) / 100;
-  //     const totalContributionAmount = Math.round(totalContribution);
-
-  //     console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
-  //     console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
-  //     console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
-  //     console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
-
-  //     /* CPF Calculation */
-  //     const cpf = (grosspay * rowPercentageCPF.byEmployer) / 100;
-  //     console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
-  //     // CPF Employee contribution
-  //     const cpfEp = (grosspay * rowPercentageCPF.byEmployee) / 100;
-  //     const cpfE = Math.round(cpfEp);
-  //     console.log('CPF Calculation2:', cpfE.toFixed(2));
-
-  //     // Calculate total_cap_amount_cpf
-  //     const totalCapAmountCpf =
-  //       rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
-
-  //     let totalContributionAmountCorrection = totalCapAmountCpf;
-
-  //     if (totalContributionAmount > totalCapAmountCpf) {
-  //       totalContributionAmountCorrection = totalCapAmountCpf;
-  //     } else {
-  //       totalContributionAmountCorrection = totalContributionAmount;
-  //     }
-
-  //     // Calculate CPF Employer contribution
-  //     let cpfEmp = totalContributionAmount - cpfE;
-
-  //     if (
-  //       cpf > rowPercentageCPF.capAmountEmployer &&
-  //       rowPercentageCPF.capAmountEmployer !== 0
-  //     ) {
-  //       cpfEmp = rowPercentageCPF.capAmountEmployer;
-  //     }
-  //     if (
-  //       cpfE > rowPercentageCPF.capAmountEmployee &&
-  //       rowPercentageCPF.capAmountEmployee !== 0
-  //     ) {
-  //       cpfEmp = rowPercentageCPF.capAmountEmployee;
-  //     }
-
-  //     console.log('Total Contribution Amount Correction:', totalCapAmountCpf);
-  //     console.log('Total Contribution Amount Correction:', totalContributionAmountCorrection);
-  //     console.log('Total Contribution Amount Correction:', cpfEmp);
-
-  // };
-
-  // });
-  // };
 
   //create payroll api
   const createPayrollManagements = async (Arr) => {
@@ -640,7 +519,7 @@ const Payrollmanagement = () => {
             {empWithoutJobInfo.map((el) => {
               return (
                 <span style={{ marginRight: '5px' }}>
-                  <Badge> {el.first_name}</Badge>
+                  <Badge> {el.employee_name}</Badge>
                 </span>
               );
             })}
@@ -765,7 +644,7 @@ const Payrollmanagement = () => {
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{element.first_name}</td>
+                    <td>{element.employee_name}</td>
                     <td>
                       <PdfPaySlipList payroll={element}></PdfPaySlipList>
                     </td>

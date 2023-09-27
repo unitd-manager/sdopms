@@ -13,7 +13,7 @@ const JobInformationDetails = () => {
   const [employee, setEmployee] = useState();
   const [jobForms, setJobForms] = useState({
     employee_id: '',
-    first_name: '',
+    employee_name: '',
     fin_no: '',
     status: 'current',
   });
@@ -44,7 +44,7 @@ const JobInformationDetails = () => {
           console.log(insertedDataId);
           message('Job Information inserted successfully.', 'success');
           setTimeout(() => {
-            navigate(`/JobInformationEdit/${insertedDataId}`);
+            navigate(`/JobInformationEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {
@@ -85,7 +85,7 @@ const JobInformationDetails = () => {
                             return (
                               ele.e_count === 0 && (
                                 <option key={ele.employee_id} value={ele.employee_id}>
-                                  {ele.first_name}
+                                  {ele.employee_name}
                                 </option>
                               )
                             );

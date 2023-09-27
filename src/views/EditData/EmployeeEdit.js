@@ -346,6 +346,7 @@ const EmployeeEdit = () => {
       modelType: 'attachment',
     });
   };
+  
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
@@ -385,7 +386,7 @@ const EmployeeEdit = () => {
             <ApiButton
               editData={updateData}
               navigate={navigate}
-              applyChanges={updateData}
+              //applyChanges={updateData}
               backToList={backToList}
               deleteData={deleteEmployeeData}
               module="Employee"

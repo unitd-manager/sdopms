@@ -43,6 +43,7 @@ export default function LoanMoreDetails({
   addpaymentModal,
   loan,
   loanDetails,
+  isStatusActive 
 }) {
   LoanMoreDetails.propTypes = {
     activeTab: PropTypes.string,
@@ -61,6 +62,7 @@ export default function LoanMoreDetails({
     addpaymentModal: PropTypes.bool,
     loan: PropTypes.any,
     loanDetails: PropTypes.any,
+    isStatusActive :PropTypes.any,
   };
 
   const [RoomName, setRoomName] = useState('');
@@ -148,7 +150,7 @@ export default function LoanMoreDetails({
             </div>
           </Row>
           <Row>
-            {loanDetails && loanDetails.amount_payable !== 0 && (
+            {loanDetails && loanDetails.amount_payable !== 0 && isStatusActive  && (
               <Col md="6">
                 <Button
                   className="shadow-none"
@@ -212,6 +214,7 @@ export default function LoanMoreDetails({
                 color="primary"
                 onClick={() => {
                   insertPayment();
+                  
                 }}
               >
                 Save & Continue
