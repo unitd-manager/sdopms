@@ -207,6 +207,7 @@ const SectionEdit = () => {
                   <option value="Finance/Admin/Purchase">Finance/Admin/Purchase</option>
                   <option value="Payroll/HR">Payroll/HR</option>
                   <option value="Admin">Admin</option>
+                  <option value="MileStone">Milestone</option>
                 </Input>
               </Col>
               <Col md="4">

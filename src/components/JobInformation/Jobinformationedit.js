@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Form, FormGroup } from 'reactstrap';
-import ComponentCardV2 from '../ComponentCardV2';
+//import ComponentCardV2 from '../ComponentCardV2';
 import JobInformation from '../SupplierModal/JobInformationEditModal';
 // import PdfKET from '../PDF/PdfKET';
 import ApiButton from '../ApiButton';
@@ -33,7 +33,7 @@ export default function Jobinformationedit({
   return (
     <Form>
       <FormGroup>
-        <ComponentCardV2>
+        
           <Row>
             {/* <Col>
               <PdfKET lang="arabic" />
@@ -99,7 +99,7 @@ export default function Jobinformationedit({
               ></JobInformation>
             </Col>
           </Row>
-        </ComponentCardV2>
+       
       </FormGroup>
     </Form>
   );

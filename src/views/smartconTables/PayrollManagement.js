@@ -605,13 +605,13 @@ const Payrollmanagement = () => {
           Button={
             <div>
               <Row>
-                <Col md="6">
+                {/* <Col md="6">
                   <Link to="">
                     <Button color="primary" className="shadow-none">
                       Import
                     </Button>
                   </Link>
-                </Col>
+                </Col> */}
                 <Col md="6">
                   <a
                     href="http://43.228.126.245/smartco-api/storage/excelsheets/PayrollManagement.xlsx"

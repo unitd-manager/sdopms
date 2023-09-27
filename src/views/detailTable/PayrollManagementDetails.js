@@ -528,7 +528,7 @@ function PayrollManagementDetails() {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             {/* Save,Apply Buttons */}
             <ApiButton
               editData={editPayrollData}
@@ -538,7 +538,6 @@ function PayrollManagementDetails() {
               backToList={backToList}
               module="Payroll Management"
             ></ApiButton>
-          </ComponentCardV2>
         </FormGroup>
       </Form>
       <ComponentCardV2>
