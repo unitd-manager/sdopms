@@ -25,7 +25,11 @@ const Staff = () => {
   //Api call for getting Staff Data
   const getStaff = () => {
     api.get('/staff/getStaff').then((res) => {
-      setStaff(res.data.data);
+      let staffs=[];
+      staffs=res.data.data.filter((el)=>{
+        return el.developer !==0 && el.developer !==null
+      })
+      setStaff(staffs);
       $('#example').DataTable({
         pagingType: 'full_numbers',
         pageLength: 20,

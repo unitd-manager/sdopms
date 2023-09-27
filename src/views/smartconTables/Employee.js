@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
+import $ from 'jquery';
 import { useEffect, useState } from 'react';
+import readXlsxFile from 'read-excel-file';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EmployeeCard from '../../components/dashboard/extraDashboard/EmployeeCard';
@@ -27,6 +29,69 @@ const Cards = () => {
       });
   };
 
+  
+   // TRIGGER TO IMPORT EXCEL SHEET
+   const importExcel = () => {
+    $('#import_excel').trigger('click');
+  }
+
+  // UPLOAD FILE ON THER SERVER
+  const uploadOnServer = (arr) => {
+      api.post('/employeeModule/import/excel', {data: JSON.stringify(arr)})
+      .then(() => {
+        message('File uploaded successfully', 'success');
+        $('#upload_file').val(null);
+      })
+      .catch(() => {
+        message('Failed to upload.', 'error');
+      });
+  }
+
+  // PROCESSING AND FORMATTING THE DATA
+  const processData = (rows) => {
+    const arr = [];
+    rows.shift();
+
+    for ( let x = 0; x < rows.length; x++ ) {
+      arr.push(
+        {
+          item_code: rows[x][0],
+          title: rows[x][1],
+          type: rows[x][2],
+          quantity: rows[x][3]
+        }
+      )
+    }
+
+    uploadOnServer(arr);
+  }
+
+  // IMPORTING EXCEL FILE
+  const importExcelFile = (e) => {
+    console.log(e.target.id)
+    message('test1', 'success');
+    const reader = new FileReader();
+    reader.onload = () => {
+      console.log(reader.readyState)
+      if (reader.readyState === 2) {
+        readXlsxFile(e.target.files[0])
+          .then((rows) => {
+            processData(rows);
+            message('Uploading File On The Server', 'info');
+          })
+          .finally(() => {
+            $('#upload_file').val(null);
+          }).catch(
+            err => console.log(err)
+          );
+      }
+    };
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+
   useEffect(() => {
     getAllEmployees();
   }, []);
@@ -49,12 +114,13 @@ const Cards = () => {
                   </Link>
                 </Col>
                 <Col md="4">
-                  <Link to="">
-                    <Button color="primary" className="shadow-none mr-2">
-                      Import
-                    </Button>
-                  </Link>
-                </Col>
+            {/* <Link to=""> */}
+            <Button color="primary" className="shadow-none mr-2" onClick={() => importExcel()}>
+                Import
+              </Button>
+            {/* </Link> */}
+            <input type='file' style={{display: 'none'}} id="import_excel" onChange={importExcelFile} />
+            </Col>
                 <Col md="4">
                   <a
                     href="http://43.228.126.245/smartco-api/storage/excelsheets/Employee.xlsx"
