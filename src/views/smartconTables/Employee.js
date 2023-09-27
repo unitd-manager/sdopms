@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import $ from 'jquery';
 import { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 import readXlsxFile from 'read-excel-file';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -52,13 +53,33 @@ const Cards = () => {
     const arr = [];
     rows.shift();
 
+    console.log(rows[0]);
     for ( let x = 0; x < rows.length; x++ ) {
       arr.push(
         {
-          item_code: rows[x][0],
-          title: rows[x][1],
-          type: rows[x][2],
-          quantity: rows[x][3]
+          Name: rows[x][0],
+          Salutation: rows[x][1],
+          Gender: rows[x][2],
+          NricNo: rows[x][3],
+          FinNo: rows[x][4],
+          WpNo: rows[x][5],
+          BasicPay: rows[x][6],
+          HourlyCharge: rows[x][7],
+          FinExpiry: rows[x][8],
+          WpExpiry: rows[x][9],
+          Dob: rows[x][10],
+          Nationality: rows[x][11],
+          Race: rows[x][12],
+          YearofPR: rows[x][13],
+          Occupation: rows[x][14],
+          HandphoneNo: rows[x][15],
+          PassportNo: rows[x][16],
+          PassportExpiry: rows[x][17],
+          PassType: rows[x][18],
+          EmploymentStartDate: rows[x][19],
+          DutiesAndResponsibilities: rows[x][20],
+          Detailsofworkinghours: rows[x][21],
+          Noofworkingdays: rows[x][22]
         }
       )
     }
@@ -72,7 +93,6 @@ const Cards = () => {
     message('test1', 'success');
     const reader = new FileReader();
     reader.onload = () => {
-      console.log(reader.readyState)
       if (reader.readyState === 2) {
         readXlsxFile(e.target.files[0])
           .then((rows) => {
@@ -82,7 +102,7 @@ const Cards = () => {
           .finally(() => {
             $('#upload_file').val(null);
           }).catch(
-            err => console.log(err)
+            err => console.log('Error Found:', err)
           );
       }
     };
@@ -100,6 +120,7 @@ const Cards = () => {
     <>
       <div className="pt-xs-25">
         <BreadCrumbs />
+        <ToastContainer></ToastContainer>
         <CommonTable
           loading={loading}
           title="Employee    List"
