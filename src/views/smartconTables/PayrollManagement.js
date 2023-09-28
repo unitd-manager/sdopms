@@ -153,7 +153,7 @@ const Payrollmanagement = () => {
         setTerminatingPayslip(res.data.data);
       })
       .catch(() => {
-        message('Payrollmanagement Data Not Found', 'info');
+        //message('Payrollmanagement Data Not Found', 'info');
       });
   };
   const lastmonthfirst = moment(new Date())

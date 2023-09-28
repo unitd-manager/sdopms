@@ -60,7 +60,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         deduction4: obj.deduction4?parseFloat(obj.deduction4).toFixed(2):0.00,
       })
       .then(() => {
-        message('OT Details Edited Successfully', 'sucess');
+        message('OT Details Edited Successfully', 'success');
       })
       .catch(() => {
         message('Cannot Edit OT Details', 'error');
