@@ -37,52 +37,7 @@ export default function Jobinformationedit({
       <FormGroup>
         
           <Row>
-            {/* <Col>
-              <PdfKET lang="arabic" />
-            </Col>
-            <Col>
-              <PdfEmployeeContract job={job}></PdfEmployeeContract>
-            </Col> */}
-            {/* <Col>
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  editJobData();
-                  setTimeout(()=>{
-                    navigate('/JobInformation');
-                  },1000);
-                 
-                }}
-              >
-                {' '}
-                Save{' '}
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  editJobData();
-                  applyChanges();
-                }}
-              >
-                {' '}
-                Apply{' '}
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="shadow-none"
-                color="dark"
-                onClick={() => {
-                  navigate('/JobInformation');
-                }}
-              >
-                Back to List
-              </Button>
-            </Col> */}
+          
             <ApiButton
               editData={editJobData}
               navigate={navigate}

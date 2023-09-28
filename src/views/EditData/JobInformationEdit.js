@@ -131,7 +131,7 @@ const JobInformationEdit = () => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'error');
+      message('Please fill basic pay,working days,join date and govt donation required fields.', 'warning');
     }
   };
 

@@ -66,12 +66,10 @@ function TerminatingPayslipModal({
                           return (
                             <tr key={element.employee_id}>
                               <td>{index + 1}</td>
-                              <td>{element.first_name}</td>
+                              <td>{element.employee_name}</td>
                               <td>
-                                {element.nric_no}/
-                                {element.fin_no}
+                                {element.nric_no}/{element.fin_no}
                               </td>
-                              <td>{element.no_of_days}</td>
                               <td>{element.amount_payable}</td>
                             </tr>
                           );

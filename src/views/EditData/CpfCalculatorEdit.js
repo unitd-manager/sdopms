@@ -71,7 +71,7 @@ const CpfCalculatorEdit = () => {
         setCpfRecordDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('leaves Data Not Found', 'info');
+        //message('leaves Data Not Found', 'info');
       });
   };
   //Leave Functions/Methods

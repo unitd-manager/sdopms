@@ -514,7 +514,7 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.loan_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  text: `${payroll.loan_amount ? payroll.loan_amount : ''}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -597,7 +597,7 @@ const PdfPaySlip = () => {
             ],
           },
         },
-
+'\n',
         {
           layout: {
             defaultBorder: false,

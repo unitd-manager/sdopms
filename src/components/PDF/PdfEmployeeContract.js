@@ -64,7 +64,7 @@ const PdfEmployeeContract= () => {
                fontSize:10
              },   
              {
-              text: `CUBOSALE PTE LTD(hereinafter referred to as "the employer") with its business operating address located at\n\n`  ,
+              text: ` ${employeeDetails.company_name?employeeDetails.company_name:''}(hereinafter referred to as "the employer") with its business operating address located at\n\n`  ,
               style: 'textSize',
               fontSize:10
             }, 
