@@ -13,6 +13,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import * as $ from 'jquery';
+import { ToastContainer } from 'react-toastify';
 import api from '../../constants/api';
 import message from '../Message';
 
@@ -115,6 +116,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
   return (
     <>
       <Modal size="xl" isOpen={updateOtModal}>
+        <ToastContainer></ToastContainer>
         <ModalHeader>
           Update OT{' '}
           <Button

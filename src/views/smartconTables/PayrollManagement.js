@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import * as Icon from 'react-feather';
-import { Row, Col, Button, Card, Badge, Input, CardBody, FormGroup } from 'reactstrap';
+import { Row, Col, Button, Card, Badge } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import $ from 'jquery';
 import moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 import message from '../../components/Message';
 import 'datatables.net-buttons/js/buttons.colVis';
 // import 'datatables.net-buttons/js/buttons.flash';
@@ -46,9 +47,9 @@ const Payrollmanagement = () => {
     year: defaultYear,
   });
 
-  const handleFilterInputs = (e) => {
-    setFilterPeriod({ ...filterPeriod, [e.target.name]: e.target.value });
-  };
+  // const handleFilterInputs = (e) => {
+  //   setFilterPeriod({ ...filterPeriod, [e.target.name]: e.target.value });
+  // };
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -464,7 +465,8 @@ const Payrollmanagement = () => {
     <div className="MainDiv">
       <div className=" pt-xs-25">
         <BreadCrumbs />
-        <Card className="p-2">
+        <ToastContainer></ToastContainer>
+        {/* <Card className="p-2">
           <CardBody>
             <Row>
               <Col md="3">
@@ -509,7 +511,7 @@ const Payrollmanagement = () => {
               </Col>
             </Row>
           </CardBody>
-        </Card>
+        </Card> */}
         <Card style={{ padding: '10px' }}>
           <div>
             <h5>

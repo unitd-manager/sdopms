@@ -46,6 +46,7 @@ function PayrollManagementDetails() {
     payslip_end_date: '',
     payroll_year: '',
     basic_pay: '',
+    gross_pay:'',
     ot_hours: '',
     ot_amount: '',
     cpf_employer: '',
@@ -167,7 +168,7 @@ function PayrollManagementDetails() {
   };
   // calculation earnings
   const handleEarnings = (
-    basicPay,
+    grossPay,
     otAmount,
     allowances1,
     allowances2,
@@ -176,7 +177,7 @@ function PayrollManagementDetails() {
     allowances5,
   ) => {
     /* eslint-disable */
-    if (!basicPay) basicPay = 0;
+    if (!grossPay) grossPay = 0;
     if (!otAmount) otAmount = 0;
     if (!allowances1) allowances1 = 0;
     if (!allowances2) allowances2 = 0;
@@ -185,7 +186,7 @@ function PayrollManagementDetails() {
     if (!allowances5) allowances5 = 0;
 
     setTotalMonthPay(
-      parseFloat(basicPay) +
+      parseFloat(grossPay) +
         parseFloat(otAmount) +
         parseFloat(allowances1) +
         parseFloat(allowances2) +
@@ -247,6 +248,15 @@ function PayrollManagementDetails() {
           (totalBasicPay / workingDaysInMonth) *
           actualWorkingDays
         ).toFixed(2);
+        handleEarnings(
+          basicPayPercentage,
+          payroll.ot_amount,
+          payroll.allowance1,
+          payroll.allowance2,
+          payroll.allowance3,
+          payroll.allowance4,
+          payroll.allowance5,
+        );
         return `${basicPayPercentage}`;
       }
     }
@@ -458,12 +468,12 @@ function PayrollManagementDetails() {
     const totalLoanAmount = copyLoanAmountData.reduce((acc, item) => {
       return acc + parseFloat(item.loan_repayment_amount_per_month || 0);
     }, 0);
-
+    // console.log('total loan amount',totalLoanAmount);
     // Update the loan_amount field in the payroll state
-    setPayroll((prevPayroll) => ({
-      ...prevPayroll,
-      loan_amount: totalLoanAmount,
-    }));
+    // setPayroll((prevPayroll) => ({
+    //   ...prevPayroll,
+    //   loan_amount: totalLoanAmount,
+    // }));
   };
   useEffect(() => {
     //getlastmonthdates();
@@ -472,14 +482,39 @@ function PayrollManagementDetails() {
   // Call the API to update the loan record
   const insertLoanRepayment = () => {
    
-    loanamountdata.forEach((elem) => {
+    // console.log('payroll.loan_amount_before:', payroll.loan_amount);
+    loanamountdata.forEach((elem, i) => {
       elem.payroll_management_id= id;
       elem.generated_date = moment();
-    payroll.loan_amount = elem.loan_repayment_amount_per_month;
+      // console.log('payroll.loan_amount:', payroll.loan_amount);
+      // console.log('elem.loan_repayment_amount_per_month:', elem.loan_repayment_amount_per_month);
+      if (i===0) {
+        payroll.loan_amount = parseFloat(elem.loan_repayment_amount_per_month);
+      }else {
+        payroll.loan_amount += parseFloat(elem.loan_repayment_amount_per_month);
+      }
+
+      console.log('loanamountdata', loanamountdata)
       api
         .post('/loan/insertLoanRepaymenthistory', elem)
         .then(() => {
           message('Loan record updated successfully');
+          console.log("totalLoanAmount-console:", totalLoanAmount)
+          // setPayroll({...payroll,loan_amount:totalLoanAmount})
+          handleDeductions(
+            totalLoanAmount,
+            payroll.income_tax_amount,
+            payroll.cpf_employee,
+            payroll.deduction1,
+            payroll.deduction2,
+            payroll.deduction3,
+            payroll.deduction4,
+            payroll.sdl,
+            payroll.pay_eucf,
+            payroll.pay_cdac,
+            payroll.pay_mbmf,
+            payroll.pay_sinda,
+          );
         })
         .catch(() => {
           message('Unable to update loan record.', 'error');
@@ -495,7 +530,7 @@ function PayrollManagementDetails() {
 
   const columns = [
     {
-      name: 'SN.No',
+      name: 'S.No',
     },
     {
       name: 'Loan Type/Date',

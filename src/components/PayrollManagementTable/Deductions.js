@@ -157,26 +157,27 @@ function Deductions({
           </Link>
         </Col>
         <Col md="3">
+          {console.log("payroll.loan_amount:", payroll.loan_amount)}
           <Input
             name="loan_amount"
             type="text"
             value={payroll && payroll.loan_amount}
             onChange={(e) => {
               handleInputs(e);
-              handleDeductions(
-                e.target.value,
-                payroll.income_tax_amount,
-                payroll.cpf_employee,
-                payroll.deduction1,
-                payroll.deduction2,
-                payroll.deduction3,
-                payroll.deduction4,
-                payroll.sdl,
-                payroll.pay_eucf,
-                payroll.pay_cdac,
-                payroll.pay_mbmf,
-                payroll.pay_sinda,
-              );
+              // handleDeductions(
+              //   e.target.value,
+              //   payroll.income_tax_amount,
+              //   payroll.cpf_employee,
+              //   payroll.deduction1,
+              //   payroll.deduction2,
+              //   payroll.deduction3,
+              //   payroll.deduction4,
+              //   payroll.sdl,
+              //   payroll.pay_eucf,
+              //   payroll.pay_cdac,
+              //   payroll.pay_mbmf,
+              //   payroll.pay_sinda,
+              // );
             }}
           />
         </Col>

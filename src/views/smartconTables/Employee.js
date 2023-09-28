@@ -158,23 +158,26 @@ const Cards = () => {
         ></CommonTable>
 
         <Row className="employee-img">
-          {employees.map((blg) => (
-            <Col sm="6" lg="6" xl="3" key={blg.employee_id_duplicate}>
-              <EmployeeCard
-                onClick={`/EmployeeEdit/${blg.employee_id_duplicate}?tab=1`}
-                image={Image}
-                id={blg.employee_id_duplicate}
-                title={blg.employee_name.charAt(0).toUpperCase() + blg.employee_name.slice(1)}
-                dateOfBirth={blg.date_of_birth}
-                empId={blg.employee_id_duplicate}
-                projectDesignation={blg.project_designation}
-                gender={blg.gender}
-                team={blg.team}
-                empCode={blg.emp_code}
-                email={blg.login_email}
-              />
-            </Col>
-          ))}
+          {employees.map((blg) => {
+            console.log(blg.project_designation)
+            return (
+              <Col sm="6" lg="6" xl="4" key={blg.employee_id_duplicate}>
+                <EmployeeCard
+                  onClick={`/EmployeeEdit/${blg.employee_id_duplicate}?tab=1`}
+                  image={Image}
+                  id={blg.employee_id_duplicate}
+                  title={blg.employee_name.split(' ').shift().toUpperCase()} // before: title={blg.employee_name.charAt(0).toUpperCase() + blg.employee_name.slice(1)}
+                  dateOfBirth={blg.date_of_birth}
+                  empId={blg.employee_id_duplicate}
+                  projectDesignation={blg.project_designation}
+                  gender={blg.gender}
+                  team={blg.team}
+                  empCode={blg.emp_code}
+                  email={blg.login_email}
+                />
+              </Col>
+            )
+          })}
         </Row>
       </div>
     </>

@@ -13,7 +13,7 @@ const EmployeeDetails = () => {
   //state variables
   // const [empcode, setEmpcode] = useState();
   const [employeeData, setEmployeeData] = useState({
-    first_name: '',
+    employee_name: '',
     citizen: '',
     nric_no: '',
     fin_no: '',
@@ -57,7 +57,7 @@ const EmployeeDetails = () => {
     employeeData.year_of_completion3 = moment();
 
     if (
-      employeeData.first_name !== '' &&
+      employeeData.employee_name !== '' &&
       employeeData.status !== '' &&
       employeeData.passtype !== ''
     ) {
@@ -148,8 +148,8 @@ const EmployeeDetails = () => {
                     Full Name <span style={{ color: 'red' }}>*</span>
                   </Label>
                   <Input
-                    name="first_name"
-                    value={employeeData && employeeData.first_name}
+                    name="employee_name"
+                    value={employeeData && employeeData.employee_name}
                     onChange={handleInputs}
                     type="text"
                   />
