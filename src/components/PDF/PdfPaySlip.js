@@ -597,7 +597,7 @@ const PdfPaySlip = () => {
             ],
           },
         },
-
+'\n',
         {
           layout: {
             defaultBorder: false,
@@ -665,7 +665,7 @@ const PdfPaySlip = () => {
             },
           ],
         },
-        '\n\n',
+        '\n',
         {
           layout: {
             defaultBorder: false,
