@@ -502,7 +502,7 @@ function PayrollManagementDetails() {
       api
         .post('/loan/insertLoanRepaymenthistory', elem)
         .then(() => {
-          message('Loan record updated successfully');
+          message('Loan record updated successfully','success');
           console.log("totalLoanAmount-console:", totalLoanAmount)
           // setPayroll({...payroll,loan_amount:totalLoanAmount})
           handleDeductions(
@@ -521,7 +521,7 @@ function PayrollManagementDetails() {
           );
         })
         .catch(() => {
-          message('Unable to update loan record.', 'error');
+          //message('Unable to update loan record.', 'error');
         });
     });
   };
