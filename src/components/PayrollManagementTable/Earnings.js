@@ -23,7 +23,7 @@ function Earnings({
 
   // Calculate and update Gross Pay whenever relevant fields change
   useEffect(() => {
-    const basicPay = parseFloat(payroll.total_basic_pay_for_month) || 0;
+    const grospay = parseFloat(payroll.gross_pay) || 0;
     const allowance1 = parseFloat(payroll.allowance1) || 0;
     const allowance2 = parseFloat(payroll.allowance2) || 0;
     const allowance3 = parseFloat(payroll.allowance3) || 0;
@@ -32,11 +32,11 @@ function Earnings({
     const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
 
     const newGrossPay =
-      basicPay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
+      grospay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
 
     setGrossPay(newGrossPay);
   }, [
-    payroll.total_basic_pay_for_month,
+    payroll.gross_pay,
     payroll.allowance1,
     payroll.allowance2,
     payroll.allowance3,
@@ -52,7 +52,7 @@ function Earnings({
         <Col md="3">
           <Input
             disabled
-            name="total_basic_pay_for_month"
+            name="gross_pay"
             type="text"
             value={calculateBasicPayPercentage()}
             onChange={(e) => {
@@ -107,13 +107,12 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
                 payroll.allowance4,
-                payroll.allowance5,
-                payroll.total_basic_pay_for_month,
+                payroll.allowance5
               );
             }}
             disabled
@@ -131,7 +130,7 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.ot_amount,
                 payroll.allowance2,
                 payroll.allowance3,
@@ -153,7 +152,7 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.allowance1,
                 payroll.ot_amount,
                 payroll.allowance3,
@@ -175,7 +174,7 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.ot_amount,
@@ -197,7 +196,7 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
@@ -219,7 +218,7 @@ function Earnings({
               handleInputs(e);
               handleEarnings(
                 e.target.value,
-                payroll.total_basic_pay_for_month,
+                payroll.gross_pay,
                 payroll.allowance1,
                 payroll.allowance2,
                 payroll.allowance3,
@@ -238,7 +237,7 @@ function Earnings({
           <Input
             name="total_basic_pay_for_month"
             type="text"
-            value={grossPay} // Use the calculated grossPay value here
+            value={grossPay + parseFloat(calculateBasicPayPercentage())} // Use the calculated grossPay value here
             onChange={(e) => {
               // Update the basic_pay when needed
               handleInputs(e);
