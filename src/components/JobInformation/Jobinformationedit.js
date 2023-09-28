@@ -15,6 +15,7 @@ export default function Jobinformationedit({
   //insertJobInformation,
   JobInformationEditModal,
   setJobInformationEditModal,
+  deletejobData
   // job,
 }) {
   Jobinformationedit.propTypes = {
@@ -25,6 +26,7 @@ export default function Jobinformationedit({
     JobInformationEditModal: PropTypes.any,
     setJobInformationEditModal: PropTypes.any,
     navigate: PropTypes.any,
+    deletejobData:PropTypes.any,
     //job: PropTypes.any,
   };
   const backToList = () => {
@@ -86,6 +88,7 @@ export default function Jobinformationedit({
               navigate={navigate}
               applyChanges={editJobData}
               backToList={backToList}
+              deleteData={deletejobData}
               // deleteData={deleteLoanData}
               module="Job Information"
             ></ApiButton>

@@ -35,7 +35,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         setPayrollManagementsData(res.data.data);
       })
       .catch(() => {
-        message('Payrollmanagement Data Not Found', 'info');
+        //message('Payrollmanagement Data Not Found', 'info');
       });
   };
 

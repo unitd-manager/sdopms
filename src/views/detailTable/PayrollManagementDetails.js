@@ -133,6 +133,7 @@ function PayrollManagementDetails() {
     deductions3,
     deductions4,
     totalDeduction,
+    cpfEmployee,
   ) => {
     /* eslint-disable */
     if (!totalDeduction) totalDeduction = 0;
@@ -148,6 +149,7 @@ function PayrollManagementDetails() {
     if (!sinda) sinda = 0;
     if (!cdac) cdac = 0;
     if (!mbmf) mbmf = 0;
+    if (!cpfEmployee) cpfEmployee = 0;
 
     setTotalDeductions(
       parseFloat(totalDeduction) +
@@ -162,7 +164,8 @@ function PayrollManagementDetails() {
         parseFloat(euCf) +
         parseFloat(cdac) +
         parseFloat(sinda) +
-        parseFloat(mbmf),
+        parseFloat(mbmf)+
+        parseFloat(cpfEmployee),
     );
     setEditTotalDeduction(true);
   };
@@ -341,7 +344,8 @@ function PayrollManagementDetails() {
     parseFloat(payroll.pay_eucf || 0) +
     parseFloat(payroll.pay_cdac || 0) +
     parseFloat(payroll.pay_mbmf || 0) +
-    parseFloat(payroll.pay_sinda || 0);
+    parseFloat(payroll.pay_sinda || 0)+
+    parseFloat(payroll.cpf_employee || 0);
 
   const newNetTotal =
     newTotalMonthPay +

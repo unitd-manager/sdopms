@@ -54,8 +54,8 @@ export default function JobProbation({
               <Input
                 type="date"
                 onChange={handleInputsJobInformation}
-                value={job && job.overtime_payment_date}
-                name="overtime_payment_date"
+                value={job && job.overtime_payment_dates}
+                name="overtime_payment_dates"
               />
             </FormGroup>
           </Col>
