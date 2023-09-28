@@ -102,7 +102,7 @@ console.log('payroll',payroll)
             ],
           },
         },
-        '\n\n\n',
+        '\n',
 
         {
           layout: {
@@ -155,7 +155,7 @@ console.log('payroll',payroll)
               ],
               [
                 {
-                  text: `${payroll.first_name ? payroll.first_name : ''}`,
+                  text: `${payroll.employee_name ? payroll.employee_name : ''}`,
                   alignment: 'left',
                   style: 'tableBody',
                 },
@@ -291,6 +291,8 @@ console.log('payroll',payroll)
                   }):0.00}`,
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -304,10 +306,12 @@ console.log('payroll',payroll)
                 {
                   text: `${payroll.total_basic_pay_for_month?payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
-                  }):0.00}                                                             (A)`,
+                  }):0.00}                                                             `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -320,10 +324,12 @@ console.log('payroll',payroll)
                 {
                   text: `${
                     payroll.total_allowance ? payroll.total_allowance : ''
-                  }                                                               (B)`,
+                  }                                                               `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -340,6 +346,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -356,8 +364,11 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
+              
               [
                 {
                   text: 'Food',
@@ -372,6 +383,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -388,6 +401,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -404,6 +419,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -416,10 +433,12 @@ console.log('payroll',payroll)
                 {
                   text: `${
                     payroll.total_deductions ? payroll.total_deductions : ''
-                  }                                                               (C)`,
+                  }                                                               `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -436,6 +455,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -452,6 +473,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -468,6 +491,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -484,6 +509,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -500,6 +527,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -516,6 +545,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -532,6 +563,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -746,6 +779,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -757,10 +792,12 @@ console.log('payroll',payroll)
                 {
                   text: ` ${
                     payroll.ot_amount ? payroll.ot_amount : ''
-                  }                                                     (D)`,
+                  }                                                     `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -817,23 +854,27 @@ console.log('payroll',payroll)
                 {
                   text: 'Amount S$',
                   style: 'tableHead',
+                  alignment:'center',
+                  margin:[0,0,150,0]
                 },
               ],
               [
                 {
                   text: `Other Additional Payment(Breakdown Shown below)
-                    Reimbursement  \n Director Fees `,
+                  \n Reimbursement  \n\n Director Fees `,
                   border: [false, false, false, true],
                   style: 'tableBody',
                 },
 
                 {
-                  text: ` \n ${payroll.reimbursement ? payroll.reimbursement : ''} \n  ${
+                  text: ` \n\n ${payroll.reimbursement ? payroll.reimbursement : ''} \n\n  ${
                     payroll.director_fee ? payroll.director_fee : ''
                   } `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -849,6 +890,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -918,6 +961,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -932,6 +977,8 @@ console.log('payroll',payroll)
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],

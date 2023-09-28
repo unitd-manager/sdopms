@@ -164,7 +164,7 @@ const PdfKET = () => {
               [
                 {
                   text: `Company Name:
-                  Cubosale Pte ltd`,
+                  ${job.company_name ? job.company_name : ''}`,
                   border: [false, false, false, true],
                   style: 'tableBody',
                 },

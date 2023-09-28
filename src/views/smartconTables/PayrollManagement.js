@@ -336,10 +336,10 @@ const Payrollmanagement = () => {
                 console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
 
                 /* CPF Calculation */
-                const cpf = (basicpays * rowPercentageCPF.byEmployer) / 100;
+                const cpf = (basicpays * rowPercentageCPF.byEmployee) / 100;
                 console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
                 // CPF Employee contribution
-                const cpfEp = (basicpays * rowPercentageCPF.byEmployee) / 100;
+                const cpfEp = (basicpays * rowPercentageCPF.byEmployer) / 100;
                 const cpfE = Math.round(cpfEp);
                 console.log('CPF Calculation2:', cpfE.toFixed(2));
 
@@ -605,13 +605,13 @@ const Payrollmanagement = () => {
           Button={
             <div>
               <Row>
-                {/* <Col md="6">
+                <Col md="6">
                   <Link to="">
                     <Button color="primary" className="shadow-none">
                       Import
                     </Button>
                   </Link>
-                </Col> */}
+                </Col>
                 <Col md="6">
                   <a
                     href="http://43.228.126.245/smartco-api/storage/excelsheets/PayrollManagement.xlsx"
