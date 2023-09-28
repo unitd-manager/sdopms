@@ -27,7 +27,12 @@ function AttachmentPortalsTab({
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState('');
   const [update, setUpdate] = useState(false);
-  
+  const [pictureAttachmentModal, setPictureAttachmentModal] = useState(false);
+  const [pictureAttachmentModalProperties, setPictureAttachmentModalProperties] = useState({
+    altTagData: "",
+    desc: "",
+    recordType: "",
+  });
 
   return (
     <div>
@@ -46,6 +51,11 @@ function AttachmentPortalsTab({
                           setRoomName('Picture');
                           setFileTypes(['JPG', 'PNG', 'GIF']);
                           dataForPicture();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "PictureData",
+                            desc: "Picture Data",
+                            recordType: "Picture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -55,13 +65,13 @@ function AttachmentPortalsTab({
                   </Row>
                   <AttachmentModalV2
                     moduleId={id}
-                    attachmentModal={attachmentModal}
-                    setAttachmentModal={setAttachmentModal}
+                    attachmentModal={pictureAttachmentModal}
+                    setAttachmentModal={setPictureAttachmentModal}
                     roomName={roomName}
                     fileTypes={fileTypes}
-                    altTagData="PictureData"
-                    desc="Picture Data"
-                    recordType="Picture"
+                    altTagData={pictureAttachmentModalProperties.altTagData}
+                    desc={pictureAttachmentModalProperties.desc}
+                    recordType={pictureAttachmentModalProperties.recordType}
                     mediaType={pictureData.modelType}
                     update={update}
                     setUpdate={setUpdate}
@@ -86,6 +96,11 @@ function AttachmentPortalsTab({
                           setRoomName('Work Permit');
                           setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "Work Permit",
+                            desc: "workRelated Data",
+                            recordType: "RelatedPicture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -93,7 +108,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  {/* <AttachmentModalV2
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -105,7 +120,7 @@ function AttachmentPortalsTab({
                     mediaType={attachmentData.modelType}
                     update={update}
                     setUpdate={setUpdate}
-                  />
+                  /> */}
                   <ViewFileComponentV2
                     moduleId={id}
                     roomName="Work Permit"
@@ -135,6 +150,11 @@ function AttachmentPortalsTab({
                           setRoomName('WSQ');
                           setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "WSQ",
+                            desc: "WSQRelated Data",
+                            recordType: "RelatedPicture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -142,7 +162,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  {/* <AttachmentModalV2
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -154,7 +174,7 @@ function AttachmentPortalsTab({
                     mediaType={attachmentData.modelType}
                     update={update}
                     setUpdate={setUpdate}
-                  />
+                  /> */}
                   <ViewFileComponentV2
                     moduleId={id}
                     roomName="WSQ"
@@ -175,6 +195,11 @@ function AttachmentPortalsTab({
                           setRoomName('Digital Sign');
                           setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "Digital Sign",
+                            desc: "DigitalSign Related Data",
+                            recordType: "RelatedPicture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -182,7 +207,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  {/* <AttachmentModalV2
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -194,7 +219,7 @@ function AttachmentPortalsTab({
                     mediaType={attachmentData.modelType}
                     update={update}
                     setUpdate={setUpdate}
-                  />
+                  /> */}
                   <ViewFileComponentV2
                     moduleId={id}
                     roomName="Digital Sign"
@@ -225,6 +250,11 @@ function AttachmentPortalsTab({
                           setRoomName('CSO');
                           setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "CSO",
+                            desc: "CSO Related Data",
+                            recordType: "RelatedPicture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -232,7 +262,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  {/* <AttachmentModalV2
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -244,7 +274,7 @@ function AttachmentPortalsTab({
                     mediaType={attachmentData.modelType}
                     update={update}
                     setUpdate={setUpdate}
-                  />
+                  /> */}
                   <ViewFileComponentV2
                     moduleId={id}
                     roomName="CSO"
@@ -265,6 +295,11 @@ function AttachmentPortalsTab({
                           setRoomName('Other Files');
                           setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
                           dataForAttachment();
+                          setPictureAttachmentModalProperties({
+                            altTagData: "Other Files",
+                            desc: "Other Files Related Data",
+                            recordType: "RelatedPicture",
+                          })
                           setAttachmentModal(true);
                         }}
                       >
@@ -272,7 +307,7 @@ function AttachmentPortalsTab({
                       </Button>
                     </Col>
                   </Row>
-                  <AttachmentModalV2
+                  {/* <AttachmentModalV2
                     moduleId={id}
                     attachmentModal={attachmentModal}
                     setAttachmentModal={setAttachmentModal}
@@ -284,7 +319,7 @@ function AttachmentPortalsTab({
                     mediaType={attachmentData.modelType}
                     update={update}
                     setUpdate={setUpdate}
-                  />
+                  /> */}
                   <ViewFileComponentV2
                     moduleId={id}
                     roomName="Other Files"
