@@ -16,7 +16,6 @@ import {
   CardBody,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-//import { Link } from 'react-router-dom';
 import * as Icon from 'react-feather';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
@@ -63,6 +62,7 @@ export default function ProjectTask({
     task_type: '',
     description: '',
     project_milestone_id: '',
+    project_team_id: '',
   });
   const [milestoneDetail, setMilestones] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,13 +80,17 @@ export default function ProjectTask({
   const [fileTypes, setFileTypes] = useState();
   const [moduleId, setModuleId] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [employeeTeam, setEmployeeTeam] = useState([]);
   //const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [updateFile, setUpdateFile] = useState(true);
+  // const [selectedTeam, setSelectedTeam] = useState(''); // To store selected team
+  // const [filteredStaffMembers, setFilteredStaffMembers] = useState([]); // To store staff members based on the selected team
+
   // Gettind data from Job By Id
   const editJobById = () => {
     api
-      .get('/jobinformation/getEmployee')
+      .get('/projectteam/getProjectTeams')
       .then((res) => {
         console.log(res.data.data);
         setEmployees(res.data.data);
@@ -95,7 +99,7 @@ export default function ProjectTask({
   };
   const getStaffName = () => {
     api
-      .post('projecttask/getEmployeeByID', { project_id: id })
+      .post('/projectteam/getEmployeeByID', { project_team_id : id })
       .then((res) => {
         setEmployee(res.data.data);
       })
@@ -144,6 +148,7 @@ export default function ProjectTask({
             task_type: '',
             description: '',
             project_milestone_id: '',
+            project_team_id: '',
           });
         })
         .catch(() => {
@@ -219,19 +224,7 @@ export default function ProjectTask({
     setSearchQuery(e.target.value);
   };
 
-  // const handleSearchData = () => {
-  //   const newData = taskById.filter((task) => {
-  //     // Perform case-insensitive search on task title and employee name
-  //     return (
-  //       task.task_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       task.first_name.toLowerCase().includes(searchQuery.toLowerCase())
-        
-  //     );
-  //   });
-
-  //   setUserSearchData(newData);
-  //   setFilteredData(newData);
-  // };
+ 
   const handleSearchData = () => {
     const newData = taskById.filter((task) => {
       // Check if task.title exists and perform a case-insensitive search
@@ -248,6 +241,7 @@ export default function ProjectTask({
     setFilteredData(newData);
   };
 
+
   // Api call for getting milestone dropdown based on project ID
   const getMilestoneTitle = () => {
     api
@@ -259,6 +253,15 @@ export default function ProjectTask({
         message('Milestones not found', 'info');
       });
   };
+  const fetchEmployeeDetails = (projectTeamId) => {
+    api
+      .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
+      .then((res) => {
+        setEmployeeTeam(res.data.data);
+      })
+      .catch(() => {});
+  };
+
 
   //attachments
   const dataForAttachment = () => {
@@ -267,11 +270,14 @@ export default function ProjectTask({
     });
     console.log('inside DataForAttachment');
   };
+
+
   useEffect(() => {
     getStaffName();
     editJobById();
     dataForAttachment();
     getMilestoneTitle();
+    fetchEmployeeDetails();
   }, [id]);
 
   useEffect(() => {
@@ -486,14 +492,15 @@ export default function ProjectTask({
                           <Col md="4">
                             <FormGroup>
                               <Label>
-                                Staff<span className="required">*</span>
+                                Team Name<span className="required">*</span>
                               </Label>
                               <Input
                                 type="select"
-                                name="employee_id"
+                                name="project_team_id"
                                 onChange={(e) => {
-                                  handleInputsTask(e);
-                                }}
+                                  handleInputsTask(e);}}
+                                  value={insertTask && insertTask.project_team_id}
+                                
                               >
                                 <option value="" selected>
                                   Please Select
@@ -501,11 +508,36 @@ export default function ProjectTask({
                                 {employees &&
                                   employees.map((ele) => {
                                     return (
-                                      ele.e_count === 0 && (
-                                        <option key={ele.employee_id} value={ele.employee_id}>
+                                        <option key={ele.project_team_id} value={ele.team_title}>
+                                          {ele.team_title}
+                                        </option>  
+                                    );
+                                  })}
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Employee Name<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="select"
+                                name="project_team_id"
+                                onChange={(e) => {
+                                  handleInputsTask(e);}}
+                                  value={insertTask && insertTask.project_team_id}
+                                
+                              >
+                                <option value="" selected>
+                                  Please Select
+                                </option>
+                                {employeeTeam &&
+                                  employeeTeam.map((ele) => {
+                                    return (
+                                        <option key={ele.employee_id} value={ele.first_name}>
                                           {ele.first_name}
-                                        </option>
-                                      )
+                                        </option>  
                                     );
                                   })}
                               </Input>
@@ -560,28 +592,7 @@ export default function ProjectTask({
                               />
                             </FormGroup>
                           </Col>
-                          {/* {(TaskStatus === 'Completed' ) && ( 
-                                <Col md="4">
-                                  <FormGroup>
-                                    <Label>Status</Label>
-                                    <Input
-                                      type="select"
-                                      name="status"
-                                      onChange={handleInputsTask}
-                                      value={insertTask && insertTask.status}
-                                    >
-                                      {' '}
-                                      <option value="" selected="selected">
-                                        Please Select
-                                      </option>
-                                      <option value="Pending">Pending</option>
-                                      <option value="InProgress">InProgress</option>
-                                      <option value="Completed">Completed</option>
-                                      <option value="OnHold">OnHold</option>
-                                    </Input>
-                                  </FormGroup>
-                                </Col>
-                                {/* )} */}
+                        
                           <Col md="4">
                             <FormGroup>
                               <Label>Task Type</Label>

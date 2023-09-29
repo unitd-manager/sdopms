@@ -21,8 +21,6 @@ import api from '../constants/api';
 import creationdatetime from '../constants/creationdatetime';
 import AppContext from '../context/AppContext';
 
-//import { useParams } from 'react-router-dom';
-
 const ProjectTaskEdit = ({
   editTaskEditModal,
   setEditTaskEditModal,
@@ -68,7 +66,19 @@ const ProjectTaskEdit = ({
   };
 
   const handleInputs = (e) => {
-    setTaskProject({ ...taskProject, [e.target.name]: e.target.value });
+    if (e.target.type === 'checkbox') {
+      // If the event target is a checkbox, update task_input based on its checked state
+      setTaskProject({
+        ...taskProject,
+        [e.target.name]: e.target.checked ? 1 : 0,
+      });
+    } else {
+      // For other input fields, update normally
+      setTaskProject({
+        ...taskProject,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const editTaskProject = () => {
@@ -121,28 +131,7 @@ const ProjectTaskEdit = ({
       return null;
     };
         
-    // const editLoanStartData = () => {
-    //   if (taskProject && taskProject.status === 'Completed') {
-    //     api
-    //       .post('/projecttask/editActualcompletedDate', { project_task_id: id })
-    //       .then(() => {})
-    //       .catch(() => {
-    //         message('Unable to edit record.', 'error');
-    //       });
-    //   }
-    // };
-    // const edittaskcompletiondate = () => {
-    //   taskProject.modification_date = creationdatetime;
-    //   taskProject.modified_by= loggedInuser.first_name; 
-    //   if (taskProject && taskProject.status === 'Completed') {
-    //     api
-    //       .post('/projecttask/editActualcompletedDate', { project_task_id: taskProject.project_task_id })
-    //       .then(() => {})
-    //       .catch(() => {
-    //         message('Unable to edit record.', 'error');
-    //       });
-    //   }
-    // };
+    
     const edittaskcompletiondate = () => {
       taskProject.modification_date = creationdatetime;
       taskProject.modified_by = loggedInuser.first_name;
@@ -174,46 +163,6 @@ const ProjectTaskEdit = ({
       }
     };
     
-    // Function to update the milestone's actual_completed_date
-  // const updateMilestoneActualCompletedDate = (taskId) => {
-  //   if (taskProject && taskProject.status === 'Completed') {
-  //     api
-  //       .post('/projecttask/UpdateActualcompletedDate', { project_milestone_id: taskId })
-  //       .then(() => {
-  //         message('Actual Completed Date updated successfully', 'success');
-  //       })
-  //       .catch(() => {
-  //         message('Unable to update Actual Completed Date.', 'error');
-  //       });
-  //   }
-  // };
-
-  // ...
-
-  // Inside the Submit button click handler
-  // const handleSubmit = () => {
-  //   editTaskProject(); // Call your existing editTaskProject function
-
-  //   // Call the function to update milestone's actual_completed_date
-  //   updateMilestoneActualCompletedDate(taskProject.project_task_id);
-
-  //   SubmitNote();
-  // };
-
- 
-
-    // const editmilestonecompletiondate = () => {
-    //   taskProject.modification_date = creationdatetime;
-    //   taskProject.modified_by= loggedInuser.first_name; 
-    //   if (taskProject && taskProject.status === 'Completed') {
-    //     api
-    //       .post('/projecttask/editActualcompletedDate', { project_milestone_id: taskProject.project_milestone_id })
-    //       .then(() => {})
-    //       .catch(() => {
-    //         message('Unable to edit record.', 'error');
-    //       });
-    //   }
-    // };
 
 
   useEffect(() => {
@@ -324,19 +273,6 @@ const ProjectTaskEdit = ({
                           />
                         </FormGroup>
                       </Col>
-                      {/* <Col md="4">
-                        <FormGroup>
-                          <Label>Act Comp date</Label>
-                          <Input
-                            type="date"
-                            onChange={handleInputs}
-                            value={moment(taskProject && taskProject.actual_completed_date).format(
-                              'DD-MM-YYYY',
-                            )}
-                            name="actual_completed_date"
-                          />
-                        </FormGroup>
-                      </Col> */}
                       <Col md="4">
                         <FormGroup>
                           <Label>Actual Hours</Label>
@@ -371,7 +307,6 @@ const ProjectTaskEdit = ({
                           />
                         </FormGroup>
                       </Col>
-
                       <Col md="4">
                         <FormGroup>
                           <Label>Status</Label>
@@ -452,6 +387,15 @@ const ProjectTaskEdit = ({
                     </Row>
                   </Form>
             </FormGroup>
+            <FormGroup>
+            <Label>Apply To All</Label>
+              <Input
+              type="checkbox"
+             name="task_input"
+               onChange={handleInputs}
+               checked={taskProject && taskProject.task_input === 1} // Set the checked state based on the value in taskProject
+  />
+</FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
