@@ -56,6 +56,25 @@ const EmployeeDetails = () => {
     employeeData.year_of_completion2 = moment();
     employeeData.year_of_completion3 = moment();
 
+              api
+                .post('/employeemodule/insertEmployee', employeeData)
+                .then((res) => {
+                  const insertedDataId = res.data.data.insertId;
+                  message('Employee inserted successfully.', 'success');
+                  setTimeout(() => {
+                    navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
+                  }, 300);
+                })
+                .catch(() => {
+                  message('Unable to create employee.', 'error');
+                });
+           
+  };
+
+
+  
+  const generateCode = () => {
+    
     if (
       employeeData.employee_name !== '' &&
       employeeData.status !== '' &&
@@ -76,34 +95,6 @@ const EmployeeDetails = () => {
               message('Number already exists. Please provide a different number.', 'warning');
             } else {
               // No duplicates found, proceed with inserting the employee
-              api
-                .post('/employeemodule/insertEmployee', employeeData)
-                .then((res) => {
-                  const insertedDataId = res.data.data.insertId;
-                  message('Employee inserted successfully.', 'success');
-                  setTimeout(() => {
-                    navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
-                  }, 300);
-                })
-                .catch(() => {
-                  message('Unable to create employee.', 'error');
-                });
-            }
-          })
-          .catch(() => {
-            message('Unable to check for duplicate numbers.', 'error');
-          });
-      } else {
-        message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
-      }
-    } else {
-      message('Please fill all required fields.', 'warning');
-    }
-  };
-
-
-  
-  const generateCode = () => {
     api
       .post('/commonApi/getCodeValue', { type: 'employee' })
       .then((res) => {
@@ -112,6 +103,17 @@ const EmployeeDetails = () => {
       .catch(() => {
         insertEmployee('');
       });
+    }
+  })
+  .catch(() => {
+    message('Unable to check for duplicate numbers.', 'error');
+  });
+} else {
+message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
+}
+} else {
+message('Please fill all required fields.', 'warning');
+}
   };
   // const insertEmployee = (code) => {
   //   // Check if the employee name already exists
