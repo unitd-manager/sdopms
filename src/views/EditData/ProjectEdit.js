@@ -472,7 +472,6 @@ const ProjectEdit = () => {
             />
             <ProjectTeamEdit
               getTeamById={getTeamById}
-              id={id}
               contactDataTeam={contactDataTeam}
               editTeamModal={editTeamModal}
               setEditTeamEditModal={setEditTeamEditModal}

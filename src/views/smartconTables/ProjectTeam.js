@@ -18,7 +18,8 @@ import {
 import PropTypes from 'prop-types';
 import * as Icon from 'react-feather';
 import message from '../../components/Message';
-import api from '../../constants/api';
+import api from '../../constants/api'; // Import your API library or use a fetch/axios/etc.
+
 
 export default function ProjectTeam({
   addContactToggleTeam,
@@ -34,131 +35,69 @@ export default function ProjectTeam({
     setEditTeamEditModal: PropTypes.func,
     addContactModalTeam: PropTypes.bool,
     id: PropTypes.any,
-    teamById: PropTypes.any,
+    teamById: PropTypes.array, // Assuming teamById is an array
     setContactDataTeam: PropTypes.func,
     getTeamById: PropTypes.func,
   };
-  const [insertTeam, setInsertTeam] = useState({
-    employee_id: '',
-    project_task_id: '',
-    project_milestone_id: '',
-  });
-  const [milestonesJob, setMilestonesJob] = useState([]);
-  const [taskdetailJob, setTaskDetailJob] = useState([]);
-  const [employeeTeam, setEmployeeTeam] = useState();
 
-  // Gettind data from Job By Id
-  // const editJobByIdTeams = () => {
-  //   api
-  //     .get('/jobinformation/getEmployee')
-  //     .then((res) => {
-  //       console.log(res.data.data);
-  //       setEmployeeTeam(res.data.data);
-  //     })
-  //     .catch(() => {});
-  // };
-  // Api call for getting staff name dropdown based on project ID
-  const getStaffName = (projectId) => {
+  const [selectedTeamTitle, setSelectedTeamTitle] = useState('');
+  const [employeeTeam, setEmployeeTeam] = useState([]);
+
+  // Function to fetch team titles
+  const getTeamTitles = () => {
     api
-      .post('/projecttimesheet/getStaffByID', { project_task_id: projectId })
+      .get('/projectteam/getProjectTeam')
       .then((res) => {
-        setEmployeeTeam(res.data.data);
+        setEmployeeTeam(res.data.data); 
       })
       .catch(() => {
-        message('Task not found', 'info');
-      });
-  };
-  // data in Details
-  const handleInputsTime = (e) => {
-    setInsertTeam({ ...insertTeam, [e.target.name]: e.target.value });
-  };
-  
-  //Insert
-  const insertTeamMember = () => {
-    const newContactWithCompany = insertTeam;
-    newContactWithCompany.project_id = id;
-    api
-      .post('/projectteam/insertTeam', newContactWithCompany)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message(' inserted successfully.', 'success');
-        getTeamById();
-        setTimeout(() => {
-          addContactToggleTeam(false);
-        }, 300);
-        window.location.reload();
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-  };
-  // Api call for getting project name dropdown
-  const getMilestoneName = () => {
-    api
-      .post('/projecttimesheet/getMilestoneTitle', { project_id: id })
-      .then((res) => {
-        setMilestonesJob(res.data.data);
-      })
-      .catch(() => {
-        message('Milestone not found', 'info');
+        message('Team titles not found', 'info');
       });
   };
 
-  // Api call for getting milestone dropdown based on project ID
-  const getTaskName = (projectId) => {
-    api
-      .post('/projecttimesheet/getTaskByID', { project_milestone_id: projectId })
-      .then((res) => {
-        setTaskDetailJob(res.data.data);
-      })
-      .catch(() => {
-        message('Task not found', 'info');
-      });
+  /// Insert or update team member
+const insertTeamMember = () => {
+  // Check if a team title is selected
+  if (!selectedTeamTitle) {
+    message('Please select a team title', 'warning');
+    return;
+  }
+
+  // Check if a project ID is available
+  if (!id) {
+    message('Project ID not available', 'error');
+    return;
+  }
+
+  // Find the team with the selected team title
+  const existingTeam = employeeTeam.find((team) => team.team_title === selectedTeamTitle);
+
+  if (!existingTeam) {
+    message('Selected team title not found', 'warning');
+    return;
+  }
+
+  // Update the project ID for the existing team
+  const updatedTeam = {
+    ...existingTeam,
+    project_id: id,
   };
 
-  useEffect(() => {
-    getStaffName();
-  }, [id]);
+  api
+    .post(`/projectteam/editTeam`, updatedTeam)
+    .then(() => {
+      message('Team member updated successfully.', 'success');
+      getTeamById(); // Assuming this function retrieves updated team data
+    })
+    .catch(() => {
+      message('Network connection error.', 'error');
+    });
+};
+useEffect(() => {
+  getTeamTitles();
 
-  useEffect(() => {
-    getMilestoneName();
-  }, [id]);
-  useEffect(() => {
-    if (insertTeam.project_milestone_id) {
-      // Use taskdetails.project_milestone_id directly to get the selected project ID
-      const selectedTask = insertTeam.project_milestone_id;
-      getTaskName(selectedTask);
-    }
-  }, [insertTeam.project_milestone_id]);
-  useEffect(() => {
-    if (insertTeam.project_task_id) {
-      // Use taskdetails.project_milestone_id directly to get the selected project ID
-      const selectedTask = insertTeam.project_task_id;
-      getStaffName(selectedTask);
-    }
-  }, [insertTeam.project_task_id]);
+ }, [id]);
 
-  //Structure of teamById list view
-  const ProjectTeamColumn = [
-    {
-      name: '#',
-    },
-    {
-      name: 'Edit',
-      selector: 'edit',
-      cell: () => <Icon.Edit2 />,
-    },
-    {
-      name: 'Name',
-    },
-    {
-      name: 'Designation',
-    },
-    {
-      name: 'Department',
-    },
-  ];
   return (
     <Form>
       <Row>
@@ -169,84 +108,42 @@ export default function ProjectTeam({
               className="shadow-none"
               onClick={addContactToggleTeam.bind(null)}
             >
-              Add New{' '}
+              Add New
             </Button>
-            <Modal size="lg" isOpen={addContactModalTeam} toggle={addContactToggleTeam.bind(null)}>
-              <ModalHeader toggle={addContactToggleTeam.bind(null)}>New Task</ModalHeader>
+            <Modal
+              size="lg"
+              isOpen={addContactModalTeam}
+              toggle={addContactToggleTeam.bind(null)}
+            >
+              <ModalHeader toggle={addContactToggleTeam.bind(null)}>
+                New Team Member
+              </ModalHeader>
               <ModalBody>
                 <Row>
                   <Col md="12">
                     <Card>
                       <CardBody>
                         <Form>
-                          <Row>
+                        <Row>
                             <Col md="4">
-                              <Label>Milestone Title</Label>
                               <FormGroup>
+                                <Label>Select Team Title</Label>
                                 <Input
                                   type="select"
                                   onChange={(e) => {
-                                    handleInputsTime(e);
+                                    setSelectedTeamTitle(e.target.value);
                                   }}
-                                  value={insertTeam && insertTeam.project_milestone_id}
-                                  name="project_milestone_id"
+                                  value={selectedTeamTitle}
                                 >
-                                  <option value="selected">Please Select</option>
-                                  {milestonesJob &&
-                                    milestonesJob.map((e) => {
-                                      return (
-                                        <option
-                                          key={e.project_milestone_id}
-                                          value={e.project_milestone_id}
-                                        >
-                                          {' '}
-                                          {e.milestone_title}{' '}
-                                        </option>
-                                      );
-                                    })}
-                                </Input>
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Task</Label>
-                                <Input
-                                  type="select"
-                                  onChange={handleInputsTime}
-                                  value={insertTeam && insertTeam.project_task_id}
-                                  name="project_task_id"
-                                >
-                                  <option value="" selected>
-                                    Please Select
-                                  </option>
-                                  {taskdetailJob &&
-                                    taskdetailJob.map((e) => {
-                                      return (
-                                        <option key={e.project_task_id} value={e.project_task_id}>
-                                          {e.task_title}
-                                        </option>
-                                      );
-                                    })}
-                                </Input>
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label> Staff Name</Label>
-                                <Input
-                                  type="select"
-                                  onChange={handleInputsTime}
-                                  value={insertTeam && insertTeam.employee_id}
-                                  name="employee_id"
-                                >
-                                  <option value="" selected>
-                                    Please Select
-                                  </option>
+                                  <option value="">Please Select</option>
                                   {employeeTeam &&
                                     employeeTeam.map((e) => {
                                       return (
-                                        <option key={e.employee_id} value={e.employee_id}>
-                                          {e.first_name}
+                                        <option
+                                          key={e.project_team_id}
+                                          value={e.team_title}
+                                        >
+                                          {e.team_title}
                                         </option>
                                       );
                                     })}
@@ -285,9 +182,8 @@ export default function ProjectTeam({
       <Table id="example" className="display border border-secondary rounded">
         <thead>
           <tr>
-            {ProjectTeamColumn.map((cell) => {
-              return <td key={cell.name}>{cell.name}</td>;
-            })}
+            <th>#</th>
+            <th>Name</th>
           </tr>
         </thead>
         <tbody>
@@ -306,14 +202,14 @@ export default function ProjectTeam({
                       <Icon.Edit2 />
                     </span>
                   </td>
-                  <td>{element.first_name}</td>
-                  <td>{element.department}</td>
-                  <td>{element.designation}</td>
+                  <td>{element.team_title}</td>
                 </tr>
               );
             })}
         </tbody>
       </Table>
+      
     </Form>
+    
   );
 }
