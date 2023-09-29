@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
-  Card,
-  CardBody,
   Row,
   Col,
   Button,
@@ -15,37 +13,40 @@ import {
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-function LoanPaymentHistoryModal({
-  loanPaymentHistoryModal,
-  setLoanPaymentHistoryModal,
-  loanHistories,
-  payroll,
-  editPayrollData,
-  handleInputs,
 
-}) {
+function LoanPaymentHistoryModal({ loanPaymentHistoryModal, setLoanPaymentHistoryModal,loanamountdata,updateState,insertLoanRepayment }) {
   LoanPaymentHistoryModal.propTypes = {
     loanPaymentHistoryModal: PropTypes.bool,
     setLoanPaymentHistoryModal: PropTypes.func,
-    loanHistories: PropTypes.array,
-    payroll:PropTypes.any,
-    editPayrollData:PropTypes.any,
-    handleInputs:PropTypes.any,
-  };
-  const [loanAmount, setLoanAmount] = useState(''); // State for loan_amount input field
-  const [amountPayable, setAmountPayable] = useState(0); // State for Amount Payable
+    insertLoanRepayment: PropTypes.any,
+    loanamountdata:PropTypes.any,
+    updateState:PropTypes.any,
 
-
-  const calculateAmountPayable = () => {
-    const loanAmountValue = parseFloat(loanAmount || 0);
-    const totalAmountPaid = parseFloat(loanHistories[0].total_repaid_amount || 0);
-    const newAmountPayable = totalAmountPaid - loanAmountValue;
-    setAmountPayable(newAmountPayable);
   };
-  
-  useEffect(() => {
-    calculateAmountPayable(); // Initial calculation
-  }, [loanAmount]); // State for notes text area
+
+  // // Call the API to update the loan record
+  // const insertLoanRepayment = () => {
+   
+  //   loanamountdata.forEach((elem) => {
+  //     elem.payroll_management_id= id;
+  //     elem.generated_date = moment();
+  //   //payroll.loan_amount = elem.loan_repayment_amount_per_month;
+  //     api
+  //       .post('/loan/insertLoanRepaymenthistory', elem)
+  //       .then(() => {
+  //         message('Loan record updated successfully');
+  //       })
+  //       .catch(() => {
+  //         message('Unable to update loan record.', 'error');
+  //       });
+  //   });
+  // };
+  // function updateState(index, property, e) {
+  //   const copyloanDetails = [...loanamountdata];
+  //   const updatedObject = { ...copyloanDetails[index], [property]: e.target.value };
+  //   copyloanDetails[index] = updatedObject;
+  //   setLoanamountData(copyloanDetails);
+  // }
 
   const columns = [
     {
@@ -79,51 +80,54 @@ function LoanPaymentHistoryModal({
         <ModalBody>
           <Row>
             <Col md="12">
-              <Card className="shadow-none">
-                <CardBody className="shadow-none">
-                  <Table id="example" className="display border border-secondary rounded">
-                    <thead>
-                      <tr>
-                        {columns.map((cell) => {
-                          return <td key={cell.name}>{cell.name}</td>;
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loanHistories &&
-                        loanHistories.map((element, index) => {
-                          return (
-                            <tr key={element.loan_id}>
-                              <td>{index + 1}</td>
-                              <td>
-                                {element.type}/
-                                {element.date ? moment(element.date).format('YYYY-MM-DD') : ''}
-                              </td>
-                              <td>{element.amount}</td>
-                              <td>{element.total_repaid_amount}</td>
-                              <td>
-                                {' '}
-                                <Input
-                                  type="text"
-                                  value={payroll && loanAmount.loan_amount}
-                                  onChange={(e) => setLoanAmount(e.target.value)}
-                                ></Input>
-                              </td>
-                              <td>
-                                <Input
-                                  type="textarea"
-                                  value={payroll && payroll.notes}
-                                  onChange={handleInputs}
-                                ></Input>
-                              </td>
-                              <td>{amountPayable}</td> {/* Display the calculated Amount Payable */}
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </Table>
-                </CardBody>
-              </Card>
+              {/* <Card className="shadow-none">
+                  <CardBody className="shadow-none"> */}
+              <Table id="example" className="display border border-secondary rounded">
+                <thead>
+                  <tr>
+                    {columns.map((cell) => {
+                      return <td key={cell.name}>{cell.name}</td>;
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {loanamountdata &&
+                    loanamountdata.map((element, index) => {
+                      return (
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>
+                            {element.type}/
+                            {element.date ? moment(element.date).format('DD-MM-YYYY') : ''}
+                          </td>
+                          <td>{element.amount}</td>
+                          <td>{element.total_repaid_amount}</td>
+                          <td>
+                            {' '}
+                            <Input
+                              type="text"
+                              value={element.loan_repayment_amount_per_month}
+                              onChange={(e) => updateState(index, 'loan_repayment_amount_per_month', e)}
+                              name="loan_repayment_amount_per_month"
+                            ></Input>
+                          </td>
+                          <td>
+                            <Input
+                              type="textarea"
+                              value={element.remarks}
+                              onChange={(e) => updateState(index, 'remarks', e)}
+                              name="remarks"
+                            ></Input>
+                          </td>
+                          <td>{element.amount_payable}</td>{' '}
+                          {/* Display the calculated Amount Payable */}
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </Table>
+              {/* </CardBody>
+                </Card> */}
             </Col>
           </Row>
         </ModalBody>
@@ -132,7 +136,7 @@ function LoanPaymentHistoryModal({
             className="shadow-none"
             color="primary"
             onClick={() => {
-              editPayrollData();
+              insertLoanRepayment();
             }}
           >
             submit

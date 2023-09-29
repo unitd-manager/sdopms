@@ -122,7 +122,7 @@ const PdfPaySlip = () => {
             ],
           },
         },
-        '\n\n\n',
+        '\n',
 
         {
           layout: {
@@ -304,6 +304,8 @@ const PdfPaySlip = () => {
                 {
                   text: 'Amount S$',
                   style: 'tableHead',
+                  alignment:'center',
+                  margin:[0,0,150,0]
                 },
               ],
 
@@ -320,6 +322,8 @@ const PdfPaySlip = () => {
                   })}`,
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -331,12 +335,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.basic_pay.toLocaleString('en-IN', {
+                  text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
-                  })}                                                             (A)`,
+                  })}                                                        `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -347,12 +353,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${
-                    payroll.total_basic_pay_for_month ? payroll.total_basic_pay_for_month : ''
-                  }                                                               (B)`,
+                  text: `${payroll.total_allowance.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  })}                                                             `  ,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -369,6 +377,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -385,6 +395,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -401,6 +413,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -417,6 +431,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -433,6 +449,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -443,30 +461,32 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${
-                    payroll.total_deductions ? payroll.total_deductions : ''
-                  }                                                               (C)`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                },
-              ],
-              [
-                {
-                  text: 'Employees CPF deduction',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${payroll.cpf_employee.toLocaleString('en-IN', {
+                  text: `${payroll.total_deductions.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
-                  })}`,
+                  })}                                                              `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
+              // [
+              //   {
+              //     text: 'Employees CPF deduction',
+              //     border: [false, false, false, true],
+              //     style: 'tableBody',
+              //   },
+
+              //   {
+              //     text: `${payroll.cpf_employee.toLocaleString('en-IN', {
+              //       minimumFractionDigits: 2,
+              //     })}`,
+              //     border: [false, false, false, true],
+              //     fillColor: '#f5f5f5',
+              //     style: 'tableBody',
+              //   },
+              // ],
               [
                 {
                   text: 'SDL',
@@ -475,10 +495,14 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.sdl.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  text: `${
+                    payroll.sdl ? payroll.sdl : ''
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -486,13 +510,16 @@ const PdfPaySlip = () => {
                   text: 'Advance/Loan',
                   border: [false, false, false, true],
                   style: 'tableBody',
+                  
                 },
 
                 {
-                  text: `${payroll.loan_deduction ? payroll.loan_deduction : ''}`,
+                  text: `${payroll.loan_amount ? payroll.loan_amount : ''}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -509,6 +536,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -525,6 +554,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -541,6 +572,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -557,12 +590,14 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
           },
         },
-
+'\n',
         {
           layout: {
             defaultBorder: false,
@@ -769,6 +804,7 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  
                 },
               ],
               [
@@ -778,10 +814,12 @@ const PdfPaySlip = () => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_hours ? payroll.ot_hours : ''}`,
+                  text: ` ${payroll.ot_hours.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -791,12 +829,12 @@ const PdfPaySlip = () => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${
-                    payroll.ot_amount ? payroll.ot_amount : ''
-                  }                                                     (D)`,
+                  text: ` ${payroll.ot_amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}                                                     `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -860,19 +898,19 @@ const PdfPaySlip = () => {
               ],
               [
                 {
-                  text: `Other Additional Payment(Breakdown Shown below)
-                    Reimbursement  \n Director Fees `,
+                  text: `Other Additional Payment(Breakdown Shown below)\n
+                    Reimbursement  \n\n Director Fees `,
                   border: [false, false, false, true],
                   style: 'tableBody',
                 },
 
                 {
-                  text: ` \n ${payroll.reimbursement ? payroll.reimbursement : ''} \n  ${
-                    payroll.director_fee ? payroll.director_fee : ''
-                  } `,
+                  text: ` \n\n ${payroll.reimbursement.toLocaleString('en-IN', { minimumFractionDigits: 2 })}  \n\n  ${payroll.director_fee.toLocaleString('en-IN', { minimumFractionDigits: 2 })} `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
 
@@ -884,10 +922,12 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: ` ${payroll.net_total ? payroll.net_total : ''}`,
+                  text: ` ${payroll.net_total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],
@@ -960,6 +1000,8 @@ const PdfPaySlip = () => {
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
               [
@@ -970,10 +1012,12 @@ const PdfPaySlip = () => {
                 },
 
                 {
-                  text: `${payroll.cpf_employee ? payroll.cpf_employee : ''}`,
+                  text: `${payroll.cpf_employee.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
+                  alignment: 'right',
+                  margin:[0,0,170,0]
                 },
               ],
             ],

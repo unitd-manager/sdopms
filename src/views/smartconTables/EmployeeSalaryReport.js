@@ -155,7 +155,7 @@ const EmployeeSalary = () => {
                 >
                   <option value="Current">Current</option>
                   <option value="Archive">Archive</option>
-                  <option value="Cancel">Cancel</option>
+                  <option value="">Cancel</option>
                 </Input>
                 </FormGroup>
             </Col>
@@ -198,14 +198,16 @@ const EmployeeSalary = () => {
             </tr>
           </thead>
           <tbody>
+            {console.log(displayEmployees)}
             {displayEmployees &&
               displayEmployees.map((element, index) => {
+                // console.log(`${index+1} element.date_of_birth length: ${element.date_of_birth.length} string: ${element.date_of_birth}`)
                 return (
                   <tr key={element.employee_id}>
                     <td>{index + 1}</td>
                     <td>{element.employee_name}</td>
                     <td>{element.nric_no}</td>
-                    <td>{(element.date_of_birth)?moment(element.date_of_birth).format('DD-MM-YYYY'):''}</td>
+                    <td>{(element.date_of_birth)? moment(new Date(element.date_of_birth)).format('DD-MM-YYYY'):''}</td>
                     <td>{element.age}</td>
                     <td>{element.designation}</td>
                     <td>{element.department}</td>

@@ -1,17 +1,17 @@
 /* eslint-disable */
 import React from 'react';
-import { Button, Col, Row,Form, FormGroup } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { HasAccess ,usePermify} from '@permify/react-role';
 import ComponentCardV2 from './ComponentCardV2';
 
-const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
+const ApiButton = ({ editData, navigate, backToList, module,deleteData }) => {
   ApiButton.propTypes = {
     editData: PropTypes.func,
-    deleteData: PropTypes.func,
     navigate: PropTypes.any,
     //applyChanges: PropTypes.func,
     backToList: PropTypes.func,
+    deleteData: PropTypes.func,
     module: PropTypes.string,
   };
   const { isAuthorized, isLoading } = usePermify();
@@ -29,35 +29,30 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
 
   return (
     <Form>
-      {/* <Card tag="h4" className="border-bottom px-4 py-3 mb-0">
-        <div className="d-flex flex-row-reverse"> */}
-        {/* <FormGroup>
-          <ComponentCardV2> */}
+    <FormGroup>
+      <ComponentCardV2>
           <Row>
             <Col >
-              {' '}
+         
               <HasAccess
                 roles={null}
                 permissions={`${module}-edit`}
                 renderAuthFailed={<p></p>}
-              >
+        >
                 <Button
                   onClick={() => {
-                    editData();
-                    setTimeout(()=>{
-                      navigate(`/${module}`);
-                    },1000)
+                    editData()
+                      setTimeout(()=>{
+                        backToList();
+                      },1000)
                     
                   }}
-                  color="primary"
-                >
-                  {' '}
+                  color="primary">
                   Save
                 </Button>
               </HasAccess>
             </Col>
             <Col >
-              {' '}
               <HasAccess
                 roles={null}
                 permissions={`${module}-edit`}
@@ -74,8 +69,7 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
                 </Button>
               </HasAccess>
             </Col>
-            <Col >
-              {' '}
+            <Col>
               <Button
                 onClick={() => {
                   backToList();
@@ -85,28 +79,26 @@ const ApiButton = ({ editData,deleteData, navigate,  backToList, module }) => {
                 Back To List
               </Button>
             </Col>
-            <Col >
-              {' '}
+            <Col>
               <HasAccess
                 roles={null}
                 permissions={`${module}-remove`}
                 renderAuthFailed={<p></p>}
               >
                 <Button color="danger" onClick={() => {deleteData();
-                 setTimeout(()=>{
-                  navigate(`/${module}`);
-                },1000)}}>
+                //  setTimeout(()=>{
+                //   //backToList();
+                // },1000)
+                }}>
                   Delete
                 </Button>
               </HasAccess>
             </Col>
           </Row>
-        
-      {/* </ComponentCardV2>
-      </FormGroup> */}
-      </Form>
-    
+        </ComponentCardV2>
+      </FormGroup>
+    </Form>
   );
 };
 
-export default ApiButton;
+export default ApiButton;

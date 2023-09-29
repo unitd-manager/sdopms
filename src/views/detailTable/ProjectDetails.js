@@ -61,7 +61,7 @@ const ProjectDetails = () => {
                       Title <span className="required"> *</span>{' '}
                     </Label>
                     <Input type="text" name="title"  value={projectDetails && projectDetails.title}
-onChange={handleInputs} />
+                      onChange={handleInputs} />
                     </Col>
                 </Row>
               </FormGroup>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Form,FormGroup } from 'reactstrap';
+import { Form, FormGroup } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,7 +11,7 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import LoanMoreDetails from '../../components/LoanTable/LoanMoreDetails';
 import LoanDetailComp from '../../components/LoanTable/LoanDetailComp';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 //import LoanButtons from '../../components/LoanTable/LoanButton';
 import ApiButton from '../../components/ApiButton';
 
@@ -68,7 +68,8 @@ const LoanEdit = () => {
         message('Loan not found', 'info');
       });
   };
-
+// Create a state variable to track whether the status is "Active"
+const [isStatusActive, setIsStatusActive] = useState(false);
   // Get Loan By Id
   const getLoanById = () => {
     api
@@ -76,6 +77,9 @@ const LoanEdit = () => {
       .then((res) => {
         setLoanDetails(res.data.data[0]);
         setLoanStatus(res.data.data[0].status);
+         // Update the isStatusActive variable based on the status
+         setIsStatusActive(res.data.data[0].status === 'Active');
+
         getPreviousEarlierLoan(res.data.data[0].employee_id);
       })
       .catch(() => {
@@ -221,6 +225,31 @@ const LoanEdit = () => {
         .post('/loan/insertLoanRepaymenthistory', newLoanId)
         .then(() => {
           message('payment inserted successfully.', 'success');
+          // Check if amount_payable is 0 after inserting the payment
+          if (remainingAmount - newLoanId.loan_repayment_amount_per_month === 0) {
+            
+            // Update the status to 'Closed'
+            const updatedLoanDetails = {
+              ...loanDetails,
+              status: 'Closed',
+            };
+
+            // Update the status in the component state
+            setLoanDetails(updatedLoanDetails);
+
+            // Send an API request to update the status in the backend
+            api
+              .post('/loan/editLoanClosedDate', {
+                loan_id: id,
+                status: 'Closed',
+              })
+              .then(() => {
+                console.log('Loan status updated to Closed.');
+              })
+              .catch((error) => {
+                console.error('Failed to update loan status:', error);
+              });
+          }
           setNewPaymentData({
             loan_id: '',
             payment_date: '',
@@ -271,7 +300,7 @@ const LoanEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             {/* Button */}
 
             <ApiButton
@@ -283,7 +312,7 @@ const LoanEdit = () => {
               deleteData={deleteLoanData}
               module="Loan"
             ></ApiButton>
-          </ComponentCardV2>
+         
         </FormGroup>
       </Form>
       {/*Main Details*/}
@@ -293,6 +322,7 @@ const LoanEdit = () => {
         loanDetails={loanDetails}
       ></LoanDetailComp>
       <LoanMoreDetails
+      isStatusActive={isStatusActive}
         setAttachmentModal={setAttachmentModal}
         attachmentModal={attachmentModal}
         activeTab={activeTab}

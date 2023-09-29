@@ -8,7 +8,7 @@ function Deductions({
   handleInputs,
   handleDeductions,
   setLoanPaymentHistoryModal,
-  totalMonthPay,
+  newTotalMonthPay
 }) {
   // Initialize totalDeductions with the default value
 
@@ -16,8 +16,8 @@ function Deductions({
     payroll: PropTypes.object,
     handleDeductions: PropTypes.func,
     handleInputs: PropTypes.func,
-    totalMonthPay: PropTypes.any,
     setLoanPaymentHistoryModal: PropTypes.func,
+    newTotalMonthPay:PropTypes.func,
   };
 
   // Function to calculate the total deduction based on default values
@@ -72,7 +72,7 @@ function Deductions({
 
   useEffect(() => {
     const totalMonthPayss =
-      parseFloat(totalMonthPay || (payroll && payroll.total_basic_pay_for_month)) || 0;
+      parseFloat(newTotalMonthPay  || 0);
     const totalDeductionsss = parseFloat(totalDeductionsAmount || 0);
     const reimbursement = parseFloat(payroll.reimbursement || 0);
     const directorFee = parseFloat(payroll.director_fee || 0);
@@ -81,7 +81,7 @@ function Deductions({
 
     setTotalDedAmount(newNetTotalPay);
   }, [
-    totalMonthPay || (payroll && payroll.total_basic_pay_for_month),
+    newTotalMonthPay ,
     totalDeductionsAmount,
     payroll.reimbursement,
     payroll.director_fee,
@@ -157,26 +157,27 @@ function Deductions({
           </Link>
         </Col>
         <Col md="3">
+          {console.log("payroll.loan_amount:", payroll.loan_amount)}
           <Input
             name="loan_amount"
             type="text"
             value={payroll && payroll.loan_amount}
             onChange={(e) => {
               handleInputs(e);
-              handleDeductions(
-                e.target.value,
-                payroll.income_tax_amount,
-                payroll.cpf_employee,
-                payroll.deduction1,
-                payroll.deduction2,
-                payroll.deduction3,
-                payroll.deduction4,
-                payroll.sdl,
-                payroll.pay_eucf,
-                payroll.pay_cdac,
-                payroll.pay_mbmf,
-                payroll.pay_sinda,
-              );
+              // handleDeductions(
+              //   e.target.value,
+              //   payroll.income_tax_amount,
+              //   payroll.cpf_employee,
+              //   payroll.deduction1,
+              //   payroll.deduction2,
+              //   payroll.deduction3,
+              //   payroll.deduction4,
+              //   payroll.sdl,
+              //   payroll.pay_eucf,
+              //   payroll.pay_cdac,
+              //   payroll.pay_mbmf,
+              //   payroll.pay_sinda,
+              // );
             }}
           />
         </Col>
@@ -459,13 +460,15 @@ function Deductions({
       <Row>
         <Col md="9"></Col>
         <Col md="3">
-          <Input name="" type="text" onChange={handleInputs} />
+          <Input name="" type="text" onChange={handleInputs}  disabled/>
+         
         </Col>
       </Row>
       <Row>
         <Col md="9"></Col>
         <Col md="3">
-          <Input name="" type="text" onChange={handleInputs} />
+          <Input name="" type="text" onChange={handleInputs}
+          disabled />
         </Col>
       </Row>
       <Row>

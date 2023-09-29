@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import * as Icon from 'react-feather';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
 import 'datatables.net-buttons/js/buttons.html5';
@@ -29,22 +27,6 @@ const Help = () => {
       });
   };
   useEffect(() => {
-    setTimeout(() => {
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'print',
-            text: 'Print',
-            className: 'shadow-none btn btn-primary',
-          },
-        ],
-      });
-    }, 1000);
-
     getContent();
   }, []);
   //Structure of Content List view
@@ -56,12 +38,12 @@ const Help = () => {
       width: '4%',
     },
     {
-      name: 'Edit',
+      name: 'Detail',
       selector: 'edit',
       cell: () => (
         <Link to="/">
           {' '}
-          <Icon.Edit3 />
+        View
         </Link>
       ),
       grow: 0,
@@ -71,7 +53,7 @@ const Help = () => {
     },
 
     {
-      name: 'Title',
+      name: 'Module Name',
       selector: 'title',
       sortable: true,
       grow: 0,
@@ -104,7 +86,7 @@ const Help = () => {
                   <td>
                     {' '}
                     <Link to={`/HelpEdit/${element.content_id}`}>
-                      <Icon.Edit2 />
+                    View
                     </Link>
                   </td>
                   <td>{element.title}</td>

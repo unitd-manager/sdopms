@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Form, FormGroup } from 'reactstrap';
-import ComponentCardV2 from '../ComponentCardV2';
+//import ComponentCardV2 from '../ComponentCardV2';
 import JobInformation from '../SupplierModal/JobInformationEditModal';
 // import PdfKET from '../PDF/PdfKET';
 import ApiButton from '../ApiButton';
@@ -15,6 +15,7 @@ export default function Jobinformationedit({
   //insertJobInformation,
   JobInformationEditModal,
   setJobInformationEditModal,
+  deletejobData
   // job,
 }) {
   Jobinformationedit.propTypes = {
@@ -25,6 +26,7 @@ export default function Jobinformationedit({
     JobInformationEditModal: PropTypes.any,
     setJobInformationEditModal: PropTypes.any,
     navigate: PropTypes.any,
+    deletejobData:PropTypes.any,
     //job: PropTypes.any,
   };
   const backToList = () => {
@@ -33,59 +35,15 @@ export default function Jobinformationedit({
   return (
     <Form>
       <FormGroup>
-        <ComponentCardV2>
+        
           <Row>
-            {/* <Col>
-              <PdfKET lang="arabic" />
-            </Col>
-            <Col>
-              <PdfEmployeeContract job={job}></PdfEmployeeContract>
-            </Col> */}
-            {/* <Col>
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  editJobData();
-                  setTimeout(()=>{
-                    navigate('/JobInformation');
-                  },1000);
-                 
-                }}
-              >
-                {' '}
-                Save{' '}
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  editJobData();
-                  applyChanges();
-                }}
-              >
-                {' '}
-                Apply{' '}
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="shadow-none"
-                color="dark"
-                onClick={() => {
-                  navigate('/JobInformation');
-                }}
-              >
-                Back to List
-              </Button>
-            </Col> */}
+          
             <ApiButton
               editData={editJobData}
               navigate={navigate}
               applyChanges={editJobData}
               backToList={backToList}
+              deleteData={deletejobData}
               // deleteData={deleteLoanData}
               module="Job Information"
             ></ApiButton>
@@ -99,7 +57,7 @@ export default function Jobinformationedit({
               ></JobInformation>
             </Col>
           </Row>
-        </ComponentCardV2>
+       
       </FormGroup>
     </Form>
   );

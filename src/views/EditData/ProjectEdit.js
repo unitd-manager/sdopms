@@ -1,8 +1,10 @@
-import React, { useState, useEffect,useContext } from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane, Button } from 'reactstrap';
+import React, { useState, useEffect, useContext } from 'react';
+import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Swal from 'sweetalert2';
 import { useParams, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import DuctingCostModal from '../../components/ProjectModal/DuctingCostModal';
@@ -19,8 +21,12 @@ import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import Tab from '../../components/ProjectTabs/Tab';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import CalendarApp from '../apps/calendar/CalendarApp';
+import ApiButton from '../../components/ApiButton';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
+import EditPoModal from '../../components/ProjectModal/EditPoModal';
+import EditPOLineItemsModal from '../../components/ProjectModal/EditPOLineItemsModal';
+import AddPurchaseOrderModal from '../../components/ProjectModal/AddPurchaseOrderModal';
 // import ActualHour from '../../components/dashboard/ActualHour';
 // import AverageIssues from '../../components/dashboard/AverageIssues';
 import StatsPmsProjectId from '../../components/dashboard/ProjectStats/StatsPmsProjectId';
@@ -29,6 +35,10 @@ import ActualHourStatsProject from '../../components/dashboard/ProjectStats/Actu
 import PriorityStatsProject from '../../components/dashboard/ProjectStats/PriorityStatsProject';
 import AverageStatsProject from '../../components/dashboard/ProjectStats/AverageStatsProject';
 import DueStatsProject from '../../components/dashboard/ProjectStats/DueStatsProject';
+import MaterialsTransferred from '../../components/ProjectModal/MaterialsTransferred';
+import MaterialPurchased from '../../components/ProjectModal/MaterialPurchased';
+import MaterialsusedTab from '../../components/ProjectModal/MaterialsusedTab';
+import TransferModal from '../../components/ProjectModal/TransferModal';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -64,6 +74,17 @@ const ProjectEdit = () => {
   const [addContactModalTeam, setAddContactModalTeam] = useState(false);
   //get staff details
   const { loggedInuser } = useContext(AppContext);
+  const [selectedPoProducts, setSelectedPoProducts] = useState([]);
+  const [transferModal, setTransferModal] = useState(false);
+  const [transferItem, setTransferItem] = useState({});
+  const [editPo, setEditPo] = useState(false);
+  const [editPOLineItemsModal, setEditPOLineItemsModal] = useState(false);
+  const [tabPurchaseOrderLineItemTable, setTabPurchaseOrderLineItemTable] = useState();
+  const [addPurchaseOrderModal, setAddPurchaseOrderModal] = useState(false);
+  const [checkId, setCheckId] = useState([]);
+  const [POId, setPOId] = useState('');
+  const [testJsonData, setTestJsonData] = useState(null);
+  const [viewLineModal, setViewLineModal] = useState(false);
 
   // Start for tab refresh navigation
   const tabs = [
@@ -74,16 +95,23 @@ const ProjectEdit = () => {
     { id: '5', name: 'Task' },
     { id: '6', name: 'Timesheet' },
     { id: '7', name: 'Calender' },
+    { id: '8', name: 'Material Purchase Order' },
+    { id: '9', name: 'Material Transferred' },
+    { id: '10', name: 'Material Used' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
-  }
+  };
 
   // End for tab refresh navigation
 
   const addContactToggles = () => {
     setAddContactModals(!addContactModals);
   };
+  const viewLineToggle = () => {
+    setViewLineModal(!viewLineModal);
+  };
+  console.log(viewLineToggle);
   const addContactToggle = () => {
     setAddContactModal(!addContactModal);
   };
@@ -93,6 +121,17 @@ const ProjectEdit = () => {
   const addContactToggleTeam = () => {
     setAddContactModalTeam(!addContactModalTeam);
   };
+  useEffect(() => {
+    api
+      .post('/purchaseorder/testAPIendpoint', { project_id: id })
+      .then((res) => {
+        setTestJsonData(res?.data?.data);
+        console.log("test",res.data.data)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
 
   // Fetch Costing Summary
 
@@ -136,7 +175,6 @@ const ProjectEdit = () => {
   };
   //Getting data from milestone
   const getTaskById = () => {
-    
     api
       .post('/projecttask/getProjectTaskfilterById', { project_id: id })
       .then((res) => {
@@ -154,6 +192,19 @@ const ProjectEdit = () => {
       })
       .catch(() => {});
   };
+  // Tab PurchaseOrder LineItem Table
+  const TabPurchaseOrderLineItemTable = () => {
+    api.post('/purchaseorder/testAPIendpoint', { project_id: id }).then((res) => {
+      let arrayOfObj = Object.entries(res.data.data).map((e) => ({ id: e[0], data: e[1] }));
+      arrayOfObj = arrayOfObj.reverse();
+      setTabPurchaseOrderLineItemTable(arrayOfObj);
+    });
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      TabPurchaseOrderLineItemTable();
+    }, 2000);
+  }, [addPurchaseOrderModal]);
 
   //Getting data from milestone
   const getTeamById = () => {
@@ -182,6 +233,124 @@ const ProjectEdit = () => {
       })
       .catch(() => {});
   };
+  // handleCheck
+  const handleCheck = (e, item) => {
+    let updatedList = [...checkId];
+    if (e.target.checked) {
+      updatedList = [...checkId, { item }];
+    } else {
+      const indexOfObject = updatedList.findIndex((object) => {
+        return object.id === item.po_product_id;
+      });
+
+      updatedList.splice(indexOfObject, 1);
+    }
+    setCheckId(updatedList);
+    setSelectedPoProducts(selectedPoProducts);
+  };
+
+  //Add to stocks
+  const addQtytoStocks = () => {
+    const isEmpty = Object.keys(checkId).length === 0;
+
+    if (isEmpty) {
+      Swal.fire('Please select atleast one product!');
+    } else {
+      const selectedProducts = checkId;
+      setCheckId([]);
+      selectedProducts.forEach((elem) => {
+        console.log('elem', elem);
+        if (elem.item.status !== 'Closed') {
+          elem.item.status = 'Closed';
+          elem.item.qty_updated = elem.item.qty_delivered;
+          elem.item.qty_in_stock += parseFloat(elem.item.qty_delivered);
+
+          api
+            .post('/purchaseorder/editTabPurchaseOrderLineItem', elem.item)
+            .then(() => {
+              api
+                .post('/product/edit-ProductQty', elem.item)
+                .then(() => {
+                  message('Quantity updated in product successfully.', 'success');
+                  api
+                    .post('/inventory/editInventoryStock', elem.item)
+                    .then(() => {
+                      message('Quantity updated in inventory successfully.', 'success');
+                    })
+                    .catch(() => {
+                      message('unable to update quantity in inventory.', 'danger');
+                    });
+                })
+                .catch(() => {
+                  message('unable to update quantity in inventory.', 'danger');
+                });
+            })
+            .catch(() => {
+              message('unable to add quantity.', 'danger');
+            });
+        } else {
+          message('This product is already added', 'danger');
+        }
+      });
+    }
+  };
+  const insertDeliveryHistoryOrder = (proId, deliveryOrderId) => {
+    api
+      .post('/projecttabdeliveryorder/insertDeliveryHistoryOrder', {
+        product_id: proId.product_id,
+        purchase_order_id: proId.purchase_order_id,
+        delivery_order_id: deliveryOrderId,
+        status: '1',
+        quantity: proId.qty,
+        item_title: proId.item_title,
+        creation_date: moment(),
+        modification_date: moment(),
+        remarks: proId.description,
+      })
+      .then(() => {
+        message('Delivery Order Item Inserted', 'success');
+      })
+      .catch(() => {
+        message('Unable to add Delivery Order Item', 'error');
+      });
+  };
+
+  const insertDelivery = () => {
+    const isEmpty = Object.keys(checkId).length === 0;
+
+    if (isEmpty) {
+      Swal.fire('Please select atleast one product!');
+    } else {
+      api
+        .post('/projecttabdeliveryorder/insertdelivery_order', {
+          project_id: id,
+          company_id: projectDetail.company_id,
+          purchase_order_id: '',
+          date: new Date(),
+          created_by: '1',
+          creation_date: new Date(),
+          modified_by: '1',
+          modification_date: new Date(),
+        })
+        .then((res) => {
+          const selectedProducts = checkId;
+          setCheckId([]);
+          selectedProducts.forEach((element) => {
+            insertDeliveryHistoryOrder(element.item, res.data.data.insertId);
+          });
+        })
+        .catch(() => {
+          message('Unable to add delivery order.', 'error');
+        });
+    }
+  };
+  const getTotalOfPurchase = (pItems) => {
+    let total = 0;
+    pItems.forEach((a) => {
+      total += parseInt(a.amount, 10);
+    });
+    return total;
+  };
 
   useEffect(() => {
     getProjectById();
@@ -189,6 +358,7 @@ const ProjectEdit = () => {
     getTaskById();
     getTimeSheetById();
     getTeamById();
+    TabPurchaseOrderLineItemTable();
     getCompany();
   }, [id]);
 
@@ -204,47 +374,20 @@ const ProjectEdit = () => {
     <>
       <BreadCrumbs />
       <Form>
-    <FormGroup>
-      <ComponentCardV2>
-        <Row>
-          <Col>
-            <Button className='shadow-none'
-              color="primary"
-              onClick={() => {
-                UpdateData();
-                navigate('/Project');
-              }}
-            >
-              Save
-            </Button>
-          </Col>
-          <Col>
-            <Button className='shadow-none'
-              color="primary"
-              onClick={() => {
-                UpdateData();
-                //applyChanges();
-              }}
-            >
-              Apply
-            </Button>
-          </Col>
-
-         
-          <Col>
-            <Button className='shadow-none'
-              color="dark"
-              onClick={() => {
-                backToList();
-              }}
-            >
-              Back to List
-            </Button>
-          </Col>
-        </Row>
-      </ComponentCardV2>
-    </FormGroup>
-  </Form>
+        <FormGroup>
+          <ToastContainer></ToastContainer>
+          <ComponentCardV2>
+            <ApiButton
+              editData={UpdateData}
+              navigate={navigate}
+              //applyChanges={editMilestone}
+              backToList={backToList}
+              //deleteData={DeleteSection}
+              module="Project"
+            ></ApiButton>
+          </ComponentCardV2>
+        </FormGroup>
+      </Form>
       <Form>
         <FormGroup>
           <ComponentCard title="Project Details" creationModificationDate={projectDetail}>
@@ -423,18 +566,18 @@ const ProjectEdit = () => {
                 <DueStatsProject id={id}></DueStatsProject>
               </Col>
             </Row>
-            <br/>
+            <br />
             <Row>
-            <Col sm="4" lg="10" xl="6" xxl="6">
+              <Col sm="4" lg="10" xl="6" xxl="6">
                 <MilestoneStatsProject id={id}></MilestoneStatsProject>
               </Col>
               <Col sm="4" lg="10" xl="6" xxl="6">
                 <AverageStatsProject id={id}></AverageStatsProject>
               </Col>
             </Row>
-            <br/>
+            <br />
             <ActualHourStatsProject id={id}></ActualHourStatsProject>
-            <br/>
+            <br />
             <PriorityStatsProject id={id}></PriorityStatsProject>
           </TabPane>
           {/* Tab 2 */}
@@ -521,6 +664,61 @@ const ProjectEdit = () => {
           <TabPane tabId="7">
             <br />
             <CalendarApp projectDetail={projectDetail} id={id}></CalendarApp>
+          </TabPane>
+          {/* </TabPane> */}
+          {/* Tab 5 Materials Purchased */}
+          <TabPane tabId="8" eventkey="materialPurchased">
+            <AddPurchaseOrderModal
+              projectId={id}
+              addPurchaseOrderModal={addPurchaseOrderModal}
+              setAddPurchaseOrderModal={setAddPurchaseOrderModal}
+            />
+
+            {editPo && <EditPoModal editPo={editPo} setEditPo={setEditPo} data={POId} />}
+            {editPOLineItemsModal && (
+              <EditPOLineItemsModal
+                editPOLineItemsModal={editPOLineItemsModal}
+                setEditPOLineItemsModal={setEditPOLineItemsModal}
+                data={POId}
+                projectId={id}
+              />
+            )}
+            <MaterialPurchased
+              addPurchaseOrderModal={addPurchaseOrderModal}
+              setAddPurchaseOrderModal={setAddPurchaseOrderModal}
+              insertDelivery={insertDelivery}
+              addQtytoStocks={addQtytoStocks}
+              tabPurchaseOrderLineItemTable={tabPurchaseOrderLineItemTable}
+              setTabPurchaseOrderLineItemTable={setTabPurchaseOrderLineItemTable}
+              testJsonData={testJsonData}
+              setEditPo={setEditPo}
+              setPOId={setPOId}
+              setEditPOLineItemsModal={setEditPOLineItemsModal}
+              getTotalOfPurchase={getTotalOfPurchase}
+              handleCheck={handleCheck}
+              setTransferModal={setTransferModal}
+              setTransferItem={setTransferItem}
+              projectId={id}
+              // getCheckedPoProducts={getCheckedPoProducts}
+              setViewLineModal={setViewLineModal}
+            />
+            {transferModal && (
+              <TransferModal
+                transferModal={transferModal}
+                setTransferModal={setTransferModal}
+                transferItem={transferItem}
+              />
+            )}
+          </TabPane>
+
+          {/* Tab 6 */}
+          <TabPane tabId="9" eventkey="materialsusedTab">
+            <MaterialsusedTab projectId={id} />
+          </TabPane>
+
+          {/* Tab 7 */}
+          <TabPane tabId="10" eventkey="materialsTransferred">
+            <MaterialsTransferred projectId={id} />
           </TabPane>
         </TabContent>
       </ComponentCard>

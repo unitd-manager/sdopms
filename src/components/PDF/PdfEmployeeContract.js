@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import api from '../../constants/api'
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
-import message from '../Message';
 
 
 const PdfEmployeeContract= () => {
@@ -31,7 +30,7 @@ const PdfEmployeeContract= () => {
         setEmployeeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Invoice Data Not Found', 'info');
+        //message('Invoice Data Not Found', 'info');
       });
   };
   React.useEffect(() => {
@@ -65,7 +64,7 @@ const PdfEmployeeContract= () => {
                fontSize:10
              },   
              {
-              text: `CUBOSALE PTE LTD(hereinafter referred to as "the employer") with its business operating address located at\n\n`  ,
+              text: ` ${employeeDetails.company_name?employeeDetails.company_name:''}(hereinafter referred to as "the employer") with its business operating address located at\n\n`  ,
               style: 'textSize',
               fontSize:10
             }, 

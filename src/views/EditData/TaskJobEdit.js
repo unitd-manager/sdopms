@@ -333,7 +333,7 @@ const TaskJobEdit = () => {
               navigate={navigate}
               applyChanges={editTaskJob}
               backToList={backToList}
-              module="TaskJob"
+              module="Team"
             ></ApiButton>
           </ComponentCardV2>
         </FormGroup>

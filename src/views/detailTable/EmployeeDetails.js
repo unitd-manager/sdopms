@@ -13,7 +13,7 @@ const EmployeeDetails = () => {
   //state variables
   // const [empcode, setEmpcode] = useState();
   const [employeeData, setEmployeeData] = useState({
-    first_name: '',
+    employee_name: '',
     citizen: '',
     nric_no: '',
     fin_no: '',
@@ -40,6 +40,12 @@ const EmployeeDetails = () => {
   };
 
   //Insert Employee Data
+  // Import necessary modules and components
+
+
+  // ... Other code ...
+
+  // Insert Employee Data
   const insertEmployee = (code) => {
     employeeData.emp_code = code;
     employeeData.date_of_birth = moment();
@@ -49,33 +55,54 @@ const EmployeeDetails = () => {
     employeeData.year_of_completion1 = moment();
     employeeData.year_of_completion2 = moment();
     employeeData.year_of_completion3 = moment();
+
     if (
-      employeeData.first_name !== '' &&
+      employeeData.employee_name !== '' &&
       employeeData.status !== '' &&
-      employeeData.citizen !== ''
+      employeeData.passtype !== ''
     ) {
-      if (employeeData.nric_no !== '' || employeeData.fin_no !== '') {
-        if (employeeData.work_permit !== '') {
-          api
-            .post('/employeemodule/insertEmployee', employeeData)
-            .then((res) => {
-              const insertedDataId = res.data.data.insertId;
-              message('Employee inserted successfully.', 'success');
-              setTimeout(() => {
-                navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
-              }, 300);
-            })
-            .catch(() => {
-              message('Unable to create employee.', 'error');
-            });
-        } else {
-          message('Please fill all required fields.', 'warning');
-        }
+      // Check if the employeeData contains either NRIC, FIN, or both
+      if (employeeData.nric_no !== '' || employeeData.fin_no !== '' || employeeData.work_permit !== '') {
+        // Make a request to your backend API to check for duplicate numbers
+        api
+          .post('/employeemodule/Checkedduplicatevalue', {
+            nric_no: employeeData.nric_no,
+            fin_no: employeeData.fin_no,
+            work_permit: employeeData.work_permit,
+          })
+          .then((response) => {
+            if (response.data.error) {
+              // Number already exists, show an alert message
+              message('Number already exists. Please provide a different number.', 'warning');
+            } else {
+              // No duplicates found, proceed with inserting the employee
+              api
+                .post('/employeemodule/insertEmployee', employeeData)
+                .then((res) => {
+                  const insertedDataId = res.data.data.insertId;
+                  message('Employee inserted successfully.', 'success');
+                  setTimeout(() => {
+                    navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
+                  }, 300);
+                })
+                .catch(() => {
+                  message('Unable to create employee.', 'error');
+                });
+            }
+          })
+          .catch(() => {
+            message('Unable to check for duplicate numbers.', 'error');
+          });
       } else {
-        message('Please fill all required fields.', 'warning');
+        message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
       }
+    } else {
+      message('Please fill all required fields.', 'warning');
     }
   };
+
+
+  
   const generateCode = () => {
     api
       .post('/commonApi/getCodeValue', { type: 'employee' })
@@ -86,6 +113,26 @@ const EmployeeDetails = () => {
         insertEmployee('');
       });
   };
+  // const insertEmployee = (code) => {
+  //   // Check if the employee name already exists
+  //   checkEmployeeNameExists()
+  //     .then((res) => {
+  //       if (res.data.data === 'exists') {
+  //         // Display an alert message indicating that the name already exists
+  //         message('Employee name already exists.', 'error');
+  //       } else {
+  //         // Proceed with the insertion
+  //         employeeData.emp_code = code;
+  //         employeeData.date_of_birth = moment();
+  //         // ... (other code for insertion)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       // Handle any errors that occur during the check
+  //       message('Error checking employee name.', 'error');
+  //     });
+  // };
+  
 
   return (
     <div>
@@ -101,8 +148,8 @@ const EmployeeDetails = () => {
                     Full Name <span style={{ color: 'red' }}>*</span>
                   </Label>
                   <Input
-                    name="first_name"
-                    value={employeeData && employeeData.first_name}
+                    name="employee_name"
+                    value={employeeData && employeeData.employee_name}
                     onChange={handleInputs}
                     type="text"
                   />
@@ -148,7 +195,7 @@ const EmployeeDetails = () => {
                       name="nric_no"
                       value={employeeData && employeeData.nric_no}
                       onChange={handleInputs}
-                      type="number"
+                      type="text"
                     />
                   </Col>
                 </Row>
@@ -166,7 +213,7 @@ const EmployeeDetails = () => {
                       name="fin_no"
                       value={employeeData && employeeData.fin_no}
                       onChange={handleInputs}
-                      type="number"
+                      type="text"
                     />
                   </Col>
                 </Row>
@@ -183,7 +230,7 @@ const EmployeeDetails = () => {
                         name="work_permit"
                         value={employeeData && employeeData.work_permit}
                         onChange={handleInputs}
-                        type="number"
+                        type="text"
                       />
                     </Col>
                   </Row>

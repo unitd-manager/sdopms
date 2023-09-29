@@ -68,7 +68,7 @@ const JobInformationEdit = () => {
         setOverTimeRate(res.data.data[0].overtime_pay_rate);
       })
       .catch(() => {
-        message('JobInformation Data Not Found', 'info');
+       // message('JobInformation Data Not Found', 'info');
       });
   };
   //jobinformation data in jobinformationDetails
@@ -113,13 +113,14 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
+   
     if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
       return; // Exit the function without making the API request
     }
     job.overtime_pay_rate = overTimeRate;
-
+    job.deduction4=parseFloat(job.deduction4);
     if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
       api
         .post('/jobinformation/edit-jobinformation', job)
@@ -130,10 +131,30 @@ const JobInformationEdit = () => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'error');
+      message('Please fill basic pay,working days,join date and govt donation required fields.', 'warning');
     }
   };
 
+  const deletejobData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/jobinformation/deletejob_information', { job_information_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your job has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
   // Start for tab refresh navigation #Renuka 1-06-23
   const tabs = [
     { id: '1', name: 'Working hours' },
@@ -143,6 +164,8 @@ const JobInformationEdit = () => {
     { id: '5', name: 'CPF Information' },
     { id: '6', name: 'Bank Information' },
     { id: '7', name: 'Termination Information' },
+    { id: '8', name: 'Attachment' },
+    { id: '9', name: 'Add a note' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -184,7 +207,7 @@ const JobInformationEdit = () => {
         setAllBank(res.data.data);
       })
       .catch(() => {
-        message('JobInformation Data Not Found', 'info');
+        //message('JobInformation Data Not Found', 'info');
       });
   };
 
@@ -224,7 +247,8 @@ const JobInformationEdit = () => {
         applyChanges={applyChanges}
         navigate={navigate}
         backToList={backToList}
-        // insertJobInformation={insertJobInformation}
+        deletejobData={deletejobData}
+                // insertJobInformation={insertJobInformation}
         JobInformationEditModal={JobInformationEditModal}
         setJobInformationEditModal={setJobInformationEditModal}
         job={job}

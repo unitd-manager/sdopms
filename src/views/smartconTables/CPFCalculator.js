@@ -1,47 +1,174 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import * as Icon from 'react-feather';
+import { Row, Col, Button } from 'reactstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.min.css';
+import $ from 'jquery';
+import 'datatables.net-buttons/js/buttons.colVis';
+import 'datatables.net-buttons/js/buttons.flash';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
-import {Button } from 'reactstrap';
-import DataTable from 'react-data-table-component';
-import DataTableExtensions from 'react-data-table-component-extensions';
-import { columns, data } from '../../data/PayrollHR/CPFCalculatorData';
-import "react-data-table-component-extensions/dist/index.css";
+import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
+import message from '../../components/Message';
 
-function CPFCalculator() {
-  const tableData = {
-    columns,
-    data,
+const CpfCalculator = () => {
+  //All state variable
+  const [cpfRecords, setCpfRecords] = useState(null);
+  const [loading, setLoading] = useState(false);
+  //Getting data from CpfRecords
+  const getCpfRecords = () => {
+    setLoading(true);
+    api
+      .get('/cpfCalculator/getCpfCalculatorRecords')
+      .then((res) => {
+        setCpfRecords(res.data.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        message('Unable to get Purchase Data');
+      });
   };
+  useEffect(() => {
+    setTimeout(() => {
+      $('#example').DataTable({
+        pagingType: 'full_numbers',
+        pageLength: 20,
+        processing: true,
+        dom: 'Bfrtip',
+        // buttons: [
+        //   {
+        //     extend: 'print',
+        //     text: 'Print',
+        //     className: 'shadow-none btn btn-primary',
+        //   },
+        // ],
+      });
+    }, 1000);
+    getCpfRecords();
+  }, []);
+  //Structure of CpfRecords list view
+  const columns = [
+    {
+      name: '#',
+      grow: 0,
+      wrap: true,
+      width: '4%',
+    },
+    {
+      name: 'Edit',
+      selector: 'edit',
+      cell: () => <Icon.Edit2 />,
+      grow: 0,
+      width: 'auto',
+      button: true,
+      sortable: false,
+    },
+    {
+      name: 'Year',
+      selector: 'year',
+      sortable: true,
+      grow: 0,
+      wrap: true,
+    },
+    {
+      name: 'From Age',
+      selector: 'from_age',
+      sortable: true,
+      grow: 2,
+      wrap: true,
+    },
+    {
+      name: 'To Age',
+      selector: 'to_age',
+      sortable: true,
+      grow: 0,
+    },
+    {
+      name: 'CPF(Employer)',
+      selector: 'by_employer',
+      sortable: true,
+      width: 'auto',
+      grow: 3,
+    },
+    {
+      name: 'CPF(Employee)',
+      selector: 'by_employee',
+      sortable: true,
+      width: 'auto',
+      grow: 3,
+    },
+    {
+      name: 'SPR Year',
+      selector: 'spr_year',
+      sortable: true,
+      width: 'auto',
+      grow: 3,
+    }
+  ];
   return (
-    <>
-    <BreadCrumbs/>
-      <CommonTable
-          title="CPF Calculator List"
+    <div className="MainDiv">
+      <div className=" pt-xs-25">
+        <BreadCrumbs />
+
+        <CommonTable
+          loading={loading}
+          title="Cpf Calculator List"
           Button={
-            <Link to="/CPFCalculatorDetails">
-              <Button color="primary" className=" shadow-none">
-                Add New
-              </Button>
-            </Link>
+            <>
+              <Row>
+                <Col md="6">
+                  <Link to="/CpfCalculatorDetails">
+                    <Button color="primary" className="shadow-none">
+                      New
+                    </Button>
+                  </Link>
+                </Col>
+                
+              </Row>
+            </>
           }
         >
-          <DataTableExtensions
-      {...tableData}
-    >
-      <DataTable
-        noHeader
-        defaultSortField="id"
-        defaultSortAsc={false}
-        pagination
-        highlightOnHover
-      />
-    </DataTableExtensions>
-          </CommonTable>
+          <thead>
+            <tr>
+              {columns.map((cell) => {
+                return <td key={cell.name}>{cell.name}</td>;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {cpfRecords &&
+              cpfRecords.map((element, index) => {
+                return (
+                  <tr key={element.cpf_calculator_id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <Link to={`/CpfCalculatorEdit/${element.cpf_calculator_id}`}>
+                        <Icon.Edit2 />
+                      </Link>
+                    </td>
+                    <td>{element.year}</td>
+                    <td>{element.from_age}</td>
+                    <td>{element.to_age}</td>
+                    <td>{element.by_employer}</td>
+                   
+                    <td>{element.by_employee}</td>
+                    <td>
+                      {element.spr_year
+                       }
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </CommonTable>
+      </div>
+    </div>
+  );
+};
 
-    
-    </>
-  )
-}
-
-export default CPFCalculator
+export default CpfCalculator;

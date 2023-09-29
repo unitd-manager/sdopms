@@ -13,6 +13,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import * as $ from 'jquery';
+import { ToastContainer } from 'react-toastify';
 import api from '../../constants/api';
 import message from '../Message';
 
@@ -34,7 +35,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         setPayrollManagementsData(res.data.data);
       })
       .catch(() => {
-        message('Payrollmanagement Data Not Found', 'info');
+        //message('Payrollmanagement Data Not Found', 'info');
       });
   };
 
@@ -59,7 +60,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         deduction4: obj.deduction4?parseFloat(obj.deduction4).toFixed(2):0.00,
       })
       .then(() => {
-        message('OT Details Edited Successfully', 'sucess');
+        message('OT Details Edited Successfully', 'success');
       })
       .catch(() => {
         message('Cannot Edit OT Details', 'error');
@@ -115,6 +116,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
   return (
     <>
       <Modal size="xl" isOpen={updateOtModal}>
+        <ToastContainer></ToastContainer>
         <ModalHeader>
           Update OT{' '}
           <Button

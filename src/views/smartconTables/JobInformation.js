@@ -88,7 +88,7 @@ const JobInformation = () => {
     },
     {
       name: 'Full Name',
-      selector: 'first_name',
+      selector: 'employee_name',
       sortable: true,
       grow: 0,
       wrap: true,
@@ -160,7 +160,7 @@ const JobInformation = () => {
           {
             empWithoutJobInfo.map((el)=>{
               return(
-                <span style={{marginRight:'5px'}}><Badge> {el.first_name}</Badge></span>
+                <span style={{marginRight:'5px'}}><Badge> {el.employee_name}</Badge></span>
               )
             })
           }
@@ -198,7 +198,7 @@ const JobInformation = () => {
                         </Link>
                       </td>
                       <td>{element.emp_code}</td>
-                      <td>{element.first_name}</td>
+                      <td>{element.employee_name}</td>
                       <td>{element.department}</td>
                       <td>{element.passport}</td>
                       <td>{element.fin_no}</td>

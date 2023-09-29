@@ -36,8 +36,8 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
                   Full Name <span style={{ color: 'red' }}>*</span>
                 </Label>
                 <Input
-                  name="first_name"
-                  value={employeeDetails && employeeDetails.first_name}
+                  name="employee_name"
+                  value={employeeDetails && employeeDetails.employee_name}
                   onChange={handleInputChange}
                   type="text"
                 />

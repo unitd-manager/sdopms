@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, FormGroup, Button, TabPane, TabContent } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 import { ToastContainer } from 'react-toastify';
 import * as Icon from 'react-feather';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
@@ -10,7 +11,7 @@ import LeavePastHistory from '../../components/LeaveTable/LeavePastHistory';
 import ComponentCard from '../../components/ComponentCard';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
@@ -95,12 +96,14 @@ const LeavesEdit = () => {
 
   //Logic for edit data in db
   const editLeavesData = () => {
+    if(leavesDetails.no_of_days!==''){
     if (new Date(leavesDetails.to_date) >= new Date(leavesDetails.from_date)) {
+      
       if (
         leavesDetails.from_date!=='' &&
         leavesDetails.to_date!=='' &&
-        leavesDetails.leave_type!=='' &&
-        leavesDetails.no_of_days!==''
+        leavesDetails.leave_type!==''
+       
       ) {
         api
           .post('/leave/editleave', leavesDetails)
@@ -113,14 +116,38 @@ const LeavesEdit = () => {
       } else {
         message('Please fill all required fields', 'warning');
       }
-    } else {
+    }else{
       message('The To date should be the future date of From date', 'error');
+     
+    }
+    } else {
+      message('Please fill No Of Days(current Month)', 'warning');
     }
   };
 
   useEffect(() => {
     editLeavesById();
   }, [id]);
+  const deleteLeaveData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/leave/deleteLeave', { leave_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your Leave has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
 
   return (
     <>
@@ -130,15 +157,16 @@ const LeavesEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+          
             <ApiButton
               editData={editLeavesData}
               navigate={navigate}
               applyChanges={applyChanges}
               backToList={backToList}
               module="Leave"
+              deleteData={deleteLeaveData}
             ></ApiButton>
-          </ComponentCardV2>
+          
         </FormGroup>
       </Form>
 

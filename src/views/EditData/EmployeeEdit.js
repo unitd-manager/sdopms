@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, TabContent, TabPane,Form,FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,12 +14,12 @@ import EmployeePart from '../../components/EmployeeTable/EmployeePart';
 import AttachmentPortalsTab from '../../components/EmployeeTable/AttachmentPortalsTab';
 import LinkedPortalsTab from '../../components/EmployeeTable/LinkedPortalsTab';
 import LoginDetailsTab from '../../components/EmployeeTable/LoginDetailsTab';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 //import EmployeeButtons from '../../components/Employee/EmployeeButtons';
 import api from '../../constants/api';
 import message from '../../components/Message';
 import Tab from '../../components/ProjectTabs/Tab';
 import ApiButton from '../../components/ApiButton';
+
 
 const EmployeeEdit = () => {
   //state variables
@@ -140,7 +141,7 @@ const EmployeeEdit = () => {
         setEmployeeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Employee Data Not Found', 'info');
+       // message('Employee Data Not Found', 'info');
       });
   };
   //get Contact Information data
@@ -151,7 +152,7 @@ const EmployeeEdit = () => {
         setContactInformationDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('contact info Data Not Found', 'info');
+        //message('contact info Data Not Found', 'info');
       });
   };
   //get EmergencyContact data
@@ -162,7 +163,7 @@ const EmployeeEdit = () => {
         setEmergencyContactDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Emergency contact info Data Not Found', 'info');
+       // message('Emergency contact info Data Not Found', 'info');
       });
   };
 
@@ -174,7 +175,7 @@ const EmployeeEdit = () => {
         setEducationalQualificationDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('Educational Qualification Data Not Found', 'info');
+       // message('Educational Qualification Data Not Found', 'info');
       });
   };
   //get tabPassType data
@@ -185,7 +186,7 @@ const EmployeeEdit = () => {
         setTabPassTypeDetails(res.data.data[0]);
       })
       .catch(() => {
-        message('TabPass Type Data Not Found', 'info');
+        //message('TabPass Type Data Not Found', 'info');
       });
   };
   //Api for getting all countries
@@ -196,7 +197,7 @@ const EmployeeEdit = () => {
         setallCountries(res.data.data);
       })
       .catch(() => {
-        message('Country Data Not Found', 'info');
+        //message('Country Data Not Found', 'info');
       });
   };
   //Api for getting all countries
@@ -207,7 +208,7 @@ const EmployeeEdit = () => {
         setCompanies(res.data.data);
       })
       .catch(() => {
-        message('Country Data Not Found', 'info');
+        //message('Country Data Not Found', 'info');
       });
   };
   //Api for getting Qualification
@@ -218,7 +219,7 @@ const EmployeeEdit = () => {
         setQualifications(res.data.data);
       })
       .catch(() => {
-        message('qualification Data Not Found', 'info');
+        //message('qualification Data Not Found', 'info');
       });
   };
 
@@ -228,12 +229,13 @@ const EmployeeEdit = () => {
     if (
       employeeDetails.first_name !== '' &&
       employeeDetails.date_of_birth !== '' &&
-      employeeDetails.nationality !== ''
+      employeeDetails.date_of_expiry !== '' &&
+      employeeDetails.nationality !== '' 
     ) {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
         .then(() => {
-          message('Record editted successfully', 'success');
+          // message('Record editted successfully', 'success');
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -248,7 +250,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-ContactInformation', contactInformationDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+        // message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -259,7 +261,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-EmergencyContact', emergencyContactDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+       // message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -267,14 +269,20 @@ const EmployeeEdit = () => {
   };
   //update tab data
   const editEQData = () => {
+    if(educationalQualificationDetails.year_of_completion1!=='' && 
+    educationalQualificationDetails.year_of_completion2!=='' && 
+    educationalQualificationDetails.year_of_completion3!==''){
     api
       .post('/employeeModule/edit-EducationalQualification', educationalQualificationDetails)
       .then(() => {
-        message('Record editted successfully', 'success');
+        //message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
       });
+    } else {
+      message('Please fill the required field', 'warning');
+    }
   };
   //update tabpasstype data
   const editTabPassTypeData = () => {
@@ -283,7 +291,7 @@ const EmployeeEdit = () => {
         api
           .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
           .then(() => {
-            message('Record editted successfully', 'success');
+            //message('Record editted successfully', 'success');
           })
           .catch(() => {
             message('Unable to edit record.', 'error');
@@ -301,7 +309,7 @@ const EmployeeEdit = () => {
         api
           .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
           .then(() => {
-            message('Record editted successfully', 'success');
+            //message('Record editted successfully', 'success');
           })
           .catch(() => {
             message('Unable to edit record.', 'error');
@@ -322,30 +330,39 @@ const EmployeeEdit = () => {
     await editCIData();
   };
 
-  //Api call for Deleting Employee Data
-  const deleteEmployeeData = () => {
-    api
-      .post('/employeeModule/deleteEmployee', { employee_id: id })
-      .then(() => {
-        message('Record deleted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to delete record.', 'error');
-      });
-  };
   //Attachments
   const dataForAttachment = () => {
     setDataForAttachment({
       modelType: 'attachment',
     });
   };
+  
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
       modelType: 'picture',
     });
   };
-
+  const deleteEmployeeData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/employeeModule/deleteEmployee', { employee_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your Employee has been deleted.', 'success');
+            //window.location.reload();
+          });
+      }
+    });
+  };
   useEffect(() => {
     const getAlldata = async () => {
       await getEmployeeById();
@@ -373,17 +390,17 @@ const EmployeeEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             {/* Button */}
             <ApiButton
               editData={updateData}
               navigate={navigate}
-              applyChanges={updateData}
+              //applyChanges={updateData}
               backToList={backToList}
               deleteData={deleteEmployeeData}
               module="Employee"
             ></ApiButton>
-          </ComponentCardV2>
+          
         </FormGroup>
       </Form>
       <Row>

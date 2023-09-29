@@ -4,7 +4,6 @@ import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
 import api from '../../constants/api';
-import message from '../Message';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
@@ -33,7 +32,7 @@ const PdfKET = () => {
         console.log(job);
       })
       .catch(() => {
-        message('Job information Data Not Found', 'info');
+        //message('Job information Data Not Found', 'info');
       });
   };
 
@@ -165,7 +164,7 @@ const PdfKET = () => {
               [
                 {
                   text: `Company Name:
-                  Cubosale Pte ltd`,
+                  ${job.company_name ? job.company_name : ''}`,
                   border: [false, false, false, true],
                   style: 'tableBody',
                 },
@@ -397,7 +396,7 @@ const PdfKET = () => {
                     job.salary_payment_dates ? job.salary_payment_dates : ''
                   } \n
                     Date(s) of Overtime Payment:${
-                      job.overtime_payment_date ? job.overtime_payment_date : ''
+                      job.overtime_payment_dates ? job.overtime_payment_dates : ''
                     }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
