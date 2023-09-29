@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
 import moment from 'moment';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import api from '../../constants/api';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
-const PdfPaySlip = ({payrolls}) => {
-  PdfPaySlip.propTypes = {
-    payrolls: PropTypes.array,
-  }
-  // const { id } = useParams();
-  const [hfdata, setHeaderFooterData] = React.useState();
-  // const [payroll, setPayroll] = React.useState();
+const PdfPaySlip = () => {
+  // PdfPaySlip.propTypes = {
+  //   payrollsYear: PropTypes.any,
+  //   payrollsMonth: PropTypes.any
+  // }
+  const [hfdata, setHeaderFooterData] = useState();
+  const [payrollss, setPayrolls] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
       setHeaderFooterData(res.data.data);
     });
@@ -26,28 +26,24 @@ const PdfPaySlip = ({payrolls}) => {
     const filteredResult = hfdata.find((e) => e.key_text === key);
     return filteredResult.value;
   };
-  // Gettind data from Job By Id
-  // const getPayslip = () => {
-  //   api
-  //     .post('/PayrollManagement/getpayrollmanagementById', { payroll_management_id: id })
-  //     .then((res) => {
-  //       setPayroll(res.data.data[0]);
-  //     })
-  //     .catch(() => {
-  //       message('payroll Data Not Found', 'info');
-  //     });
-  // };
+  // console.log('payrollsYear',payrollsYear)
+  //  console.log('payrollsMonth',payrollsMonth)
+  const getPayslip = () => {
+    api
+      .post('/PayrollManagement/getpayrollmanagementFilterYearMonth',)
+      .then((res) => {
+        setPayrolls(res.data.data);
+      })
+      .catch(() => {
+        // Handle error
+      });
+  };
+ 
+  useEffect(() => {
+    getPayslip();
+  }, []);
 
-  // React.useEffect(() => {
-  //   getPayslip();
-  // }, []);
-
-  const GetPdf = () => {
-
-    const pdfArray = [];
-
-    payrolls.forEach((payroll) => {
-        console.log('payrolpdf',payroll)
+  const generatePayslipPdf = (payroll) => {
     const dd = {
       pageSize: 'A4',
       header: PdfHeader({ findCompany }),
@@ -1027,27 +1023,25 @@ const PdfPaySlip = ({payrolls}) => {
     const pdfDocGenerator = pdfMake.createPdf(dd, null, null, pdfFonts.pdfMake.vfs);
 
     pdfDocGenerator.getDataUrl((dataUrl) => {
-        pdfArray.push(dataUrl);
-      });
-    });
-
-    // Download the PDFs
-    pdfArray.forEach((dataUrl, index) => {
       const downloadLink = document.createElement('a');
       downloadLink.href = dataUrl;
-      downloadLink.download = `pdf-${index + 1}.pdf`;
+      downloadLink.download = `pdf-${payroll.id}.pdf`;
       downloadLink.click();
     });
-    
+  };
+
+  const handleGenerateAllPdfs = () => {
+    payrollss.forEach((payroll) => {
+      generatePayslipPdf(payroll);
+    });
   };
 
   return (
     <>
-      <Button type="button" className="btn btn-primary mr-2" onClick={GetPdf}>
-        Submit
+      <Button type="button" className="btn btn-primary mr-2" onClick={handleGenerateAllPdfs}>
+        Generate PDFs
       </Button>
     </>
   );
 };
-
 export default PdfPaySlip;

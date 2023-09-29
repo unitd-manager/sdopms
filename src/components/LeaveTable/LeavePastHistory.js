@@ -51,7 +51,7 @@ export default function LeavePastHistory({ PastleavesDetails,leavesDetails }) {
                     <td>{moment(element.from_date).format('YYYY-MM-DD')}</td>
                     <td>{moment(element.to_date).format('YYYY-MM-DD')}</td>
                     <td>{element.leave_type}</td>
-                    <td>{element.no_of_days?(element.no_of_days_next_month?element.no_of_days + element.no_of_days_next_month:element.no_of_days):''}</td>
+                    <td>{element.no_of_days?(element.no_of_days_next_month?parseFloat(element.no_of_days) +parseFloat (element.no_of_days_next_month):element.no_of_days):''}</td>
                   </tr>
                 );
               })}

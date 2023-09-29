@@ -13,7 +13,7 @@ import {
   FormGroup,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import PdfPaySlip from '../PDF/PdfAllPayslip';
+import PdfAllPayslip from '../PDF/PdfAllPayslip'
 
 function PrintPayslipModal({ printPayslipModal, setPrintPayslipModal,payrollManagementsdata }) {
   PrintPayslipModal.propTypes = {
@@ -47,6 +47,8 @@ return payrollManagementsdata
   })
 console.log('payrolls',payrolls)
 console.log('filterPeriod',filterPeriod)
+console.log('filteryear',filterPeriod.year)
+console.log('filtermonth',filterPeriod.month)
   return (
     <div>
       <Modal isOpen={printPayslipModal}>
@@ -110,17 +112,7 @@ console.log('filterPeriod',filterPeriod)
           </Row>
         </ModalBody>
         <ModalFooter>
-          {/* <Button
-            color="primary"
-            className="shadow-none"
-            onClick={() => {
-              setPrintPayslipModal(false);
-            }}
-          >
-            {' '}
-            Submit{' '}
-          </Button> */}
-          <PdfPaySlip payrolls={payrolls}></PdfPaySlip>
+          <PdfAllPayslip payrollsYear={filterPeriod.year} payrollsMonth={filterPeriod.month}></PdfAllPayslip>
           <Button
             color="dark"
             className="shadow-none"
