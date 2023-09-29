@@ -107,6 +107,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
                   value={
                     employeeDetails && moment(employeeDetails.date_of_birth).format('YYYY-MM-DD')
                   }
+                  max={moment().format('YYYY-MM-DD')}
                 />
               </FormGroup>
             </Col>

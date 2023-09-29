@@ -269,11 +269,7 @@ const EmployeeEdit = () => {
   };
   //update tab data
   const editEQData = () => {
-    if (
-      educationalQualificationDetails.year_of_completion1 !== '' &&
-      educationalQualificationDetails.year_of_completion2 !== '' &&
-      educationalQualificationDetails.year_of_completion3 !== ''
-    ) {
+   
       api
         .post('/employeeModule/edit-EducationalQualification', educationalQualificationDetails)
         .then(() => {
@@ -282,10 +278,8 @@ const EmployeeEdit = () => {
         .catch(() => {
           message('Unable to edit record.', 'error');
         });
-    } else {
-      message('Please fill the required field', 'warning');
-    }
-  };
+
+}
   //update tabpasstype data
   const editTabPassTypeData = () => {
     if (tabPassTypeDetails.citizen === 'Citizen' ) {

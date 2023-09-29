@@ -169,7 +169,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
                           </td>
                           <td data-label="employee_name">
                             <Input
-                              defaultValue={item.first_name}
+                              defaultValue={item.employee_name}
                               className="w-auto"
                               type="text"
                               name="employee_name"

@@ -4,9 +4,13 @@ import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
+import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
@@ -20,6 +24,19 @@ const Opportunity = () => {
       .get('/tender/getTenders')
       .then((res) => {
         setTenders(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
         setLoading(false);
       })
       .catch(() => {
@@ -33,7 +50,7 @@ const Opportunity = () => {
   const columns = [
     {
       name: '#',
-      selector: '',
+      selector: 'opportunity_id',
       grow: 0,
       wrap: true,
       width: '4%',
@@ -48,48 +65,49 @@ const Opportunity = () => {
       sortable: false,
     },
     {
-      name: 'Enquiry date',
-      selector: 'enquiry_date',
+      name: 'Code',
+      selector: 'opportunity_code',
       sortable: true,
       grow: 0,
       wrap: true,
     },
     {
-      name: 'Enquiry No',
-      selector: 'opportunity_code',
+      name: 'Project',
+      selector: 'title',
       sortable: true,
       grow: 2,
       wrap: true,
     },
     {
-      name: 'Customer',
-      selector: 'company_name',
+      name: 'Ref No',
+      selector: 'office_ref_no',
       sortable: true,
       grow: 0,
     },
     {
-      name: 'Reference',
-      selector: 'office_ref_no',
+      name: 'Main Con',
+      selector: 'company_name',
       sortable: true,
       width: 'auto',
       grow: 3,
     },
     {
-      name: 'BID Expiry',
-      selector: 'project_end_date',
+      name: 'Actual Closing',
+      selector: 'actual_closing',
       sortable: true,
       grow: 2,
       width: 'auto',
     },
     {
-      name: 'Service',
-      selector: 'services',
+      name: 'Status',
+      selector: 'status',
       sortable: true,
-      width: 'auto',
+      grow: 2,
+      wrap: true,
     },
     {
-      name: 'Enquiry Status',
-      selector: 'status',
+      name: 'Quoted By',
+      selector: 'quote_ref',
       sortable: true,
       width: 'auto',
     },
@@ -101,9 +119,9 @@ const Opportunity = () => {
         <BreadCrumbs />
         <CommonTable
           loading={loading}
-          title="Enquiry List"
+          title="Opportunity List"
           Button={
-            <Link to="/EnquiryDetails">
+            <Link to="/OpportunityDetails">
               <Button color="primary" className="shadow-none">
                 Add New
               </Button>
@@ -124,17 +142,17 @@ const Opportunity = () => {
                   <tr key={element.opportunity_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/EnquiryEdit/${element.opportunity_id}?tab=1`}>
+                      <Link to={`/OpportunityEdit/${element.opportunity_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{element.enquiry_date}</td>
                     <td>{element.opportunity_code}</td>
-                    <td>{element.company_name}</td>
+                    <td>{element.title}</td>
                     <td>{element.office_ref_no}</td>
-                    <td>{element.project_end_date }</td>
-                    <td>{element.services}</td>
+                    <td>{element.company_name}</td>
+                    <td>{element.actual_closing ? moment(element.actual_closing).format('DD-MM-YYYY') : ''}</td>
                     <td>{element.status}</td>
+                    <td>{element.quote_ref}</td>
                   </tr>
                 );
               })}

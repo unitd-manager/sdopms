@@ -39,6 +39,7 @@ import MaterialsTransferred from '../../components/ProjectModal/MaterialsTransfe
 import MaterialPurchased from '../../components/ProjectModal/MaterialPurchased';
 import MaterialsusedTab from '../../components/ProjectModal/MaterialsusedTab';
 import TransferModal from '../../components/ProjectModal/TransferModal';
+import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDetails';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -66,6 +67,10 @@ const ProjectEdit = () => {
   const [addContactModal, setAddContactModal] = useState(false);
   const [timeSheetById, setTimeSheetById] = useState();
   const [contactDatass, setContactDatass] = useState();
+  const [addLineItemModal, setAddLineItemModal] = useState(false);
+  const [quotation, setQuotation] = useState({});
+  const [lineItem, setLineItem] = useState([]);
+  const [quotationsModal, setquotationsModal] = useState(false);
   const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
   const [addContactModalss, setAddContactModalss] = useState(false);
   const [teamById, setTeamById] = useState();
@@ -85,11 +90,12 @@ const ProjectEdit = () => {
   const [POId, setPOId] = useState('');
   const [testJsonData, setTestJsonData] = useState(null);
   const [viewLineModal, setViewLineModal] = useState(false);
+  
 
   // Start for tab refresh navigation
   const tabs = [
     { id: '1', name: 'Analytics' },
-    { id: '2', name: 'Costing Summary' },
+    { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
@@ -98,6 +104,8 @@ const ProjectEdit = () => {
     { id: '8', name: 'Material Purchase Order' },
     { id: '9', name: 'Material Transferred' },
     { id: '10', name: 'Material Used' },
+    { id: '11', name: 'Finance' },
+   
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -147,6 +155,21 @@ const ProjectEdit = () => {
         message('Project not found', 'info');
       });
   };
+  const getQuotations = () => {
+    api.post('/project/getTabQuoteById', { project_id: id }).then((res) => {
+      setQuotation(res.data.data);
+    });
+  };
+    // Get Line Item
+  const getLineItem = (quotationId) => {
+    api.post('/project/getQuoteLineItemsById', { quote_id: quotationId }).then((res) => {
+      setLineItem(res.data.data);
+      console.log('lineItem', res.data.data);
+
+      //setViewLineModal(true);
+    });
+  };
+
   // Edit Project
 
   const handleInputs = (e) => {
@@ -360,6 +383,8 @@ const ProjectEdit = () => {
     getTeamById();
     TabPurchaseOrderLineItemTable();
     getCompany();
+    getQuotations();
+    getLineItem();
   }, [id]);
 
   useEffect(() => {
@@ -581,6 +606,21 @@ const ProjectEdit = () => {
             <PriorityStatsProject id={id}></PriorityStatsProject>
           </TabPane>
           {/* Tab 2 */}
+          <TabPane tabId="2" eventkey="quotationMoreDetails">
+            <QuotationMoreDetails
+              id={id}
+              addLineItemModal={addLineItemModal}
+              setAddLineItemModal={setAddLineItemModal}
+              viewLineModal={viewLineModal}
+              viewLineToggle={viewLineToggle}
+              lineItem={lineItem}
+              getLineItem={getLineItem}
+              quotationsModal={quotationsModal}
+              setquotationsModal={setquotationsModal}
+              quotation={quotation}
+              setViewLineModal={setViewLineModal}
+            ></QuotationMoreDetails>
+          </TabPane>
           <TabPane tabId="2"></TabPane>
           {/* Tab 3 Milestone */}
           <TabPane tabId="3">
@@ -711,13 +751,18 @@ const ProjectEdit = () => {
             )}
           </TabPane>
 
-          {/* Tab 6 */}
+          {/* Tab 9*/}
           <TabPane tabId="9" eventkey="materialsusedTab">
             <MaterialsusedTab projectId={id} />
           </TabPane>
 
-          {/* Tab 7 */}
+          {/* Tab 10 */}
           <TabPane tabId="10" eventkey="materialsTransferred">
+            <MaterialsTransferred projectId={id} />
+          </TabPane>
+
+           {/* Tab 11 */}
+           <TabPane tabId="10" eventkey="Finance">
             <MaterialsTransferred projectId={id} />
           </TabPane>
         </TabContent>

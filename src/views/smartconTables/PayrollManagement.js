@@ -103,7 +103,7 @@ const Payrollmanagement = () => {
         message('Unable to edit record.', 'error');
       });
   };
- 
+
   //get all records
   const getAllPayrollManagements = () => {
     setLoading(true);
@@ -234,7 +234,7 @@ const Payrollmanagement = () => {
       // Ensure it's formatted as a two-decimal float
       const grosspay = parseFloat(obj.basic_pay);
       const empID = obj.employee_id;
-      
+
       console.log('employee', empID);
       await api
         .post('/payrollmanagement/getemployeeages', {
@@ -251,22 +251,24 @@ const Payrollmanagement = () => {
           const selectedEmployeeId = obj.employee_id;
           const payrollyear = obj.payroll_year;
           const basicpays = obj.basic_pay;
-          const sprYear=obj.spr_year || 3;
+          const spryear = parseFloat(obj.spr_year);
+
+          console.log('spryear', spryear);
           console.log('payrollyear', basicpays);
           console.log('payrollyear', payrollyear);
-          console.log('payrollyear', sprYear);
+          console.log('payrollyear1', spryear);
 
           api
             .post('/payrollmanagement/getCpfCalculation', {
               employee_id: selectedEmployeeId,
-              
+
               payroll_year: payrollyear,
               basic_pay: basicpays,
-              spr_year:sprYear, 
+              spr_year: spryear,
             })
             .then((res) => {
               const { byEmployee, byEmployer } = res.data.data[0];
-               const {capAmountEmployee,capAmountEmployer } = res.data.data[0];
+              const { capAmountEmployee, capAmountEmployer } = res.data.data[0];
               console.log('by', byEmployee); // Replace with actual API response structure
               // Set these values to your rowPercentageCPF object
 
@@ -315,7 +317,7 @@ const Payrollmanagement = () => {
                 // CPF Employee Contribution
                 const cpfEmployeeInt = Math.floor(cpfEmployee); // Take only the integer part
                 // CPF Employer contribution
-                totalcontribution=totalContributionamount;
+                totalcontribution = totalContributionamount;
                 const cpf = totalContributionamount - cpfEmployeeInt;
                 console.log('Total CPF Contributions3:', totalContributionamount);
                 console.log('Total CPF Contribution4:', cpfEmployeeInt);
@@ -355,15 +357,15 @@ const Payrollmanagement = () => {
                 let totalContributionAmountCorrection = totalCapAmountCpf;
                 cpfmployee = cpf;
                 cpfmployer = cpfE;
-                console.log("cpf10",cpf);
-                console.log("cpf11",cpfE);
+                console.log('cpf10', cpf);
+                console.log('cpf11', cpfE);
                 if (totalContributionAmount > totalCapAmountCpf) {
                   totalContributionAmountCorrection = totalCapAmountCpf;
                 } else {
                   totalContributionAmountCorrection = totalContributionAmount;
                 }
-                totalcontribution=totalCapAmountCpf;
-                console.log("cpf12",totalCapAmountCpf);
+                totalcontribution = totalCapAmountCpf;
+                console.log('cpf12', totalCapAmountCpf);
                 // Calculate CPF Employer contribution
                 let cpfEmp = totalContributionAmount - cpfE;
 
@@ -398,7 +400,7 @@ const Payrollmanagement = () => {
                   // generatecpfcalculator();
                   message('Payrolls created successfully.', 'success');
                   // setLoading(false);
-                }) 
+                })
                 .catch(() => {
                   message('Unable to create record', 'info');
                 });
@@ -470,52 +472,7 @@ const Payrollmanagement = () => {
       <div className=" pt-xs-25">
         <BreadCrumbs />
         <ToastContainer></ToastContainer>
-        {/* <Card className="p-2">
-          <CardBody>
-            <Row>
-              <Col md="3">
-                <FormGroup>
-                  <Input
-                    name="month"
-                    type="select"
-                    value={filterPeriod.month}
-                    onChange={handleFilterInputs}
-                  >
-                    <option value="">Please Select</option>
-                    <option value="01">January</option>
-                    <option value="02">February</option>
-                    <option value="03">March</option>
-                    <option value="04">April</option>
-                    <option value="05">May</option>
-                    <option value="06">June</option>
-                    <option value="07">July</option>
-                    <option value="08">August</option>
-                    <option value="09">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                  </Input>
-                </FormGroup>
-              </Col>
-              <Col md="3">
-                <FormGroup>
-                  <Input
-                    type="select"
-                    name="year"
-                    value={filterPeriod.year}
-                    onChange={handleFilterInputs}
-                  >
-                    <option value="">Select Year</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                  </Input>
-                </FormGroup>
-              </Col>
-            </Row>
-          </CardBody>
-        </Card> */}
+
         <Card style={{ padding: '10px' }}>
           <div>
             <h5>
@@ -541,9 +498,6 @@ const Payrollmanagement = () => {
                 onClick={() => {
                   if (window.confirm('Are you sure you want to generate Payslips?')) {
                     generatePayslips();
-                    // setTimeout(() => {
-                    //   window.location.reload();
-                    // }, 1500);
                   }
                 }}
               >
@@ -611,13 +565,6 @@ const Payrollmanagement = () => {
           Button={
             <div>
               <Row>
-                <Col md="6">
-                  <Link to="">
-                    <Button color="primary" className="shadow-none">
-                      Import
-                    </Button>
-                  </Link>
-                </Col>
                 <Col md="6">
                   <a
                     href="http://43.228.126.245/smartco-api/storage/excelsheets/PayrollManagement.xlsx"

@@ -18,19 +18,21 @@ import moment from 'moment';
 import api from '../../constants/api';
 import message from '../Message';
 
-const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId }) => {
+const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId, projectInfo }) => {
   FinanceReceiptData.propTypes = {
     editCreateReceipt: PropTypes.bool,
     setEditCreateReceipt: PropTypes.func,
     orderId: PropTypes.any,
+    projectInfo: PropTypes.any,
   };
   //All const Variable
   const [invoiceReceipt, setInvoiceReceipt] = useState();
+  const [submitting, setSubmitting] = useState(false);
   const { id } = useParams();
   const [totalAmount, setTotalAmount] = useState(0);
   const [createReceipt, setCreateReceipt] = useState({
     amount: 0,
-    order_id:id,
+    order_id:orderId,
     receipt_status:"Paid",
     receipt_date:moment(),
     receipt_code: '',
@@ -139,24 +141,28 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId })
 
   //Insert Receipt
   const insertReceipt =async (code)=> {
+    createReceipt.project_id = projectInfo;
     createReceipt.receipt_code = code;
     // createReceipt.receipt_date = moment()
-    if (createReceipt.mode_of_payment && (selectedInvoice.length>0)){
-    if(totalAmount>=createReceipt.amount) {
+    // if (createReceipt.mode_of_payment && (selectedInvoice.length>0)){
+    // if(totalAmount>=createReceipt.amount) {
     api
       .post('/finance/insertreceipt', createReceipt)
       .then((res) => {
         message('data inserted successfully.');
           finalCalculation(res.data.data.insertId)
+          window.location.reload()
       })
       .catch(() => {
         message('Network connection error.');
+      }) .finally(() => {
+        setSubmitting(false); // Reset the submitting state after the API call completes (success or error).
       });
-    }
-    else {
-      message('Please fill all required fields', 'warning');
-   }
-  }
+  //   }
+  // }
+  // //    else {
+  //     message('Please fill all required fields', 'warning');
+  //  }
   };
   const generateCode = () => {
     api
@@ -272,7 +278,7 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId })
                         );
                       })}
                     <br></br>
-                    { invoiceReceipt && invoiceReceipt.length>0?
+                    {/* { invoiceReceipt && invoiceReceipt.length>0? */}
                     <Row>
                       <Col md="12">
                         <FormGroup>
@@ -360,23 +366,33 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId })
                           />
                         </FormGroup>
                       </Col>
-                    </Row>:<span>Sorry</span>}
+                    </Row>
+                    {/* :<span>Sorry</span>} */}
                   </Form>
             </Col>
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button className='shadow-none'
-            color="primary"
-            onClick={() => {
-              generateCode();
-              //insertReceipt();
-              //insertInvoices();
-            }}
-          >
-            {' '}
-            Submit{' '}
-          </Button>
+        <Button
+  className="shadow-none"
+  color="primary"
+  onClick={() => {
+    if (!submitting) {
+      setSubmitting(true);
+      if (parseFloat(createReceipt.amount) > 0) {
+        generateCode();
+      } else {
+        // Show an error message indicating that the amount should be greater than 0
+        message('Amount must be greater than 0', 'warning');
+        setSubmitting(false); // Reset submitting state
+      }
+    }
+  }}
+  disabled={submitting}
+>
+  {' '}
+  Submit{' '}
+</Button>
           <Button className='shadow-none'
             color="secondary"
             onClick={() => {

@@ -164,6 +164,12 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
+    if (job.status === 'Archive' && job.termination_date === '') {
+      // Check if the status is "Archive" and termination date is empty
+      message('Please enter termination date for Archive status.', 'warning');
+      return; // Exit the function without making the API request
+    }
+    
     if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
@@ -172,6 +178,7 @@ const JobInformationEdit = () => {
     job.overtime_pay_rate = overTimeRate;
     job.deduction4 = parseFloat(job.deduction4);
     if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
+     
       api
         .post('/jobinformation/edit-jobinformation', job)
         .then(() => {
