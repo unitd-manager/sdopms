@@ -24,6 +24,8 @@ const LoanEdit = () => {
   const [paymentdetails, setPaymentDetails] = useState();
   const [addpaymentModal, setAddPaymentModal] = useState(false);
   const [loanStatus, setLoanStatus] = useState();
+  //const [loanStartDate, setLoanStartDate] = useState(null); // State variable to store the loan start date
+
 
   //  AttachmentModal
   const [attachmentData, setDataForAttachment] = useState({
@@ -69,17 +71,17 @@ const LoanEdit = () => {
       });
   };
 // Create a state variable to track whether the status is "Active"
-const [isStatusActive, setIsStatusActive] = useState(false);
+ const [isStatusActive, setIsStatusActive] = useState(false);
   // Get Loan By Id
   const getLoanById = () => {
     api
       .post('/loan/getLoanById', { loan_id: id })
       .then((res) => {
         setLoanDetails(res.data.data[0]);
-        setLoanStatus(res.data.data[0].status);
+        setLoanStatus(res.data.data[0].status );
          // Update the isStatusActive variable based on the status
-         setIsStatusActive(res.data.data[0].status === 'Active');
-
+        //  setIsStatusActive(res.data.data[0].status === 'Active');
+        setIsStatusActive(res.data.data[0].status === 'Active');
         getPreviousEarlierLoan(res.data.data[0].employee_id);
       })
       .catch(() => {
@@ -93,7 +95,7 @@ const [isStatusActive, setIsStatusActive] = useState(false);
   };
 
   //Logic for edit data in db
-  const [recordEdited, setRecordEdited] = useState(false); // Add this state variable
+  //const [recordEdited, setRecordEdited] = useState(false); // Add this state variable
 
   // ...
 
@@ -112,10 +114,10 @@ const [isStatusActive, setIsStatusActive] = useState(false);
             api.post('/loan/editLoanStartDate', { loan_id: id });
             getLoanById();
           }
-          if (!recordEdited) {
-            message('Record edited successfully', 'success');
-            setRecordEdited(true); // Set the state variable to true to indicate that the message has been shown
-          }
+          // if (!recordEdited) {
+          //   message('Record edited successfully', 'success');
+          //   setRecordEdited(true); // Set the state variable to true to indicate that the message has been shown
+          // }
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -153,16 +155,7 @@ const [isStatusActive, setIsStatusActive] = useState(false);
     }
   }, [loanDetails.amount_payable, loanDetails.loan_closing_date, loanDetails.status]);
 
-  // const editLoanClosingData = () => {
-  //   if (loanDetails && loanDetails.status === 'Closed') {
-  //     api
-  //       .post('/loan/editLoanClosingDate', { loan_id: id })
-  //       .then(() => {})
-  //       .catch(() => {
-  //         message('Unable to edit record.', 'error');
-  //       });
-  //   }
-  // };
+
 
   //for deleting the data
   const deleteLoanData = () => {
@@ -322,7 +315,7 @@ const [isStatusActive, setIsStatusActive] = useState(false);
         loanDetails={loanDetails}
       ></LoanDetailComp>
       <LoanMoreDetails
-      isStatusActive={isStatusActive}
+        isStatusActive={isStatusActive}
         setAttachmentModal={setAttachmentModal}
         attachmentModal={attachmentModal}
         activeTab={activeTab}

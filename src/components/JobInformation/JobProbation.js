@@ -1,5 +1,6 @@
-import React,{useEffect,useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import moment from 'moment';
@@ -9,16 +10,22 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
     handleInputsJobInformation: PropTypes.any,
     job: PropTypes.any,
   };
-  const [showAlert, setShowAlert] = useState(false);
+ 
+  // Function to handle status change
+  const handleStatusChange = (e) => {
+    const selectedStatus = e.target.value;
+    handleInputsJobInformation(e); // Update the status in the job object
 
-  useEffect(() => {
-    // Show the alert if the status is "archive"
-    if (job && job.status === 'archive') {
-      setShowAlert(true);
-    } else {
-      setShowAlert(false);
+    if (selectedStatus === 'archive') {
+      // If the status is "archive," show an alert
+      Swal.fire({
+        title: 'Enter Termination Record',
+        text: 'Please enter termination records before saving.',
+        icon: 'info',
+        confirmButtonText: 'OK',
+      });
     }
-  }, [job]);
+  };
   return (
       <FormGroup>
         <Row>
@@ -151,7 +158,7 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
               type="select"
               defaultValue={job && job.status}
               name="status"
-              onChange={handleInputsJobInformation}
+              onChange={handleStatusChange}
             >
               <option>Please Select</option>
               <option value="current" selected={job && job.status === 'current'}>
@@ -164,11 +171,7 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
                 Cancel
               </option>
             </Input>
-            {showAlert && (
-              <div className="alert alert-warning mt-2">
-                Please enter TERMINATION INFORMATION of the employee if they are leaving the company.
-              </div>
-            )}
+           
           </FormGroup>
         </Col>
         </Row>

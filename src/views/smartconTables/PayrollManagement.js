@@ -234,6 +234,7 @@ const Payrollmanagement = () => {
       // Ensure it's formatted as a two-decimal float
       const grosspay = parseFloat(obj.basic_pay);
       const empID = obj.employee_id;
+      
       console.log('employee', empID);
       await api
         .post('/payrollmanagement/getemployeeages', {
@@ -250,15 +251,18 @@ const Payrollmanagement = () => {
           const selectedEmployeeId = obj.employee_id;
           const payrollyear = obj.payroll_year;
           const basicpays = obj.basic_pay;
+          const sprYear=obj.spr_year || 3;
           console.log('payrollyear', basicpays);
           console.log('payrollyear', payrollyear);
+          console.log('payrollyear', sprYear);
 
           api
-            .post('/payrollmanagement/getCpfCalculate', {
+            .post('/payrollmanagement/getCpfCalculation', {
               employee_id: selectedEmployeeId,
-              spr_year: 3,
+              
               payroll_year: payrollyear,
               basic_pay: basicpays,
+              spr_year:sprYear, 
             })
             .then((res) => {
               const { byEmployee, byEmployer } = res.data.data[0];

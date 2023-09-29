@@ -43,7 +43,7 @@ export default function LoanMoreDetails({
   addpaymentModal,
   loan,
   loanDetails,
-  isStatusActive 
+  isStatusActive,
 }) {
   LoanMoreDetails.propTypes = {
     activeTab: PropTypes.string,
@@ -62,7 +62,7 @@ export default function LoanMoreDetails({
     addpaymentModal: PropTypes.bool,
     loan: PropTypes.any,
     loanDetails: PropTypes.any,
-    isStatusActive :PropTypes.any,
+    isStatusActive: PropTypes.any,
   };
 
   const [RoomName, setRoomName] = useState('');
@@ -124,7 +124,37 @@ export default function LoanMoreDetails({
         </TabPane>
         <TabPane tabId="2">
           <Row>
-            <div className="container">
+          <div className="container">
+            <Row>
+              
+              {isStatusActive && loanDetails && loanDetails.amount_payable !== 0 && (
+                <Col md="6">
+                  <Button
+                    className="shadow-none"
+                    color="primary"
+                    to=""
+                    onClick={addpaymentToggle.bind(null)}
+                  >
+                    Make Payment
+                  </Button>
+                </Col>
+              )}
+              {!isStatusActive  && loanDetails && loanDetails.amount_payable !== 0 &&(
+                <Col md="6">
+                  <Button
+                    className="shadow-none"
+                    color="primary"
+                    onClick={() => {
+                      alert('You can only make payment when the status is Active.');
+                    }}
+                  >
+                    Make Payment
+                  </Button>
+                </Col>
+              )}
+            </Row>
+            <br/>
+         
               <Table id="example" className="display border border-secondary rounded">
                 <thead>
                   <tr>
@@ -149,20 +179,7 @@ export default function LoanMoreDetails({
               </Table>
             </div>
           </Row>
-          <Row>
-            {loanDetails && loanDetails.amount_payable !== 0 && isStatusActive  && (
-              <Col md="6">
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  to=""
-                  onClick={addpaymentToggle.bind(null)}
-                >
-                  Make Payment
-                </Button>
-              </Col>
-            )}
-          </Row>
+
           <Modal size="l" isOpen={addpaymentModal} toggle={addpaymentToggle.bind(null)}>
             <ModalHeader toggle={addpaymentToggle.bind(null)}>Payment Details</ModalHeader>
             <ModalBody>
@@ -214,7 +231,6 @@ export default function LoanMoreDetails({
                 color="primary"
                 onClick={() => {
                   insertPayment();
-                  
                 }}
               >
                 Save & Continue

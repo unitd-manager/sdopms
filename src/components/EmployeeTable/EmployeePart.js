@@ -131,6 +131,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
                   value={
                     employeeDetails && moment(employeeDetails.date_of_expiry).format('YYYY-MM-DD')
                   }
+                  min={moment().format('YYYY-MM-DD')}
                 />
               </FormGroup>
             </Col>
