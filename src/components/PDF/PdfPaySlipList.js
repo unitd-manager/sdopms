@@ -337,8 +337,12 @@ const PdfPaySlipList = ({ payroll }) => {
 
                 {
                   text: `${
-                    payroll.total_allowance ? payroll.total_allowance : ''
-                  }                                                               `,
+                    payroll.total_allowance
+                      ? payroll.total_allowance.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }                                                              `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -466,8 +470,12 @@ const PdfPaySlipList = ({ payroll }) => {
 
                 {
                   text: `${
-                    payroll.total_deductions ? payroll.total_deductions : ''
-                  }                                                               `,
+                    payroll.total_deductions
+                      ? payroll.total_deductions.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }                                                            `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -837,7 +845,13 @@ const PdfPaySlipList = ({ payroll }) => {
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_hours ? payroll.ot_hours : ''}`,
+                  text: ` ${
+                    payroll.ot_hours
+                      ? payroll.ot_hours.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -853,7 +867,11 @@ const PdfPaySlipList = ({ payroll }) => {
                 },
                 {
                   text: ` ${
-                    payroll.ot_amount ? payroll.ot_amount : ''
+                    payroll.ot_amount
+                      ? payroll.ot_amount.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
                   }                                                     `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
@@ -929,8 +947,18 @@ const PdfPaySlipList = ({ payroll }) => {
                 },
 
                 {
-                  text: ` \n\n ${payroll.reimbursement ? payroll.reimbursement : ''} \n\n  ${
-                    payroll.director_fee ? payroll.director_fee : ''
+                  text: ` \n\n ${
+                    payroll.reimbursement
+                      ? payroll.reimbursement.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  } \n\n  ${
+                    payroll.director_fee
+                      ? payroll.director_fee.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
                   } `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
@@ -948,7 +976,13 @@ const PdfPaySlipList = ({ payroll }) => {
                 },
 
                 {
-                  text: ` ${payroll.net_total ? payroll.net_total : ''}`,
+                  text: ` ${
+                    payroll.net_total
+                      ? payroll.net_total.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -1019,7 +1053,13 @@ const PdfPaySlipList = ({ payroll }) => {
                 },
 
                 {
-                  text: `${payroll.cpf_employer ? payroll.cpf_employer : ''}`,
+                  text: `${
+                    payroll.cpf_employer
+                      ? payroll.cpf_employer.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
@@ -1035,7 +1075,13 @@ const PdfPaySlipList = ({ payroll }) => {
                 },
 
                 {
-                  text: `${payroll.cpf_employee ? payroll.cpf_employee : ''}`,
+                  text: `${
+                    payroll.cpf_employee
+                      ? payroll.cpf_employee.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',

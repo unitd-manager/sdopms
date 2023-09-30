@@ -251,25 +251,26 @@ const Payrollmanagement = () => {
           const selectedEmployeeId = obj.employee_id;
           const payrollyear = obj.payroll_year;
           const basicpays = obj.basic_pay;
-          const spryear = parseFloat(obj.spr_year);
+          
 
-          console.log('spryear', spryear);
+          //console.log('spryear', spryear);
           console.log('payrollyear', basicpays);
           console.log('payrollyear', payrollyear);
-          console.log('payrollyear1', spryear);
+          //console.log('payrollyear1', spryear);
 
           api
-            .post('/payrollmanagement/getCpfCalculation', {
+            .post('/payrollmanagement/getCpfCalc', {
               employee_id: selectedEmployeeId,
 
               payroll_year: payrollyear,
               basic_pay: basicpays,
-              spr_year: spryear,
+              
             })
             .then((res) => {
               const { byEmployee, byEmployer } = res.data.data[0];
               const { capAmountEmployee, capAmountEmployer } = res.data.data[0];
-              console.log('by', byEmployee); // Replace with actual API response structure
+              console.log('by', byEmployee);
+              console.log('by', byEmployer);  // Replace with actual API response structure
               // Set these values to your rowPercentageCPF object
 
               //setCpfEmployees(res.data.data); // Assuming the API returns CPF data
@@ -283,11 +284,14 @@ const Payrollmanagement = () => {
                 capAmountEmployee: capAmountEmployer,
               };
               console.log('by1', byEmployer);
+              console.log('by1', byEmployee);
               rowPercentageCPF.byEmployee = byEmployee;
               rowPercentageCPF.byEmployer = byEmployer;
               rowPercentageCPF.capAmountEmployee = capAmountEmployee;
               rowPercentageCPF.capAmountEmployer = capAmountEmployer;
 
+              console.log('by2', byEmployer);
+              console.log('by2', byEmployee);
               let cpfEmployee = 0;
               //let cpfEmployeeInt = 0;
               if (basicpays >= 501 && basicpays <= 749) {
@@ -330,33 +334,33 @@ const Payrollmanagement = () => {
                 /* CPF Total Calculation */
 
                 const totalCpfPercent = rowPercentageCPF.byEmployee + rowPercentageCPF.byEmployer;
-                console.log('byEmployee', rowPercentageCPF.byEmployee);
-                console.log('byEmployee', rowPercentageCPF.byEmployee);
+                console.log('byEmplo', rowPercentageCPF.byEmployee);
+                console.log('byEmplor', rowPercentageCPF.byEmployer);
                 console.log('row', rowPercentageCPF);
                 const totalContribution = (basicpays * totalCpfPercent) / 100;
                 const totalContributionAmount = Math.round(totalContribution);
                 console.log('basic_pays', basicpays);
 
-                console.log('CPF Employee Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
+                console.log('CPF total Contribution1: 0.00', totalCpfPercent); // No employee contribution outside the range
                 console.log('CPF Employer Contribution2: 0.00'); // No employer contribution outside the range
                 console.log('Total CPF Contribution3:', totalContribution.toFixed(2)); // Format as a two-decimal float
                 console.log('CPF3:', totalContributionAmount.toFixed(2)); // Format as a two-decimal float
 
                 /* CPF Calculation */
-                const cpf = (basicpays * rowPercentageCPF.byEmployee) / 100;
-                console.log('CPF Calculation:', cpf.toFixed(2)); // Format as a two-decimal float
+                const cpf = (basicpays * rowPercentageCPF.byEmployer) / 100;
+                console.log('CPF ', cpf.toFixed(2)); // Format as a two-decimal float
                 // CPF Employee contribution
-                const cpfEp = (basicpays * rowPercentageCPF.byEmployer) / 100;
+                const cpfEp = (basicpays * rowPercentageCPF.byEmployee) / 100;
                 const cpfE = Math.round(cpfEp);
-                console.log('CPF Calculation2:', cpfE.toFixed(2));
+                console.log('CPFE Calculation2:', cpfE.toFixed(2));
 
                 // Calculate total_cap_amount_cpf
                 const totalCapAmountCpf =
                   rowPercentageCPF.capAmountEmployer + rowPercentageCPF.capAmountEmployee;
 
                 let totalContributionAmountCorrection = totalCapAmountCpf;
-                cpfmployee = cpf;
-                cpfmployer = cpfE;
+                cpfmployer = cpf;
+                cpfmployee = cpfE;
                 console.log('cpf10', cpf);
                 console.log('cpf11', cpfE);
                 if (totalContributionAmount > totalCapAmountCpf) {
