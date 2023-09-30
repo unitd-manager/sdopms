@@ -71,20 +71,21 @@ function Deductions({
   const [totalDedAmount, setTotalDedAmount] = useState(0);
 
   useEffect(() => {
-    const totalMonthPayss =
-      parseFloat(newTotalMonthPay  || 0);
+    const totalMonthPayss = parseFloat(newTotalMonthPay  || 0);
     const totalDeductionsss = parseFloat(totalDeductionsAmount || 0);
     const reimbursement = parseFloat(payroll.reimbursement || 0);
     const directorFee = parseFloat(payroll.director_fee || 0);
+
+    console.log('totalMonthPayss', totalMonthPayss)
 
     const newNetTotalPay = totalMonthPayss - totalDeductionsss + reimbursement + directorFee;
 
     setTotalDedAmount(newNetTotalPay);
   }, [
-    newTotalMonthPay ,
+    newTotalMonthPay,
     totalDeductionsAmount,
     payroll.reimbursement,
-    payroll.director_fee,
+    payroll.director_fee
   ]);
 
   return (

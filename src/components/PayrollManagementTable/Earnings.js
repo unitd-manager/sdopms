@@ -8,6 +8,7 @@ function Earnings({
   handleEarnings,
   handleOtAmount,
   otAmount,
+  finalGrossPay,
   calculateBasicPayPercentage,
 }) {
   Earnings.propTypes = {
@@ -16,6 +17,7 @@ function Earnings({
     handleInputs: PropTypes.func,
     handleOtAmount: PropTypes.func,
     otAmount: PropTypes.any,
+    finalGrossPay: PropTypes.number,
     calculateBasicPayPercentage: PropTypes.any,
   };
 
@@ -31,10 +33,11 @@ function Earnings({
     const allowance5 = parseFloat(payroll.allowance5) || 0;
     const otAmountValue = parseFloat(otAmount || (payroll && payroll.ot_amount)) || 0;
 
-    const newGrossPay =
-      grospay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue;
+    console.log('finalGrossPay', finalGrossPay)
+    const newGrossPay = grospay + allowance1 + allowance2 + allowance3 + allowance4 + allowance5 + otAmountValue + parseFloat(finalGrossPay);
 
     setGrossPay(newGrossPay);
+    // setFinalGrossPay(newGrossPay);
   }, [
     payroll.gross_pay,
     payroll.allowance1,
@@ -43,6 +46,7 @@ function Earnings({
     payroll.allowance4,
     payroll.allowance5,
     otAmount || (payroll && payroll.ot_amount),
+    finalGrossPay
   ]);
 
   return (
@@ -237,7 +241,7 @@ function Earnings({
           <Input
             name="total_basic_pay_for_month"
             type="text"
-            value={grossPay + parseFloat(calculateBasicPayPercentage())} // Use the calculated grossPay value here
+            value={grossPay} // Use the calculated grossPay value here
             onChange={(e) => {
               // Update the basic_pay when needed
               handleInputs(e);

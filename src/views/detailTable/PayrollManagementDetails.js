@@ -87,6 +87,7 @@ function PayrollManagementDetails() {
     employee_name: '',
   });
 
+  const [finalGrossPay, setFinalGrossPay] = useState(0);
   const [loanPaymentHistoryModal, setLoanPaymentHistoryModal] = useState(false);
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
@@ -260,6 +261,7 @@ function PayrollManagementDetails() {
           payroll.allowance4,
           payroll.allowance5,
         );
+        setFinalGrossPay(parseFloat(basicPayPercentage).toFixed(2));
         return `${basicPayPercentage}`;
       }
     }
@@ -323,14 +325,17 @@ function PayrollManagementDetails() {
   }, [payroll]);
 
   // Calculate and update totalMonthPay with the latest values
+  // PREVIOUS STATE AS: 2023-09-30
   const newTotalMonthPay =
-    parseFloat(payroll.total_basic_pay_for_month || 0) +
+    // parseFloat(payroll.total_basic_pay_for_month || 0) +
+    parseFloat(finalGrossPay) +
     parseFloat(otAmount || (payroll && payroll.ot_amount) || 0) +
     parseFloat(payroll.allowance1 || 0) +
     parseFloat(payroll.allowance2 || 0) +
     parseFloat(payroll.allowance3 || 0) +
     parseFloat(payroll.allowance4 || 0) +
     parseFloat(payroll.allowance5 || 0);
+  // const newTotalMonthPay = finalGrossPay;
 
   // Calculate and update totalDeductions with the latest values
   const newTotalDeductions =
@@ -603,6 +608,7 @@ function PayrollManagementDetails() {
           newTotalMonthPay={newTotalMonthPay}
           totalDeductions={totalDeductions}
           totalMonthPay={totalMonthPay}
+          finalGrossPay={finalGrossPay}
           setLoanPaymentHistoryModal={setLoanPaymentHistoryModal}
           calculateBasicPayPercentage={calculateBasicPayPercentage}
         />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../../assets/scss/layout/updateOTModal.scss'
 import {
   Input,
   Card,
@@ -40,7 +41,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
   };
 
   //editlineitem
-  const editLineItemApi = (obj) => {
+  const editLineItemApi = (obj, i, arrLength) => {
     console.log(obj);
     api
       .post('/payrollmanagement/updateOt', {
@@ -60,7 +61,9 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         deduction4: obj.deduction4?parseFloat(obj.deduction4).toFixed(2):0.00,
       })
       .then(() => {
-        message('OT Details Edited Successfully', 'success');
+        if (i+1 === arrLength) {
+          message('OT Details Edited Successfully', 'success');
+        }
       })
       .catch(() => {
         message('Cannot Edit OT Details', 'error');
@@ -101,9 +104,9 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
       result.push(allValues);
     })
     console.log(result);
-    result.forEach((ob) => {
+    result.forEach((ob, i) => {
       if (ob.payroll_management_id !== '') {
-        editLineItemApi(ob);
+        editLineItemApi(ob, i, result.length);
       } else {
         alert('No payrollManagement Id');
       }
@@ -133,7 +136,7 @@ function UpdateOtModal({ updateOtModal, setUpdateOtModal}) {
         <ModalBody>
           <Row>
             <Col md="12">
-              <Card className="shadow-none overflow-auto">
+              <Card className="shadow-none overflow-auto updateOTModalTableCard">
                 <Table className="display">
                   <thead>
                     <tr>
