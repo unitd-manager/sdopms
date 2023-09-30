@@ -17,8 +17,8 @@ import api from '../../constants/api';
 import message from '../Message';
 
 
-const QuoteViewEditItem = ({ editLineModal, setEditLineModal, FetchLineItemData }) => {
-  QuoteViewEditItem.propTypes = {
+const EditLineItemModal = ({ editLineModal, setEditLineModal, FetchLineItemData }) => {
+  EditLineItemModal.propTypes = {
     editLineModal: PropTypes.bool,
     setEditLineModal: PropTypes.func,
     FetchLineItemData: PropTypes.object,
@@ -94,12 +94,13 @@ const {id}=useParams();
               <Label sm="2">Qty</Label>
               <Col sm="10">
                 <Input
-                  type="text"
+                  type="textarea"
                   name="quantity"
                   defaultValue={lineItemData && lineItemData.quantity}
                   onChange={(e)=>{handleData(e);
                     handleCalc(e.target.value, lineItemData.unit_price,lineItemData.amount
                       )}}
+                 
                 />
               </Col>
             </Row>
@@ -177,4 +178,4 @@ const {id}=useParams();
   );
 };
 
-export default QuoteViewEditItem;
+export default EditLineItemModal;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, TabContent, TabPane,Form,FormGroup } from 'reactstrap';
+import { Row, TabContent, TabPane, Form, FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -20,11 +20,12 @@ import message from '../../components/Message';
 import Tab from '../../components/ProjectTabs/Tab';
 import ApiButton from '../../components/ApiButton';
 
-
 const EmployeeEdit = () => {
   //state variables
   const [activeTab, setActiveTab] = useState('1');
-  const [employeeDetails, setEmployeeDetails] = useState();
+  const [employeeDetails, setEmployeeDetails] = useState({
+    nationality: '',
+  });
   const [contactInformationDetails, setContactInformationDetails] = useState({
     employee_id: '',
     address_area: '',
@@ -68,7 +69,7 @@ const EmployeeEdit = () => {
     employee_id: '',
     fin_no: '',
     fin_no_expiry_date: '',
-    work_permit_no: '',
+    work_permit: '',
     work_permit_expiry_date: '',
     spr_year: '',
   });
@@ -141,7 +142,7 @@ const EmployeeEdit = () => {
         setEmployeeDetails(res.data.data[0]);
       })
       .catch(() => {
-       // message('Employee Data Not Found', 'info');
+        // message('Employee Data Not Found', 'info');
       });
   };
   //get Contact Information data
@@ -163,7 +164,7 @@ const EmployeeEdit = () => {
         setEmergencyContactDetails(res.data.data[0]);
       })
       .catch(() => {
-       // message('Emergency contact info Data Not Found', 'info');
+        // message('Emergency contact info Data Not Found', 'info');
       });
   };
 
@@ -175,7 +176,7 @@ const EmployeeEdit = () => {
         setEducationalQualificationDetails(res.data.data[0]);
       })
       .catch(() => {
-       // message('Educational Qualification Data Not Found', 'info');
+        // message('Educational Qualification Data Not Found', 'info');
       });
   };
   //get tabPassType data
@@ -227,10 +228,9 @@ const EmployeeEdit = () => {
   //edit employeedata
   const editEmployeeData = () => {
     if (
-      employeeDetails.first_name !== '' &&
+      employeeDetails.employee_name !== '' &&
       employeeDetails.date_of_birth !== '' &&
-      employeeDetails.date_of_expiry !== '' &&
-      employeeDetails.nationality !== '' 
+      employeeDetails.nationality !== ''
     ) {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
@@ -261,7 +261,7 @@ const EmployeeEdit = () => {
     api
       .post('/employeeModule/edit-EmergencyContact', emergencyContactDetails)
       .then(() => {
-       // message('Record editted successfully', 'success');
+        // message('Record editted successfully', 'success');
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -269,24 +269,20 @@ const EmployeeEdit = () => {
   };
   //update tab data
   const editEQData = () => {
-    if(educationalQualificationDetails.year_of_completion1!=='' && 
-    educationalQualificationDetails.year_of_completion2!=='' && 
-    educationalQualificationDetails.year_of_completion3!==''){
-    api
-      .post('/employeeModule/edit-EducationalQualification', educationalQualificationDetails)
-      .then(() => {
-        //message('Record editted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
-    } else {
-      message('Please fill the required field', 'warning');
-    }
-  };
+   
+      api
+        .post('/employeeModule/edit-EducationalQualification', educationalQualificationDetails)
+        .then(() => {
+          //message('Record editted successfully', 'success');
+        })
+        .catch(() => {
+          message('Unable to edit record.', 'error');
+        });
+
+}
   //update tabpasstype data
   const editTabPassTypeData = () => {
-    if (tabPassTypeDetails.citizen === 'Citizen' || tabPassTypeDetails.citizen === 'PR') {
+    if (tabPassTypeDetails.citizen === 'Citizen' ) {
       if (tabPassTypeDetails.nric_no !== '') {
         api
           .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
@@ -300,10 +296,10 @@ const EmployeeEdit = () => {
         message('Please fill the nricno fields', 'warning');
       }
     } else if (
-      tabPassTypeDetails.citizen === 'SP' ||
+      
       tabPassTypeDetails.citizen === 'DP' ||
       tabPassTypeDetails.citizen === 'EP' ||
-      tabPassTypeDetails.citizen === 'WP'
+      tabPassTypeDetails.citizen === 'SP'
     ) {
       if (tabPassTypeDetails.fin_no !== '') {
         api
@@ -316,6 +312,32 @@ const EmployeeEdit = () => {
           });
       } else {
         message('Please fill the fin no field', 'warning');
+      }
+    } else if (tabPassTypeDetails.citizen === 'WP') {
+      if (tabPassTypeDetails.fin_no !== '' && tabPassTypeDetails.work_permit !== '') {
+        api
+          .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
+          .then(() => {
+            //message('Record editted successfully', 'success');
+          })
+          .catch(() => {
+            message('Unable to edit record.', 'error');
+          });
+      } else {
+        message('Please fill the Fin no and Work permit No field', 'warning');
+      }
+    } else if ( tabPassTypeDetails.citizen === 'PR') {
+      if (tabPassTypeDetails.nric_no !== '' && tabPassTypeDetails.spr_year !== '') {
+        api
+          .post('/employeeModule/edit-TabPassType', tabPassTypeDetails)
+          .then(() => {
+            //message('Record editted successfully', 'success');
+          })
+          .catch(() => {
+            message('Unable to edit record.', 'error');
+          });
+      } else {
+        message('Please fill the Nric No and Spryear field', 'warning');
       }
     } else {
       message('Please fill the PassType', 'warning');
@@ -336,7 +358,7 @@ const EmployeeEdit = () => {
       modelType: 'attachment',
     });
   };
-  
+
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
@@ -354,12 +376,10 @@ const EmployeeEdit = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        api
-          .post('/employeeModule/deleteEmployee', { employee_id: id })
-          .then(() => {
-            Swal.fire('Deleted!', 'Your Employee has been deleted.', 'success');
-            //window.location.reload();
-          });
+        api.post('/employeeModule/deleteEmployee', { employee_id: id }).then(() => {
+          Swal.fire('Deleted!', 'Your Employee has been deleted.', 'success');
+          //window.location.reload();
+        });
       }
     });
   };
@@ -390,17 +410,16 @@ const EmployeeEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-         
-            {/* Button */}
-            <ApiButton
-              editData={updateData}
-              navigate={navigate}
-              //applyChanges={updateData}
-              backToList={backToList}
-              deleteData={deleteEmployeeData}
-              module="Employee"
-            ></ApiButton>
-          
+
+          {/* Button */}
+          <ApiButton
+            editData={updateData}
+            navigate={navigate}
+            //applyChanges={updateData}
+            backToList={backToList}
+            deleteData={deleteEmployeeData}
+            module="Employee"
+          ></ApiButton>
         </FormGroup>
       </Form>
       <Row>

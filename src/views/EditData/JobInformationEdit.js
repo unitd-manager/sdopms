@@ -39,7 +39,10 @@ import Tab from '../../components/ProjectTabs/Tab';
 const JobInformationEdit = () => {
   //All state variable
   const [activeTab, setActiveTab] = useState('1');
-  const [job, setJob] = useState();
+  const [job, setJob] = useState({
+    termination_date:'',
+    notice_period_for_termination:''
+  });
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
@@ -68,9 +71,10 @@ const JobInformationEdit = () => {
         setOverTimeRate(res.data.data[0].overtime_pay_rate);
       })
       .catch(() => {
-       // message('JobInformation Data Not Found', 'info');
+        // message('JobInformation Data Not Found', 'info');
       });
   };
+
   //jobinformation data in jobinformationDetails
   const handleInputsJobInformation = (e) => {
     if (e.target.name === 'overtime') {
@@ -93,7 +97,57 @@ const JobInformationEdit = () => {
         [e.target.name]: e.target.value,
       });
     }
+
+    // Check if the status is "current"
+    if (job && job.status === 'current') {
+      if (
+        e.target.name === 'notice_period_for_termination' ||
+        e.target.name === 'termination_date' ||
+        e.target.name === 'resignation_notice_date' ||
+        e.target.name === 'termination_reason' ||
+        e.target.name === 'departure_date'
+      ) {
+        // Show an alert
+        Swal.fire({
+          title: 'Invalid Input',
+          text: 'You cannot enter values for Termination Information when the status is "current".',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+
+        // Clear the values
+        setJob({
+          ...job,
+          [e.target.name]: '',
+          termination_date: '', // Replace 'termination_date' with the actual field name if needed
+        });
+      }
+    }
   };
+
+  //jobinformation data in jobinformationDetails
+  // const handleInputsJobInformation = (e) => {
+  //   if (e.target.name === 'overtime') {
+  //     // Check if "Yes" is selected for overtime
+  //     if (e.target.value === '1') {
+  //       setJob({
+  //         ...job,
+  //         [e.target.name]: e.target.value,
+  //         over_time_rate: '', // Reset the overtime rate
+  //       });
+  //     } else {
+  //       setJob({
+  //         ...job,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   } else {
+  //     setJob({
+  //       ...job,
+  //       [e.target.name]: e.target.value,
+  //     });
+  //   }
+  // };
 
   //Calculation for gst
   const handleRadioGst = (radioVal, overtimeRate, basicPay) => {
@@ -113,14 +167,31 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
-   
-    if (job.overtime === '1' && !overTimeRate) {
+    if (job.status === 'Archive') {
+      if (job.termination_date !== '' && job.notice_period_for_termination!=='') {
+        api
+          .post('/jobinformation/edit-jobinformation', job)
+          .then(() => {
+            message('Record editted successfully', 'success');
+          })
+          .catch(() => {
+            message('Unable to edit record.', 'error');
+          });
+      } else {
+        message(
+          'Please enter termination date for Archive status.', 'warning'
+        );
+      }
+      // // Check if the status is "Archive" and termination date is empty
+      // message('Please enter termination date for Archive status.', 'warning');
+      // return; // Exit the function without making the API request
+    } else if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
       return; // Exit the function without making the API request
     }
     job.overtime_pay_rate = overTimeRate;
-    job.deduction4=parseFloat(job.deduction4);
+    job.deduction4 = parseFloat(job.deduction4);
     if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
       api
         .post('/jobinformation/edit-jobinformation', job)
@@ -131,7 +202,10 @@ const JobInformationEdit = () => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill basic pay,working days,join date and govt donation required fields.', 'warning');
+      message(
+        'Please fill basic pay,working days,join date and govt donation required fields.',
+        'warning',
+      );
     }
   };
 
@@ -146,12 +220,10 @@ const JobInformationEdit = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        api
-          .post('/jobinformation/deletejob_information', { job_information_id: id })
-          .then(() => {
-            Swal.fire('Deleted!', 'Your job has been deleted.', 'success');
-            //window.location.reload();
-          });
+        api.post('/jobinformation/deletejob_information', { job_information_id: id }).then(() => {
+          Swal.fire('Deleted!', 'Your job has been deleted.', 'success');
+          //window.location.reload();
+        });
       }
     });
   };
@@ -222,7 +294,7 @@ const JobInformationEdit = () => {
       <CardTitle>Step 1 (Job Information)</CardTitle>
       <CardTitle>
         <Label>Employee Name:</Label>
-        {job && job.first_name}
+        {job && job.employee_name}
       </CardTitle>
       <CardTitle>
         {job && job.fin_no ? null : (
@@ -248,7 +320,7 @@ const JobInformationEdit = () => {
         navigate={navigate}
         backToList={backToList}
         deletejobData={deletejobData}
-                // insertJobInformation={insertJobInformation}
+        // insertJobInformation={insertJobInformation}
         JobInformationEditModal={JobInformationEditModal}
         setJobInformationEditModal={setJobInformationEditModal}
         job={job}

@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
-  Card,
   Row,
   Col,
   Form,
-  FormGroup,
-  Label,
   Input,
   Button,
+  FormGroup,
   Modal,
   ModalHeader,
   ModalBody,
@@ -17,15 +15,14 @@ import PropTypes from 'prop-types';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { Link, useParams } from 'react-router-dom';
 import * as $ from 'jquery';
 import random from 'random';
 import api from '../../constants/api';
 import message from '../Message';
 import ComponentCard from '../ComponentCard';
+import InvoiceTable from './InvoiceTable';
 
-
-const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,orderId }) => {
+const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, orderId }) => {
   FinanceInvoiceData.propTypes = {
     editInvoiceData: PropTypes.bool,
     setEditInvoiceData: PropTypes.func,
@@ -33,9 +30,12 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
     orderId: PropTypes.any,
   };
   //All state Varible
-  const { id } = useParams();
+
   const [totalAmount, setTotalAmount] = useState(0);
+  const [gstValue, setGstValue] = useState();
+  const [checkbox, setCheckbox] = useState();
   const [paymentTerms, setPaymentTerms] = useState('');
+  const gstPercentageValue = parseInt(gstValue?.value, 10) || 0; 
   const [createInvoice, setCreateInvoice] = useState({
     discount: '',
     quote_code: '',
@@ -52,8 +52,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
     status: 'due',
     paymentTerms: '',
     invoice_code: '',
-    order_id:id,
-    invoice_due_date:'',
+    invoice_due_date: '',
   });
   const [addLineItem, setAddLineItem] = useState([
     {
@@ -68,6 +67,25 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
     },
   ]);
 
+  const getGstValue = () => {
+    api.get('/finance/getGst').then((res) => {
+      setGstValue(res.data.data);
+      });
+  };
+  console.log('ordr',orderId)
+  const getCheckBox = async () => {
+    try {
+      const response = await api.post('/invoice/getCheckboxReceiptById', { order_id: orderId });
+      setCheckbox(response.data.data);
+    } catch (error) {
+      console.error('Error fetching checkbox data:', error);
+    }
+  };
+  useEffect(() => {
+    getGstValue();
+    getCheckBox();
+  }, [orderId]);
+
   //setting data in createinvoice
   const handleInserts = (e) => {
     setCreateInvoice({ ...createInvoice, [e.target.name]: e.target.value });
@@ -81,9 +99,9 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
 
   //Insert Invoice Item
   const addLineItemApi = (obj) => {
-    obj.order_id=projectInfo;
+    obj.order_id = projectInfo;
     api
-      .post('/finance/insertInvoiceItem', obj)
+      .post('/Finance/insertInvoiceItem', obj)
       .then(() => {
         message('Line Item Added Successfully', 'sucess');
       })
@@ -97,7 +115,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
       addLineItemApi({
         description: results[j].description,
         invoice_id: receipt,
-        amount: results[j].total_cost,
+        total_cost: results[j].total_cost,
         item_title: results[j].item_title,
         item_code: projectInfo.item_code,
         cost_price: 2,
@@ -109,26 +127,28 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
     }
   };
   //Insert Invoice
-  const insertInvoice = async (results, code) => {
-    createInvoice.invoice_amount = totalAmount + (7 / 100) * totalAmount;
+  const insertInvoice = async (results, code,) => {
+    createInvoice.invoice_amount = totalAmount + (gstPercentageValue / 100) * totalAmount;
+    createInvoice.gst_value = (gstPercentageValue / 100) * totalAmount;
+    createInvoice.gst_percentage = gstPercentageValue;
     createInvoice.project_id = projectInfo;
     createInvoice.order_id = orderId;
     createInvoice.invoice_code = code;
     const now = new Date();
     if (now.getMonth() === 11) {
-        const current = new Date(now.getFullYear() + 1, 0, now.getDate());
-        createInvoice.invoice_due_date=current;
-          } else {
-        const current = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
-        createInvoice.invoice_due_date=current;
+      const current = new Date(now.getFullYear() + 1, 0, now.getDate());
+      createInvoice.invoice_due_date = current;
+    } else {
+      const current = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      createInvoice.invoice_due_date = current;
     }
     api
-      .post('/finance/insertInvoice', createInvoice)
+      .post('/Finance/insertInvoice', createInvoice)
       .then((res) => {
         message('Invoice inserted successfully.', 'success');
         finalinsertapi(res.data.data.insertId, results);
-         setTimeout(() => {
-          window.location.reload()
+        setTimeout(() => {
+          window.location.reload();
         }, 300);
       })
       .catch(() => {
@@ -146,7 +166,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
         insertInvoice(results, '');
       });
   };
-  
+
   //Add new line item
   const AddNewLineItem = () => {
     setAddLineItem([
@@ -167,6 +187,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
   //Invoice item values
   const getAllValues = () => {
     const result = [];
+    let hasZeroTotalCost = false; 
     $('.lineitem tbody tr').each(function input() {
       const allValues = {};
       $(this)
@@ -175,8 +196,16 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
           const fieldName = $(this).attr('name');
           allValues[fieldName] = $(this).val();
         });
+        allValues.total_cost = allValues.qty * allValues.unit_price;
+        if (allValues.total_cost === 0) {
+          hasZeroTotalCost = true; // Set the flag if total_cost is 0
+        }
       result.push(allValues);
     });
+    if (hasZeroTotalCost) {
+      message('Total cost cannot be 0.', 'error');
+      return; // Prevent further processing if total_cost is 0
+    }
     setTotalAmount(0);
     setAddLineItem([
       {
@@ -228,6 +257,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
       setTotalAmount(finalTotal);
     }
   };
+  console.log('checkbox',checkbox)
   return (
     <>
       <Modal size="xl" isOpen={editInvoiceData}>
@@ -243,286 +273,166 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo,o
             X
           </Button>
         </ModalHeader>
-        <Card>
         <ModalBody>
           <Row>
             <Col md="12">
-          
-                  <Form>
-                 
-                      <Row>
-                          <Col md="3">
-                            <Button
-                              className="shadow-none"
-                              color="primary"
-                              type="button"
-                              onClick={() => {
-                                AddNewLineItem();
-                              }}
-                            >
-                              Add Line Item
-                            </Button>
-                          </Col>
-                        {/* Invoice Detail */}
-                        <Row>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Discount</Label>
-                              <Input
-                                type="number"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.discount}
-                                name="discount"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Quote Code</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.quote_code}
-                                name="quote_code"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>PO Number</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.po_number}
-                                name="po_number"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Project Location</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.project_location}
-                                name="project_location"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Project Reference</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.project_reference}
-                                name="project_reference"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Invoice date</Label>
-                              <Input
-                                type="date"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.invoice_date}
-                                name="invoice_date"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Code</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.code}
-                                name="code"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>SO Ref Number</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.so_ref_no}
-                                name="so_ref_no"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Site Code</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.site_code}
-                                name="site_code"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Attention</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.attention}
-                                name="attention"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Reference</Label>
-                              <Input
-                                type="textarea"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.reference}
-                                name="reference"
-                              />
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Invoice Terms</Label>
-                              <Input
-                                type="text"
-                                onChange={handleInserts}
-                                value={createInvoice && createInvoice.invoice_terms}
-                                name="invoice_terms"
-                              />
-                            </FormGroup>
-                          </Col>
-                          {/* Description form */}
-                          <ComponentCard title="Description">
-                            <Editor
-                              editorState={paymentTerms}
-                              wrapperClassName="demo-wrapper mb-0"
-                              editorClassName="demo-editor border mb-4 edi-height"
-                              onEditorStateChange={(e) => {
-                                handleDataEditor(e, 'payment_terms');
-                                setPaymentTerms(e);
-                              }}
-                            />
-                          </ComponentCard>
-                        </Row>
-                        {/* Invoice Item */}
-                    <Card>
-                          <table className="lineitem">
-                            <thead>
-                              <tr>
-                                <th scope="col">Item</th>
-                                <th scope="col">Description </th>
-                                <th scope="col">UoM</th>
-                                <th scope="col">Qty</th>
-                                <th scope="col">Unit Price</th>
-                                <th scope="col">Total Price</th>
-                                <th scope="col">Remarks</th>
-                                <th scope="col"></th>
+              <Form>
+                <Row>
+                  <Col md="3">
+                    <Button
+                      className="shadow-none"
+                      color="primary"
+                      type="button"
+                      onClick={() => {
+                        AddNewLineItem();
+                      }}
+                    >
+                      Add Line Item
+                    </Button>
+                  </Col>
+                  {/* Invoice Detail */}
+                  <Row>
+                    <InvoiceTable createInvoice={createInvoice} handleInserts={handleInserts} />
+                    {/* Description form */}
+                    <ComponentCard title="Description">
+                      <Editor
+                        editorState={paymentTerms}
+                        wrapperClassName="demo-wrapper mb-0"
+                        editorClassName="demo-editor border mb-4 edi-height"
+                        onEditorStateChange={(e) => {
+                          handleDataEditor(e, 'payment_terms');
+                          setPaymentTerms(e);
+                        }}
+                      />
+                    </ComponentCard>
+                  </Row>
+                  {checkbox &&
+                      checkbox.map((singleInvoiceObj) => {
+                        console.log('singleInvoiceObj',singleInvoiceObj)
+                        return (
+                          <Row key={singleInvoiceObj.invoice_id}>
+                            <Col md="12">
+                              <FormGroup check>
+                                <Input
+                                  onChange={() => {
+                                    
+                                    // getInvoices(e, singleInvoiceObj);
+                                  }}
+                                  name="invoice_code(prev_amount)"
+                                  type="checkbox"
+                                />
+                                <span>
+                                 {singleInvoiceObj.receipt_code} -{singleInvoiceObj.amount}
+                                </span>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                        );
+                      })}
+                    <br></br>
+                  {/* Invoice Item */}
+                  <Row>
+                    <Col>
+                      <table className="lineitem">
+                        <thead>
+                          <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Description </th>
+                            <th scope="col">UoM</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Unit Price</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Remarks</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {addLineItem.map((item) => {
+                            return (
+                              <tr key={item.id}>
+                                <td data-label="Item">
+                                  <Input defaultValue={item.item} type="text" name="item_title" />
+                                </td>
+                                <td data-label="Description">
+                                  <Input
+                                    defaultValue={item.description}
+                                    type="text"
+                                    name="description"
+                                  />
+                                </td>
+                                <td data-label="UoM">
+                                  <Input defaultValue={item.unit} type="text" name="unit" />
+                                </td>
+                                <td data-label="Qty">
+                                  <Input defaultValue={item.qty} type="number" name="qty" />
+                                </td>
+                                <td data-label="Unit Price">
+                                  <Input
+                                    defaultValue={item.unit_price}
+                                    onBlur={() => {
+                                      calculateTotal();
+                                    }}
+                                    type="number"
+                                    name="unit_price"
+                                  />
+                                </td>
+                                <td data-label="Total Price">
+                                  <Input
+                                    defaultValue={item.total_cost}
+                                    type="text"
+                                    name="total_cost"
+                                    disabled
+                                  />
+                                </td>
+                                <td data-label="Remarks">
+                                  <Input defaultValue={item.remarks} type="text" name="remarks" />
+                                </td>
+                                <td data-label="Action">
+                                  <div className="anchor">
+                                    <Input type="hidden" name="id" defaultValue={item.id}></Input>
+                                    <span
+                                      onClick={() => {
+                                        ClearValue(item);
+                                      }}
+                                    >
+                                      Clear
+                                    </span>
+                                  </div>
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {addLineItem.map((item) => {
-                                return (
-                                  <tr key={item.id}>
-                                    <td data-label="Item">
-                                      <Input
-                                        defaultValue={item.item}
-                                        type="text"
-                                        name="item_title"
-                                      />
-                                    </td>
-                                    <td data-label="Description">
-                                      <Input
-                                        defaultValue={item.description}
-                                        type="text"
-                                        name="description"
-                                      />
-                                    </td>
-                                    <td data-label="UoM">
-                                      <Input defaultValue={item.unit} type="text" name="unit" />
-                                    </td>
-                                    <td data-label="Qty">
-                                      <Input defaultValue={item.qty} type="number" name="qty" />
-                                    </td>
-                                    <td data-label="Unit Price">
-                                      <Input
-                                        defaultValue={item.unit_price}
-                                        onBlur={() => {
-                                          calculateTotal();
-                                        }}
-                                        type="number"
-                                        name="unit_price"
-                                      />
-                                    </td>
-                                    <td data-label="Total Price">
-                                      <Input
-                                        defaultValue={item.total_cost}
-                                        type="text"
-                                        name="total_cost"
-                                        disabled
-                                      />
-                                    </td>
-                                    <td data-label="Remarks">
-                                      <Input
-                                        defaultValue={item.remarks}
-                                        type="text"
-                                        name="remarks"
-                                      />
-                                    </td>
-                                    <td data-label="Action">
-                                      <Link to="">
-                                        <Input
-                                          type="hidden"
-                                          name="id"
-                                          defaultValue={item.id}
-                                        ></Input>
-                                        <span
-                                          onClick={() => {
-                                            ClearValue(item);
-                                          }}
-                                        >
-                                          Clear
-                                        </span>
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                       </Card>
-                        <ModalFooter>
-                          <Button
-                            className="shadow-none"
-                            color="primary"
-                            onClick={() => {
-                              getAllValues();
-                            }}
-                          >
-                            {' '}
-                            Submit{' '}
-                          </Button>
-                          <Button
-                            className="shadow-none"
-                            color="secondary"
-                            onClick={() => {
-                              setEditInvoiceData(false);
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                        </ModalFooter>
-                      </Row>
-                   </Form>     
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </Col>
+                  </Row>
+
+                  <ModalFooter>
+                    <Button
+                      className="shadow-none"
+                      color="primary"
+                      onClick={() => {
+                        getAllValues();
+                      }}
+                    >
+                      {' '}
+                      Submit{' '}
+                    </Button>
+                    <Button
+                      className="shadow-none"
+                      color="secondary"
+                      onClick={() => {
+                        setEditInvoiceData(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Row>
+              </Form>
             </Col>
           </Row>
         </ModalBody>
-        </Card>
       </Modal>
     </>
   );

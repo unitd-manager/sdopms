@@ -102,7 +102,8 @@ const LeavesEdit = () => {
       if (
         leavesDetails.from_date!=='' &&
         leavesDetails.to_date!=='' &&
-        leavesDetails.leave_type!==''
+        leavesDetails.leave_type!=='' &&
+        leavesDetails.no_of_days!==''
        
       ) {
         api

@@ -63,6 +63,7 @@ function EducationalQualificationTab({
               ).format('YYYY-MM-DD')}
               onChange={handleEduInputs}
               type="date"
+              max={moment().format('YYYY-MM-DD')}
             />
           </FormGroup>
         </Col>

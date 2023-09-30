@@ -149,11 +149,11 @@ export default function LoanDetailComp({ loanDetails, loanStatus, handleInputs }
                 />
               </FormGroup>
             </Col>
-            <Col md="3">
+            <Col>
               <FormGroup>
                 <Label>Loan Start Date</Label>
                 <br />
-                {loanDetails && loanDetails.loan_start_date && (
+                {(loanStatus === 'Active' || loanDetails.loan_start_date) && (
                   <span>
                     {loanDetails.loan_start_date
                       ? moment(loanDetails.loan_start_date).format('DD-MM-YYYY')
@@ -162,7 +162,6 @@ export default function LoanDetailComp({ loanDetails, loanStatus, handleInputs }
                 )}
               </FormGroup>
             </Col>
-
             <Col md="3">
               <FormGroup>
                 <Label>Actual Loan Closing Date</Label>

@@ -42,7 +42,6 @@ const EmployeeDetails = () => {
   //Insert Employee Data
   // Import necessary modules and components
 
-
   // ... Other code ...
 
   // Insert Employee Data
@@ -56,64 +55,66 @@ const EmployeeDetails = () => {
     employeeData.year_of_completion2 = moment();
     employeeData.year_of_completion3 = moment();
 
-              api
-                .post('/employeemodule/insertEmployee', employeeData)
-                .then((res) => {
-                  const insertedDataId = res.data.data.insertId;
-                  message('Employee inserted successfully.', 'success');
-                  setTimeout(() => {
-                    navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
-                  }, 300);
-                })
-                .catch(() => {
-                  message('Unable to create employee.', 'error');
-                });
-           
+    api
+      .post('/employeemodule/insertEmployee', employeeData)
+      .then((res) => {
+        const insertedDataId = res.data.data.insertId;
+        message('Employee inserted successfully.', 'success');
+        setTimeout(() => {
+          navigate(`/EmployeeEdit/${insertedDataId}?tab=1`);
+        }, 300);
+      })
+      .catch(() => {
+        message('Unable to create employee.', 'error');
+      });
   };
-
-
-  
+  const [isNricAlreadyInserted, setIsNricAlreadyInserted] = useState(false); //
   const generateCode = () => {
-    
     if (
       employeeData.employee_name !== '' &&
       employeeData.status !== '' &&
       employeeData.passtype !== ''
     ) {
       // Check if the employeeData contains either NRIC, FIN, or both
-      if (employeeData.nric_no !== '' || employeeData.fin_no !== '' || employeeData.work_permit !== '') {
-        // Make a request to your backend API to check for duplicate numbers
+      if (
+        employeeData.nric_no !== '' ||
+        employeeData.fin_no !== '' ||
+        employeeData.work_permit !== ''
+      ) {
         api
-          .post('/employeemodule/Checkedduplicatevalue', {
+          .post('/employeemodule/getEmployeeById', {
             nric_no: employeeData.nric_no,
-            fin_no: employeeData.fin_no,
-            work_permit: employeeData.work_permit,
+            employee_id:employeeData.employee_id
           })
           .then((response) => {
             if (response.data.error) {
               // Number already exists, show an alert message
-              message('Number already exists. Please provide a different number.', 'warning');
+              setIsNricAlreadyInserted(true); // Set the state to indicate that NRIC is already inserted
+              message('NRIC is already inserted. Please provide a different number.', 'warning');
             } else {
               // No duplicates found, proceed with inserting the employee
-    api
-      .post('/commonApi/getCodeValue', { type: 'employee' })
-      .then((res) => {
-        insertEmployee(res.data.data);
-      })
-      .catch(() => {
-        insertEmployee('');
-      });
+              setIsNricAlreadyInserted(false); // Reset the state
+
+              api
+                .post('/commonApi/getCodeValue', { type: 'employee' })
+                .then((res) => {
+                  insertEmployee(res.data.data);
+                })
+                .catch(() => {
+                  insertEmployee('');
+                });
+            }
+          })
+
+          .catch(() => {
+            message('Unable to check for duplicate numbers.', 'error');
+          });
+      } else {
+        message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
+      }
+    } else {
+      message('Please fill all required fields.', 'warning');
     }
-  })
-  .catch(() => {
-    message('Unable to check for duplicate numbers.', 'error');
-  });
-} else {
-message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
-}
-} else {
-message('Please fill all required fields.', 'warning');
-}
   };
   // const insertEmployee = (code) => {
   //   // Check if the employee name already exists
@@ -134,7 +135,6 @@ message('Please fill all required fields.', 'warning');
   //       message('Error checking employee name.', 'error');
   //     });
   // };
-  
 
   return (
     <div>
@@ -199,6 +199,12 @@ message('Please fill all required fields.', 'warning');
                       onChange={handleInputs}
                       type="text"
                     />
+                    {(isNricAlreadyInserted && (
+                      <alert color="warning">
+                        NRIC is already inserted. Please provide a different number.
+                      </alert>
+                    )) ||
+                      null}
                   </Col>
                 </Row>
               </FormGroup>
@@ -227,7 +233,9 @@ message('Please fill all required fields.', 'warning');
                 <FormGroup>
                   <Row>
                     <Col md="12">
-                      <Label>Work Permit No<span style={{ color: 'red' }}>*</span></Label>
+                      <Label>
+                        Work Permit No<span style={{ color: 'red' }}>*</span>
+                      </Label>
                       <Input
                         name="work_permit"
                         value={employeeData && employeeData.work_permit}

@@ -369,7 +369,21 @@ a.active.nav-link, a.nav-link:focus-visible  {
 .autocomplete-container {
   position: relative;
 }
+/* Define the CSS class for input fields */
+.input-field {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease-in-out;
+}
 
+/* Add focus style to input fields */
+.input-field:focus {
+  border-color: #007bff; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+}
 .autocomplete-input {
   width: 300px;
   padding: 10px;
