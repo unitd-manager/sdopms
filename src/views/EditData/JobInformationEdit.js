@@ -39,7 +39,10 @@ import Tab from '../../components/ProjectTabs/Tab';
 const JobInformationEdit = () => {
   //All state variable
   const [activeTab, setActiveTab] = useState('1');
-  const [job, setJob] = useState();
+  const [job, setJob] = useState({
+    termination_date:'',
+    notice_period_for_termination:''
+  });
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
@@ -164,13 +167,25 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
-    if (job.status === 'Archive' && job.termination_date === '') {
-      // Check if the status is "Archive" and termination date is empty
-      message('Please enter termination date for Archive status.', 'warning');
-      return; // Exit the function without making the API request
-    }
-    
-    if (job.overtime === '1' && !overTimeRate) {
+    if (job.status === 'Archive') {
+      if (job.termination_date !== '' && job.notice_period_for_termination!=='') {
+        api
+          .post('/jobinformation/edit-jobinformation', job)
+          .then(() => {
+            message('Record editted successfully', 'success');
+          })
+          .catch(() => {
+            message('Unable to edit record.', 'error');
+          });
+      } else {
+        message(
+          'Please enter termination date for Archive status.', 'warning'
+        );
+      }
+      // // Check if the status is "Archive" and termination date is empty
+      // message('Please enter termination date for Archive status.', 'warning');
+      // return; // Exit the function without making the API request
+    } else if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
       return; // Exit the function without making the API request
@@ -178,7 +193,6 @@ const JobInformationEdit = () => {
     job.overtime_pay_rate = overTimeRate;
     job.deduction4 = parseFloat(job.deduction4);
     if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
-     
       api
         .post('/jobinformation/edit-jobinformation', job)
         .then(() => {

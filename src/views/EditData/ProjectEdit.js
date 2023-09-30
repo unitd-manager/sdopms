@@ -18,6 +18,7 @@ import ProjectMilestoneEdit from '../../components/ProjectMilestoneEdit';
 import ProjectTaskEdit from '../../components/ProjectTaskEdit';
 import ProjectTimeSheetEdit from '../../components/ProjectTImeSheetEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
+import FinanceTab from '../../components/ProjectModal/FinanceTab';
 import Tab from '../../components/ProjectTabs/Tab';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import CalendarApp from '../apps/calendar/CalendarApp';
@@ -762,8 +763,8 @@ const ProjectEdit = () => {
           </TabPane>
 
            {/* Tab 11 */}
-           <TabPane tabId="10" eventkey="Finance">
-            <MaterialsTransferred projectId={id} />
+           <TabPane tabId="11" eventkey="financeTab">
+            <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
           </TabPane>
         </TabContent>
       </ComponentCard>

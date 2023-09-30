@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, Button, CardTitle, Table, Form } from 'reactstrap';
 import PropTypes from 'prop-types';
-import FinanceInvoiceData from '../Finance/FinanceInvoiceData';
-import FinanceReceiptData from '../Finance/FinanceReceiptData';
-import InvoiceModal from '../Finance/InvoiceModal';
-import ReceiptModal from '../Finance/ReceiptModal';
-import CustomerFinanceInvoice from '../Finance/CustomerFinanceInvoice';
-import CustomerFinanceReceipt from '../Finance/CustomerFinanceReceipt';
+import FinanceInvoiceData from '../FinanceTable/FinanceInvoiceData';
+import FinanceReceiptData from '../FinanceTable/FinanceReceiptData';
+import InvoiceModal from '../FinanceTable/InvoiceModal';
+import ReceiptModal from '../FinanceTable/ReceiptModal';
+import CustomerFinanceInvoice from '../FinanceTable/FinanceInvoiceModal';
+import CustomerFinanceReceipt from '../FinanceTable/CustomerFinanceReceipt';
 import api from '../../constants/api';
 import message from '../Message';
-import CreateFinance from '../Finance/CreateFinance';
+import CreateFinance from '../FinanceTable/CreateFinance';
 
 export default function FinanceTab({ projectDetail }) {
   FinanceTab.propTypes = {
