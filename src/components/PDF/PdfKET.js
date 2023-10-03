@@ -203,11 +203,35 @@ const PdfKET = () => {
                 },
               ],
               [
+                // job.nric_no && {
+                //   text: `Employee NRIC:
+                //   ${job.nric_no ? job.nric_no : ''}`,
+                //   border: [false, false, false, true],
+                //   style: 'tableBody',
+                // },
+
+                // job.fin_no && {
+                //   text: `Employee FIN:
+                // ${job.fin_no ? job.fin_no : ''}`,
+                //   border: [false, false, false, true],
+                //   style: 'tableBody',
+                // },
                 {
-                  text: `Employee NRIC/FIN:
-                  ${job.nric_no ? job.nric_no : ''}`,
-                  border: [false, false, false, true],
-                  style: 'tableBody',
+                  stack: [
+                    job.nric_no && {
+                        text: `Employee NRIC:
+                        ${job.nric_no ? job.nric_no : ''}`,
+                        border: [false, false, false, true],
+                        style: 'tableBody',
+                      },
+      
+                      job.fin_no && {
+                        text: `Employee FIN:
+                      ${job.fin_no ? job.fin_no : ''}`,
+                        border: [false, false, false, true],
+                        style: 'tableBody',
+                      },
+                  ],
                 },
 
                 {
@@ -412,7 +436,10 @@ const PdfKET = () => {
                       text: 'Hourly',
                       listType: job.overtime_payment_date === 'hourly' ? 'square' : 'circle',
                     },
-                    { text: 'Daily', listType: job.overtime_payment_date === 'daily' ? 'square' : 'circle' },
+                    {
+                      text: 'Daily',
+                      listType: job.overtime_payment_date === 'daily' ? 'square' : 'circle',
+                    },
                     {
                       text: 'Weekly',
                       listType: job.overtime_payment_date === 'weekly' ? 'square' : 'circle',

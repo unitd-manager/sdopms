@@ -187,131 +187,65 @@ const PdfPaySlip = () => {
           },
         },
 
-       // Conditionally render the NRIC No label and value
-payroll.nric_no && [
-  {
-    layout: {
-      defaultBorder: false,
-      hLineWidth: () => {
-        return 1;
-      },
-      vLineWidth: () => {
-        return 1;
-      },
-      hLineColor: (i) => {
-        if (i === 1 || i === 0) {
-          return '#bfdde8';
-        }
-        return '#eaeaea';
-      },
-      vLineColor: () => {
-        return '#eaeaea';
-      },
-      hLineStyle: () => {
-        return null;
-      },
-      paddingLeft: () => {
-        return 10;
-      },
-      paddingRight: () => {
-        return 10;
-      },
-      paddingTop: () => {
-        return 2;
-      },
-      paddingBottom: () => {
-        return 2;
-      },
-      fillColor: () => {
-        return '#fff';
-      },
-    },
-    table: {
-      headerRows: 1,
-      widths: ['105%', '51%'],
+        {
+          layout: {
+            defaultBorder: false,
+            hLineWidth: () => {
+              return 1;
+            },
+            vLineWidth: () => {
+              return 1;
+            },
+            hLineColor: (i) => {
+              if (i === 1 || i === 0) {
+                return '#bfdde8';
+              }
+              return '#eaeaea';
+            },
+            vLineColor: () => {
+              return '#eaeaea';
+            },
+            hLineStyle: () => {
+              return null;
+            },
+            paddingLeft: () => {
+              return 10;
+            },
+            paddingRight: () => {
+              return 10;
+            },
+            paddingTop: () => {
+              return 2;
+            },
+            paddingBottom: () => {
+              return 2;
+            },
+            fillColor: () => {
+              return '#fff';
+            },
+          },
+          table: {
+            headerRows: 1,
+            widths: ['105%', '51%'],
 
-      body: [
-        [
-          {
-            text: 'NRIC No',
-            alignment: 'left',
-            style: 'tableHead',
+            body: [
+              [
+                {
+                  text: 'FIN No',
+                  alignment: 'left',
+                  style: 'tableHead',
+                },
+            
+                {
+                  text: `${payroll.fin_no ? payroll.fin_no : ''}`,
+                  alignment: 'left',
+                  style: 'tableBody',
+                },
+              ],
+            ],
           },
-        ],
-        [
-          {
-            text: `${payroll.nric_no}`,
-            alignment: 'left',
-            style: 'tableBody',
-          },
-        ],
-      ],
-    },
-  },
-],
+        },
 
-// Conditionally render the FIN No label and value
-payroll.fin_no && [
-  {
-    layout: {
-      defaultBorder: false,
-      hLineWidth: () => {
-        return 1;
-      },
-      vLineWidth: () => {
-        return 1;
-      },
-      hLineColor: (i) => {
-        if (i === 1 || i === 0) {
-          return '#bfdde8';
-        }
-        return '#eaeaea';
-      },
-      vLineColor: () => {
-        return '#eaeaea';
-      },
-      hLineStyle: () => {
-        return null;
-      },
-      paddingLeft: () => {
-        return 10;
-      },
-      paddingRight: () => {
-        return 10;
-      },
-      paddingTop: () => {
-        return 2;
-      },
-      paddingBottom: () => {
-        return 2;
-      },
-      fillColor: () => {
-        return '#fff';
-      },
-    },
-    table: {
-      headerRows: 1,
-      widths: ['105%', '51%'],
-
-      body: [
-        [
-          {
-            text: 'FIN No',
-            alignment: 'left',
-            style: 'tableHead',
-          },
-        ],
-        [
-          {
-            text: `${payroll.fin_no}`,
-            alignment: 'left',
-            style: 'tableBody',
-          },
-        ],
-      ],
-    },
-  },
-],
         {
           layout: {
             defaultBorder: false,
@@ -366,8 +300,8 @@ payroll.fin_no && [
                 {
                   text: 'Amount S$',
                   style: 'tableHead',
-                  alignment:'center',
-                  margin:[0,0,150,0]
+                  alignment: 'center',
+                  margin: [0, 0, 150, 0],
                 },
               ],
 
@@ -385,7 +319,7 @@ payroll.fin_no && [
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
 
@@ -404,7 +338,7 @@ payroll.fin_no && [
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -415,16 +349,18 @@ payroll.fin_no && [
                 },
 
                 {
-                 text: `${payroll.total_allowance 
-                    ? payroll.total_allowance.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}                                                          `  ,
+                  text: `${
+                    payroll.total_allowance
+                      ? payroll.total_allowance.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }                                                          `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -434,16 +370,19 @@ payroll.fin_no && [
                   style: 'tableBody',
                 },
 
-                {text: `${payroll.allowance1 
-                  ? payroll.allowance1.toLocaleString('en-IN', {
-                  minimumFractionDigits: 2,
-                })
-                : 0.0}  `,
+                {
+                  text: `${
+                    payroll.allowance1
+                      ? payroll.allowance1.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -453,16 +392,19 @@ payroll.fin_no && [
                   style: 'tableBody',
                 },
 
-                {text: `${payroll.allowance2 
-                  ? payroll.allowance2.toLocaleString('en-IN', {
-                  minimumFractionDigits: 2,
-                })
-                : 0.0}  `,
+                {
+                  text: `${
+                    payroll.allowance2
+                      ? payroll.allowance2.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -473,16 +415,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.allowance3 
-                    ? payroll.allowance3.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.allowance3
+                      ? payroll.allowance3.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -493,16 +437,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.allowance4 
-                    ? payroll.allowance4.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.allowance4
+                      ? payroll.allowance4.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -513,16 +459,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.allowance5 
-                    ? payroll.allowance5.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.allowance5
+                      ? payroll.allowance5.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -533,17 +481,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.total_deductions 
-                    ? payroll.total_deductions.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }                                                              `,
+                  text: `${
+                    payroll.total_deductions
+                      ? payroll.total_deductions.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }                                                              `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               // [
@@ -570,17 +519,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.sdl 
-                    ? payroll.sdl.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: `${
+                    payroll.sdl
+                      ? payroll.sdl.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -588,21 +538,21 @@ payroll.fin_no && [
                   text: 'Advance/Loan',
                   border: [false, false, false, true],
                   style: 'tableBody',
-                  
                 },
 
                 {
-                  text: `${payroll.loan_amount 
-                    ? payroll.loan_amount.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: `${
+                    payroll.loan_amount
+                      ? payroll.loan_amount.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -613,18 +563,19 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.deduction1 
-                    ? payroll.deduction1.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
-                 
+                  text: `${
+                    payroll.deduction1
+                      ? payroll.deduction1.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
+
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -635,16 +586,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.deduction1 
-                    ? payroll.deduction1.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.deduction1
+                      ? payroll.deduction1.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -655,16 +608,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.deduction2 
-                    ? payroll.deduction2.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.deduction2
+                      ? payroll.deduction2.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -675,22 +630,24 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.deduction3 
-                    ? payroll.deduction3.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0}  `,
+                  text: `${
+                    payroll.deduction3
+                      ? payroll.deduction3.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
             ],
           },
         },
-'\n',
+        '\n',
         {
           layout: {
             defaultBorder: false,
@@ -897,7 +854,6 @@ payroll.fin_no && [
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
-                  
                 },
               ],
               [
@@ -907,17 +863,18 @@ payroll.fin_no && [
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_hours 
-                    ? payroll.ot_hours.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: ` ${
+                    payroll.ot_hours
+                      ? payroll.ot_hours.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -927,17 +884,18 @@ payroll.fin_no && [
                   style: 'tableBody',
                 },
                 {
-                  text: ` ${payroll.ot_amount 
-                    ? payroll.ot_amount.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }                                                `,
+                  text: ` ${
+                    payroll.ot_amount
+                      ? payroll.ot_amount.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }                                                `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
             ],
@@ -1008,22 +966,24 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: ` \n\n ${payroll.reimbursement 
-                    ? payroll.reimbursement.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }  \n\n ${payroll.director_fee 
-                  ? payroll.director_fee.toLocaleString('en-IN', {
-                  minimumFractionDigits: 2,
-                })
-                : 0.0
-              } `,
+                  text: ` \n\n ${
+                    payroll.reimbursement
+                      ? payroll.reimbursement.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }  \n\n ${
+                    payroll.director_fee
+                      ? payroll.director_fee.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  } `,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
 
@@ -1035,17 +995,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: ` ${payroll.net_total 
-                    ? payroll.net_total.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: ` ${
+                    payroll.net_total
+                      ? payroll.net_total.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
             ],
@@ -1114,17 +1075,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.cpf_employer 
-                    ? payroll.cpf_employer.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: `${
+                    payroll.cpf_employer
+                      ? payroll.cpf_employer.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
               [
@@ -1135,17 +1097,18 @@ payroll.fin_no && [
                 },
 
                 {
-                  text: `${payroll.cpf_employee 
-                    ? payroll.cpf_employee.toLocaleString('en-IN', {
-                    minimumFractionDigits: 2,
-                  })
-                  : 0.0
-                }`,
+                  text: `${
+                    payroll.cpf_employee
+                      ? payroll.cpf_employee.toLocaleString('en-IN', {
+                          minimumFractionDigits: 2,
+                        })
+                      : 0.0
+                  }`,
                   border: [false, false, false, true],
                   fillColor: '#f5f5f5',
                   style: 'tableBody',
                   alignment: 'right',
-                  margin:[0,0,170,0]
+                  margin: [0, 0, 170, 0],
                 },
               ],
             ],
@@ -1159,7 +1122,15 @@ payroll.fin_no && [
 
             {
               canvas: [
-                { type: 'line', margin: [0, 50, -150, 0], x1: 0, y1: 0, x2: 150, y2: 0, lineWidth: 1 },
+                {
+                  type: 'line',
+                  margin: [0, 50, -150, 0],
+                  x1: 0,
+                  y1: 0,
+                  x2: 150,
+                  y2: 0,
+                  lineWidth: 1,
+                },
               ],
             },
             '\n',
