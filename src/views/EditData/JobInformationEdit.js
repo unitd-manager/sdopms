@@ -39,10 +39,7 @@ import Tab from '../../components/ProjectTabs/Tab';
 const JobInformationEdit = () => {
   //All state variable
   const [activeTab, setActiveTab] = useState('1');
-  const [job, setJob] = useState({
-    termination_date:'',
-    notice_period_for_termination:''
-  });
+  const [job, setJob] = useState();
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
@@ -167,32 +164,24 @@ const JobInformationEdit = () => {
 
   //Logic for editting data in db
   const editJobData = () => {
-    if (job.status === 'Archive') {
-      if (job.termination_date !== '' && job.notice_period_for_termination!=='') {
-        api
-          .post('/jobinformation/edit-jobinformation', job)
-          .then(() => {
-            message('Record editted successfully', 'success');
-          })
-          .catch(() => {
-            message('Unable to edit record.', 'error');
-          });
-      } else {
-        message(
-          'Please enter termination date for Archive status.', 'warning'
-        );
+    if (job.status === 'archive') {
+      // Check if the status is "archive"
+      if (!job.termination_date || !job.termination_reason || !job.notice_period_for_termination || !job.resignation_notice_date || !job.departure_date) {
+        // If any of the required fields is empty, show a validation error
+        message('Please enter all required termination information for Archive status.', 'warning');
+        return; // Exit the function without making the API request
       }
-      // // Check if the status is "Archive" and termination date is empty
-      // message('Please enter termination date for Archive status.', 'warning');
-      // return; // Exit the function without making the API request
-    } else if (job.overtime === '1' && !overTimeRate) {
+    }
+    
+    if (job.overtime === '1' && !overTimeRate) {
       // If overtime is 1 and overTimeRate is empty, show a validation error
       message('Please enter overtime rate ', 'warninng');
       return; // Exit the function without making the API request
     }
     job.overtime_pay_rate = overTimeRate;
     job.deduction4 = parseFloat(job.deduction4);
-    if (job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
+    if (job.act_join_date && job.working_days && job.basic_pay && job.join_date && job.govt_donation) {
+     
       api
         .post('/jobinformation/edit-jobinformation', job)
         .then(() => {
@@ -203,7 +192,7 @@ const JobInformationEdit = () => {
         });
     } else {
       message(
-        'Please fill basic pay,working days,join date and govt donation required fields.',
+        'Please fill Employment Start/date,basic pay,working days,join date and govt donation required fields.',
         'warning',
       );
     }

@@ -10,7 +10,7 @@ import PdfHeader from './PdfHeader';
 const PdfKET = () => {
   const { id } = useParams();
   const [hfdata, setHeaderFooterData] = React.useState();
-  const [job, setJob] = useState();
+  const [job, setJob] = useState([]);
 
   React.useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
