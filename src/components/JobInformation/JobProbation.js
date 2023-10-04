@@ -132,7 +132,7 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
               <Input
                 type="select"
                 value={job && job.position}
-                name="designation"
+                name="position"
                 onChange={handleInputsJobInformation}
               >
                 <option defaultValue="selected">Please Select</option>
