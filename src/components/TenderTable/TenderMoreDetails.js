@@ -2,45 +2,45 @@ import React from 'react';
 import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import ComponentCard from '../ComponentCard';
-// import TenderCompanyEditDetails from './TenderCompanyEditDetails';
-// import TenderContactDetails from './TenderContactDetails';
+import TenderCompanyEditDetails from './TenderCompanyEditDetails';
+import TenderContactDetails from './TenderContactDetails';
 
 export default function TenderMoreDetails({
   tenderDetails,
   handleInputs,
-  //handleAddNewContact,
+  handleAddNewContact,
   company,
   contact,
-  //addCompanyModal,
+  addCompanyModal,
   getContact,
   incharge,
-  // addCompanyToggle,
-  // addContactModal,
-  // addContactToggle,
-  // AddNewContact,
-  // insertCompany,
-  // companyhandleInputs,
-  // setAddCompanyModal,
+  addCompanyToggle,
+  addContactModal,
+  addContactToggle,
+  AddNewContact,
+  insertCompany,
+  companyhandleInputs,
+  setAddCompanyModal,
   //setAddContactModal,
-  //allCountries,
+  allCountries,
 }) {
   TenderMoreDetails.propTypes = {
     tenderDetails: PropTypes.object,
     handleInputs: PropTypes.object,
-    //handleAddNewContact: PropTypes.object,
+    handleAddNewContact: PropTypes.object,
     contact: PropTypes.object,
     company: PropTypes.object,
-    // addCompanyModal: PropTypes.object,
-    // addCompanyToggle: PropTypes.object,
-    // addContactModal: PropTypes.object,
-    // addContactToggle: PropTypes.object,
-    // AddNewContact: PropTypes.object,
-    // insertCompany: PropTypes.object,
-    // companyhandleInputs: PropTypes.object,
-    // setAddCompanyModal: PropTypes.object,
+    addCompanyModal: PropTypes.object,
+    addCompanyToggle: PropTypes.object,
+    addContactModal: PropTypes.object,
+    addContactToggle: PropTypes.object,
+    AddNewContact: PropTypes.object,
+    insertCompany: PropTypes.object,
+    companyhandleInputs: PropTypes.object,
+    setAddCompanyModal: PropTypes.object,
     incharge: PropTypes.object,
     getContact: PropTypes.object,
-    //allCountries: PropTypes.object,
+    allCountries: PropTypes.object,
   };
   return (
     <div>
@@ -76,7 +76,7 @@ export default function TenderMoreDetails({
               </Col>
               <Col md="3">
                 <FormGroup>
-                  {/* <Label>
+                  <Label>
                     Company Name (OR)
                     <span
                       className="anchor"
@@ -88,7 +88,7 @@ export default function TenderMoreDetails({
                         <u>Add New Company</u>
                       </b>
                     </span>
-                  </Label> */}
+                  </Label>
                   <Input
                     type="select"
                     onChange={(e) => {
@@ -111,25 +111,25 @@ export default function TenderMoreDetails({
                   </Input>
                 </FormGroup>
 
-                {/* <TenderCompanyEditDetails
+                <TenderCompanyEditDetails
                   addCompanyModal={addCompanyModal}
                   addCompanyToggle={addCompanyToggle}
                   insertCompany={insertCompany}
                   allCountries={allCountries}
                   companyhandleInputs={companyhandleInputs}
-                ></TenderCompanyEditDetails> */}
+                ></TenderCompanyEditDetails>
               </Col>
 
               <Col md="3">
                 <FormGroup>
-                  {/* <Label>
+                  <Label>
                     Contact (OR){' '}
                     <span className="anchor" onClick={addContactToggle.bind(null)}>
                       <b>
                         <u>Add New Contact</u>
                       </b>
                     </span>
-                  </Label> */}
+                  </Label>
                   <Input
                     type="select"
                     onChange={handleInputs}
@@ -147,12 +147,12 @@ export default function TenderMoreDetails({
                           </option>
                         );
                       })}
-                    {/* <TenderContactDetails
+                    <TenderContactDetails
                       addContactModal={addContactModal}
                       addContactToggle={addContactToggle}
                       AddNewContact={AddNewContact}
                       handleAddNewContact={handleAddNewContact}
-                    ></TenderContactDetails> */}
+                    ></TenderContactDetails>
                   </Input>
                 </FormGroup>
               </Col>

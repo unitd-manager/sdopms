@@ -402,7 +402,8 @@ const Payrollmanagement = () => {
                 .post('/payrollmanagement/insertpayroll_management', obj)
                 .then(() => {
                   // generatecpfcalculator();
-                  message('Payrolls created successfully.', 'success');
+                  
+                 // message('Payrolls created successfully.', 'success');
                   // setLoading(false);
                 })
                 .catch(() => {
@@ -411,6 +412,7 @@ const Payrollmanagement = () => {
             });
         });
     });
+    getAllPayrollManagements();
   };
 
   // generate payslip

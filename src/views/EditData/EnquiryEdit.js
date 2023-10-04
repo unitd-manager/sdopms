@@ -4,6 +4,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
@@ -42,7 +43,7 @@ const OpportunityEdit = () => {
   const [contact, setContact] = useState();
   const [company, setCompany] = useState();
   const [incharge, setIncharge] = useState();
-  //const [selectedCompany, setSelectedCompany] = useState();
+  const [selectedCompany, setSelectedCompany] = useState();
   const [addLineItemModal, setAddLineItemModal] = useState(false);
   const [project, setProject] = useState([]);
   const [allCountries, setallCountries] = useState();
@@ -55,7 +56,7 @@ const OpportunityEdit = () => {
   const navigate = useNavigate();
   // const applyChanges = () => {};
   const backToList = () => {
-    navigate('/Opportunity');
+    navigate('/Enquiry');
   };
 
   const viewLineToggle = () => {
@@ -126,7 +127,7 @@ const OpportunityEdit = () => {
   };
 
   const getContact = (companyId) => {
-    //setSelectedCompany(companyId);
+    setSelectedCompany(companyId);
     api.post('/company/getContactByCompanyId', { company_id: companyId }).then((res) => {
       setContact(res.data.data);
     });
@@ -171,43 +172,43 @@ const OpportunityEdit = () => {
 
   // Add new Contact
 
-  // const [newContactData, setNewContactData] = useState({
-  //   salutation: '',
-  //   first_name: '',
-  //   email: '',
-  //   position: '',
-  //   department: '',
-  //   phone_direct: '',
-  //   fax: '',
-  //   mobile: '',
-  // });
+  const [newContactData, setNewContactData] = useState({
+    salutation: '',
+    first_name: '',
+    email: '',
+    position: '',
+    department: '',
+    phone_direct: '',
+    fax: '',
+    mobile: '',
+  });
 
-  // const handleAddNewContact = (e) => {
-  //   setNewContactData({ ...newContactData, [e.target.name]: e.target.value });
-  // };
+  const handleAddNewContact = (e) => {
+    setNewContactData({ ...newContactData, [e.target.name]: e.target.value });
+  };
 
-  // const AddNewContact = () => {
-  //   const newDataWithCompanyId = newContactData;
-  //   newDataWithCompanyId.company_id = selectedCompany;
-  //   if (
-  //     newDataWithCompanyId.salutation !== '' &&
-  //     newDataWithCompanyId.first_name !== ''
+  const AddNewContact = () => {
+    const newDataWithCompanyId = newContactData;
+    newDataWithCompanyId.company_id = selectedCompany;
+    if (
+      newDataWithCompanyId.salutation !== '' &&
+      newDataWithCompanyId.first_name !== ''
 
-  //   ) {
-  //     api
-  //       .post('/tender/insertContact', newDataWithCompanyId)
-  //       .then(() => {
-  //         getContact(newDataWithCompanyId.company_id);
-  //         message('Contact Inserted Successfully', 'success');
-  //         //window.location.reload();
-  //       })
-  //       .catch(() => {
-  //         message('Unable to add Contact! try again later', 'error');
-  //       });
-  //   } else {
-  //     message('All fields are required.', 'info');
-  //   }
-  // };
+    ) {
+      api
+        .post('/tender/insertContact', newDataWithCompanyId)
+        .then(() => {
+          getContact(newDataWithCompanyId.company_id);
+          message('Contact Inserted Successfully', 'success');
+          //window.location.reload();
+        })
+        .catch(() => {
+          message('Unable to add Contact! try again later', 'error');
+        });
+    } else {
+      message('All fields are required.', 'info');
+    }
+  };
 
   //Api for getting all countries
   const getAllCountries = () => {
@@ -304,9 +305,9 @@ const OpportunityEdit = () => {
       ></ApiButton>
       <TenderMoreDetails
         companyInsertData={companyInsertData}
-        //newContactData={newContactData}
+        newContactData={newContactData}
         handleInputs={handleInputs}
-        //handleAddNewContact={handleAddNewContact}
+        handleAddNewContact={handleAddNewContact}
         setAddContactModal={setAddContactModal}
         addContactModal={addContactModal}
         tenderDetails={tenderDetails}
@@ -318,7 +319,7 @@ const OpportunityEdit = () => {
         addCompanyToggle={addCompanyToggle}
         companyhandleInputs={companyhandleInputs}
         insertCompany={insertCompany}
-        //AddNewContact={AddNewContact}
+        AddNewContact={AddNewContact}
         addContactToggle={addContactToggle}
         setAddCompanyModal={setAddCompanyModal}
         getContact={getContact}

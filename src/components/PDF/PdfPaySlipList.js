@@ -214,18 +214,19 @@ const PdfPaySlipList = ({ payroll }) => {
             body: [
               [
                 {
-                  text: 'NRIC No',
+                  text: 'NRIC No/FIN NO',
                   alignment: 'left',
                   style: 'tableHead',
                 },
               ],
               [
                 {
-                  text: `${payroll.nric_no ? payroll.nric_no : ''}`,
+                  text: `${payroll.nric_no ? payroll.nric_no : payroll.fin_no?payroll.fin_no: ''}`,
                   alignment: 'left',
                   style: 'tableBody',
                 },
               ],
+             
             ],
           },
         },

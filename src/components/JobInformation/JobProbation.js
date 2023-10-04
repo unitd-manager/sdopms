@@ -3,13 +3,34 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+//import { useParams } from 'react-router-dom';
 import moment from 'moment';
+//import api from '../../constants/api';
+
 
 export default function JobProbation({ handleInputsJobInformation, job }) {
   JobProbation.propTypes = {
     handleInputsJobInformation: PropTypes.any,
     job: PropTypes.any,
+
   };
+  //const {id}=useParams();
+
+//   const[position,setPosition]=useState();
+//   //get receipt
+//   const getPosition = () => {
+//    api
+//      .get('/jobinformation/getPosition')
+//      .then((res) => {
+//        setPosition(res.data.data);
+//      })
+//      .catch(() => {
+       
+//      });
+//  };
+//  useEffect(()=>{
+//   getPosition();
+//  });
  
   // Function to handle status change
   const handleStatusChange = (e) => {
@@ -110,17 +131,49 @@ export default function JobProbation({ handleInputsJobInformation, job }) {
               <Label>Designation</Label>
               <Input
                 type="select"
-                value={job && job.designation}
+                value={job && job.position}
                 name="designation"
                 onChange={handleInputsJobInformation}
               >
                 <option defaultValue="selected">Please Select</option>
-                <option value="super visor">Super Visor </option>
-                <option value="employee">Employee </option>
-                <option value="manager">Manager </option>
+                <option value="Accounts Executive">Accounts Executive</option>
+                <option value="Finance Manager">Finance Manager </option>
+                <option value="Director">Director </option>
+                <option value="SCAFFOLDER">SCAFFOLDER </option>
+                <option value="Driver">Driver </option>
+                <option value="Manager">Manager </option>
+                <option value="Admin Executive">Admin Executive </option>
+                <option value="SUPERVISOR">SUPERVISOR </option>
+                <option value=" PROJECT CO ORDINATOR"> PROJECT CO ORDINATOR </option>
+                <option value="FORK LIFT OPERATOR">FORK LIFT OPERATOR </option>
+
               </Input>
             </FormGroup>
           </Col>
+  
+              {/* <Col md="3">
+                <FormGroup>
+                  <Label>Designation</Label>
+                  <Input
+                    type="select"
+                    value={job && job.designation}
+                    onChange={handleInputsJobInformation}
+                    name="designation"
+                  >
+                    <option value="" selected="selected">
+                      Please Select
+                    </option>
+                    {position &&
+                      position.map((e) => {
+                        return (
+                          <option value={e.employee_id} key={e.position}>
+                            {e.position}
+                          </option>
+                        );
+                      })}
+                  </Input>
+                </FormGroup>
+              </Col> */}
           <Col md="4">
             <FormGroup>
               <Label>Department</Label>

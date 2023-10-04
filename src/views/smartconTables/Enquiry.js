@@ -119,9 +119,9 @@ const Opportunity = () => {
         <BreadCrumbs />
         <CommonTable
           loading={loading}
-          title="Opportunity List"
+          title="Enquiry List"
           Button={
-            <Link to="/OpportunityDetails">
+            <Link to="/EnquiryDetails">
               <Button color="primary" className="shadow-none">
                 Add New
               </Button>
@@ -142,7 +142,7 @@ const Opportunity = () => {
                   <tr key={element.opportunity_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/OpportunityEdit/${element.opportunity_id}?tab=1`}>
+                      <Link to={`/EnquiryEdit/${element.opportunity_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>

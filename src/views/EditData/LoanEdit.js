@@ -26,7 +26,6 @@ const LoanEdit = () => {
   const [loanStatus, setLoanStatus] = useState();
   //const [loanStartDate, setLoanStartDate] = useState(null); // State variable to store the loan start date
 
-
   //  AttachmentModal
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
@@ -70,16 +69,16 @@ const LoanEdit = () => {
         message('Loan not found', 'info');
       });
   };
-// Create a state variable to track whether the status is "Active"
- const [isStatusActive, setIsStatusActive] = useState(false);
+  // Create a state variable to track whether the status is "Active"
+  const [isStatusActive, setIsStatusActive] = useState(false);
   // Get Loan By Id
   const getLoanById = () => {
     api
       .post('/loan/getLoanById', { loan_id: id })
       .then((res) => {
         setLoanDetails(res.data.data[0]);
-        setLoanStatus(res.data.data[0].status );
-         // Update the isStatusActive variable based on the status
+        setLoanStatus(res.data.data[0].status);
+        // Update the isStatusActive variable based on the status
         //  setIsStatusActive(res.data.data[0].status === 'Active');
         setIsStatusActive(res.data.data[0].status === 'Active');
         getPreviousEarlierLoan(res.data.data[0].employee_id);
@@ -112,15 +111,11 @@ const LoanEdit = () => {
         .then(() => {
           if (loanDetails && loanDetails.status === 'Active') {
             api.post('/loan/editLoanStartDate', { loan_id: id });
-            //getLoanById();
+            
           }
-          
+
           message('Record edited successfully', 'success');
           getLoanById();
-          // if (!recordEdited) {
-          //   message('Record edited successfully', 'success');
-          //   setRecordEdited(true); // Set the state variable to true to indicate that the message has been shown
-          // }
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -157,8 +152,6 @@ const LoanEdit = () => {
         });
     }
   }, [loanDetails.amount_payable, loanDetails.loan_closing_date, loanDetails.status]);
-
-
 
   //for deleting the data
   const deleteLoanData = () => {
@@ -223,7 +216,6 @@ const LoanEdit = () => {
           message('payment inserted successfully.', 'success');
           // Check if amount_payable is 0 after inserting the payment
           if (remainingAmount - newLoanId.loan_repayment_amount_per_month === 0) {
-            
             // Update the status to 'Closed'
             const updatedLoanDetails = {
               ...loanDetails,
@@ -296,19 +288,18 @@ const LoanEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-         
-            {/* Button */}
 
-            <ApiButton
-              saveChanges={saveChanges}
-              editData={editLoanData}
-              navigate={navigate}
-              //applyChanges={editLoanData}
-              backToList={backToList}
-              deleteData={deleteLoanData}
-              module="Loan"
-            ></ApiButton>
-         
+          {/* Button */}
+
+          <ApiButton
+            saveChanges={saveChanges}
+            editData={editLoanData}
+            navigate={navigate}
+            //applyChanges={editLoanData}
+            backToList={backToList}
+            deleteData={deleteLoanData}
+            module="Loan"
+          ></ApiButton>
         </FormGroup>
       </Form>
       {/*Main Details*/}
