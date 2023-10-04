@@ -230,12 +230,13 @@ const EmployeeEdit = () => {
     if (
       employeeDetails.employee_name !== '' &&
       employeeDetails.date_of_birth !== '' &&
-      employeeDetails.nationality !== ''
+      employeeDetails.nationality !== '' &&
+      employeeDetails.nationality !== '' // Check if nationality is not "Please Select"
     ) {
       api
         .post('/employeeModule/edit-Employee', employeeDetails)
         .then(() => {
-          // message('Record editted successfully', 'success');
+           message('Record editted successfully', 'success');
         })
         .catch(() => {
           message('Unable to edit record.', 'error');

@@ -40,7 +40,7 @@ export default function Jobinformationedit({ handleInputsJobInformation, job,ins
           <Row>
             <Col md="6">
               <FormGroup>
-                <Label>Employment Start/Commencement Date</Label>
+                <Label>Employment Start/Commencement Date<span className="required"> *</span></Label>
                 <Input
                   type="date"
                   onChange={handleInputsJobInformation}

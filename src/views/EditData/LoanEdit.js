@@ -112,8 +112,11 @@ const LoanEdit = () => {
         .then(() => {
           if (loanDetails && loanDetails.status === 'Active') {
             api.post('/loan/editLoanStartDate', { loan_id: id });
-            getLoanById();
+            //getLoanById();
           }
+          
+          message('Record edited successfully', 'success');
+          getLoanById();
           // if (!recordEdited) {
           //   message('Record edited successfully', 'success');
           //   setRecordEdited(true); // Set the state variable to true to indicate that the message has been shown

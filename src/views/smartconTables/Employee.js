@@ -25,7 +25,7 @@ const Cards = () => {
         setLoading(false);
       })
       .catch(() => {
-        message('Employee Data Not Found', 'info');
+        //message('Employee Data Not Found', 'info');
         setLoading(false);
       });
   };

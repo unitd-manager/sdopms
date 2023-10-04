@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
-import message from '../../components/Message';
+//import message from '../../components/Message';
 
 const CpfCalculator = () => {
   //All state variable
@@ -30,7 +30,7 @@ const CpfCalculator = () => {
       })
       .catch(() => {
         setLoading(false);
-        message('Unable to get Purchase Data');
+       // message('Unable to get Purchase Data');
       });
   };
   useEffect(() => {

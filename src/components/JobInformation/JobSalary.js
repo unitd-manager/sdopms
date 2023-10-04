@@ -39,7 +39,7 @@ export default function JobSalary({ handleInputsJobInformation, job }) {
           <Col md="4">
             <FormGroup>
               <Label>
-                Govt donation
+                Govt donation<span className="required"> *</span>
               </Label>
               <Input
                 type="select"

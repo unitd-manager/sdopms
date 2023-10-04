@@ -72,19 +72,30 @@ const PdfEmployeeContract = () => {
           fontSize: 10,
         },
         {
-          text: 'And \n\n',
+          text: 'And ',
           style: 'textSize',
           fontSize: 10,
         },
 
         {
-          text: ` ${employeeDetails.employee_name ? employeeDetails.employee_name : ''} NRIC NO:${
-            employeeDetails.nric_no ? employeeDetails.nric_no : ''
-          } \n\n`,
-          style: 'textSize',
-          fontSize: 10,
-        },
+          stack: [
+            employeeDetails.nric_no && {
+              text: ` ${
+                employeeDetails.employee_name ? employeeDetails.employee_name : ''
+              }  NRIC NO:${employeeDetails.nric_no ? employeeDetails.nric_no : ''}`,
+              border: [false, false, false, true],
+              style: 'tableBody',
+            },
 
+            employeeDetails.fin_no && {
+              text: `${employeeDetails.employee_name ? employeeDetails.employee_name : ''} FIN NO:${
+                employeeDetails.fin_no ? employeeDetails.fin_no : ''
+              }`,
+              border: [false, false, false, true],
+              style: 'tableBody',
+            },
+          ],
+        },
         {
           text: ' (hereinafter referred to as "the employee") with its residence located at  \n\n\n',
           style: 'textSize',
@@ -452,7 +463,9 @@ const PdfEmployeeContract = () => {
         },
 
         {
-          text: ` For and on behalf of ${employeeDetails.company_name?employeeDetails.company_name:''}`,
+          text: ` For and on behalf of ${
+            employeeDetails.company_name ? employeeDetails.company_name : ''
+          }`,
           style: 'textSize',
           fontSize: 10,
         },
@@ -489,11 +502,25 @@ const PdfEmployeeContract = () => {
               margin: [100, 0, -150, 0],
             },
             {
-              text: `${
-                employeeDetails.employee_name ? employeeDetails.employee_name : ''
-              } \n NRIC no:${employeeDetails.nric_no ? employeeDetails.nric_no : ''} `,
-              style: 'textSize',
-              margin: [-25, 10, -150, 0],
+              stack: [
+                employeeDetails.nric_no && {
+                  text: ` ${
+                    employeeDetails.employee_name ? employeeDetails.employee_name : ''
+                  }  \n NRIC NO:${employeeDetails.nric_no ? employeeDetails.nric_no : ''}`,
+
+                  style: 'textSize',
+                  margin: [-25, 10, -150, 0],
+                },
+
+                employeeDetails.fin_no && {
+                  text: `${
+                    employeeDetails.employee_name ? employeeDetails.employee_name : ''
+                  } \n FIN NO:${employeeDetails.fin_no ? employeeDetails.fin_no : ''}`,
+
+                  style: 'textSize',
+                  margin: [-25, 10, -150, 0],
+                },
+              ],
             },
           ],
         },
