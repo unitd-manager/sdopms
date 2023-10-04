@@ -5,7 +5,7 @@ import React from 'react';
 // import { ReactComponent as LogoDarkText } from '../../assets/images/logos/xtreme-dark-text.svg';
 // import { ReactComponent as LogoWhiteIcon } from '../../assets/images/logos/xtreme-white-icon.svg';
 // import { ReactComponent as LogoWhiteText } from '../../assets/images/logos/xtreme-white-text.svg';
-import  MainLogo from '../../assets/images/logos/logo.png';
+import  MainLogo from '../../assets/images/logos/sdologo.jpg';
 
 const Logo = () => {
   // const isDarkMode = useSelector((state) => state.customizer.isDark);

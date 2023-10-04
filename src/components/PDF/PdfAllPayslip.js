@@ -43,8 +43,10 @@ const PdfPaySlip = () => {
     getPayslip();
   }, []);
 
-  const generatePayslipPdf = (payroll) => {
-    const dd = {
+  const generatePayslipPdf = () => {
+    
+    const doc=payrollss.map((payroll) => {
+    return {
       pageSize: 'A4',
       header: PdfHeader({ findCompany }),
       pageMargins: [40, 150, 40, 80],
@@ -1019,21 +1021,22 @@ const PdfPaySlip = () => {
         columnGap: 20,
       },
     };
+  });
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    const pdfDocGenerator = pdfMake.createPdf(dd, null, null, pdfFonts.pdfMake.vfs);
+    const pdfDocGenerator = pdfMake.createPdf(doc, null, null, pdfFonts.pdfMake.vfs);
 
     pdfDocGenerator.getDataUrl((dataUrl) => {
       const downloadLink = document.createElement('a');
       downloadLink.href = dataUrl;
-      downloadLink.download = `pdf-${payroll.id}.pdf`;
+      downloadLink.download = `pdf-Allpayslip.pdf`;
       downloadLink.click();
     });
   };
 
   const handleGenerateAllPdfs = () => {
-    payrollss.forEach((payroll) => {
-      generatePayslipPdf(payroll);
-    });
+    
+      generatePayslipPdf();
+    
   };
 
   return (

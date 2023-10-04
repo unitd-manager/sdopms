@@ -1,7 +1,7 @@
 // import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import  MainLogo from '../../assets/images/logos/logo.png';
+import  MainLogo from '../../assets/images/logos/sdologo.jpg';
 
 const AuthLogo = () => {
   return (
