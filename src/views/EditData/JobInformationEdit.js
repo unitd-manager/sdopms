@@ -65,7 +65,7 @@ const JobInformationEdit = () => {
   // Getting data from jobinformation By Id
   const editJobById = () => {
     api
-      .post('/jobinformation/EditjobinformationById', { job_information_id: id })
+      .post('/jobinformation/EditjobinformationById', { job_information_id: parseFloat(id) })
       .then((res) => {
         setJob(res.data.data[0]);
         setOverTimeRate(res.data.data[0].overtime_pay_rate);
