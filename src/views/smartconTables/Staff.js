@@ -27,7 +27,7 @@ const Staff = () => {
     api.get('/staff/getStaff').then((res) => {
       let staffs=[];
       staffs=res.data.data.filter((el)=>{
-        return el.developer !==0 && el.developer !==null
+        return el.developer ===0 || el.developer ===null
       })
       setStaff(staffs);
       $('#example').DataTable({
