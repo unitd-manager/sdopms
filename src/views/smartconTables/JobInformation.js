@@ -93,13 +93,13 @@ const JobInformation = () => {
       grow: 0,
       wrap: true,
     },
-    {
-      name: 'Department',
-      selector: 'department',
-      sortable: true,
-      grow: 2,
-      wrap: true,
-    },
+    // {
+    //   name: 'Department',
+    //   selector: 'department',
+    //   sortable: true,
+    //   grow: 2,
+    //   wrap: true,
+    // },
     {
       name: 'S Pass No',
       selector: 'spass_no',
@@ -199,7 +199,7 @@ const JobInformation = () => {
                       </td>
                       <td>{element.emp_code}</td>
                       <td>{element.employee_name}</td>
-                      <td>{element.department}</td>
+                      {/* <td>{element.department}</td> */}
                       <td>{element.passport}</td>
                       <td>{element.fin_no}</td>
                       <td>{element.nric_no}</td>

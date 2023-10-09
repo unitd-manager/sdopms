@@ -15,6 +15,7 @@ export default function JobProbation({
     // overTimeRate: PropTypes.any,
   };
 
+
   return (
     <>
       <FormGroup>
