@@ -3,16 +3,16 @@ import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
 import moment from 'moment';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import api from '../../constants/api';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
-const PdfPaySlip = () => {
-  // PdfPaySlip.propTypes = {
-  //   payrollsYear: PropTypes.any,
-  //   payrollsMonth: PropTypes.any
-  // }
+const PdfPaySlip = ({payrollsYear,payrollsMonth}) => {
+  PdfPaySlip.propTypes = {
+    payrollsYear: PropTypes.any,
+    payrollsMonth: PropTypes.any
+  }
   const [hfdata, setHeaderFooterData] = useState();
   const [payrollss, setPayrolls] = useState([]);
 
@@ -30,7 +30,7 @@ const PdfPaySlip = () => {
   //  console.log('payrollsMonth',payrollsMonth)
   const getPayslip = () => {
     api
-      .post('/PayrollManagement/getpayrollmanagementFilterYearMonth',)
+      .post('/PayrollManagement/getpayrollmanagementFilterYearMonth',{month:payrollsMonth,year:payrollsYear})
       .then((res) => {
         setPayrolls(res.data.data);
       })
