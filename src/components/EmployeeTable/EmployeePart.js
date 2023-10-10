@@ -11,7 +11,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
     allCountries: PropTypes.array,
     companies: PropTypes.array,
   };
-
+console.log('all countries',allCountries)
   return (
     <div>
       <FormGroup>
@@ -170,8 +170,8 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
                   {allCountries &&
                     allCountries.map((ele) => {
                       return (
-                        <option key={ele.country_code} value={ele.country_code}>
-                          {ele.name}
+                        <option key={ele.nationality_code} value={parseFloat(ele.nationality_code)}>
+                          {ele.title}
                         </option>
                       );
                     })}

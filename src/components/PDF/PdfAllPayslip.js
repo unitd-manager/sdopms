@@ -3,16 +3,16 @@ import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
 import moment from 'moment';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import api from '../../constants/api';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
-const PdfPaySlip = () => {
-  // PdfPaySlip.propTypes = {
-  //   payrollsYear: PropTypes.any,
-  //   payrollsMonth: PropTypes.any
-  // }
+const PdfPaySlip = ({payrollsYear,payrollsMonth}) => {
+  PdfPaySlip.propTypes = {
+    payrollsYear: PropTypes.any,
+    payrollsMonth: PropTypes.any
+  }
   const [hfdata, setHeaderFooterData] = useState();
   const [payrollss, setPayrolls] = useState([]);
 
@@ -30,7 +30,7 @@ const PdfPaySlip = () => {
   //  console.log('payrollsMonth',payrollsMonth)
   const getPayslip = () => {
     api
-      .post('/PayrollManagement/getpayrollmanagementFilterYearMonth',)
+      .post('/PayrollManagement/getpayrollmanagementFilterYearMonth',{month:payrollsMonth,year:payrollsYear})
       .then((res) => {
         setPayrolls(res.data.data);
       })
@@ -43,10 +43,10 @@ const PdfPaySlip = () => {
     getPayslip();
   }, []);
 
-  const generatePayslipPdf = () => {
+  const generatePayslipPdf = (payroll) => {
     
-    const doc=payrollss.map((payroll) => {
-    return {
+    
+    const dd= {
       pageSize: 'A4',
       header: PdfHeader({ findCompany }),
       pageMargins: [40, 150, 40, 80],
@@ -1021,9 +1021,9 @@ const PdfPaySlip = () => {
         columnGap: 20,
       },
     };
-  });
+  
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    const pdfDocGenerator = pdfMake.createPdf(doc, null, null, pdfFonts.pdfMake.vfs);
+    const pdfDocGenerator = pdfMake.createPdf(dd, null, null, pdfFonts.pdfMake.vfs);
 
     pdfDocGenerator.getDataUrl((dataUrl) => {
       const downloadLink = document.createElement('a');
@@ -1035,7 +1035,9 @@ const PdfPaySlip = () => {
 
   const handleGenerateAllPdfs = () => {
     
-      generatePayslipPdf();
+    payrollss.forEach((payroll)=>{
+      generatePayslipPdf(payroll);
+    }) 
     
   };
 

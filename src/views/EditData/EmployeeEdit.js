@@ -193,7 +193,7 @@ const EmployeeEdit = () => {
   //Api for getting all countries
   const getAllCountries = () => {
     api
-      .get('/geocountry/getCountry')
+      .get('/geocountry/getNationality')
       .then((res) => {
         setallCountries(res.data.data);
       })
