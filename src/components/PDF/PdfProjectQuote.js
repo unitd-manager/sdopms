@@ -37,7 +37,7 @@ const PdfProjectQuote = ({ id, quoteId }) => {
 
   const getProjectById = () => {
     api
-      .post('/project/getProjectById', { project_id: id })
+      .post('/project/getProjectsByIDs', { project_id: id })
       .then((res) => {
         setProjectDetail(res.data.data[0]);
       })

@@ -45,7 +45,7 @@ export default function FinanceTab({ projectDetail }) {
   };
   const getAmountById = () => {
     api
-      .post('/project/getAmountByProjectId', { project_id: id })
+      .post('/project/getAmountByProjectIds', { project_id: id })
       .then((res) => {
         setReceiveble(res.data.data);
       })

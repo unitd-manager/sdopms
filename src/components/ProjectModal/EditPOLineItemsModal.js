@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -18,7 +18,12 @@ import api from '../../constants/api';
 import message from '../Message';
 import creationdatetime from '../../constants/creationdatetime';
 
-const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, data,projectId }) => {
+const EditPOLineItemsModal = ({
+  editPOLineItemsModal,
+  setEditPOLineItemsModal,
+  data,
+  projectId,
+}) => {
   EditPOLineItemsModal.propTypes = {
     editPOLineItemsModal: PropTypes.bool,
     setEditPOLineItemsModal: PropTypes.func,
@@ -28,7 +33,7 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
 
   const [newItems, setNewItems] = useState([]);
   const [purchase, setPurchase] = useState(projectId);
-  const [items, setItems] = useState(data);
+  const [addLineItem, setAddLineItem] = useState(data);
   const [addNewProductModal, setAddNewProductModal] = useState(false);
   const [addMoreItem, setMoreItem] = useState(0);
   const [getProductValue, setProductValue] = useState();
@@ -55,10 +60,10 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
   };
 
   function updateState(index, property, e) {
-    const copyDeliverOrderProducts = [...items];
+    const copyDeliverOrderProducts = [...addLineItem];
     const updatedObject = { ...copyDeliverOrderProducts[index], [property]: e.target.value };
     copyDeliverOrderProducts[index] = updatedObject;
-    setItems(copyDeliverOrderProducts);
+    setAddLineItem(copyDeliverOrderProducts);
   }
   function updateNewItemState(index, property, e) {
     const copyDeliverOrderProducts = [...newItems];
@@ -66,16 +71,63 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
     copyDeliverOrderProducts[index] = updatedObject;
     setNewItems(copyDeliverOrderProducts);
   }
-  console.log("product",items);
+  console.log('product', addLineItem);
+  // const getProduct = () => {
+  //   api.get('/product/getProducts').then((res) => {
+
+  //     const items1 = res.data.data;
+  //     const finaldat = [];
+  //     items1.forEach((item) => {
+  //       finaldat.push({ value: item.product_id, label: item.title });
+  //     });
+  //     setProductValue(finaldat);
+  //   });
+  // };
+  //   Get Products
   const getProduct = () => {
     api.get('/product/getProducts').then((res) => {
-      
-      const items1 = res.data.data;
+      const items = res.data.data;
       const finaldat = [];
-      items1.forEach((item) => {
+      items.forEach((item) => {
         finaldat.push({ value: item.product_id, label: item.title });
       });
       setProductValue(finaldat);
+    });
+  };
+
+  const onchangeItem1 = (str, itemId) => {
+    const element = addLineItem.find((el) => el.id === itemId);
+    element.item_title = str.label;
+    element.itemId = str.value;
+    setAddLineItem(addLineItem);
+  };
+
+  // //onchange function
+  const onchangeItem = (selectedValue) => {
+    const updatedItems = addLineItem.map((item) => {
+      if (item.unit === selectedValue.value) {
+        // Compare with selectedValue.value
+        return {
+          ...item,
+          unit: selectedValue.value, // Update the unit with the selected option's value
+          value: selectedValue.value, // Update the value with the selected option's value
+        };
+      }
+      return item;
+    });
+    setMoreItem(updatedItems);
+  };
+
+  const [unitdetails, setUnitDetails] = useState();
+  // Fetch data from API
+  const getUnit = () => {
+    api.get('/product/getUnitFromValueList', unitdetails).then((res) => {
+      const items = res.data.data;
+      const finaldat = [];
+      items.forEach((item) => {
+        finaldat.push({ value: item.value, label: item.value });
+      });
+      setUnitDetails(finaldat);
     });
   };
   const TabMaterialsPurchased = () => {
@@ -102,7 +154,7 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
           message('Product inserted successfully.', 'success');
-          getProduct();
+          //getProduct();
           api
             .post('/product/getCodeValue', { type: 'InventoryCode' })
             .then((res1) => {
@@ -146,7 +198,6 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
       });
   };
 
-
   //edit purchase
   const editPurchase = () => {
     const purchaseRecord = {
@@ -167,7 +218,7 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
 
   //edit delivery items
   const editLineItems = () => {
-    items.forEach((el) => {
+    addLineItem.forEach((el) => {
       api
         .post('/purchaseorder/editTabPurchaseOrderLineItem', el)
         .then(() => {
@@ -181,7 +232,7 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
 
   const getTotalOfPurchase = () => {
     let total = 0;
-    items.forEach((a) => {
+    addLineItem.forEach((a) => {
       total += parseInt(a.qty, 10) * parseFloat(a.cost_price, 10);
     });
     return total;
@@ -201,50 +252,50 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
   //   });
   // };
   const insertPoItems = (PurchaseOrderId, itemObj) => {
-    newItems.forEach(() => {
-    api
-      .post('/purchaseorder/insertPoProduct', {
-        purchase_order_id: PurchaseOrderId,
-        item_title: itemObj.Item,
-        quantity: Number(itemObj.qty).toFixed(2),
-        unit: itemObj.unit,
-        amount: 0,
-        description: itemObj.description,
-        creation_date: new Date(),
-        modification_date: new Date(),
-        created_by: '1',
-        modified_by: '1',
-        status: 'In Progress',
-        cost_price: Number(itemObj.cost_price).toFixed(2),
-        selling_price: itemObj.mrp,
-        qty_updated: parseInt(itemObj.qty, 10),
-        qty: parseInt(itemObj.qty, 10),
-        product_id: parseInt(itemObj.itemId, 10),
-        //supplier_id: insertPurchaseOrderData.supplier_id,
-        gst: Number(itemObj.gst).toFixed(2),
-        damage_qty: 0,
-        brand: '',
-        qty_requested: Number(0).toFixed(2),
-        qty_delivered: Number(0).toFixed(2),
-        price: Number(itemObj.price).toFixed(2),
-      })
-      .then(() => {
-        //setAddPurchaseOrderModal(false);
-        message('Product Added!', 'success');
-        //window.location.reload();
-      })
-    
-      .catch(() => {
-        message('Unable to add Product!', 'error');
-      });
+    addLineItem.forEach(() => {
+      api
+        .post('/purchaseorder/insertPoProduct', {
+          purchase_order_id: PurchaseOrderId,
+          item_title: itemObj.Item,
+          quantity: Number(itemObj.qty).toFixed(2),
+          unit: itemObj.unit,
+          amount: 0,
+          description: itemObj.description,
+          creation_date: new Date(),
+          modification_date: new Date(),
+          created_by: '1',
+          modified_by: '1',
+          status: 'In Progress',
+          cost_price: Number(itemObj.cost_price).toFixed(2),
+          selling_price: itemObj.mrp,
+          qty_updated: parseInt(itemObj.qty, 10),
+          qty: parseInt(itemObj.qty, 10),
+          product_id: parseInt(itemObj.itemId, 10),
+          //supplier_id: insertPurchaseOrderData.supplier_id,
+          gst: Number(itemObj.gst).toFixed(2),
+          damage_qty: 0,
+          brand: '',
+          qty_requested: Number(0).toFixed(2),
+          qty_delivered: Number(0).toFixed(2),
+          price: Number(itemObj.price).toFixed(2),
+        })
+        .then(() => {
+          //setAddPurchaseOrderModal(false);
+          message('Product Added!', 'success');
+          //window.location.reload();
+        })
+
+        .catch(() => {
+          message('Unable to add Product!', 'error');
+        });
     });
   };
-  const onchangeItem = (str, itemId) => {
-    const element = addMoreItem.find((el) => el.id === itemId);
-    element.Item = str.label;
-    element.itemId = str.value;
-    setMoreItem(addMoreItem);
-  };
+  // const onchangeItem = (str, itemId) => {
+  //   const element = addMoreItem.find((el) => el.id === itemId);
+  //   element.Item = str.label;
+  //   element.itemId = str.value;
+  //   setMoreItem(addMoreItem);
+  // };
   // Clear row value
   // const ClearValue = (ind) => {
   //   setMoreItem((current) =>
@@ -254,6 +305,7 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
   //   );
   // };
   useEffect(() => {
+    getUnit();
     getProduct();
     //getMaxItemcode();
     TabMaterialsPurchased();
@@ -356,37 +408,53 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
                   <th scope="col">Unit Price</th>
                   <th scope="col">Amount</th>
                   <th scope="col">Remarks</th>
-                  <th scope="col"></th>;
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                {items.map((el, index) => {
-                  return (
-                    <tr key={el.id}>
-                      
-                      <td data-label="title">
-                        <Select
+                {addLineItem &&
+                  addLineItem.map((el, index) => {
+                    return (
+                      <tr key={el.id}>
+                        <td data-label="title">
+                          {/* <Select
                           key={el.id}
                           defaultValue={{ value: el.product_id, label: el.item_title }}
                           onChange={(e) => {
                             onchangeItem(e, el.id);
                           }}
                           options={getProductValue}
-                        />
-                         <Input
+                        /> */}
+                          {/* <Input
                           value={el.product_id}
-                          type="hidden"
+                          type="text"
                           name="product_id"
                           onChange={(e) => updateState(index, 'product_id', e)}
-                        ></Input>
+                        ></Input> */}
+                         <Select
+                          key={el.id}
+                          defaultValue={{ value: el.product_id, label: el.item_title }}
+                          onChange={(e) => {
+                            onchangeItem1(e, el.id);
+                          }}
+                          options={getProductValue}
+                        />
+                       
                         <Input
-                          value={el.title}
+                          value={el.item_title}
                           type="hidden"
-                          name="title"
-                          onChange={(e) => updateState(index, 'title', e)}
+                          name="item_title"
+                          onChange={(e) => updateState(index, 'item_title', e)}
                         ></Input>
-                 
-                        {/* <Input
+                     
+                          {/* <Input
+                            value={el.item_title}
+                            type="text"
+                            name="item_title"
+                            onChange={(e) => updateState(index, 'item_title', e)}
+                          ></Input> */}
+
+                          {/* <Input
                           value={el.product_id}
                           type="hidden"
                           name="product_id"
@@ -398,64 +466,88 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
                           name="title"
                           onChange={(e) => updateState(index, 'title', e)}
                         ></Input> */}
-                      </td>
-                      <td data-label="unit">
+                        </td>
+                        {/* <td data-label="unit">
                         <Input
                           type="text"
                           name="unit"
                           value={el.unit}
                           onChange={(e) => updateState(index, 'unit', e)}
                         />
-                      </td>
-                      <td data-label="qty">
-                        <Input
-                          type="text"
-                          name="qty"
-                          value={el.qty}
-                          onChange={(e) => updateState(index, 'qty', e)}
-                        />
-                      </td>
-                      <td data-label="Unit Price">
-                        <Input
-                          type="text"
-                          name="cost_price"
-                          value={el.cost_price}
-                          onChange={(e) => updateState(index, 'cost_price', e)}
-                        />
-                      </td>
-                      <td data-label="Total Price">{el.cost_price * el.qty}</td>
-                      <td data-label="Remarks">
-                        <Input
-                          type="textarea"
-                          name="description"
-                          value={el.description}
-                          onChange={(e) => updateState(index, 'description', e)}
-                        />
-                      </td>
-                      <td data-label="Action">
-                        <div className="anchor">
-                          <span>Clear</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-                {[...Array(addMoreItem)].map((elem, index,el) => {
+                      </td> */}
+                        <td data-label="Unit">
+                          <Select
+                            name="unit"
+                            onChange={(selectedOption) => {
+                              onchangeItem(selectedOption);
+                            }}
+                            options={unitdetails}
+                          ></Select>
+                          {/* <Input
+                          type="select"
+                          name="unit"
+                          onChange={handleInputs}
+                          value={el && el.unit}
+                        >
+                          <option defaultValue="selected">Please Select</option>
+                          {unitdetails &&
+                            unitdetails.map((ele) => {
+                              return (
+                                <option key={ele.value} value={ele.value}>
+                                  {ele.value}
+                                </option>
+                              );
+                            })} */}
+                        </td>
+                        <td data-label="qty">
+                          <Input
+                            type="text"
+                            name="qty"
+                            value={el.qty}
+                            onChange={(e) => updateState(index, 'qty', e)}
+                          />
+                        </td>
+                        <td data-label="Unit Price">
+                          <Input
+                            type="text"
+                            name="cost_price"
+                            value={el.cost_price}
+                            onChange={(e) => updateState(index, 'cost_price', e)}
+                          />
+                        </td>
+                        <td data-label="Total Price">{el.cost_price * el.qty}</td>
+                        <td data-label="Remarks">
+                          <Input
+                            type="textarea"
+                            name="description"
+                            value={el.description}
+                            onChange={(e) => updateState(index, 'description', e)}
+                          />
+                        </td>
+                        <td data-label="Action">
+                          <div className="anchor">
+                            <span>Clear</span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                {[...Array(addMoreItem)].map((elem, index) => {
                   return (
                     <tr key={addMoreItem}>
                       <td data-label="ProductName">
-                      <Select
+                        {/* <Select
                           key={el.id}
                           defaultValue={{ value: el.product_id, label: el.item_title }}
                           onChange={(e) => updateNewItemState(index, 'item_title', e)}
                           options={getProductValue}
-                        />
-                        {/* <Input
+                        /> */}
+                        <Input
                           type="text"
                           name="item_title"
                           value={elem && elem.item_title}
                           onChange={(e) => updateNewItemState(index, 'item_title', e)}
-                        /> */}
+                        />
                       </td>
                       <td data-label="UoM">
                         <Input
@@ -511,8 +603,8 @@ const EditPOLineItemsModal = ({ editPOLineItemsModal, setEditPOLineItemsModal, d
               await editLineItems();
               await insertPoItems();
               await setEditPOLineItemsModal(false);
-              
-                getProduct();
+
+              //getProduct();
               //     setTimeout(() => {
               //   window.location.reload();
               // }, 1500);

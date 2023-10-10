@@ -8,7 +8,7 @@ import moment from 'moment';
 import api from '../../constants/api';
 import message from '../Message';
 import PdfFooter from './PdfFooter';
-import PdfHeader2 from './PdfHeader2';
+import PdfHeader from './PdfHeader';
 //import PdfHeader2 from './PdfHeader2';
 
 const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
@@ -17,7 +17,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
     projectDetail: PropTypes.any,
   };
   const [hfdata, setHeaderFooterData] = React.useState();
-  const [hfdata1, setHeaderFooterData1] = React.useState();
+  // const [hfdata1, setHeaderFooterData1] = React.useState();
   const [cancelInvoice, setCancelInvoice] = React.useState([]);
   const [createInvoice, setCreateInvoice] = React.useState();
   const [gTotal, setGtotal] = React.useState(0);
@@ -30,25 +30,16 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
       setHeaderFooterData(res.data.data);
     });
   }, []);
-  React.useEffect(() => {
-    api.get('/setting/getSettingsForCompany1').then((res) => {
-      setHeaderFooterData1(res.data.data);
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   api.get('/setting/getSettingsForCompany1').then((res) => {
+  //     setHeaderFooterData1(res.data.data);
+  //   });
+  // }, []);
 
   console.log('companyInvoice', projectDetail);
   const findCompany = (key) => {
-    console.log('key', key);
-    if (projectDetail.company_invoice === 'Company Invoice 1') {
-      if (hfdata && hfdata.length > 0) {
-        const filteredResult = hfdata.find((e) => e.key_text === key);
-        return filteredResult ? filteredResult.value : '';
-      }
-    } else {
-      const filteredResult1 = hfdata1.find((e) => e.key_text === key);
-      return filteredResult1 ? filteredResult1.value : '';
-    }
-    return '';
+    const filteredResult = hfdata.find((e) => e.key_text === key);
+    return filteredResult.value;
   };
 
   // Gettind data from Job By Id
@@ -94,31 +85,26 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
     const productItems = [
       [
         {
-          text: 'Sn',
+          text: 'S/NO',
           style: 'tableHead',
         },
         {
-          text: 'Description',
-          style: 'tableHead',
-          alignment: 'center',
-        },
-        {
-          text: 'Uom',
+          text: ' Job Description',
           style: 'tableHead',
           alignment: 'center',
         },
         {
-          text: 'Qty',
+          text: 'Quantity',
           style: 'tableHead',
           alignment: 'center',
         },
         {
-          text: 'Unit Price',
+          text: 'Unit Price($)',
           style: 'tableHead',
           alignment: 'right',
         },
         {
-          text: 'Total Amount',
+          text: 'Amount',
           style: 'tableHead',
           alignment: 'right',
         },
@@ -166,7 +152,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
 
     const dd = {
       pageSize: 'A4',
-      header: PdfHeader2({ findCompany }),
+      header: PdfHeader({ findCompany }),
       pageMargins: [40, 150, 40, 80],
       footer: PdfFooter,
       content: [
@@ -355,27 +341,27 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
             {
               stack: [
                 {
-                  text: `SubTotal $ : ${gTotal.toLocaleString('en-IN', {
+                  text: `TOTAL $ : ${gTotal.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   })}`,
                   style: ['textSize'],
                   margin: [145, 0, 0, 0],
                 },
                 '\n',
+                // {
+                //   text: `Discount : ${createInvoice.discount ? createInvoice.discount : ''}`,
+                //   style: ['textSize'],
+                //   margin: [145, 0, 0, 0],
+                // },
+                '\n',
                 {
-                  text: `Discount : ${createInvoice.discount ? createInvoice.discount : ''}`,
+                  text: `GST 8% :  ${createInvoice.gst_value ? createInvoice.gst_value : ''}`,
                   style: ['textSize'],
                   margin: [145, 0, 0, 0],
                 },
                 '\n',
                 {
-                  text: `VAT :  ${createInvoice.gst_value ? createInvoice.gst_value : ''}`,
-                  style: ['textSize'],
-                  margin: [145, 0, 0, 0],
-                },
-                '\n',
-                {
-                  text: `Total $ : ${calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  text: `GRAND TOTAL $ : ${calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   style: ['textSize'],
                   margin: [145, 0, 0, 0],
                 },

@@ -103,9 +103,9 @@ const ProjectEdit = () => {
     { id: '6', name: 'Timesheet' },
     { id: '7', name: 'Calender' },
     { id: '8', name: 'Material Purchase Order' },
-    { id: '9', name: 'Material Transferred' },
-    { id: '10', name: 'Material Used' },
-    { id: '11', name: 'Finance' },
+    { id: '9', name: 'Material Used' },
+    { id: '10',name: 'Material Transferred' },
+    { id: '11',name: 'Finance' },
    
   ];
   const toggle = (tab) => {

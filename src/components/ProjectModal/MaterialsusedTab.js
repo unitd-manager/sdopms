@@ -62,6 +62,7 @@ const MaterialsusedTab = ({ projectId }) => {
         returnItem={returnItem}
         />
       )}
+      <br/>
       <Row className="mb-4">
         <Col>
           <PdfMaterialUsed
@@ -77,14 +78,14 @@ const MaterialsusedTab = ({ projectId }) => {
         </Col>
       </Row>
       <Row>
-        <CardTitle tag="h4" className="border-bottom bg-secondary p-2 mb-0 text-white">
+        <CardTitle tag="h5" className="border-bottom bg-secondary p-2 mb-0 text-white">
           {' '}
           Materials used{' '}
         </CardTitle>
       </Row>
 
       <Form className="mt-4">
-        <Row className="border-bottom mb-3">
+        <Row className="border-bottom mb-1">
           <Col>
             <FormGroup>
               <Label>Title</Label>{' '}

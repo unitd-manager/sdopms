@@ -26,13 +26,14 @@ function MaterialsTransferred({ projectId }) {
 
   return (
     <>
+    <br></br>
       <Row>
-        <CardTitle tag="h4" className="border-bottom bg-secondary p-2 mb-0 text-white">
+        <CardTitle tag="h5" className="border-bottom bg-secondary p-2 mb-0 text-white">
           Materials Transferred From Other Projects{' '}
         </CardTitle>
       </Row>
       <Form className="mt-4">
-        <Row className="border-bottom mb-3">
+        <Row className="border-bottom mb-2">
           <Col>
             <FormGroup>
               <Label>Ref Project</Label>{' '}

@@ -2,9 +2,10 @@ import React from 'react';
 import { CardTitle, Row, Col, FormGroup, Input, Button, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
-import PdfMaterialPurchaseOrder from '../PDF/PdfMaterialPurchaseOrder';
 import api from '../../constants/api';
 import message from '../Message';
+import PdfMaterialPurchaseOrder from '../PDF/PdfMaterialPurchaseOrder';
+
 /* eslint-disable */
 export default function MaterialPurchased({
   addPurchaseOrderModal,
@@ -82,6 +83,7 @@ console.log('groups',groups)
 
   return (
     <>
+    <br></br>
       <Row className="mb-4">
         <Col md="3">
           <Button
@@ -116,7 +118,7 @@ console.log('groups',groups)
       {testJsonData && <>{Object.values(groups).map((group,index)=>(
       <>
         <Row key={index.toString()}>
-          <CardTitle tag="h4" className="border-bottom bg-secondary p-2 mb-0 text-white">
+          <CardTitle tag="h5" className="border-bottom bg-secondary p-2 mb-0 text-white">
             <Row>
               <Col>{group[0].company_name}</Col>
               <Col>
@@ -187,6 +189,7 @@ console.log('groups',groups)
               <th>Amount</th>
               <th>Status</th>
               <th>Remarks</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

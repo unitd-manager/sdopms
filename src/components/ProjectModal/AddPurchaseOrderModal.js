@@ -245,7 +245,7 @@ const AddPurchaseOrderModal = ({ projectId, addPurchaseOrderModal, setAddPurchas
       .then(() => {
         //setAddPurchaseOrderModal(false);
         message('Product Added!', 'success');
-        window.location.reload();
+        //window.location.reload();
       })
       .catch(() => {
         message('Unable to add Product!', 'error');
@@ -322,6 +322,34 @@ const AddPurchaseOrderModal = ({ projectId, addPurchaseOrderModal, setAddPurchas
   //   });
   // };
 
+   // //onchange function
+   const onchangeItem1 = (selectedValue) => {
+    const updatedItems = addMoreItem.map((item) => {
+      if (item.unit === selectedValue.value) {
+        // Compare with selectedValue.value
+        return {
+          ...item,
+          unit: selectedValue.value, // Update the unit with the selected option's value
+          value: selectedValue.value, // Update the value with the selected option's value
+        };
+      }
+      return item;
+    });
+    setAddLineItem(updatedItems);
+  };
+
+  const [unitdetails, setUnitDetails] = useState();
+  // Fetch data from API
+  const getUnit = () => {
+    api.get('/product/getUnitFromValueList', unitdetails).then((res) => {
+      const items = res.data.data;
+      const finaldat = [];
+      items.forEach((item) => {
+        finaldat.push({ value: item.value, label: item.value });
+      });
+      setUnitDetails(finaldat);
+    });
+  };
   function updateState(index, property, e) {
     const copyDeliverOrderProducts = [...addMoreItem];
     //const amount = (parseFloat(item.qty) || 0) * (parseFloat(item.cost_price) || 0);
@@ -350,7 +378,7 @@ const AddPurchaseOrderModal = ({ projectId, addPurchaseOrderModal, setAddPurchas
     productDetails.product_code = ProductCode;
     productDetails.item_code = ItemCode;
     //productDetails.item_code = parseFloat(itemcode) + 1;
-    if (productDetails.title !== '' && productDetails.item_code !== '') {
+    if (productDetails.title !== '' && productDetails.item_code !== '' && productDetails.product_type !== '') {
       api
         .post('/product/insertProduct', productDetails)
         .then(() => {
@@ -528,7 +556,7 @@ const AddPurchaseOrderModal = ({ projectId, addPurchaseOrderModal, setAddPurchas
                   </Col>
                   <Col md="3">
                     <FormGroup>
-                      <Label>VAT</Label>
+                      <Label>GST</Label>
                       <br></br>
                       <Label>Yes</Label>
                       &nbsp;
@@ -607,14 +635,23 @@ const AddPurchaseOrderModal = ({ projectId, addPurchaseOrderModal, setAddPurchas
                         ></Input>
                       </td>
                       {/* <td data-label="ProductName"><Input type="text" name="item_title" value={el.item_title}  onChange={(e)=>updateState(index,"item_title",e)}/></td> */}
-                      <td data-label="UoM">
+                      {/* <td data-label="UoM">
                         <Input
                           type="text"
                           name="unit"
                           value={el.unit}
                           onChange={(e) => updateState(index, 'unit', e)}
                         />
-                      </td>
+                      </td> */}
+                      <td data-label="Unit">
+                          <Select
+                            name="unit"
+                            onChange={(selectedOption) => {
+                              onchangeItem(selectedOption);
+                            }}
+                            options={unitdetails}
+                          ></Select>
+                          </td>
                       <td data-label="Qty">
                         <Input
                           type="text"
