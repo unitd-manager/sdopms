@@ -8,10 +8,11 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
 import PictureAttachmentModalV2 from '../../components/Tender/PictureAttachmentModalV2';
 import message from '../../components/Message';
@@ -22,6 +23,7 @@ const ContentUpdate = () => {
   // All state variables
   const [lineItem] = useState(null);
   const [contentDetails, setContentDetails] = useState();
+  const [valuelist, setValuelist] = useState();
   const [sectionLinked, setSectionLinked] = useState();
   const [categoryLinked, setCategoryLinked] = useState();
   const [subcategoryLinked, setSubCategoryLinked] = useState();
@@ -48,6 +50,17 @@ const backToList=()=>{
       [type]: draftToHtml(convertToRaw(e.getCurrentContent())),
     });
   };
+   //Api call for getting valuelist dropdown
+   const getValuelist = () => {
+    api
+      .get('/section/getValueList')
+      .then((res) => {
+        setValuelist(res.data.data);
+      })
+      .catch(() => {
+        message('valuelist not found', 'info');
+      });
+  };
   //Description Modal
   const convertHtmlToDraft = (existingQuoteformal) => {
     const contentBlock = htmlToDraft(existingQuoteformal && existingQuoteformal);
@@ -66,14 +79,14 @@ const backToList=()=>{
         convertHtmlToDraft(res.data.data.description);
       })
       .catch(() => {
-        message('Content Data Not Found', 'info');
+        //message('Content Data Not Found', 'info');
       });
   };
   //Edit Content
   const editContentData = () => {
     console.log(contentDetails);
     if (
-      contentDetails.content_title !== '' &&
+      contentDetails.title !== '' &&
       contentDetails.sub_category_id !== '' &&
       contentDetails.published !== ''
     ) {
@@ -81,7 +94,6 @@ const backToList=()=>{
         .post('/content/editContent', contentDetails)
         .then(() => {
           message('Record edited successfully', 'success');
-          navigate('/Content');
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -114,22 +126,22 @@ const backToList=()=>{
     setDataForPicture({
       modelType: 'picture',
     });
-    console.log('inside DataForPucture');
+    console.log('inside DataForPicture');
   };
   useEffect(() => {
     getsection();
     getCategory();
     getSubCategory();
     getContentById();
+    getValuelist();
     console.log(lineItem);
   }, [id]);
 
   return (
     <>
       <BreadCrumbs heading={contentDetails && contentDetails.title} />
-      <Form>
-        <FormGroup>
-          <ComponentCardV2>
+       
+          {/* <ComponentCardV2> */}
           <ApiButton
               editData={editContentData}
               navigate={navigate}
@@ -138,49 +150,13 @@ const backToList=()=>{
              // deleteData={deleteLoanData}
               module="Content"
             ></ApiButton>
-            {/* <Row>
-              <Col>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    editContentData();
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="secondary"
-                  onClick={() => {
-                    editContentData();
-                  }}
-                >
-                  Apply
-                </Button>
-              </Col>
-              <Col></Col>
-
-              <Col>
-                <Button
-                  color=""
-                  onClick={() => {
-                    navigate('/Content');
-                    console.log('back to list');
-                  }}
-                >
-                  Back to List
-                </Button>
-              </Col>
-            </Row> */}
-          </ComponentCardV2>
-          {/* Content Details Form */}
+       
           <ComponentCard title="Content details">
             <ToastContainer></ToastContainer>
             <Row>
               <Col md="3">
                 <FormGroup>
-                  <Label> Title </Label>
+                  <Label> Title<span className='required'>*</span> </Label>
                   <Input
                     type="text"
                     onChange={handleInputs}
@@ -246,6 +222,27 @@ const backToList=()=>{
                       subcategoryLinked.map((ele) => {
                         return (
                           <option value={ele.sub_category_id}>{ele.sub_category_title}</option>
+                        );
+                      })}
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Section Type</Label>
+                  <Input
+                    type="select"
+                    onChange={handleInputs}
+                    value={contentDetails && contentDetails.content_type}
+                    name="content_type"
+                  >
+                    <option defaultValue="selected">Please Select</option>
+                    {valuelist &&
+                      valuelist.map((e) => {
+                        return (
+                          <option key={e.value} value={e.value}>
+                            {e.value}
+                          </option>
                         );
                       })}
                   </Input>
@@ -338,8 +335,7 @@ const backToList=()=>{
               </ComponentCard>
             </Row>
           </ComponentCard>
-        </FormGroup>
-      </Form>
+       
       {/* Picture and Attachments Form */}
       <Form>
         <FormGroup>

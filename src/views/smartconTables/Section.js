@@ -173,7 +173,7 @@ const SectionDetails = () => {
                   <tr key={element.section_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/SectionEdit/${element.section_id}`}>
+                      <Link to={`/SectionEdit/${element.section_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>

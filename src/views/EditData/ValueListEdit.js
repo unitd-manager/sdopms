@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 //import ValueListButton from '../../components/ValueListTable/ValueListButton';
@@ -79,18 +81,36 @@ const ValueListEdit = () => {
       message('Please fill all required fields', 'warning');
     }
   };
-
-  //Api call for  Deletting ValueList
   const deleteValueListData = () => {
-    api
-      .post('/valuelist/deleteValueList', { valuelist_id: id })
-      .then(() => {
-        message('Record editted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/valuelist/deleteValueList', { valuelist_id: id }).then(() => {
+          Swal.fire('Deleted!', 'Your Valuelist has been deleted.', 'success');
+         
+        });
+      }
+    });
   };
+
+  // //Api call for  Deletting ValueList
+  // const deleteValueListData = () => {
+  //   api
+  //     .post('/valuelist/deleteValueList', { valuelist_id: id })
+  //     .then(() => {
+  //       message('Record editted successfully', 'success');
+  //     })
+  //     .catch(() => {
+  //       message('Unable to edit record.', 'error');
+  //     });
+  // };
 
   useEffect(() => {
     getValueListName();

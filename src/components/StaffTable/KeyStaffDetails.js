@@ -161,6 +161,7 @@ export default function KeyStaffDetails({
             </Col>
             <Col md="3">
               <FormGroup>
+                
                 <Label>Published</Label>
                 <br></br>
                 <Input
@@ -170,7 +171,7 @@ export default function KeyStaffDetails({
                   defaultChecked={staffeditdetails && staffeditdetails.published === 1 && true}
                   onChange={handleInputs}
                 />
-                <Label>Yes</Label>
+                <Label> Yes </Label>
                 <Input
                   name="published"
                   value="0"
@@ -179,8 +180,9 @@ export default function KeyStaffDetails({
                   onChange={handleInputs}
                 />
                 <Label>No</Label>
+                
               </FormGroup>
-            </Col>
+              </Col>
           </Row>
         </ComponentCard>
       </FormGroup>

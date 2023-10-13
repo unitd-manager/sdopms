@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
@@ -12,30 +13,31 @@ const SettingDetails = () => {
   const [settingforms, setSettingForms] = useState({
     key_text: '',
   });
-//Navigation and Parameters
+  //Navigation and Parameters
   const navigate = useNavigate();
-//Setting data in settingForms
+  //Setting data in settingForms
   const handleInputsSettingForms = (e) => {
     setSettingForms({ ...settingforms, [e.target.name]: e.target.value });
   };
-//Insert Setting
+  //Insert Setting
   const insertSetting = () => {
     if (settingforms.key_text !== '')
-    api.post('/setting/insertSetting', settingforms)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message('Setting inserted successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/SettingEdit/${insertedDataId}`);
-        }, 300);
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-      else {
-        message('Please fill all required fields.', 'error');
-      }
+      api
+        .post('/setting/insertSetting', settingforms)
+        .then((res) => {
+          const insertedDataId = res.data.data.insertId;
+          console.log(insertedDataId);
+          message('Setting inserted successfully.', 'success');
+          setTimeout(() => {
+            navigate(`/SettingEdit/${insertedDataId}`);
+          }, 300);
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    else {
+      message('Please fill all required fields.', 'warning');
+    }
   };
   useEffect(() => {}, []);
   return (
@@ -46,7 +48,7 @@ const SettingDetails = () => {
         <Col md="6" xs="12">
           {/* Key Details */}
           <ComponentCard title="Key Details">
-          <Form>
+            <Form>
               <FormGroup>
                 <Row>
                   <Col md="12">
@@ -55,29 +57,36 @@ const SettingDetails = () => {
                       Key Text <span className="required"> *</span>{' '}
                     </Label>
                     <Input type="text" name="key_text" onChange={handleInputsSettingForms} />
-                    </Col>
+                  </Col>
                 </Row>
               </FormGroup>
               <FormGroup>
                 <Row>
-          <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-            <Button color="primary"
-              onClick={() => {
-                insertSetting();
-              }}
-              type="button"
-              className="btn mr-2 shadow-none"
-            >Save & Continue
-            </Button>
-            <Button
-              onClick={() => {
-                navigate('/Setting');
-              }}
-              type="button"
-              className="btn btn-dark shadow-none" 
-            >Go to List
-            </Button>
-            </div>
+                  <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        insertSetting();
+                      }}
+                      type="button"
+                      className="btn mr-2 shadow-none"
+                    >
+                      Save & Continue
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/Setting');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </Row>
               </FormGroup>
             </Form>

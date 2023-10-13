@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Row, Col, Form, FormGroup, Button } from 'reactstrap';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icon from 'react-feather';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -23,29 +24,33 @@ const StaffEdit = () => {
   const [stafftypedetails, setStaffTypetDetails] = useState();
   const [staffteamdetails, setStaffTeamDetails] = useState();
   const [userdetails, setUserDetails] = useState();
-  const [RoomName, setRoomName] = useState('');
-  const [fileTypes, setFileTypes] = useState('');
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [allCountries, setallCountries] = useState([]);
-  const [pictureData, setDataForPicture] = useState({
-    modelType: '',
-  });
+  const [RoomName, setRoomName] = useState('');
+  const [fileTypes, setFileTypes] = useState('');
+  const [update, setUpdate] = useState(false);
+
   // Navigation and Parameter Constants
   const { id } = useParams();
   const navigate = useNavigate();
 
   //All Functions/Methods
+  //  AttachmentModal
+  const [attachmentData, setDataForAttachment] = useState({
+    modelType: '',
+  });
+  //attachment for upload file
+  const dataForAttachment = () => {
+    setDataForAttachment({
+      modelType: 'attachment',
+    });
+  };
 
   //Setting Data in Staff Details
   const handleInputs = (e) => {
     setStaffEditDetails({ ...staffeditdetails, [e.target.name]: e.target.value });
   };
-  //Setting Picture Data
-  const dataForPicture = () => {
-    setDataForPicture({
-      modelType: 'picture',
-    });
-  };
+ 
 
   // Route Change
   // const applyChanges = () => {};
@@ -187,16 +192,16 @@ const StaffEdit = () => {
         deleteStaffData={deleteStaffData}
         id={id}
       ></StaffButton> */}
-<ApiButton
-              editData={editStaffData}
-              navigate={navigate}
-              applyChanges={editStaffData}
-              backToList={backToList}
-              deleteData={deleteStaffData}
-              module="Staff"
-            ></ApiButton>
+      <ApiButton
+        editData={editStaffData}
+        navigate={navigate}
+        applyChanges={editStaffData}
+        backToList={backToList}
+        deleteData={deleteStaffData}
+        module="Staff"
+      ></ApiButton>
       {/* KeyStaffDetails */}
-      <BreadCrumbs heading={staffeditdetails && staffeditdetails.staff_id} />
+      {/* <BreadCrumbs heading={staffeditdetails && staffeditdetails.staff_id} /> */}
       <KeyStaffDetails
         stafftypedetails={stafftypedetails}
         staffeditdetails={staffeditdetails}
@@ -222,13 +227,13 @@ const StaffEdit = () => {
                   className="shadow-none"
                   color="primary"
                   onClick={() => {
-                    setRoomName('StaffPic');
-                    setFileTypes(['JPG', 'PNG', 'GIF']);
-                    dataForPicture();
+                    setRoomName('Staff');
+                    setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
+                    dataForAttachment();
                     setAttachmentModal(true);
                   }}
                 >
-                  <Icon.Image className="rounded-circle" width="20" />
+                  <Icon.File className="rounded-circle" width="20" />
                 </Button>
               </Col>
             </Row>
@@ -238,12 +243,20 @@ const StaffEdit = () => {
               setAttachmentModal={setAttachmentModal}
               roomName={RoomName}
               fileTypes={fileTypes}
-              altTagData="Staff Data"
-              desc="Staff Data"
-              recordType="Picture"
-              mediaType={pictureData.modelType}
+              altTagData="StaffRelated Data"
+              desc="StaffRelated Data"
+              recordType="RelatedPicture"
+              mediaType={attachmentData.modelType}
+              update={update}
+              setUpdate={setUpdate}
             />
-            <ViewFileComponentV2 moduleId={id} roomName="StaffPic" recordType="Picture" />
+            <ViewFileComponentV2
+              moduleId={id}
+              roomName="Staff"
+              recordType="RelatedPicture"
+              update={update}
+              setUpdate={setUpdate}
+            />
           </ComponentCard>
         </FormGroup>
       </Form>

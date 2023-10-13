@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
 import api from '../../constants/api';
+import creationdatetime from '../../constants/creationdatetime';
+import AppContext from '../../context/AppContext';
 //import CategoryButton from '../../components/CategoryTable/CategoryButton';
 import CategoryDetailComp from '../../components/CategoryTable/CategoryDetailComp';
-import creationdatetime from '../../constants/creationdatetime';
+
 import ApiButton from '../../components/ApiButton';
 
 const CategoryEdit = () => {
@@ -21,6 +24,8 @@ const CategoryEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  //get staff details
+  const { loggedInuser } = useContext(AppContext);
   // Button Save Apply Back List
   const applyChanges = () => {};
   // const saveChanges = () => {
@@ -74,12 +79,14 @@ const CategoryEdit = () => {
 
   //Logic for edit data in db
   const editCategoryData = () => {
-    categoryDetails.modification_date = creationdatetime
     if (categoryDetails.category_title !== '') {
+      categoryDetails.modification_date = creationdatetime;
+      categoryDetails.modified_by = loggedInuser.first_name;
       api
         .post('/category/edit-Category', categoryDetails)
         .then(() => {
           message('Record editted successfully', 'success');
+          CategoryById();
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
@@ -122,14 +129,14 @@ const CategoryEdit = () => {
         backToList={backToList}
         id={id}
       ></CategoryButton> */}
-<ApiButton
-              editData={editCategoryData}
-              navigate={navigate}
-              applyChanges={applyChanges}
-              backToList={backToList}
-             deleteData={deleteCategoryData}
-              module="Category"
-            ></ApiButton>
+      <ApiButton
+        editData={editCategoryData}
+        navigate={navigate}
+        applyChanges={applyChanges}
+        backToList={backToList}
+        deleteData={deleteCategoryData}
+        module="Category"
+      ></ApiButton>
       {/* More details*/}
       <CategoryDetailComp
         categoryDetails={categoryDetails}

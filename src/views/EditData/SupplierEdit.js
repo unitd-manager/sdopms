@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, FormGroup} from 'reactstrap';
+import {  Form, FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
@@ -13,6 +13,7 @@ import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import ComponentCardV2 from '../../components/ComponentCardV2';
+import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
 import api from '../../constants/api';
 import PurchaseOrderLinked from '../../components/SupplierModal/Purchaseorderlinked';
@@ -33,29 +34,31 @@ const SupplierEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   //const applyChanges = () => {};
-const backToList=()=>{
-  navigate('/Supplier')
+const backToList=() => {
+  navigate('/Supplier');
 }
+  const handleInputs = (e) => {
+    setSupplier({ ...supplier, [e.target.name]: e.target.value });
+  };
   // Get Supplier By Id
-
   const editSupplierById = () => {
+
     api
       .post('/supplier/get-SupplierById', { supplier_id: id })
       .then((res) => {
         setSupplier(res.data.data[0]);
-        console.log(purchaseOrder);
       })
       .catch(() => {
         message('Supplier Data Not Found', 'info');
       });
   };
 
-  const handleInputs = (e) => {
-    setSupplier({ ...supplier, [e.target.name]: e.target.value });
-  };
+ 
   //Logic for edit data in db
   const editSupplierData = () => {
-    if (supplier.company_name !== '')
+    if (supplier.company_name !== '') {
+      supplier.modification_date = creationdatetime;
+
       api
         .post('/supplier/edit-Supplier', supplier)
         .then(() => {
@@ -64,7 +67,7 @@ const backToList=()=>{
         .catch(() => {
           message('Unable to edit record.', 'error');
         });
-    else {
+        }  else {
       message('Please fill all required fields.', 'error');
     }
   };
@@ -74,7 +77,6 @@ const backToList=()=>{
       .post('/supplier/getStatus', { supplier_id: id })
       .then((res) => {
         setStatus(res.data.data[0]);
-        // console.log(res);
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -85,20 +87,10 @@ const backToList=()=>{
     editSupplierById();
   }, [id]);
   // Get purchaseOrder By Id
-  const getpurchaseOrder = () => {
-    api
-      .post('/supplier/getPurchaseOrderLinkedss', { supplier_id: id })
-      .then((res) => {
-        setPurchaseOrder(res.data.data);
-        // console.log(res);
-      })
-      .catch(() => {
-        message('Supplier not found', 'info');
-      });
-  };
+
   const suppliereditdetails = () => {
     api
-      .get('/geocountry/getCountry')
+      .get('/supplier/getCountry')
       .then((res) => {
         setAllCountries(res.data.data);
       })
@@ -118,6 +110,16 @@ const backToList=()=>{
       });
   };
   useEffect(() => {
+    const getpurchaseOrder = () => {
+      api
+        .post('/supplier/getPurchaseOrderLinkedss', { supplier_id: id })
+        .then((res) => {
+          setPurchaseOrder(res.data.data);
+        })
+        .catch(() => {
+          message('Supplier not found', 'info');
+        });
+    };
     getpurchaseOrder();
     suppliereditdetails();
     getSupplierStatus();
@@ -127,7 +129,6 @@ const backToList=()=>{
   return (
     <>
       <BreadCrumbs heading={supplier && supplier.company_name} />
-      {/* <ApiButton></ApiButton> */}
       <Form>
         <FormGroup>
           <ComponentCardV2>
@@ -171,6 +172,8 @@ const backToList=()=>{
                   className="shadow-none"
                   onClick={() => {
                     applyChanges();
+                    navigate('/Supplier');
+
                   }}
                 >
                   Back to List
@@ -180,6 +183,8 @@ const backToList=()=>{
           </ComponentCardV2>
         </FormGroup>
       </Form>
+      <ComponentCard title="Supplier Details" creationModificationDate={supplier}>
+
       <SupplierDetails
         handleInputs={handleInputs}
         supplier={supplier}
@@ -188,15 +193,13 @@ const backToList=()=>{
         status={status}
         setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
       ></SupplierDetails>
-
+  </ComponentCard>
       <PurchaseOrderLinked
         editPurchaseOrderLinked={editPurchaseOrderLinked}
         setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
       ></PurchaseOrderLinked>
-      <ComponentCard>
-        <ToastContainer></ToastContainer>
-        <SupplierTable purchaseOrder={purchaseOrder}></SupplierTable>
-      </ComponentCard>
+      <ToastContainer></ToastContainer>
+      <SupplierTable purchaseOrder={purchaseOrder}></SupplierTable>
     </>
   );
 };

@@ -84,52 +84,39 @@ const Valuelist = () => {
     {
       name: '#',
       selector: '',
-      grow: 0,
-      wrap: true,
-      width: '4%',
+      
     },
     {
       name: 'Edit',
       selector: 'edit',
       cell: () => <Icon.Edit2 />,
-      grow: 0,
-      width: 'auto',
-      button: true,
-      sortable: false,
+      
     },
     {
       name: 'Text (English)',
       selector: 'value',
-      sortable: true,
-      grow: 0,
-      wrap: true,
+   
     },
     {
       name: 'Value List Name',
       selector: 'key_text',
-      sortable: true,
-      grow: 2,
-      wrap: true,
+      
     },
     {
       name: 'Code',
       selector: 'code',
-      sortable: true,
-      grow: 0,
+    
     },
     {
       name: 'ID',
       selector: 'valuelist_id',
       sortable: true,
-      width: 'auto',
-      grow: 3,
+      
     },
     {
       name: 'Order',
       selector: 'sort_order',
-      sortable: true,
-      grow: 2,
-      width: 'auto',
+     
     },
   ];
 

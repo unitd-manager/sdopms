@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import message from '../../components/Message';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
-import creationdatetime from '../../constants/creationdatetime'
+import creationdatetime from '../../constants/creationdatetime';
+import AppContext from '../../context/AppContext';
 
 const CategoryDetails = () => {
   //Navigation and Parameter Constants
   const navigate = useNavigate();
 
+  //get staff details
+  const { loggedInuser } = useContext(AppContext);
   //Logic for adding category in db
   const [categoryForms, setCategoryForms] = useState({
     category_title: '',
@@ -25,7 +29,8 @@ const CategoryDetails = () => {
   //Api for insertCategory
   const insertCategory = () => {
     if (categoryForms.category_title !== '') {
-      categoryForms.creation_date = creationdatetime
+      categoryForms.creation_date = creationdatetime;
+      categoryForms.created_by = loggedInuser.first_name;
       api
         .post('/category/insertCategory', categoryForms)
         .then((res) => {
@@ -69,7 +74,8 @@ const CategoryDetails = () => {
               <FormGroup>
                 <Row>
                   <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                    <Button color="primary"
+                    <Button
+                      color="primary"
                       onClick={() => {
                         insertCategory();
                       }}

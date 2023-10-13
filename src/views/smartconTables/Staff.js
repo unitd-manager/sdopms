@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import {Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -18,52 +18,35 @@ import Publish from '../../components/Publish';
 const Staff = () => {
   // All state variables
   const [staff, setStaff] = useState(null);
-  const [loading, setLoading] = useState(false)
-
-  
+  const [loading, setLoading] = useState(false);
 
   //Api call for getting Staff Data
   const getStaff = () => {
-    api.get('/staff/getStaff').then((res) => {
-      let staffs=[];
-      staffs=res.data.data.filter((el)=>{
-        return el.developer ===0 || el.developer ===null
+    api
+      .get('/staff/getStaff')
+      .then((res) => {
+        setStaff(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
+        setLoading(false);
       })
-      setStaff(staffs);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
 
-
   useEffect(() => {
-    // setTimeout(() => {
-    //   $('#example').DataTable({
-    //     pagingType: 'full_numbers',
-    //     pageLength: 20,
-    //     processing: true,
-    //     dom: 'Bfrtip',
-    //     buttons: [
-    //       {
-    //         extend: 'print',
-    //         text: 'Print',
-    //         className: 'shadow-none btn btn-primary',
-    //       },
-    //     ],
-    //   });
-    // }, 1000);
     getStaff();
   }, []);
 
@@ -146,8 +129,8 @@ const Staff = () => {
         <BreadCrumbs />
 
         <CommonTable
-        loading={loading}
-          title="Staff List"
+          loading={loading}
+          title="User List"
           Button={
             <Link to="/StaffDetails">
               <Button color="primary" className="shadow-none">
@@ -182,7 +165,7 @@ const Staff = () => {
                     <td>{element.status}</td>
                     <td>{element.staff_id}</td>
                     <td>
-                    <Publish
+                      <Publish
                         idColumn="staff_id"
                         tablename="staff"
                         idValue={element.staff_id.toString()}

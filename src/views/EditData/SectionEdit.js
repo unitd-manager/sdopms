@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Button,
-  Nav,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-} from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, TabContent, TabPane } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import * as Icon from 'react-feather';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
@@ -27,6 +15,7 @@ import api from '../../constants/api';
 //import SectionButton from '../../components/SectionTable/SectionButton';
 import creationdatetime from '../../constants/creationdatetime';
 import ApiButton from '../../components/ApiButton';
+import Tab from '../../components/ProjectTabs/Tab';
 
 const SectionEdit = () => {
   //Const Variables
@@ -36,26 +25,30 @@ const SectionEdit = () => {
   const [RoomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState('');
   const [valuelist, setValuelist] = useState();
-  const [pictureData, setDataForPicture] = useState({
-    modelType: '',
-  });
+  const [update, setUpdate] = useState(false);
+
   // Navigation and Parameter Constants
   const { id } = useParams();
   const navigate = useNavigate();
   //  toggle Expense
+  const tabs = [{ id: '1', name: 'Attachment' }];
   const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
+    setActiveTab(tab);
   };
 
-  // Abi for Picture attachment
-  const dataForPicture = () => {
-    setDataForPicture({
-      modelType: 'picture',
+  //  AttachmentModal
+  const [attachmentData, setDataForAttachment] = useState({
+    modelType: '',
+  });
+  //attachment for upload file
+  const dataForAttachment = () => {
+    setDataForAttachment({
+      modelType: 'attachment',
     });
   };
 
   //  button position
- // const applyChanges = () => {};
+  // const applyChanges = () => {};
 
   const backToList = () => {
     navigate('/Section');
@@ -131,20 +124,20 @@ const SectionEdit = () => {
         backToList={backToList}
         id={id}
       ></SectionButton> */}
-<ApiButton
-              editData={editSectionData}
-              navigate={navigate}
-              applyChanges={editSectionData}
-              backToList={backToList}
-              deleteData={DeleteSection}
-              module="Menu"
-            ></ApiButton>
+      <ApiButton
+        editData={editSectionData}
+        navigate={navigate}
+        applyChanges={editSectionData}
+        backToList={backToList}
+        deleteData={DeleteSection}
+        module="Menu"
+      ></ApiButton>
       {/* Main Details */}
       <Form>
         <FormGroup>
           <ComponentCard title="Section Details" creationModificationDate={section}>
             <Row>
-              <Col md="3">
+              <Col md="4">
                 <FormGroup>
                   <Label>
                     Title<span className="required"> *</span>
@@ -179,36 +172,40 @@ const SectionEdit = () => {
                 </FormGroup>
               </Col>
               <Col md="4">
-                <Label>Button Position</Label>
-                <Input
-                  type="select"
-                  onChange={handleInputs}
-                  value={section && section.button_position}
-                  name="button_position"
-                >
-                  <option defaultValue="selected">Please Select</option>
-                  <option value="Top">Top</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Reports">Reports</option>
-                </Input>
+                <FormGroup>
+                  <Label>Button Position</Label>
+                  <Input
+                    type="select"
+                    onChange={handleInputs}
+                    value={section && section.button_position}
+                    name="button_position"
+                  >
+                    <option defaultValue="selected">Please Select</option>
+                    <option value="Top">Top</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Reports">Reports</option>
+                  </Input>
+                </FormGroup>
               </Col>
-              <Col md="3">
-                <Label>Groups</Label>
-                <Input
-                  type="select"
-                  onChange={handleInputs}
-                  value={section && section.groups}
-                  name="groups"
-                >
-                  <option defaultValue="selected">Please Select</option>
-                  <option value="Reports">Reports</option>
-                  <option value="Home">Home</option>
-                  <option value="Enquiry/Project">Enquiry/Project</option>
-                  <option value="Finance/Admin/Purchase">Finance/Admin/Purchase</option>
-                  <option value="Payroll/HR">Payroll/HR</option>
-                  <option value="Admin">Admin</option>
-                  <option value="MileStone">Milestone</option>
-                </Input>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Groups</Label>
+                  <Input
+                    type="select"
+                    onChange={handleInputs}
+                    value={section && section.groups}
+                    name="groups"
+                  >
+                    <option defaultValue="selected">Please Select</option>
+                    <option value="Reports">Reports</option>
+                    <option value="Home">Home</option>
+                    <option value="Enquiry/Project">Enquiry/Project</option>
+                    <option value="Finance/Admin/Purchase">Finance/Admin/Purchase</option>
+                    <option value="Payroll/HR">Payroll/HR</option>
+                    <option value="Admin">Admin</option>
+                    <option value="MileStone">Milestone</option>
+                  </Input>
+                </FormGroup>
               </Col>
               <Col md="4">
                 <FormGroup>
@@ -259,54 +256,48 @@ const SectionEdit = () => {
         </FormGroup>
       </Form>
       {/* Tab start */}
-      <ComponentCard>
+
+      <ComponentCard title="More Details">
         <ToastContainer></ToastContainer>
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={activeTab === '1' ? 'active' : ''}
-              onClick={() => {
-                toggle('1');
-              }}
-            >
-              Picture
-            </NavLink>
-          </NavItem>
-        </Nav>
+        <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
           <TabPane tabId="1">
-            <Form>
-              <FormGroup>
-                <Row>
-                  <Col xs="12" md="3" className="mb-3">
-                    <Button
-                      className="shadow-none"
-                      color="primary"
-                      onClick={() => {
-                        setRoomName('SectionPic');
-                        setFileTypes(['JPG', 'PNG', 'GIF']);
-                        dataForPicture();
-                        setAttachmentModal(true);
-                      }}
-                    >
-                      <Icon.Image className="rounded-circle" width="20" />
-                    </Button>
-                  </Col>
-                </Row>
-                <AttachmentModalV2
-                  moduleId={id}
-                  attachmentModal={attachmentModal}
-                  setAttachmentModal={setAttachmentModal}
-                  roomName={RoomName}
-                  fileTypes={fileTypes}
-                  altTagData="Section Data"
-                  desc="Section Data"
-                  recordType="Picture"
-                  mediaType={pictureData.modelType}
-                />
-                <ViewFileComponentV2 moduleId={id} roomName="SectionPic" recordType="Picture" />
-              </FormGroup>
-            </Form>
+            <Row>
+              <Col xs="12" md="3" className="mb-3">
+                <Button
+                  className="shadow-none"
+                  color="primary"
+                  onClick={() => {
+                    setRoomName('Staff');
+                    setFileTypes(['JPG', 'JPEG', 'PNG', 'GIF', 'PDF']);
+                    dataForAttachment();
+                    setAttachmentModal(true);
+                  }}
+                >
+                  <Icon.File className="rounded-circle" width="20" />
+                </Button>
+              </Col>
+            </Row>
+            <AttachmentModalV2
+              moduleId={id}
+              attachmentModal={attachmentModal}
+              setAttachmentModal={setAttachmentModal}
+              roomName={RoomName}
+              fileTypes={fileTypes}
+              altTagData="StaffRelated Data"
+              desc="StaffRelated Data"
+              recordType="RelatedPicture"
+              mediaType={attachmentData.modelType}
+              update={update}
+              setUpdate={setUpdate}
+            />
+            <ViewFileComponentV2
+              moduleId={id}
+              roomName="Staff"
+              recordType="RelatedPicture"
+              update={update}
+              setUpdate={setUpdate}
+            />
           </TabPane>
         </TabContent>
       </ComponentCard>

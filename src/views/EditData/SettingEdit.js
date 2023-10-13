@@ -3,10 +3,11 @@ import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
 import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
@@ -49,12 +50,13 @@ const SettingEdit = () => {
         .post('/setting/editSetting', settingdetails)
         .then(() => {
           message('Record editted successfully', 'success');
+          getSettingById();
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'error');
+      message('Please fill all required fields.', 'warning');
     }
   };
 
@@ -65,77 +67,17 @@ const SettingEdit = () => {
   return (
     <>
       <BreadCrumbs />
-      <Form>
-        <FormGroup>
-          <ToastContainer></ToastContainer>
-          <ComponentCardV2>
-          <ApiButton
-              editData={editSettingData}
-              navigate={navigate}
-              applyChanges={editSettingData}
-              backToList={backToList}
-              // deleteData={deleteStaffData}
-              module="Setting"
-            ></ApiButton>
-            {/* <Row>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    editSettingData();
-                    navigate('/Setting');
-                    
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    editSettingData();
-                    applyChanges();
-                  }}
-                >
-                  Apply
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  type="submit"
-                  className="btn btn-dark shadow-none"
-                  onClick={(e) => {
-                    if (window.confirm('Are you sure you want to cancel? ')) {
-                      navigate('/Setting');
-                    } else {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Col>
-              <Col>
-                <DeleteButton id={id} columnname="setting_id" tablename="setting"></DeleteButton>
-              </Col>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="dark"
-                  onClick={() => {
-                    backToList();
-                  }}
-                >
-                  Back to List
-                </Button>
-              </Col>
-            </Row> */}
-          </ComponentCardV2>
-        </FormGroup>
-      </Form>
+      <ToastContainer></ToastContainer>
+
+      <ApiButton
+        editData={editSettingData}
+        navigate={navigate}
+        applyChanges={editSettingData}
+        backToList={backToList}
+        // deleteData={deleteStaffData}
+        module="Setting"
+      ></ApiButton>
+
       {/* Setting Details */}
       <Form>
         <FormGroup>
@@ -241,7 +183,19 @@ const SettingEdit = () => {
                   </FormGroup>
                 </Col>
               )}
-
+              {!valueType && (
+                <Col md="4">
+                  <FormGroup>
+                    <Label>Value</Label>
+                    <Input
+                      type="textarea"
+                      onChange={handleInputs}
+                      value={settingdetails && settingdetails.value}
+                      name="value"
+                    />
+                  </FormGroup>
+                </Col>
+              )}
               <Col md="4">
                 <FormGroup>
                   <Label>Value Text</Label>
@@ -251,9 +205,7 @@ const SettingEdit = () => {
                     name="value_type"
                     onChange={handleInputs}
                   >
-                    <option defaultValue="selected">
-                      Please Select
-                    </option>
+                    <option defaultValue="selected">Please Select</option>
                     <option value="Yes No">Yes No</option>
                     <option value="Text field">Text field</option>
                     <option value="Text Area">Text Area</option>
@@ -265,7 +217,6 @@ const SettingEdit = () => {
           </ComponentCard>
         </FormGroup>
       </Form>
-
     </>
   );
 };

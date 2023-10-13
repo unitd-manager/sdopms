@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, FormGroup, Button } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
 import * as Icon from 'react-feather';
 import { ToastContainer } from 'react-toastify';

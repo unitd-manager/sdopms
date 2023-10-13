@@ -3,42 +3,43 @@ import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import message from '../../components/Message';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
 
 const SectionDetails = () => {
-   // Navigation and Parameter Constants
+  // Navigation and Parameter Constants
   const navigate = useNavigate();
   const { id } = useParams();
   //Const Variables
   const [sectionForms, setSectionForms] = useState({
     section_title: '',
   });
-   //Expense Functions/Methods
+  //Expense Functions/Methods
   const handleSectionForms = (e) => {
     setSectionForms({ ...sectionForms, [e.target.name]: e.target.value });
   };
   // Api // insertSection
   const insertSection = () => {
-    if(sectionForms.section_title !== ""){
-      sectionForms.created_date = creationdatetime
-    api
-      .post('/section/insertSection', sectionForms)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message('Section inserted successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/SectionEdit/${insertedDataId}`);
-        }, 300);
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-    }else{
-      message('Please fill all required fields','warning');
+    if (sectionForms.section_title !== '') {
+      sectionForms.creation_date = creationdatetime;
+      api
+        .post('/section/insertSection', sectionForms)
+        .then((res) => {
+          const insertedDataId = res.data.data.insertId;
+          console.log(insertedDataId);
+          message('Section inserted successfully.', 'success');
+          setTimeout(() => {
+            navigate(`/SectionEdit/${insertedDataId}?tab=1`);
+          }, 300);
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    } else {
+      message('Please fill all required fields', 'warning');
     }
   };
   useEffect(() => {}, [id]);
@@ -54,7 +55,9 @@ const SectionDetails = () => {
               <FormGroup>
                 <Row>
                   <Col md="12">
-                    <Label>Title<span className='required'> *</span></Label>
+                    <Label>
+                      Title<span className="required"> *</span>
+                    </Label>
                     <Input
                       type="text"
                       name="section_title"
@@ -68,22 +71,28 @@ const SectionDetails = () => {
               <FormGroup>
                 <Row>
                   <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                    <Button color="primary"
+                    <Button
+                      color="primary"
                       onClick={() => {
                         insertSection();
                       }}
                       type="button"
                       className="btn mr-2 shadow-none"
-                    >Save & Continue
+                    >
+                      Save & Continue
                     </Button>
                     <Button
-                      onClick={() => {
-                        navigate(-1);
-                      }}
-                      type="button"
+                      type="submit"
                       className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/Section');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
                     >
-                      Go to List
+                      Cancel
                     </Button>
                   </div>
                 </Row>

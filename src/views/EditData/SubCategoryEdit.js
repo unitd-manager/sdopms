@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 //import SubCategoryButton from '../../components/SubCategoryTable/SubCategoryButton';
 import SubCategoryEditDetails from '../../components/SubCategoryTable/SubCategoryEditDetails';
@@ -100,18 +102,36 @@ const SubCategoryEdit = () => {
       message('Please fill all required fields', 'warning');
     }
   };
-
-  //Api call for Deleting SubCategory Details
   const deleteSubCategoryData = () => {
-    api
-      .post('/subcategory/deleteSubCategory', { sub_category_id: id })
-      .then(() => {
-        message('Record editted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/subcategory/deleteSubCategory', { sub_category_id: id }).then(() => {
+          Swal.fire('Deleted!', 'Your Valuelist has been deleted.', 'success');
+         
+        });
+      }
+    });
   };
+
+  // //Api call for Deleting SubCategory Details
+  // const deleteSubCategoryData = () => {
+  //   api
+  //     .post('/subcategory/deleteSubCategory', { sub_category_id: id })
+  //     .then(() => {
+  //       message('Record deleted successfully', 'success');
+  //     })
+  //     .catch(() => {
+  //       message('Unable to edit record.', 'error');
+  //     });
+  // };
 
   useEffect(() => {
     editSubCategoryById();

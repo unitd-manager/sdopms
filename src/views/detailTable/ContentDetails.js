@@ -11,6 +11,7 @@ import {
 import { useNavigate} from 'react-router-dom';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs'
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
@@ -55,7 +56,7 @@ const ContentDetails = () => {
       message('Network connection error.', 'error');
     });
   }else {
-  message('Please fill all required fields.', 'error');
+  message('Please fill all required fields.', 'warning');
 }
 };
   useEffect(() => {
@@ -73,7 +74,7 @@ const ContentDetails = () => {
               <FormGroup>
                 <Row>
                 <Col md="12">
-                    <Label>Title</Label>
+                    <Label>Title<span className='required'>*</span></Label>
                     <Input type="text"
                       onChange={handleInputs}
                       value={contentDetails && (contentDetails.title)}

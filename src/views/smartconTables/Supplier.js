@@ -7,23 +7,23 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
 
-
 const Test = () => {
   //All state variable
   const [supplier, setSupplier] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   //getting data from supplier
   const getSupplier = () => {
-    setLoading(true)
-    api.get('/supplier/getSupplier')
+    api
+      .get('/supplier/getSupplier')
       .then((res) => {
         setSupplier(res.data.data);
         $('#example').DataTable({
@@ -31,20 +31,22 @@ const Test = () => {
           pageLength: 20,
           processing: true,
           dom: 'Bfrtip',
-          buttons: [ {
-            extend: 'print',
-            text: "Print",
-            className:"shadow-none btn btn-primary",
-        }],
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
         });
-        setLoading(false)
-      }).catch(()=>{
-        setLoading(false)
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-    };
+  };
 
   useEffect(() => {
-
     getSupplier();
   }, []);
   //structure of supplier list view
@@ -90,10 +92,11 @@ const Test = () => {
   return (
     <div className="MainDiv">
       <div className=" pt-xs-25">
-        <BreadCrumbs/>
+        <BreadCrumbs />
+        <ToastContainer></ToastContainer>
 
         <CommonTable
-                loading={loading}
+          loading={loading}
           title="Supplier List"
           Button={
             <Link to="/SupplierDetails">
@@ -128,7 +131,7 @@ const Test = () => {
                 );
               })}
           </tbody>
-          </CommonTable>
+        </CommonTable>
       </div>
     </div>
   );

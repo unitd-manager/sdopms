@@ -3,6 +3,7 @@ import { Row, Col, FormGroup, Label, Button, Input } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import message from '../../components/Message';

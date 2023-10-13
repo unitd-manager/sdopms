@@ -24,7 +24,6 @@ const SupplierHistory = () => {
       .post('/supplier/SupplierPayment', { purchase_order_id: id })
       .then((res) => {
         setHistory(res.data.data);
-        // console.log(res);
       })
       .catch(() => {
         message('Supplier Data Not Found', 'info');
@@ -50,7 +49,7 @@ const SupplierHistory = () => {
     },
   ];
 
-  const Supplier = () => {
+  const Supplier = (subConPaymentsId) => {
     Swal.fire({
       title: `Are you sure? ${id}`,
       text: 'Do you like to cancel the receipt?',
@@ -61,8 +60,7 @@ const SupplierHistory = () => {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        api.post('/supplier/SupplierPayment', { purchase_order_id: id }).then(() => {
-          // console.log(res);
+        api.put('/supplier/updateSupplierPaymentsAndPurchaseOrder', { supplier_receipt_id: subConPaymentsId,purchase_order_id: id }).then(() => {
           Swal.fire('Cancelled!');
           getHistoryById();
         });
@@ -89,17 +87,21 @@ const SupplierHistory = () => {
                   {history &&
                     history.map((element) => {
                       return (
-                        <tr key={element.purchase_order_id}>
+                        <tr key={element.supplier_receipt_id}>
                           <td>{moment(element.date).format('YYYY-MM-DD')}</td>
                           <td>{element.amount}</td>
                           <td>{element.mode_of_payment}</td>
                           <td>
-                            <Link to="">
-                              <span onClick={() => Supplier(element.purchase_order_id)}>
-                                Cancel
-                              </span>
-                            </Link>
-                          </td>
+              {element.receipt_status !== 'Cancelled' ? (
+                <Link to="">
+                <span onClick={() => Supplier(element.supplier_receipt_id,element.purchase_order_id,element.supplier_id)}>
+                  <u>Cancel</u>
+                  </span>
+                  </Link>
+              ) : (
+                'Cancelled'
+              )}
+            </td>
                         </tr>
                       );
                     })}

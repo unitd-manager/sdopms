@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
+import creationdatetime from '../../constants/creationdatetime';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -20,11 +22,11 @@ const SupplierDetails = () => {
   };
   //inserting supplier data
   const insertSupplier = () => {
+    supplierForms.creation_date = creationdatetime;
     if (supplierForms.company_name !== '')
       api.post('/supplier/insert-Supplier', supplierForms)
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
-          console.log(insertedDataId);
           message('Supplier inserted successfully.', 'success');
           setTimeout(() => {
             navigate(`/SupplierEdit/${insertedDataId}`);
