@@ -19,7 +19,7 @@ import message from '../../components/Message';
 
 const Clients = () => {
   const [clients, setClients] = useState(null);
-  const [arabic, setArabic] = useState({});
+  //const [arabic, setArabic] = useState({});
   const [loading, setLoading] = useState(false);
 
   const columns = [
@@ -49,7 +49,7 @@ const Clients = () => {
       sortable: false,
     },
     {
-      name: arabic.length > 0 && arabic[0].value,
+      name: 'Company Name',
       selector: 'company_name',
       sortable: true,
       grow: 0,
@@ -102,16 +102,16 @@ const Clients = () => {
       });
   };
 
-  const getArabicCompanyName = () => {
-    api
-      .get('/translation/getTranslationForCompany')
-      .then((res) => {
-        setArabic(res.data.data);
-      })
-      .catch(() => {
-        // Handle error if needed
-      });
-  };
+  // const getArabicCompanyName = () => {
+  //   api
+  //     .get('/translation/getTranslationForCompany')
+  //     .then((res) => {
+  //       setArabic(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       // Handle error if needed
+  //     });
+  // };
 
   const updateFlag = (obj) => {
     obj.flag = !obj.flag;
@@ -128,7 +128,7 @@ const Clients = () => {
 
   useEffect(() => {
     getClients();
-    getArabicCompanyName();
+    //getArabicCompanyName();
   }, []);
 
   return (

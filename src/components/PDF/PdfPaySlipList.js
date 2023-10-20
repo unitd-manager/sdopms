@@ -5,18 +5,17 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import api from '../../constants/api';
+//import message from '../Message';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
-const PdfPaySlipList = ({ payroll }) => {
+const PdfPaySlipList = ({payroll}) => {
   PdfPaySlipList.propTypes = {
     payroll: PropTypes.any,
   };
-  // const { id } = useParams();
-  //   const [hfdata, setHeaderFooterData] = React.useState();
-  // const [payroll, setPayroll] = React.useState();
   const [hfdata, setHeaderFooterData] = React.useState();
-  console.log('payroll', payroll);
+  //const [payroll, setPayroll] = React.useState();
+
   React.useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
       setHeaderFooterData(res.data.data);
@@ -28,12 +27,7 @@ const PdfPaySlipList = ({ payroll }) => {
     const filteredResult = hfdata.find((e) => e.key_text === key);
     return filteredResult.value;
   };
-
-  //   const findCompany = (key) => {
-  //     const filteredResult = hfdata.find((e) => e.key_text === key);
-  //     return filteredResult.value;
-  //   };
-  // Gettind data from Job By Id
+  // // Gettind data from Job By Id
   // const getPayslip = () => {
   //   api
   //     .post('/PayrollManagement/getpayrollmanagementById', { payroll_management_id: id })
@@ -45,9 +39,10 @@ const PdfPaySlipList = ({ payroll }) => {
   //     });
   // };
 
-  // React.useEffect(() => {
-  //   getPayslip();
-  // }, []);
+ 
+  React.useEffect(() => {
+    //getPayslip();
+  }, []);
 
   const GetPdf = () => {
     const dd = {
@@ -58,7 +53,7 @@ const PdfPaySlipList = ({ payroll }) => {
       content: [
         {
           layout: {
-            defaultBorder: false,
+            defaultBorder: true,
             hLineWidth: () => {
               return 1;
             },
@@ -67,16 +62,19 @@ const PdfPaySlipList = ({ payroll }) => {
             },
             hLineColor: (i) => {
               if (i === 1 || i === 0) {
-                return '#bfdde8';
+                return 'black';
               }
-              return '#eaeaea';
+              return 'black';
             },
             vLineColor: () => {
-              return '#eaeaea';
+              return 'Black';
             },
             hLineStyle: () => {
+              // if (i === 0 || i === node.table.body.length) {
               return null;
+              //}
             },
+            // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
             paddingLeft: () => {
               return 10;
             },
@@ -94,1032 +92,311 @@ const PdfPaySlipList = ({ payroll }) => {
             },
           },
           table: {
+            widths: [20,40,50,15,130,100,30],
+            heights: [55,0,50,0,40,0,20,20,20,5,35,20,30,30],
             headerRows: 1,
-            widths: ['101%'],
+           // widths: ['105%', '51%'],
 
             body: [
               [
                 {
-                  text: `~PAY SLIP~`,
+                  text: 'PAYSLIP',
+                  style: 'tableHeader',
+                  colSpan: 4,
                   alignment: 'center',
-                  style: 'tableHead',
+                  fontSize:26,
+                  margin: [0, 12, 0, 0],
                 },
+                {},
+                { text: '', style: 'tableHeader', alignment: 'Left' },
+                {},
+              // [
+              //     { type: 'line', margin: [0, 50, -150, 0], x1: 0, y1: 0, x2: 150, y2: 0, lineWidth: 1 },
+              //   ],
+                { text: `For the Period: \n \n ${
+                  moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                    ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                    : ''
+                }   -   ${
+                  moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                    ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                    : ''
+                }`,  colSpan: 3, style: 'tableHeader2' 
+              },
+                {},
+                { text: '', alignment: 'center', colSpan: 2 },
               ],
-            ],
-          },
-        },
-        '\n',
-
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['105%', '51%'],
-
-            body: [
               [
                 {
-                  text: 'Name of the Employee',
-                  alignment: 'left',
-                  style: 'tableHead',
+                  text: 'Name of Employer',
+                  style: 'tableHeader1',
+                  alignment: 'center',
+                  colSpan: 4,
                 },
+                {},
+                { text: `${payroll.employee_name ? payroll.employee_name : ''}`, style: 'tableHeader', alignment: 'center' },
+                {},
+                { text: 'Date of Payment', alignment: 'center', colSpan: 3, style: 'tableHeader1' },
+                {},
+                { text: '', alignment: 'center' },
+              ],
+              [
+                {
+                  text: 'SPEEDO OFFSHORE ENGINEERING PTE LTD ',
+                  style: 'tableHeader2',
+                  alignment: 'center',
+                  colSpan: 4,
+                  margin: [0, 15, 0, 0],
+                },
+                {},
+                { text: '', style: 'tableHeader', alignment: 'center' ,margin: [0, 10, 0, 0],},
+                {},
+                {
+                  text:  ` ${
+                    moment(payroll.generated_date).format('DD-MM-YYYY')
+                      ? moment(payroll.generated_date).format('DD-MM-YYYY')
+                      : ''
+                  } `,
+                  alignment: 'center',
+                  colSpan: 3,
+                  style: 'tableHeader2',
+                  margin: [0, 16, 0, 0],
+                },
+                {},
+                { text: '', alignment: 'center' },
+              ],
+              [
+                {
+                  text: 'Name of Employee',
+                  style: 'tableHeader1',
+                  alignment: 'center',
+                  colSpan: 4,
+                },
+                {},
+                { text: '', style: 'tableHeader', alignment: 'center' },
+                {},
+                { text: 'Mode of Payment', style: 'tableHeader1', alignment: 'center', colSpan: 3 },
+                {},
+                { text: '', alignment: 'center' },
               ],
               [
                 {
                   text: `${payroll.employee_name ? payroll.employee_name : ''}`,
-                  alignment: 'left',
-                  style: 'tableBody',
+                  alignment: 'center',
+                  colSpan: 4,
+                  margin: [0, 15, 0, 0],
+                  style: 'tableHeader2',
                 },
-              ],
-            ],
-          },
-        },
-
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['105%', '51%'],
-
-            body: [
-              [
-                {
-                  text: 'NRIC No/FIN NO',
-                  alignment: 'left',
-                  style: 'tableHead',
-                },
-              ],
-              [
-                {
-                  text: `${payroll.nric_no ? payroll.nric_no : payroll.fin_no?payroll.fin_no: ''}`,
-                  alignment: 'left',
-                  style: 'tableBody',
-                },
-              ],
-             
-            ],
-          },
-        },
-
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['51%', '50%'],
-
-            body: [
-              [
-                {
-                  text: 'Item',
-                  style: 'tableHead',
-                },
-
-                {
-                  text: 'Amount S$',
-                  style: 'tableHead',
-                },
-              ],
-
-              [
-                {
-                  text: `Basic Pay`,
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-                {
-                  border: [false, false, false, true],
-                  text: `${
-                    payroll.basic_pay
-                      ? payroll.basic_pay.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-
-              [
-                {
-                  text: 'Gross Pay ',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.total_basic_pay_for_month
-                      ? payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }                                                             `,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Total Allowance(Breakdown shown below)',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.total_allowance
-                      ? payroll.total_allowance.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }                                                              `,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Transport',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.allowance1
-                      ? payroll.allowance1.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Entertainment',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.allowance2
-                      ? payroll.allowance2.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-
-              [
-                {
-                  text: 'Food',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.allowance3
-                      ? payroll.allowance3.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Shift Allowance',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.allowance4
-                      ? payroll.allowance4.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Others',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.allowance5
-                      ? payroll.allowance5.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Total Deductions(Breakdown shown below)',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.total_deductions
-                      ? payroll.total_deductions.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }                                                            `,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Employees CPF deduction',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.cpf_employee
-                      ? payroll.cpf_employee.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'SDL',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.sdl
-                      ? payroll.sdl.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Advance/Loan',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.loan_amount
-                      ? payroll.loan_amount.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Housing',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.deduction1
-                      ? payroll.deduction1.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Transportation',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.deduction2
-                      ? payroll.deduction2.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Others',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.deduction3
-                      ? payroll.deduction3.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Food',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.deduction4
-                      ? payroll.deduction4.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-            ],
-          },
-        },
-
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['105%', '41%'],
-
-            body: [
-              [
-                {
-                  text: 'Date of Payment',
-                  alignment: 'left',
-                  style: 'tableHead',
-                },
-              ],
-            ],
-          },
-        },
-        '\n',
-        {
-          columns: [
-            {
-              text: ` Date:  ${
-                moment(payroll.generated_date).format('DD-MM-YYYY')
-                  ? moment(payroll.generated_date).format('DD-MM-YYYY')
-                  : ''
-              } `,
-              margin: [10, 0, 0, 0],
-              style: ['notesText', 'textSize'],
-            },
-          ],
-        },
-        '\n',
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['105%', '51%'],
-
-            body: [
-              [
-                {
-                  text: 'Mode of Payment',
-                  alignment: 'left',
-                  style: 'tableHead',
-                },
-              ],
-              [
+                {},
+                '',
+                {},
                 {
                   text: `${payroll.mode_of_payment ? payroll.mode_of_payment : ''}`,
+                  alignment: 'center',
+                  colSpan: 3,
+                  margin: [0, 15, 0, 0],
+                  style: 'tableHeader2',
+                },
+                {},
+                { text: '', alignment: 'center' },
+              ],
+              [
+                { text: 'Item', alignment: 'center', colSpan: 2, style: 'tableHeader1' },
+                {},
+                { text: 'Amount', alignment: 'center', colSpan: 2, style: 'tableHeader1' },
+                {},
+                {
+                  text: 'Overtime Details',
+                  alignment: 'center',
+                  colSpan: 3,
+                  style: 'tableHeader1',
+                },
+                {},
+                { text: '', alignment: 'center' },
+              ],
+              [
+                {
+                  text:'Basic Pay',
+                  
+                  colSpan: 2,
+                  style: 'tableHeader2',
+                  margin: [0, 6, 0, 0],
+                },
+                {},
+                {
+                  text: `${payroll.basic_pay.toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                  })}`,
+                  alignment: 'center',
+                  colSpan: 1,
+                  margin: [0, 6, 0, 0],
+                  style: 'tableHeader2',
+                },
+                {
+                  text: '[A]',
+                  alignment: 'center',
+                  colSpan: 1,
+                  colour: 'black',
+                  margin: [0, 6, 0, 0],
+                  style: 'tableHeader2',
+                  fillColor:'#FFE5CC'
+                },
+                {
+                  text: 'Overtime payment Period(s)',
                   alignment: 'left',
-                  style: 'tableBody',
-                  border: [false, false, false, true],
+                  style: 'tableHeader2',
+                  colSpan: 1,
+                  margin: [0, 6, 0, 0],
                 },
-              ],
-            ],
-          },
-        },
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['51%', '50%'],
-
-            body: [
-              [
-                {
-                  text: 'Overtime Details*',
-                  style: 'tableHead',
-                },
-                {
-                  text: '',
-                  style: 'tableHead',
-                },
+                {  text: `  ${
+                  moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                    ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                    : ''
+                }   TO   ${
+                  moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                    ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                    : ''
+                } `, alignment: 'center', colSpan: 2,style: 'tableHeader2',margin: [0, 6, 0, 0], },
+                {},
               ],
               [
                 {
-                  text: 'Overtime Payment Period(s)',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
+                  text: 'Total Allowance',
+                  alignment: 'left',
+                  colSpan: 2,
+                  style: 'tableHeader2',
+                  margin: [0, 6, 0, 0],
                 },
-                {
-                  text: `  ${
-                    moment(payroll.payslip_start_date).format('DD-MM-YYYY')
-                      ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
-                      : ''
-                  }   TO   ${
-                    moment(payroll.payslip_end_date).format('DD-MM-YYYY')
-                      ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
-                      : ''
-                  } `,
-
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                },
-              ],
-              [
+                { text: '', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: `${
+                  payroll.total_allowance
+                    ? payroll.total_allowance.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }`, alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2' },
+                { text: '[B]', alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2',fillColor:'#FFE5CC' },
                 {
                   text: 'Overtime Hours Worked',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
+                  alignment: 'left',
+                  style: 'tableHeader2',
+                  colSpan: 1,
+                  margin: [0, 6, 0, 0],
                 },
-                {
-                  text: ` ${
-                    payroll.ot_hours
-                      ? payroll.ot_hours.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
+                { text: ` ${
+                  payroll.ot_hours
+                    ? payroll.ot_hours.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }`, alignment: 'center', colSpan: 2 ,style: 'tableHeader2',margin: [0, 6, 0, 0],},
+                {},
               ],
               [
+                { text: '', alignment: 'center', colSpan: 2, style: 'tableHeader2' },
+                { text: 'Total Allowances', alignment: 'center', colSpan: 1 },
+                { text: '', alignment: 'center', colSpan: 2 },
+                {},
                 {
                   text: 'Total Overtime Pay',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
+                  alignment: 'left',
+                  style: 'tableHeader2',
+                  margin: [0, 6, 0, 0],
                 },
+                {  text: ` ${
+                  payroll.ot_amount
+                    ? payroll.ot_amount.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                } `, alignment: 'center',style: 'tableHeader2',margin: [0, 6, 0, 0], },
+                { text: '[E]', alignment: 'center',style: 'tableHeader2',margin: [0, 6, 0, 0],fillColor:'#FFE5CC' },
+              ],
+              [
+                { text: 'Gross(A+B)', alignment: 'center', colSpan: 2, style: 'tableHeader2' },
+                { text: '430.00', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2,
+                })}`, alignment: 'center',style: 'tableHeader2', },
+                { text: '[C]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
+                { text: 'Item', alignment: 'center', colSpan: 1 ,style: 'tableHeader1'},
+                { text: 'Amount', alignment: 'center', colSpan: 2,style: 'tableHeader1' },
+                {},
+              ],
+              [
+                { text: '', alignment: 'center', colSpan: 2 },
+                { text: 'Total Allowances', alignment: 'left', colSpan: 1,style: 'tableHeader2', },
+                { text: '', alignment: 'center', colSpan: 2 },
+                {},
+                { text: 'Other Additional Payments (Performance Allowance)', alignment: 'left',style: 'tableHeader2',margin: [0, 8, 0, 0], },
+                { text: '32.00', alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
+                { text: '[F]', alignment: 'center' ,style: 'tableHeader2',fillColor:'#FFE5CC',margin: [0, 10, 0, 0],},
+              ],
+              [
+                { text: 'Total Deductions', alignment: 'left', colSpan: 2, style: 'tableHeader2',margin: [0, 2, 0, 0],  },
+                { text: '430.00', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: `${
+                  payroll.total_deductions
+                    ? payroll.total_deductions.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                } `, alignment: 'center' ,style: 'tableHeader2',},
+                { text: '[D]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
+                { text: 'Annual Bonus', alignment: 'left', style: 'tableHeader2',margin: [0, 2, 0, 0],  },
+                { text: '', alignment: 'center', colSpan: 2 , style: 'tableHeader2' },
+                {},
+              ],
+              [
                 {
-                  text: ` ${
-                    payroll.ot_amount
-                      ? payroll.ot_amount.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }                                                     `,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
+                  text: 'Accomodation Employee CPF Advanced Loan ',
+                  alignment: 'Left',
+                  colSpan: 2,
+                  rowSpan: 2,
+                  margin: [0, 10, 0, 0],
+                  style: 'tableHeader2',
                 },
+                { text: '', alignment: 'center', colSpan: 1 },
+                { text: `20.00 \n   ${payroll.cpf_employee
+                    ? payroll.cpf_employee.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }\n ${
+                  payroll.loan_amount
+                    ? payroll.loan_amount.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                } `, alignment: 'center', colSpan: 1, rowSpan: 2 , style: 'tableHeader2',margin: [0, 10, 0, 0], },
+                { text: '', rowSpan: 2, alignment: 'center' },
+                { text: 'Net Pay[C-D+E+F] ', alignment: 'center', margin: [0, 6, 0, 0],style: 'tableHeader2', },
+                {  text: ` ${
+                  payroll.net_total
+                    ? payroll.net_total.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }`, alignment: 'center', colSpan: 2,style: 'tableHeader2', margin: [0, 6, 0, 0], },
+                {},
+              ],
+              [
+                { text: '', alignment: 'center', colSpan: 2, rowSpan: 2, margin: [0, 10, 0, 0] },
+                { text: 'Total Allowances', alignment: 'center', colSpan: 1,style: 'tableHeader2', },
+                { text: '20.00 30.00 40.00 ', alignment: 'center', colSpan: 1,style: 'tableHeader2', },
+                { text: '', alignment: 'center' },
+                { text: 'Employer CPF Contribution ', alignment: 'center' ,margin: [0, 6, 0, 0],style: 'tableHeader2',},
+                {  text: `${
+                  payroll.cpf_employer
+                    ? payroll.cpf_employer.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }`, alignment: 'center', colSpan: 2 ,style: 'tableHeader2', margin: [0, 6, 0, 0],},
+                {},
               ],
             ],
           },
-        },
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['51%', '50%'],
-
-            body: [
-              [
-                {
-                  text: 'Item',
-                  style: 'tableHead',
-                },
-
-                {
-                  text: 'Amount S$',
-                  style: 'tableHead',
-                  alignment: 'center',
-                  margin: [0, 0, 150, 0],
-                },
-              ],
-              [
-                {
-                  text: `Other Additional Payment(Breakdown Shown below)
-                  \n Reimbursement  \n\n Director Fees `,
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: ` \n\n ${
-                    payroll.reimbursement
-                      ? payroll.reimbursement.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  } \n\n  ${
-                    payroll.director_fee
-                      ? payroll.director_fee.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  } `,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-
-              [
-                {
-                  text: 'NetPay(A+B-C+D+E)',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: ` ${
-                    payroll.net_total
-                      ? payroll.net_total.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-            ],
-          },
-        },
-        {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
-            },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['51%', '50%'],
-
-            body: [
-              [
-                {
-                  text: 'CPF Details',
-                  style: 'tableHead',
-                },
-                {
-                  text: '',
-                  style: 'tableHead',
-                },
-              ],
-              [
-                {
-                  text: 'Employers Contribution',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.cpf_employer
-                      ? payroll.cpf_employer.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-              [
-                {
-                  text: 'Employee Contribution',
-                  border: [false, false, false, true],
-                  style: 'tableBody',
-                },
-
-                {
-                  text: `${
-                    payroll.cpf_employee
-                      ? payroll.cpf_employee.toLocaleString('en-IN', {
-                          minimumFractionDigits: 2,
-                        })
-                      : 0.0
-                  }`,
-                  border: [false, false, false, true],
-                  fillColor: '#f5f5f5',
-                  style: 'tableBody',
-                  alignment: 'right',
-                  margin: [0, 0, 170, 0],
-                },
-              ],
-            ],
-          },
-        },
-        '\n',
-        '\n',
-        {
-          stack: [
-            '\n\n',
-
-            {
-              canvas: [
-                {
-                  type: 'line',
-                  margin: [0, 50, -150, 0],
-                  x1: 0,
-                  y1: 0,
-                  x2: 150,
-                  y2: 0,
-                  lineWidth: 1,
-                },
-              ],
-            },
-            '\n',
-            {
-              text: `Signature of Employee`,
-              fontSize: 10,
-              style: ['textSize'],
-              margin: [0, 0, 0, 0],
-            },
-          ],
         },
         '\n',
         '\n',
@@ -1135,46 +412,38 @@ const PdfPaySlipList = ({ payroll }) => {
       margin: [0, 50, 50, 50],
 
       styles: {
-        logo: {
-          margin: [-20, 20, 0, 0],
-        },
-        address: {
-          margin: [-10, 20, 0, 0],
-        },
-        invoice: {
-          margin: [0, 30, 0, 10],
-          alignment: 'right',
-        },
-        invoiceAdd: {
-          alignment: 'right',
-        },
-        textSize: {
-          fontSize: 10,
-        },
-        notesTitle: {
+        header: {
+          fontSize: 18,
           bold: true,
-          margin: [0, 50, 0, 3],
+          margin: [0, 0, 0, 10]
         },
-        tableHead: {
-          border: [false, true, false, true],
-          fillColor: '#eaf2f5',
-          margin: [0, 5, 0, 5],
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5]
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15]
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 22,
+          color: 'black'
+        },
+        tableHeader1: {
+          bold: true,
           fontSize: 10,
-          bold: 'true',
+          color: 'black',
+          fillColor:'#FFCC99'
         },
-        tableBody: {
-          border: [false, false, false, true],
-          margin: [0, 5, 0, 5],
-          alignment: 'left',
+        tableHeader2: {
+          bold: false,
           fontSize: 10,
-        },
-        tableBody1: {
-          border: [false, false, false, true],
-          margin: [20, 5, 0, 5],
-          alignment: 'left',
-          fontSize: 10,
-        },
+          color: 'black',
+          
+        }
       },
+      
       defaultStyle: {
         columnGap: 20,
       },
@@ -1185,7 +454,7 @@ const PdfPaySlipList = ({ payroll }) => {
 
   return (
     <>
-      <Link to="" onClick={GetPdf}>
+     <Link to="" onClick={GetPdf}>
         Print PaySlip
       </Link>
     </>

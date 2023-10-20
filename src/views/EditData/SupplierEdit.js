@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {  Form, FormGroup } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
@@ -11,8 +10,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
 import api from '../../constants/api';
@@ -34,26 +31,24 @@ const SupplierEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   //const applyChanges = () => {};
-const backToList=() => {
-  navigate('/Supplier');
-}
+  const backToList = () => {
+    navigate('/Supplier');
+  };
   const handleInputs = (e) => {
     setSupplier({ ...supplier, [e.target.name]: e.target.value });
   };
   // Get Supplier By Id
   const editSupplierById = () => {
-
     api
       .post('/supplier/get-SupplierById', { supplier_id: id })
       .then((res) => {
         setSupplier(res.data.data[0]);
       })
       .catch(() => {
-        message('Supplier Data Not Found', 'info');
+        //message('Supplier Data Not Found', 'info');
       });
   };
 
- 
   //Logic for edit data in db
   const editSupplierData = () => {
     if (supplier.company_name !== '') {
@@ -67,7 +62,7 @@ const backToList=() => {
         .catch(() => {
           message('Unable to edit record.', 'error');
         });
-        }  else {
+    } else {
       message('Please fill all required fields.', 'error');
     }
   };
@@ -95,7 +90,7 @@ const backToList=() => {
         setAllCountries(res.data.data);
       })
       .catch(() => {
-        message('Supplier Data Not Found', 'info');
+        //message('Supplier Data Not Found', 'info');
       });
   };
   //Api call for getting Staff Type From Valuelist
@@ -106,7 +101,7 @@ const backToList=() => {
         setSupplierStatus(res.data.data);
       })
       .catch(() => {
-        message('Status Data Not Found', 'info');
+        //message('Status Data Not Found', 'info');
       });
   };
   useEffect(() => {
@@ -117,7 +112,7 @@ const backToList=() => {
           setPurchaseOrder(res.data.data);
         })
         .catch(() => {
-          message('Supplier not found', 'info');
+          //message('Supplier not found', 'info');
         });
     };
     getpurchaseOrder();
@@ -129,71 +124,25 @@ const backToList=() => {
   return (
     <>
       <BreadCrumbs heading={supplier && supplier.company_name} />
-      <Form>
-        <FormGroup>
-          <ComponentCardV2>
-          <ApiButton
-              editData={editSupplierData}
-              navigate={navigate}
-              applyChanges={editSupplierData}
-              backToList={backToList}
-              module="Supplier"
-            ></ApiButton>
-            {/* <Row>
-              <Col>
-                <Button
-                  className="shadow-none"
-                  color="primary"
-                  onClick={() => {
-                    editSupplierData();
-                    navigate('/Supplier');
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="primary"
-                  className="shadow-none"
-                  onClick={() => {
-                    editSupplierData();
-                    setTimeout(() => {
-                      applyChanges();
-                    }, 800);
-                  }}
-                >
-                  Apply
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="dark"
-                  className="shadow-none"
-                  onClick={() => {
-                    applyChanges();
-                    navigate('/Supplier');
 
-                  }}
-                >
-                  Back to List
-                </Button>
-              </Col>
-            </Row> */}
-          </ComponentCardV2>
-        </FormGroup>
-      </Form>
-      <ComponentCard title="Supplier Details" creationModificationDate={supplier}>
+      <ApiButton
+        editData={editSupplierData}
+        navigate={navigate}
+        applyChanges={editSupplierData}
+        backToList={backToList}
+        module="Supplier"
+      ></ApiButton>
 
-      <SupplierDetails
-        handleInputs={handleInputs}
-        supplier={supplier}
-        allCountries={allCountries}
-        supplierStatus={supplierStatus}
-        status={status}
-        setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
-      ></SupplierDetails>
-  </ComponentCard>
+      
+        <SupplierDetails
+          handleInputs={handleInputs}
+          supplier={supplier}
+          allCountries={allCountries}
+          supplierStatus={supplierStatus}
+          status={status}
+          setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
+        ></SupplierDetails>
+      
       <PurchaseOrderLinked
         editPurchaseOrderLinked={editPurchaseOrderLinked}
         setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}

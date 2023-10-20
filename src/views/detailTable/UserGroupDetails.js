@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
@@ -29,28 +30,33 @@ const UserGroupDetails = () => {
 
   //Insert Product Data
   const createUserGroup = () => {
-    api
-      .post('/usergroup/insertUserGroup', userGroupDetails)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        section.forEach((elem) => {
-          elem.user_group_id = insertedDataId;
-          api
-            .post('/usergroup/insertRoomUserGroup', elem)
-            .then(() => {})
-            .catch((err) => {
-              console.log(err);
-            });
+    if (userGroupDetails.title !== '') {
+      api
+        .post('/usergroup/insertUserGroup', userGroupDetails)
+        .then((res) => {
+          const insertedDataId = res.data.data.insertId;
+          console.log(insertedDataId);
+          section.forEach((elem) => {
+            elem.user_group_id = insertedDataId;
+            api
+              .post('/usergroup/insertRoomUserGroup', elem)
+              .then(() => {})
+              .catch((err) => {
+                console.log(err);
+              });
+          });
+          message('UserGroup created successfully.', 'success');
+          setTimeout(() => {
+            navigate(`/UserGroupEdit/${insertedDataId}`);
+          }, 500);
+        })
+
+        .catch(() => {
+          message('Unable to edit record.', 'error');
         });
-        message('UserGroup created successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/UserGroupEdit/${insertedDataId}`);
-        }, 500);
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
+    } else {
+      message('Please fill all required fields.', 'warning');
+    }
   };
 
   useEffect(() => {
@@ -67,7 +73,9 @@ const UserGroupDetails = () => {
               <FormGroup>
                 <Row>
                   <Col md="12">
-                    <Label>Title</Label>
+                    <Label>
+                      Title<span className="required">*</span>
+                    </Label>
                     <Input
                       type="text"
                       onChange={handleInputs}
@@ -87,16 +95,20 @@ const UserGroupDetails = () => {
                         createUserGroup();
                       }}
                     >
-                      Save
+                      Save & Continue
                     </Button>
                     <Button
-                      onClick={() => {
-                        navigate('/UserGroup');
-                      }}
-                      type="button"
+                      type="submit"
                       className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/UserGroup');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
                     >
-                      Go to List
+                      Cancel
                     </Button>
                   </div>
                 </Row>
