@@ -5,17 +5,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { usePermify } from '@permify/react-role';
 import ComponentCard from '../../components/ComponentCard';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
 import UserGroupButtons from '../../components/userGroup/UserGroupButtons';
 import AppContext from '../../context/AppContext';
-import ApiButton from '../../components/ApiButton';
 
 const UserGroupEdit = () => {
   //state variables
   const [userGroupDetails, setUserGroupDetails] = useState({});
+  const [ReportDetails, setReportDetails] = useState([]);
   const [roomUser, setRoomUser] = useState([]);
   const { loggedInuser } = React.useContext(AppContext);
   const { setUser } = usePermify();
@@ -78,6 +79,39 @@ const UserGroupEdit = () => {
         message('Unable to get room user record.', 'error');
       });
   };
+
+   //get roomusergroup data by id
+   const getRoomUserGroupReport = () => {
+    api
+      .post('/usergroup/getroomusergroupReportById', { user_group_id: id })
+      .then((res) => {
+        setReportDetails(res.data.data);
+        if (id === loggedInuser.user_group_id) {
+          const apiData = res.data.data;
+          const permissionArray = [];
+          apiData.forEach((element) => {
+            if (element.edit) permissionArray.push(`${element.section_title}-edit`);
+            if (element.detail) permissionArray.push(`${element.section_title}-detail`);
+            if (element.duplicate) permissionArray.push(`${element.section_title}-duplicate`);
+            if (element.export) permissionArray.push(`${element.section_title}-export`);
+            if (element.import) permissionArray.push(`${element.section_title}-import`);
+            if (element.list) permissionArray.push(`${element.section_title}-list`);
+            if (element.new) permissionArray.push(`${element.section_title}-new`);
+            if (element.print) permissionArray.push(`${element.section_title}-print`);
+            if (element.publish) permissionArray.push(`${element.section_title}-publish`);
+            if (element.remove) permissionArray.push(`${element.section_title}-remove`);
+          });
+          setUser({
+            id: '1',
+            roles: ['admin'],
+            permissions: permissionArray,
+          });
+        }
+      })
+      .catch(() => {
+        message('Unable to get room user record.', 'error');
+      });
+  };
   //update room user
   const editRoomUserGroup = (elem) => {
     api
@@ -92,6 +126,7 @@ const UserGroupEdit = () => {
   };
   //update userGroup
   const editUserGroupData = () => {
+    if (userGroupDetails.title !== '') {
     api
       .post('/usergroup/edit-usergroup', userGroupDetails)
       .then(() => {
@@ -100,13 +135,16 @@ const UserGroupEdit = () => {
       .catch(() => {
         message('Unable to edit record.', 'error');
       });
+    } else {
+      message('Please fill all required fields.', 'warning');
+    }
   };
   //insert userGroup
   const insertRoomUserGroup = (item) => {
     api
       .post('/usergroup/insertRoomUserGroup', item)
       .then(() => {
-        message('Record edited successfully', 'success');
+        //message('Record edited successfully', 'success');
         getRoomUserGroup();
       })
       .catch(() => {
@@ -197,6 +235,7 @@ const UserGroupEdit = () => {
   useEffect(() => {
     getUserGroupById();
     getRoomUserGroup();
+    getRoomUserGroupReport();
   }, [id]);
 
   return (
@@ -215,14 +254,14 @@ const UserGroupEdit = () => {
               editRoomUserGroup={getAllValues}
               navigate={navigate}
             />
-            <ApiButton
+            {/* <ApiButton
               editData={editUserGroupData}
               navigate={navigate}
               applyChanges={editUserGroupData}
               backToList={backToList}
               deleteData={deleteUserGroupData}
               module="UserGroup"
-            ></ApiButton>
+            ></ApiButton> */}
             <Form>
               <FormGroup>
                 <ComponentCard title="UserGroup Details">
@@ -232,7 +271,7 @@ const UserGroupEdit = () => {
                         <Label>Title</Label>
                         <Input
                           type="text"
-                          value={userGroupDetails && userGroupDetails.section_title}
+                          value={userGroupDetails && userGroupDetails.title}
                           onChange={handleInputs}
                           name="title"
                         />
@@ -428,6 +467,155 @@ const UserGroupEdit = () => {
                 <tr className="bg-primary text-white w-100">
                   <td>Reports / Widgets</td>
                 </tr>
+              </tbody>
+              <tbody>
+                {ReportDetails &&
+                  ReportDetails.map((element) => {
+                    return (
+                      <tr key={element.section_id}>
+                        <td>
+                          <Input
+                            type="text"
+                            name="section_title"
+                            value={element.section_title}
+                            disabled
+                          />
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="list"
+                              // checked={isChecked}
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.list}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="detail"
+                              // checked={isChecked}
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.detail}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="new"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.new}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="edit"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.edit}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="remove"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.remove}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="publish"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.publish}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="unpublish"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.unpublish}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="print"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.print}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="import"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.import}
+                            />
+                          </FormGroup>
+                        </td>
+                        <td>
+                          <FormGroup check>
+                            <Input
+                              type="checkbox"
+                              value="1"
+                              name="export"
+                              onChange={(e) => {
+                                handleOnChange(e, element);
+                              }}
+                              defaultChecked={element.export}
+                            />
+                          </FormGroup>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </Table>
           </ComponentCard>

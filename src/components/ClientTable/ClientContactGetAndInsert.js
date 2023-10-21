@@ -6,7 +6,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  Card,
   Table,
   Label,
   Input,
@@ -15,7 +14,6 @@ import {
   Button,
   CardBody,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as Icon from 'react-feather';
 
@@ -127,7 +125,7 @@ export default function ClientContactGetAndInsert({
                   <tr key={element.contact_id}>
                     <td>{i + 1}</td>
                     <td>
-                      <Link to="">
+                      <div className='anchor'>
                         <span
                           onClick={() => {
                             setContactData(element);
@@ -136,14 +134,14 @@ export default function ClientContactGetAndInsert({
                         >
                           <Icon.Edit2 />
                         </span>
-                      </Link>
+                      </div>
                     </td>
                     <td>
-                      <Link to="">
+                      <div color="primary" className='anchor'>
                         <span onClick={() => deleteRecord(element.contact_id)}>
                           <Icon.Trash2 />
                         </span>
-                      </Link>
+                      </div>
                     </td>
                     <td>{element.first_name}</td>
                     <td>{element.email}</td>
@@ -152,7 +150,7 @@ export default function ClientContactGetAndInsert({
                     <td>{element.position}</td>
                     <td>{element.department}</td>
                   </tr>
-                )
+                );
               })}
           </tbody>
         </Table>
@@ -168,13 +166,12 @@ export default function ClientContactGetAndInsert({
               <ModalBody>
                 <Row>
                   <Col md="12">
-                    <Card>
                       <CardBody>
                         <Form>
                           <Row>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
-                                <Label>Title</Label>
+                                <Label>Title<span className='required'>*</span></Label>
                                 <Input
                                   type="select"
                                   name="salutation"
@@ -190,9 +187,9 @@ export default function ClientContactGetAndInsert({
                                 </Input>
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
-                                <Label>Name</Label>
+                                <Label>Name<span className='required'>*</span></Label>
                                 <Input
                                   type="text"
                                   name="first_name"
@@ -201,7 +198,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Email</Label>
                                 <Input
@@ -212,7 +209,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Position</Label>
                                 <Input
@@ -223,7 +220,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Department</Label>
                                 <Input
@@ -234,7 +231,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Phone (Direct)</Label>
                                 <Input
@@ -245,7 +242,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Fax (Direct)</Label>
                                 <Input
@@ -256,7 +253,7 @@ export default function ClientContactGetAndInsert({
                                 />
                               </FormGroup>
                             </Col>
-                            <Col md="12">
+                            <Col md="4">
                               <FormGroup>
                                 <Label>Mobile</Label>
                                 <Input
@@ -270,7 +267,7 @@ export default function ClientContactGetAndInsert({
                           </Row>
                         </Form>
                       </CardBody>
-                    </Card>
+                   
                   </Col>
                 </Row>
               </ModalBody>
@@ -280,7 +277,7 @@ export default function ClientContactGetAndInsert({
                   color="primary"
                   onClick={() => {
                     AddNewContact();
-                    addContactModal(false);
+                    //addContactModal(false);
                   }}
                 >
                   Submit

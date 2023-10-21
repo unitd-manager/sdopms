@@ -24,7 +24,8 @@ const SupplierDetails = () => {
   const insertSupplier = () => {
     supplierForms.creation_date = creationdatetime;
     if (supplierForms.company_name !== '')
-      api.post('/supplier/insert-Supplier', supplierForms)
+      api
+        .post('/supplier/insert-Supplier', supplierForms)
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
           message('Supplier inserted successfully.', 'success');
@@ -36,19 +37,19 @@ const SupplierDetails = () => {
           message('Network connection error.', 'error');
         });
     else {
-      message('Please fill all required fields.', 'error');
+      message('Please fill all required fields.', 'warning');
     }
   };
   useEffect(() => {}, []);
   return (
     <div>
-       <BreadCrumbs />
+      <BreadCrumbs />
       <ToastContainer />
       <Row>
         <Col md="6" xs="12">
           {/* Key Details */}
           <ComponentCard title="Supplier Name">
-          <Form>
+            <Form>
               <FormGroup>
                 <Row>
                   <Col md="12">
@@ -57,29 +58,36 @@ const SupplierDetails = () => {
                       Supplier Name <span className="required"> *</span>{' '}
                     </Label>
                     <Input type="text" name="company_name" onChange={handleInputsSupplierForms} />
-                    </Col>
+                  </Col>
                 </Row>
               </FormGroup>
               <FormGroup>
                 <Row>
-          <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-            <Button color="primary"
-              onClick={() => {
-                insertSupplier();
-              }}
-              type="button"
-              className="btn mr-2 shadow-none"  >
-              Save & Continue
-            </Button>
-            <Button
-              onClick={() => {
-                navigate('/Supplier')
-              }}
-              type="button"
-              className="btn btn-dark shadow-none" >
-              Go to List
-            </Button>
-            </div>
+                  <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        insertSupplier();
+                      }}
+                      type="button"
+                      className="btn mr-2 shadow-none"
+                    >
+                      Save & Continue
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/Supplier');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </Row>
               </FormGroup>
             </Form>

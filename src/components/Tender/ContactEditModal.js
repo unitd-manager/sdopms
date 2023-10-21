@@ -13,7 +13,6 @@ import {
   ModalHeader,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import ComponentCard from '../ComponentCard';
 import message from '../Message';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../views/form-editor/editor.scss';
@@ -40,9 +39,6 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
       .post('/clients/editContact', contactinsert)
       .then(() => {
         message('Record editted successfully', 'success');
-        //  setTimeout(() => {
-        //    window.location.reload()
-        //  }, 300);
         window.location.reload();
       })
       .catch(() => {
@@ -51,7 +47,6 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
   };
 
   useEffect(() => {
-    // editContactById();
     setContactInsert(contactData);
   }, [contactData]);
 
@@ -59,7 +54,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
     <>
       <Modal size="lg" isOpen={editContactEditModal}>
         <ModalHeader>
-          ContactDetails
+          Edit Contact
           <Button
             color="secondary"
             onClick={() => {
@@ -75,8 +70,9 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
             <Col md="3" className="mb-4 d-flex justify-content-between"></Col>
           </Row>
           <Row>
-            <Col md="2">
-              <Label>title </Label>
+            <Col md="4">
+            <FormGroup>
+              <Label>Title </Label>
               <Input
                 type="select"
                 onChange={handleInputs}
@@ -90,8 +86,9 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
                 <option value="Mr">Mr</option>
                 <option value="Mrs">Mrs</option>
               </Input>
+              </FormGroup>              
             </Col>
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Name</Label>
                 <Input
@@ -103,7 +100,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
               </FormGroup>
             </Col>
 
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Email</Label>
                 <Input
@@ -114,7 +111,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
                 />
               </FormGroup>
             </Col>
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Position </Label>
                 <Input
@@ -125,7 +122,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
                 />
               </FormGroup>
             </Col>
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Dept </Label>
                 <Input
@@ -136,7 +133,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
                 />
               </FormGroup>
             </Col>
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Phone(Direct) </Label>
                 <Input
@@ -148,7 +145,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
               </FormGroup>
             </Col>
 
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Fax(Direct) </Label>
                 <Input
@@ -160,7 +157,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
               </FormGroup>
             </Col>
 
-            <Col md="2">
+            <Col md="4">
               <FormGroup>
                 <Label>Mobile </Label>
                 <Input
@@ -175,8 +172,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
         </ModalBody>
 
         <ModalFooter>
-          <Row>
-            <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+        
               <Button
                 color="primary"
                 onClick={() => {
@@ -193,11 +189,7 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
               >
                 Cancel
               </Button>
-            </div>
-          </Row>
         </ModalFooter>
-
-        <ComponentCard></ComponentCard>
       </Modal>
     </>
   );

@@ -146,9 +146,20 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
   //Insert Receipt
   const insertReceipt = () => {
     createSupplier.supplier_id = id
+    if (selectedSupplier.length === 0) {
+      // Display an error message if no checkboxes are selected.
+      alert('Please select at least one invoice.');
+    } else if (!createSupplier.amount || parseFloat(createSupplier.amount) <= 0) {
+      // Display an error message if the amount is missing or not a valid number.
+      alert('Please enter a valid amount greater than zero.');
+    } else if (!createSupplier.mode_of_payment || createSupplier.mode_of_payment === 'Please Select') {
+      // Display an error message if the "Mode Of Payment" is not selected.
+      alert('Please select a mode of payment.');
+    } else {
+      // If all validations pass, proceed with inserting the receipt.
 
-    if (createSupplier.amount &&
-      createSupplier.mode_of_payment && (selectedSupplier.length>0)) {
+    // if (createSupplier.amount &&
+    //   createSupplier.mode_of_payment && (selectedSupplier.length>0)) {
       api
       .post('/supplier/insert-SupplierReceipt', createSupplier)
       .then((res) => {

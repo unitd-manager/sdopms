@@ -81,6 +81,7 @@ export default function ProjectTask({
   const [moduleId, setModuleId] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [employeeTeam, setEmployeeTeam] = useState([]);
+  const [tasktypedetails, setTaskTypetDetails] = useState();
   //const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [updateFile, setUpdateFile] = useState(true);
@@ -99,11 +100,23 @@ export default function ProjectTask({
   };
   const getStaffName = () => {
     api
-      .post('/projectteam/getEmployeeByID', { project_team_id : id })
+      .post('/projectteam/getEmployeeByID', { project_team_id: id })
       .then((res) => {
         setEmployee(res.data.data);
       })
       .catch(() => {});
+  };
+
+  //Api call for getting Task Type From Valuelist
+  const getTaskType = () => {
+    api
+      .get('/project/getTaskTypeFromValueList')
+      .then((res) => {
+        setTaskTypetDetails(res.data.data);
+      })
+      .catch(() => {
+        message('Staff Data Not Found', 'info');
+      });
   };
 
   //Milestone data in milestoneDetails
@@ -224,23 +237,23 @@ export default function ProjectTask({
     setSearchQuery(e.target.value);
   };
 
- 
   const handleSearchData = () => {
     const newData = taskById.filter((task) => {
       // Check if task.title exists and perform a case-insensitive search
-      const titleMatches = task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
-  
+      const titleMatches =
+        task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
+
       // Check if task.first_name exists and perform a case-insensitive search
-      const firstNameMatches = task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
-  
+      const firstNameMatches =
+        task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
+
       // Include the task in newData if either title or first_name matches
       return titleMatches || firstNameMatches;
     });
-  
+
     setUserSearchData(newData);
     setFilteredData(newData);
   };
-
 
   // Api call for getting milestone dropdown based on project ID
   const getMilestoneTitle = () => {
@@ -262,7 +275,6 @@ export default function ProjectTask({
       .catch(() => {});
   };
 
-
   //attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -271,10 +283,10 @@ export default function ProjectTask({
     console.log('inside DataForAttachment');
   };
 
-
   useEffect(() => {
     getStaffName();
     editJobById();
+    getTaskType();
     dataForAttachment();
     getMilestoneTitle();
     fetchEmployeeDetails();
@@ -498,9 +510,9 @@ export default function ProjectTask({
                                 type="select"
                                 name="project_team_id"
                                 onChange={(e) => {
-                                  handleInputsTask(e);}}
-                                  value={insertTask && insertTask.project_team_id}
-                                
+                                  handleInputsTask(e);
+                                }}
+                                value={insertTask && insertTask.project_team_id}
                               >
                                 <option value="" selected>
                                   Please Select
@@ -508,9 +520,9 @@ export default function ProjectTask({
                                 {employees &&
                                   employees.map((ele) => {
                                     return (
-                                        <option key={ele.project_team_id} value={ele.team_title}>
-                                          {ele.team_title}
-                                        </option>  
+                                      <option key={ele.project_team_id} value={ele.team_title}>
+                                        {ele.team_title}
+                                      </option>
                                     );
                                   })}
                               </Input>
@@ -525,9 +537,9 @@ export default function ProjectTask({
                                 type="select"
                                 name="project_team_id"
                                 onChange={(e) => {
-                                  handleInputsTask(e);}}
-                                  value={insertTask && insertTask.project_team_id}
-                                
+                                  handleInputsTask(e);
+                                }}
+                                value={insertTask && insertTask.project_team_id}
                               >
                                 <option value="" selected>
                                   Please Select
@@ -535,9 +547,9 @@ export default function ProjectTask({
                                 {employeeTeam &&
                                   employeeTeam.map((ele) => {
                                     return (
-                                        <option key={ele.employee_id} value={ele.first_name}>
-                                          {ele.first_name}
-                                        </option>  
+                                      <option key={ele.employee_id} value={ele.first_name}>
+                                        {ele.first_name}
+                                      </option>
                                     );
                                   })}
                               </Input>
@@ -592,7 +604,7 @@ export default function ProjectTask({
                               />
                             </FormGroup>
                           </Col>
-                        
+
                           <Col md="4">
                             <FormGroup>
                               <Label>Task Type</Label>
@@ -603,12 +615,15 @@ export default function ProjectTask({
                                 value={insertTask && insertTask.task_type}
                               >
                                 {' '}
-                                <option value="" selected="selected">
-                                  Please Select
-                                </option>
-                                <option value="Development">Development</option>
-                                <option value="ChangeRequest">ChangeRequest</option>
-                                <option value="Issues">Issues</option>
+                                <option defaultValue="selected">Please Select</option>
+                                {tasktypedetails &&
+                                  tasktypedetails.map((ele) => {
+                                    return (
+                                      <option key={ele.value} value={ele.value}>
+                                        {ele.value}
+                                      </option>
+                                    );
+                                  })}
                               </Input>
                             </FormGroup>
                           </Col>
