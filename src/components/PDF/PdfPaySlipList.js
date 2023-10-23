@@ -314,7 +314,7 @@ const PdfPaySlipList = ({payroll}) => {
               ],
               [
                 { text: 'Gross(A+B)', alignment: 'center', colSpan: 2, style: 'tableHeader2' },
-                { text: '430.00', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: '430.00', alignment: 'right', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                   minimumFractionDigits: 2,
                 })}`, alignment: 'center',style: 'tableHeader2', },

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -97,16 +98,32 @@ const CategoryEdit = () => {
   };
 
   //For delete data in db
+ 
   const deleteCategoryData = () => {
-    api
-      .post('/category/deleteCategory', { category_id: id })
-      .then(() => {
-        message('Record deteled successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to delete record.', 'error');
-      });
+    Swal.fire({
+      title: `Are you sure? `,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/category/deleteCategory', { category_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
+      }
+    });
   };
+
 
   useEffect(() => {
     CategoryById();

@@ -104,7 +104,7 @@ const SupplierEdit = () => {
         //message('Status Data Not Found', 'info');
       });
   };
-  useEffect(() => {
+  
     const getpurchaseOrder = () => {
       api
         .post('/supplier/getPurchaseOrderLinkedss', { supplier_id: id })
@@ -115,6 +115,7 @@ const SupplierEdit = () => {
           //message('Supplier not found', 'info');
         });
     };
+    useEffect(() => {
     getpurchaseOrder();
     suppliereditdetails();
     getSupplierStatus();
@@ -148,7 +149,7 @@ const SupplierEdit = () => {
         setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
       ></PurchaseOrderLinked>
       <ToastContainer></ToastContainer>
-      <SupplierTable purchaseOrder={purchaseOrder}></SupplierTable>
+      <SupplierTable purchaseOrder={purchaseOrder} getpurchaseOrder={getpurchaseOrder}></SupplierTable>
     </>
   );
 };
