@@ -127,4 +127,4 @@ export const columns = [
     {
         name: "Numbers",
       }
-  ]
+    ]

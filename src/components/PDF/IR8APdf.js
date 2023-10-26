@@ -224,8 +224,8 @@ const IR8Pdf = ({ payrollsYear }) => {
 
           {
             text: `${
-              payroll.total_basic_pay_for_month
-                ? payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
+              payroll.yearly_basic_pay
+                ? payroll.yearly_basic_pay.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   })
                 : 0.0
@@ -601,8 +601,8 @@ const IR8Pdf = ({ payrollsYear }) => {
           },
           {
             text: ` ${
-              payroll.cpf_employee
-                ? payroll.cpf_employee.toLocaleString('en-IN', {
+              payroll.cpfEmployee
+                ? payroll.cpfEmployee.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   })
                 : 0.0

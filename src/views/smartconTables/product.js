@@ -8,8 +8,8 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-// import 'datatables.net-buttons/js/buttons.html5';
-// import 'datatables.net-buttons/js/buttons.print';
+import 'datatables.net-buttons/js/buttons.html5';
+import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
@@ -44,8 +44,11 @@ const Test = () => {
   const getAllProducts = () => {
     /* eslint-disable */
 setLoading(true)
-    $('#example').DataTable({
-      dom: 'Bfrtip',
+$('#example').DataTable({
+  pagingType: 'full_numbers',
+  pageLength: 20,
+  processing: true,
+  dom: 'Bfrtip',
       serverSide: true,
       searching: true,
       scrollX: true,
@@ -55,7 +58,7 @@ setLoading(true)
       bDestroy: true,
       ajax: {
         type: 'POST',
-        url: 'http://43.228.126.245:4003/product/getPaginationForProducts',
+        url: 'http://localhost:5007/product/getPaginationForProducts',
       },
       lengthMenu: [
         [10, 100, -1],

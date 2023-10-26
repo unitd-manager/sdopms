@@ -10,7 +10,7 @@ import 'datatables.net-buttons/js/buttons.flash';
 import 'datatables.net-buttons/js/buttons.html5';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useParams, Link } from 'react-router-dom';
-import {  Modal, ModalBody, ModalHeader, FormGroup} from 'reactstrap';
+import { Form, Table } from 'reactstrap';
 import ComponentCard from '../ComponentCard';
 import message from '../Message';
 import api from '../../constants/api';
@@ -18,10 +18,6 @@ import api from '../../constants/api';
 const SupplierHistory = () => {
   const [history, setHistory] = useState();
   const { id } = useParams();
-  const [viewLineModal, setViewLineModal] = useState(false);
-  const viewLineToggle = () => {
-    setViewLineModal(!viewLineModal);
-  };
   // Get  By Id
   const getHistoryById = () => {
     api
@@ -38,20 +34,20 @@ const SupplierHistory = () => {
     getHistoryById();
   }, []);
 
-  // const supplierHistoryColumn = [
-  //   {
-  //     name: 'Date',
-  //   },
-  //   {
-  //     name: 'Amount',
-  //   },
-  //   {
-  //     name: 'Mode Of Payment',
-  //   },
-  //   {
-  //     name: 'Cancel',
-  //   },
-  // ];
+  const supplierHistoryColumn = [
+    {
+      name: 'Date',
+    },
+    {
+      name: 'Amount',
+    },
+    {
+      name: 'Mode Of Payment',
+    },
+    {
+      name: 'Cancel',
+    },
+  ];
 
   const Supplier = (subConPaymentsId) => {
     Swal.fire({
@@ -64,15 +60,10 @@ const SupplierHistory = () => {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        api
-          .put('/supplier/updateSupplierPaymentsAndPurchaseOrder', {
-            supplier_receipt_id: subConPaymentsId,
-            purchase_order_id: id,
-          })
-          .then(() => {
-            Swal.fire('Cancelled!');
-            getHistoryById();
-          });
+        api.put('/supplier/updateSupplierPaymentsAndPurchaseOrder', { supplier_receipt_id: subConPaymentsId,purchase_order_id: id }).then(() => {
+          Swal.fire('Cancelled!');
+          getHistoryById();
+        });
       }
     });
   };
@@ -81,20 +72,15 @@ const SupplierHistory = () => {
     <>
       <ComponentCard>
         <ToastContainer></ToastContainer>
-        <Modal size="xl" isOpen={viewLineModal} toggle={viewLineToggle.bind(null)}>
-          <ModalHeader toggle={viewLineToggle.bind(null)}>Line Items</ModalHeader>
-          <ModalBody>
-            <FormGroup>
-              <table className="lineitem border border-secondary rounded">
-                <thead>
+        <Form>
+          <div className="MainDiv">
+            <div className="container">
+              <Table id="Purchase Order Linked" className="display">
+                <thead title="Purchase Order Linked ">
                   <tr>
-                    <th scope="col">Title </th>
-                    <th scope="col">Description </th>
-                    <th scope="col">Qty </th>
-                    <th scope="col">Unit Price </th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Updated By </th>
-                    <th scope="col">Action</th>
+                    {supplierHistoryColumn.map((cell) => {
+                      return <td key={cell.name}>{cell.name}</td>;
+                    })}
                   </tr>
                 </thead>
                 <tbody>
@@ -102,36 +88,28 @@ const SupplierHistory = () => {
                     history.map((element) => {
                       return (
                         <tr key={element.supplier_receipt_id}>
-                          <td>{moment(element.date).format('YYYY-MM-DD')}</td>
+                          <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                           <td>{element.amount}</td>
                           <td>{element.mode_of_payment}</td>
                           <td>
-                            {element.receipt_status !== 'Cancelled' ? (
-                              <Link to="">
-                                <span
-                                  onClick={() =>
-                                    Supplier(
-                                      element.supplier_receipt_id,
-                                      element.purchase_order_id,
-                                      element.supplier_id,
-                                    )
-                                  }
-                                >
-                                  <u>Cancel</u>
-                                </span>
-                              </Link>
-                            ) : (
-                              'Cancelled'
-                            )}
-                          </td>
+              {element.receipt_status !== 'Cancelled' ? (
+                <Link to="">
+                <span onClick={() => Supplier(element.supplier_receipt_id,element.purchase_order_id,element.supplier_id)}>
+                  <u>Cancel</u>
+                  </span>
+                  </Link>
+              ) : (
+                'Cancelled'
+              )}
+            </td>
                         </tr>
                       );
                     })}
                 </tbody>
-              </table>
-            </FormGroup>
-          </ModalBody>
-        </Modal>
+              </Table>
+            </div>
+          </div>
+        </Form>
       </ComponentCard>
     </>
   );
