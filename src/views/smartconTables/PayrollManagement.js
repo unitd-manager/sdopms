@@ -19,6 +19,7 @@ import CommonTable from '../../components/CommonTable';
 import TerminatingPayslipModal from '../../components/PayrollManagementTable/TerminatingPayslipModal';
 import UpdateOtModal from '../../components/PayrollManagementTable/updateOtModal';
 import PrintPayslipModal from '../../components/PayrollManagementTable/PrintPayslipModal';
+import PrintIR8AModal from '../../components/PayrollManagementTable/PrintIR8AModal';
 import { columns } from '../../data/PayrollHR/PayrollColumn';
 import PdfPaySlipList from '../../components/PDF/PdfPaySlipList';
 
@@ -30,6 +31,7 @@ const Payrollmanagement = () => {
   const [updateOtModal, setUpdateOtModal] = useState(false);
   const [terminatingPayslip, setTerminatingPayslip] = useState([]);
   const [printPayslipModal, setPrintPayslipModal] = useState(false);
+  const [printIR8AModal,setPrintIR8AModal]= useState(false);
   const [loading, setLoading] = useState(false);
 
   const [empWithoutJobInfo, setEmpWithoutJobInfo] = useState([]);
@@ -539,6 +541,17 @@ const Payrollmanagement = () => {
                 Update OT
               </Button>
             </Col>
+            <Col md="2">
+              <Button
+                type="submit"
+                className="border btn-dark rounded"
+                onClick={() => {
+                  setPrintIR8AModal(true);
+                }}
+              >
+                IR8A yearly Pdf
+              </Button>
+            </Col>
           </Row>
         </Card>
         {terminatingPayslipModal && (
@@ -562,6 +575,13 @@ const Payrollmanagement = () => {
           <PrintPayslipModal
             printPayslipModal={printPayslipModal}
             setPrintPayslipModal={setPrintPayslipModal}
+            payrollManagementsdata={payrollManagementsdata}
+          />
+        )}
+        {printIR8AModal && (
+          <PrintIR8AModal
+            printIR8AModal={printIR8AModal}
+            setPrintIR8AModal={setPrintIR8AModal}
             payrollManagementsdata={payrollManagementsdata}
           />
         )}

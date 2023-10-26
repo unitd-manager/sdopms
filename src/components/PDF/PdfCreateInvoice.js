@@ -229,17 +229,18 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
             },
             {
               stack: [
-                {
-                  text: ` Invoice No:${
-                    createInvoice.invoice_code ? createInvoice.invoice_code : ''
-                  } `,
-                  style: ['textSize'],
-                  margin: [100, 0, 0, 0],
-                },
+                
                 {
                   text: ` Date :${moment(
                     createInvoice.invoice_date ? createInvoice.invoice_date : '',
                   ).format('DD-MM-YYYY')}  `,
+                  style: ['textSize'],
+                  margin: [100, 0, 0, 0],
+                },
+                {
+                  text: ` Invoice No:${
+                    createInvoice.invoice_code ? createInvoice.invoice_code : ''
+                  } `,
                   style: ['textSize'],
                   margin: [100, 0, 0, 0],
                 },

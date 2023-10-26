@@ -20,20 +20,38 @@ import moment from 'moment';
 import api from '../../constants/api';
 import message from '../Message';
 
-const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLinked }) => {
+const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLinked,getpurchaseOrder }) => {
   PurchaseOrderLinked.propTypes = {
     editPurchaseOrderLinked: PropTypes.bool,
     setEditPurchaseOrderLinked: PropTypes.func,
+    getpurchaseOrder:PropTypes.func,
   };
   //All const Variable
   const { id } = useParams();
   const [SupplierReceipt, setSupplierReceipt] = useState();
   const [totalAmount, setTotalAmount] = useState(0);
-  const [createSupplier, setCreateReceipt] = useState({
-    amount: 0,
-  });
   const [selectedSupplier, setSelectedSupplier] = useState([]);
+  // const [createSupplier, setCreateReceipt] = useState({
+  //   amount: 0,
+  // });
+ // State variable to hold the initial values for createSupplier
+ const initialCreateSupplier = {
+  amount: 0,
+  mode_of_payment: 'Please Select',
+  remarks: '',
+};
 
+
+// ... Other parts of your component ...
+// State variable to hold the current createSupplier values
+const [createSupplier, setCreateReceipt] = useState({ ...initialCreateSupplier });
+// Function to reset the modal input values
+const resetModalInputs = () => {
+  setCreateReceipt({ ...initialCreateSupplier }); // Reset createSupplier
+  setTotalAmount(0); // Reset totalAmount
+  setSelectedSupplier([]); // Reset selectedSupplier
+};
+ 
   //getting data
   const handleInputreceipt = (e) => {
     if (e.target.name === 'amount') {
@@ -142,24 +160,57 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
 
    
   };
-
+  //const [amountError, setAmountError] = useState('');
+ //Getting receipt data by order id
+ const getSupplierReceipt = () => {
+  api.post('/supplier/getMakePayment', { supplier_id: id }).then((res) => {
+    const datafromapi = res.data.data;
+    datafromapi.forEach((element) => {
+      element.remainingAmount = element.prev_inv_amount - element.prev_amount ;
+    });
+    setSupplierReceipt(datafromapi);
+  });
+};
   //Insert Receipt
   const insertReceipt = () => {
-    createSupplier.supplier_id = id
-
-    if (createSupplier.amount &&
-      createSupplier.mode_of_payment && (selectedSupplier.length>0)) {
-      api
-      .post('/supplier/insert-SupplierReceipt', createSupplier)
-      .then((res) => {
-        message('data inserted successfully.');
-        
-        finalCalculation(res.data.data.insertId);
-      })
-      .catch(() => {
-      });
+    createSupplier.supplier_id = id;
+  
+    if (createSupplier.mode_of_payment && createSupplier.mode_of_payment !== 'Please Select') {
+      // Ensure that at least one checkbox is selected
+      if (selectedSupplier.length > 0) {
+        // Calculate the total amount of selected invoices
+        const totalInvoiceAmount = selectedSupplier.reduce((total, invoice) => total + invoice.remainingAmount, 0);
+  
+        if (parseFloat(createSupplier.amount) <= totalInvoiceAmount) {
+          // If the amount is less than or equal to the total invoice amount, proceed with inserting the receipt.
+          api
+            .post('/supplier/insert-SupplierReceipt', createSupplier)
+            .then((res) => {
+              message('Data inserted successfully.');
+              finalCalculation(res.data.data.insertId);
+              getSupplierReceipt();
+              getpurchaseOrder();
+              // Close the modal
+            setEditPurchaseOrderLinked(false);
+            })
+            .catch(() => {
+              // Handle any potential errors
+            });
+        } else {
+          // Set the amount validation error message
+          alert('Amount should be less than or equal to the total invoice amount.');
+        }
+      } else {
+        // Set the checkbox validation error message
+        alert('Please select at least one invoice.');
+      }
+    } else {
+      // Set the mode of payment validation error message
+      alert('Please select a valid mode of payment');
     }
   };
+  
+  
   let invoices = [];
   const removeObjectWithId = (arr, poCode) => {
     const objWithIdIndex = arr.findIndex((obj) => obj.po_code === poCode);
@@ -179,16 +230,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
     }
   };
 
-  //Getting receipt data by order id
-  const getSupplierReceipt = () => {
-    api.post('/supplier/getMakePayment', { supplier_id: id }).then((res) => {
-      const datafromapi = res.data.data;
-      datafromapi.forEach((element) => {
-        element.remainingAmount = element.prev_inv_amount - element.prev_amount ;
-      });
-      setSupplierReceipt(datafromapi);
-    });
-  };
+ 
 
   //Calculation for Supplier Payment checkbox amount
   const addAndDeductAmount = (checkboxVal, receiptObj) => {
@@ -213,10 +255,10 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
   }, [id]);
   return (
     <>
-      <Modal size="lg" isOpen={editPurchaseOrderLinked}>
+      <Modal size="Xl" isOpen={editPurchaseOrderLinked} onOpened={resetModalInputs}>
         <ToastContainer></ToastContainer>
         <ModalHeader>
-          Create Receipt
+          Create Purchase Order
           <Button
             className="shadow-none"
             color="secondary"
@@ -236,7 +278,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
                       SupplierReceipt.map((singleInvoiceObj) => {
                         return (
                           <Row>
-                            <Col md="8">
+                            <Col md="10">
                               <FormGroup check>
                                 <Input
                                   onChange={(e) => {
@@ -258,7 +300,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
                       })}
                     <br></br>
                     <Row>
-                      <Col md="8">
+                      <Col md="10">
                         <FormGroup>
                           <Label>Amount</Label>
                           <Input
@@ -270,7 +312,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
                           />
                         </FormGroup>
                       </Col>
-                      <Col md="8">
+                      <Col md="10">
                         <FormGroup>
                           <Label>
                             {' '}
@@ -287,18 +329,18 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
                         </FormGroup>
                       </Col>
 
-                      <Col md="8">
+                      <Col md="10">
                         <FormGroup>
                           <Label>Notes</Label>
                           <Input
-                            type="text"
+                            type="textarea"
                             onChange={handleInputreceipt}
                             defaultValue={createSupplier && createSupplier.remarks}
                             name="remarks"
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
+                      </Row>             
                   </Form>
                 </CardBody>
             </Col>
@@ -310,12 +352,12 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
             color="primary"
             onClick={() => {
               insertReceipt();
-              setEditPurchaseOrderLinked(false);
-              setTimeout(() => {
-                console.log('Data saved successfully.');
-                // Reload the page after saving data
-                window.location.reload();
-              }, 2000);
+              // setEditPurchaseOrderLinked(false);
+              // setTimeout(() => {
+              //   console.log('Data saved successfully.');
+              //   // Reload the page after saving data
+              //   window.location.reload();
+              // }, 2000);
             }}
           >
             {' '}
@@ -331,7 +373,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
             Cancel
           </Button>
         </ModalFooter>
-      </Modal>
+            </Modal>
     </>
   );
 };

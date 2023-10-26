@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TabPane, TabContent, Form, FormGroup, Row } from 'reactstrap';
+import { TabPane, TabContent } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -14,6 +14,7 @@ import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 // import NavTabs from '../../components/ClientTable/NavTabs';
@@ -22,7 +23,6 @@ import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
 import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 
 const ClientsEdit = () => {
   //Const Variables
@@ -166,16 +166,41 @@ const ClientsEdit = () => {
   const handleAddNewContact = (e) => {
     setNewContactData({ ...newContactData, [e.target.name]: e.target.value });
   };
-  //  deleteRecord
+  // //  deleteRecord
+  // const DeleteClient = () => {
+  //   api
+  //     .post('/clients/deleteCompany', { company_id: id })
+  //     .then(() => {
+  //       message('Record editted successfully', 'success');
+  //     })
+  //     .catch(() => {
+  //       message('Unable to delete record.', 'error');
+  //     });
+  // };
+   // Delete Contact
   const DeleteClient = () => {
-    api
-      .post('/clients/deleteCompany', { company_id: id })
-      .then(() => {
-        message('Record editted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to delete record.', 'error');
-      });
+    Swal.fire({
+      title: `Are you sure? `,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/clients/deleteCompany', { company_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
+      }
+    });
   };
 
   // Project By Id
@@ -264,10 +289,7 @@ const ClientsEdit = () => {
     <>
       {/* BreadCrumbs */}
       <BreadCrumbs heading={clientsDetails && clientsDetails.company_name} />
-      <Form>
-    <FormGroup>
-      <ComponentCardV2>
-        <Row>
+     
        <ApiButton
               editData={editClientsData}
               navigate={navigate}
@@ -277,10 +299,7 @@ const ClientsEdit = () => {
               sendMail={sendMail}
               module="Client"
             ></ApiButton>
-            </Row>
-            </ComponentCardV2>
-            </FormGroup>
-            </Form>
+         
       {/* Client Main details */}
       <ComponentCard title="Client Details" creationModificationDate={clientsDetails}>
         <ClientMainDetails
@@ -328,8 +347,8 @@ const ClientsEdit = () => {
           </TabPane>
           {/* ADD NOTE */}
           <TabPane tabId="5">
-              <AddNote recordId={id} roomName="AccountEdit" />
-              <ViewNote recordId={id} roomName="AccountEdit" />
+              <AddNote recordId={id} roomName="ClientEdit" />
+              <ViewNote recordId={id} roomName="ClientEdit" />
           </TabPane>
         </TabContent>
       </ComponentCard>

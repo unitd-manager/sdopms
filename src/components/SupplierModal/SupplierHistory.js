@@ -88,7 +88,7 @@ const SupplierHistory = () => {
                     history.map((element) => {
                       return (
                         <tr key={element.supplier_receipt_id}>
-                          <td>{moment(element.date).format('YYYY-MM-DD')}</td>
+                          <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                           <td>{element.amount}</td>
                           <td>{element.mode_of_payment}</td>
                           <td>

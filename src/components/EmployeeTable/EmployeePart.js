@@ -25,8 +25,6 @@ console.log('all countries',allCountries)
                   value={employeeDetails && employeeDetails.emp_code}
                   onChange={handleInputChange}
                   type="text"
-                  placeholder="EMP-1002"
-                  disabled
                 />
               </FormGroup>
             </Col>

@@ -8,6 +8,7 @@ import ComponentCard from '../ComponentCard';
 export default function SupplierTable({ purchaseOrder }) {
   SupplierTable.propTypes = {
     purchaseOrder: PropTypes.array,
+    
   };
   // structure of makesupplier payment tables
   const supplierTableColumn = [
@@ -49,7 +50,7 @@ export default function SupplierTable({ purchaseOrder }) {
                   purchaseOrder.map((element) => {
                     return (
                       <tr key={element.purchase_order_id}>
-                        <td>{moment(element.po_date).format('YYYY-MM-DD')}</td>
+                        <td>{element.purchase_order_date ? moment(element.purchase_order_date).format('DD-MM-YYYY') : ''}</td>
                         <td>
                           <Link to={`/PurchaseOrderEdit/${element.purchase_order_id}`}>
                             {element.po_code}

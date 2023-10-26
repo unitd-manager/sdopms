@@ -10,6 +10,7 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -22,7 +23,7 @@ import ApiButton from '../../components/ApiButton';
 const ContentUpdate = () => {
   // All state variables
   const [lineItem] = useState(null);
-  const [contentDetails, setContentDetails] = useState();
+  const [contentDetails, setContentDetails] = useState([]);
   const [valuelist, setValuelist] = useState();
   const [sectionLinked, setSectionLinked] = useState();
   const [categoryLinked, setCategoryLinked] = useState();
@@ -53,7 +54,7 @@ const backToList=()=>{
    //Api call for getting valuelist dropdown
    const getValuelist = () => {
     api
-      .get('/section/getValueList')
+      .get('/content/getValueList')
       .then((res) => {
         setValuelist(res.data.data);
       })
@@ -109,18 +110,57 @@ const backToList=()=>{
     });
   };
   // getting data from Category
-  const getCategory = () => {
-    api.get('/content/getCategory', categoryLinked).then((res) => {
+  const getCategory = (sectionId) => {
+    api.post('/section/getSectionCategoryById', { section_id: sectionId }).then((res) => {
       setCategoryLinked(res.data.data);
     });
   };
+  
   // getting data from SubCategory
-  const getSubCategory = () => {
-    api.get('/content/getSubCategory', subcategoryLinked).then((res) => {
+  const getSubCategory = (categoryId) => {
+    api.post('/section/getSectionSubCategoryById', { category_id: categoryId }).then((res) => {
       setSubCategoryLinked(res.data.data);
     });
   };
- 
+  useEffect(() => {
+    if (contentDetails.section_id) {
+      // Use taskdetails.project_milestone_id directly to get the selected project ID
+      const selectedSection = contentDetails.section_id;
+      getCategory(selectedSection);
+    }
+  }, [contentDetails && contentDetails.section_id]);
+  useEffect(() => {
+    if (contentDetails.category_id) {
+      // Use taskdetails.project_milestone_id directly to get the selected project ID
+      const selectedcategory = contentDetails.category_id;
+      getSubCategory(selectedcategory);
+    }
+  }, [contentDetails && contentDetails.category_id]);
+
+   const deleteContentData = () => {
+    Swal.fire({
+      title: `Are you sure? `,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/content/deleteContent', { content_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
+      }
+    });
+  };
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
@@ -147,7 +187,7 @@ const backToList=()=>{
               navigate={navigate}
               applyChanges={editContentData}
               backToList={backToList}
-             // deleteData={deleteLoanData}
+             deleteData={deleteContentData}
               module="Content"
             ></ApiButton>
        
@@ -227,7 +267,7 @@ const backToList=()=>{
                   </Input>
                 </FormGroup>
               </Col>
-              <Col md="4">
+              {/* <Col md="4">
                 <FormGroup>
                   <Label>Section Type</Label>
                   <Input
@@ -247,16 +287,26 @@ const backToList=()=>{
                       })}
                   </Input>
                 </FormGroup>
-              </Col>
+              </Col> */}
               <Col md="3">
                 <FormGroup>
                   <Label>Content Type</Label>
                   <Input
-                    type="text"
+                    type="select"
                     onChange={handleInputs}
-                    defaultValue={contentDetails && contentDetails.content_type}
+                    value={contentDetails && contentDetails.content_type}
                     name="content_type"
-                  />
+                  >
+                   <option defaultValue="selected">Please Select</option>
+                    {valuelist &&
+                      valuelist.map((e) => {
+                        return (
+                          <option key={e.value} value={e.value}>
+                            {e.value}
+                          </option>
+                        );
+                      })}
+                  </Input>
                 </FormGroup>
               </Col>
             </Row>
@@ -264,28 +314,8 @@ const backToList=()=>{
           {/* Content Details Form */}
           <ComponentCard title="Content details">
             <Row>
-              <Col md="4">
-                <FormGroup>
-                  <Label> Show Title</Label>
-                  <br></br>
-                  <Label> Yes </Label>
-                  <Input
-                    name="show_title"
-                    value="1"
-                    type="radio"
-                    defaultChecked={contentDetails && contentDetails.show_title === 1 && true}
-                    onChange={handleInputs}
-                  />
-                  <Label> No </Label>
-                  <Input
-                    name="show_title"
-                    value="0"
-                    type="radio"
-                    defaultChecked={contentDetails && contentDetails.show_title === 0 && true}
-                    onChange={handleInputs}
-                  />
-                </FormGroup>
-              </Col>
+             
+               
               <Col md="4">
                 <FormGroup>
                   <Label>Published</Label>
@@ -295,7 +325,7 @@ const backToList=()=>{
                     name="published"
                     value="1"
                     type="radio"
-                    defaultChecked={contentDetails && contentDetails.published === 1 && true}
+                    Checked={contentDetails && contentDetails.published === 1 && true}
                     onChange={handleInputs}
                   />
                   <Label>No</Label>
@@ -304,6 +334,28 @@ const backToList=()=>{
                     value="0"
                     type="radio"
                     defaultChecked={contentDetails && contentDetails.published === 0 && true}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Show Title</Label>
+                  <br></br>
+                  <Label>Yes</Label>
+                  <Input
+                    name="show_title"
+                    value="1"
+                    type="radio"
+                    defaultChecked={contentDetails && contentDetails.show_title === 1 && true}
+                    onChange={handleInputs}
+                  />
+                  <Label>No</Label>
+                  <Input
+                    name="show_title"
+                    value="0"
+                    type="radio"
+                    Checked={contentDetails && contentDetails.show_title === 0 && true}
                     onChange={handleInputs}
                   />
                 </FormGroup>
