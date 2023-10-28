@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Form, FormGroup, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 export default function AccountsDetailsButton({ insertExpense, navigate }) {
@@ -8,11 +8,8 @@ export default function AccountsDetailsButton({ insertExpense, navigate }) {
     navigate: PropTypes.any,
   };
   return (
-    <Form>
-      <FormGroup>
-        {/* Button */}
-        <Row>
-          <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+  
+          <div className="pt-1 mt-1 d-flex justify-content-end gap-2">
             <Button
               color="primary"
               type="button"
@@ -22,20 +19,24 @@ export default function AccountsDetailsButton({ insertExpense, navigate }) {
               }}
             >
               {' '}
-              Submit
+              Save & Continue
             </Button>
             <Button
+              className="shadow-none"
+              color="dark"
               onClick={() => {
-                navigate(-1);
+                if (
+                  window.confirm(
+                    'Are you sure you want to cancel  \n  \n You will lose any changes made',
+                  )
+                ) {
+                  navigate(-1);
+                }
               }}
-              type="button"
-              className="btn btn-dark shadow-none"
             >
-              Go to List
+              Cancel
             </Button>
           </div>
-        </Row>
-      </FormGroup>
-    </Form>
+        
   );
 }

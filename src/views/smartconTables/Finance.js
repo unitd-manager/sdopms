@@ -4,11 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
-// import moment from 'moment';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -17,47 +16,35 @@ import CommonTable from '../../components/CommonTable';
 const Finance = () => {
   //All State Variable
   const [finance, setFinance] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   //getting data from Finance
   const getFinance = () => {
-    api.get('/finance/getFinances').then((res) => {
-      setFinance(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+    api
+      .get('/Finance/getFinances')
+      .then((res) => {
+        setFinance(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
 
   useEffect(() => {
-    // setTimeout(() => {
-    //   $('#example').DataTable({
-    //     pagingType: 'full_numbers',
-    //     pageLength: 20,
-    //     processing: true,
-    //     dom: 'Bfrtip',
-    //     buttons: [
-    //       'csv',
-    //       {
-    //         extend: 'print',
-    //         text: 'Print',
-    //         className: 'shadow-none btn btn-primary',
-    //       },
-    //     ],
-    //   });
-    // }, 1000);
-
     getFinance();
   }, []);
 
@@ -129,9 +116,7 @@ const Finance = () => {
       <div className=" pt-xs-25">
         <BreadCrumbs />
 
-        <CommonTable 
-      loading={loading}
-        title="Finance List">
+        <CommonTable loading={loading} title="Finance List">
           <thead>
             <tr>
               {columns.map((cell) => {
@@ -146,7 +131,7 @@ const Finance = () => {
                   <tr key={element.order_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/FinanceEdit/${element.order_id}`}>
+                      <Link to={`/FinanceEdit/${element.order_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>

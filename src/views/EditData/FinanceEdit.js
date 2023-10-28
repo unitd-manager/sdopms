@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
+import { Button, Col, Row, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -18,10 +18,11 @@ import FinanceInvoiceModal from '../../components/FinanceTable/FinanceInvoiceMod
 import CustomerFinanceReceipt from '../../components/FinanceTable/CustomerFinanceReceipt';
 import CustomerFinanceCreditNote from '../../components/FinanceTable/CustomerFinanceCreditNote';
 import FinanceSummary from '../../components/FinanceTable/FinanceSummary';
-//import FinanceButton from '../../components/FinanceTable/FinanceButton';
+//import FinanceButton from '../../components/Finance/FinanceButton';
 import FinanceDeliveryAddress from '../../components/FinanceTable/FinanceDeliveryAddress';
 import FinanceMainDetails from '../../components/FinanceTable/FinanceMainDetails';
 import creationdatetime from '../../constants/creationdatetime';
+import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
 
 const FinanceEdit = () => {
@@ -38,28 +39,37 @@ const FinanceEdit = () => {
   const [createInvoice, setCreateInvoice] = useState(null);
   const [cancelInvoice, setCancelInvoice] = useState(null);
   const [cancelReceipt, setCancelReceipt] = useState(null);
-  // const [cancelReceipt, setCancelReceipt] = useState(null);
   const [receipt, setReceipt] = useState(null);
   const [note, setNote] = useState([]);
   const [invoicesummary, setInvoiceSummary] = useState(null);
   const [receiptsummary, setReceiptSummary] = useState(null);
   const [invoiceitemsummary, setInvoiceItemSummary] = useState(null);
+  const [invoiceDatas, setInvoiceDatas] = useState({});
   // Navigation and Parameter Constants
   const { id } = useParams();
   const navigate = useNavigate();
   //Button fuctions
-  const applyChanges = () => {};
+  //const applyChanges = () => {};
   const backToList = () => {
     navigate('/Finance');
   };
-  //All Functions/Methods
   //Setting Data in Finance Details
   const handleInputs = (e) => {
     setFinanceDetails({ ...financeDetails, [e.target.name]: e.target.value });
   };
+  // Start for tab refresh navigation #Renuka 1-06-23
+  const tabs = [
+    { id: '1', name: 'Delivery Address' },
+    { id: '2', name: 'Customer Details' },
+    { id: '3', name: 'Summary' },
+    { id: '4', name: 'Invoice(s)' },
+    { id: '5', name: 'Receipt(s)' },
+    { id: '6', name: 'CreditNote(s)' },
+  ];
   const toggle = (tab) => {
-    if (activeTab !== tab) setActiveTab(tab);
+    setActiveTab(tab);
   };
+console.log('ids',id)
   // Method for getting Invoice By Order Id
   const getInvoiceById = () => {
     api
@@ -76,7 +86,7 @@ const FinanceEdit = () => {
   const receiptCancel = (obj) => {
     obj.receipt_status = 'cancelled';
     api
-      .post('/finance/editTabReceiptPortalDisplay', obj)
+      .post('/Finance/editTabReceiptPortalDisplay', obj)
       .then(() => {
         message('Record editted successfully', 'success');
       })
@@ -87,7 +97,7 @@ const FinanceEdit = () => {
   const invoiceCancel = (obj) => {
     obj.status = 'cancelled';
     api
-      .post('/finance/editInvoicePortalDisplay', obj)
+      .post('/Finance/editInvoicePortalDisplay', obj)
       .then(() => {
         message('Record editted successfully', 'success');
         window.location.reload();
@@ -145,7 +155,7 @@ const FinanceEdit = () => {
   //For getting Summary By Order Id
   const getInvoiceSummaryById = () => {
     api
-      .post('/finance/getInvoiceSummary', { order_id: id })
+      .post('/Finance/getInvoiceSummary', { order_id: id })
       .then((res) => {
         setInvoiceSummary(res.data.data);
       })
@@ -156,7 +166,7 @@ const FinanceEdit = () => {
 
   const getInvoiceReceiptSummaryById = () => {
     api
-      .post('/finance/getInvoiceReceiptSummary', { order_id: id })
+      .post('/Finance/getInvoiceReceiptSummary', { order_id: id })
       .then((res) => {
         setReceiptSummary(res.data.data);
       })
@@ -167,7 +177,7 @@ const FinanceEdit = () => {
 
   const getInvoiceItemSummaryById = () => {
     api
-      .post('/finance/getInvoiceItemSummary', { order_id: id })
+      .post('/Finance/getInvoiceItemSummary', { order_id: id })
       .then((res) => {
         setInvoiceItemSummary(res.data.data);
       })
@@ -179,7 +189,7 @@ const FinanceEdit = () => {
   //For getting Finance By Order Id
   const getFinancesById = () => {
     api
-      .post('/finance/getFinancesById', { order_id: id })
+      .post('/Finance/getFinancesById', { order_id: id })
       .then((res) => {
         setFinanceDetails(res.data.data);
       })
@@ -192,7 +202,7 @@ const FinanceEdit = () => {
   const editFinanceData = () => {
     financeDetails.modification_date = creationdatetime;
     api
-      .post('/finance/editFinances', financeDetails)
+      .post('/Finance/editFinances', financeDetails)
       .then(() => {
         message('Record editted successfully', 'success');
       })
@@ -215,136 +225,61 @@ const FinanceEdit = () => {
   return (
     <>
       <BreadCrumbs heading={financeDetails && financeDetails.order_id} />
-      <TabContent className="p-4" activeTab={activeTab}>
-        {/* Save,Apply Buttons */}
-        {/* <FinanceButton
-          navigate={navigate}
-          editFinanceData={editFinanceData}
-          applyChanges={applyChanges}
-          backToList={backToList}
-        ></FinanceButton> */}
+      {/* Save,Apply Buttons */}
+      {/* <FinanceButton
+        navigate={navigate}
+        editFinanceData={editFinanceData}
+        applyChanges={applyChanges}
+        backToList={backToList}
+      ></FinanceButton> */}
 <ApiButton
               editData={editFinanceData}
               navigate={navigate}
-              applyChanges={applyChanges}
+              applyChanges={editFinanceData}
               backToList={backToList}
-             // deleteData={deleteLoanData}
               module="Finance"
             ></ApiButton>
-        {/* Main Details */}
-        <FinanceMainDetails
-          financeDetails={financeDetails}
-          creationModificationDate={financeDetails}
-          handleInputs={handleInputs}
-        ></FinanceMainDetails>
+      {/* Main Details */}
+      <FinanceMainDetails
+        financeDetails={financeDetails}
+        creationModificationDate={financeDetails}
+        handleInputs={handleInputs}
+      ></FinanceMainDetails>
 
-        <Row>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={activeTab === '1' ? 'active' : ''}
-                onClick={() => {
-                  toggle('1');
-                }}
-              >
-                Delivery Address
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '2' ? 'active' : ''}
-                onClick={() => {
-                  toggle('2');
-                }}
-              >
-                Customer Details
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={activeTab === '3' ? 'active' : ''}
-                onClick={() => {
-                  toggle('3');
-                }}
-              >
-                Summary
-              </NavLink>
-            </NavItem>
-
-            <NavItem>
-              <NavLink
-                className={activeTab === '4' ? 'active' : ''}
-                onClick={() => {
-                  toggle('4');
-                }}
-              >
-                Invoice(s)
-              </NavLink>
-            </NavItem>
-
-            <NavItem>
-              <NavLink
-                className={activeTab === '5' ? 'active' : ''}
-                onClick={() => {
-                  toggle('5');
-                }}
-              >
-                Receipt(s)
-              </NavLink>
-            </NavItem>
-
-            <NavItem>
-              <NavLink
-                className={activeTab === '6' ? 'active' : ''}
-                onClick={() => {
-                  toggle('6');
-                }}
-              >
-                CreditNote(s)
-              </NavLink>
-            </NavItem>
-          </Nav>
-        </Row>
-        {/* Delivery address Form */}
-        <TabPane tabId="1">
-          <ComponentCard title="Delivery Address">
+      <ComponentCard title="More Details">
+        <Tab toggle={toggle} tabs={tabs} />
+        <TabContent className="p-4" activeTab={activeTab}>
+          {/* Delivery address Form */}
+          <TabPane tabId="1">
             <FinanceDeliveryAddress
               financeDetails={financeDetails}
               handleInputs={handleInputs}
             ></FinanceDeliveryAddress>
-          </ComponentCard>
-        </TabPane>
+          </TabPane>
 
-        {/* Customer Details Form */}
-        <TabPane tabId="2">
-          <ComponentCard title="Finance Details">
+          {/* Customer Details Form */}
+          <TabPane tabId="2">
             <CustomerDetail financeDetails={financeDetails}></CustomerDetail>
-          </ComponentCard>
-        </TabPane>
-        {/* Summary */}
-        <TabPane tabId="3">
-          <ComponentCard title="Summary">
+          </TabPane>
+          {/* Summary */}
+          <TabPane tabId="3">
             <FinanceSummary
               invoicesummary={invoicesummary}
               receiptsummary={receiptsummary}
               invoiceitemsummary={invoiceitemsummary}
             ></FinanceSummary>
-          </ComponentCard>
-        </TabPane>
-        <TabPane tabId="4">
-          <ComponentCard title="Invoice">
+          </TabPane>
+          <TabPane tabId="4">
             <FinanceInvoiceModal
               createInvoice={createInvoice}
               cancelInvoice={cancelInvoice}
               invoiceCancel={invoiceCancel}
               setEditModal={setEditModal}
               setEditInvoiceModal={setEditInvoiceModal}
+              setInvoiceDatas={setInvoiceDatas}
             ></FinanceInvoiceModal>
-          </ComponentCard>
-        </TabPane>
-
-        <TabPane tabId="5">
-          <ComponentCard title="Receipt">
+          </TabPane>
+          <TabPane tabId="5">
             <CustomerFinanceReceipt
               receiptCancel={receiptCancel}
               cancelReceipt={cancelReceipt}
@@ -352,81 +287,83 @@ const FinanceEdit = () => {
               setEditReceiptModal={setEditReceiptModal}
               setReceiptDataModal={setReceiptDataModal}
             ></CustomerFinanceReceipt>
-          </ComponentCard>
-        </TabPane>
-
-        <TabPane tabId="6">
-          <ComponentCard title="Credit Note">
+          </TabPane>
+          <TabPane tabId="6">
             <CustomerFinanceCreditNote note={note}></CustomerFinanceCreditNote>
+          </TabPane>
+
+          <ComponentCard title="Add More">
+            <ToastContainer></ToastContainer>
+
+            {/* Modal for invoice,receipt and credit note */}
+
+            <InvoiceData
+              editInvoiceData={editInvoiceData}
+              setEditInvoiceData={setEditInvoiceData}
+              projectInfo={InvoiceData}
+              orderId={id}
+            />
+
+            <CreateReceipt
+              editCreateReceipt={editCreateReceipt}
+              setEditCreateReceipt={setEditCreateReceipt}
+              orderId={id}
+            />
+
+            <CreateNote editCreateNote={editCreateNote} setEditCreateNote={setEditCreateNote} />
+
+            <InvoiceModal
+              editModal={editModal}
+              setEditModal={setEditModal}
+              editInvoiceModal={editInvoiceModal}
+              setInvoiceDatas={setInvoiceDatas}
+        invoiceDatas={invoiceDatas}
+            />
+            <ReceiptModal
+              editReceiptModal={editReceiptModal}
+              setReceiptDataModal={setReceiptDataModal}
+              editReceiptDataModal={editReceiptDataModal}
+            />
+
+            {/* Invoice,Receipt and Note tab button */}
+            <Row>
+              <Col>
+                <Button
+                  className="shadow-none"
+                  color="primary"
+                  onClick={() => {
+                    setEditInvoiceData(true);
+                  }}
+                >
+                  Create Invoice
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  className="buttons"
+                  color="primary"
+                  onClick={() => {
+                    setEditCreateReceipt(true);
+                  }}
+                >
+                  Create Receipt
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  className="buttons"
+                  color="primary"
+                  onClick={() => {
+                    setEditCreateNote(true);
+                  }}
+                >
+                  Credit Notes
+                </Button>
+              </Col>
+            </Row>
           </ComponentCard>
-        </TabPane>
-        <ComponentCard title="More Details">
-          <ToastContainer></ToastContainer>
-
-          {/* Modal for invoice,receipt and credit note */}
-
-          <InvoiceData
-            editInvoiceData={editInvoiceData}
-            setEditInvoiceData={setEditInvoiceData}
-            projectInfo={InvoiceData}
-          />
-
-          <CreateReceipt
-            editCreateReceipt={editCreateReceipt}
-            setEditCreateReceipt={setEditCreateReceipt}
-          />
-
-          <CreateNote editCreateNote={editCreateNote} setEditCreateNote={setEditCreateNote} />
-
-          <InvoiceModal
-            editModal={editModal}
-            setEditModal={setEditModal}
-            editInvoiceModal={editInvoiceModal}
-          />
-          <ReceiptModal
-            editReceiptModal={editReceiptModal}
-            setReceiptDataModal={setReceiptDataModal}
-            editReceiptDataModal={editReceiptDataModal}
-          />
-
-          {/* Invoice,Receipt and Note tab button */}
-          <Row>
-            <Col>
-              <Button
-                className="shadow-none"
-                color="primary"
-                onClick={() => {
-                  setEditInvoiceData(true);
-                }}
-              >
-                Create Invoice
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="buttons"
-                color="primary"
-                onClick={() => {
-                  setEditCreateReceipt(true);
-                }}
-              >
-                Create Receipt
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                className="buttons"
-                color="primary"
-                onClick={() => {
-                  setEditCreateNote(true);
-                }}
-              >
-                Credit Notes
-              </Button>
-            </Col>
-          </Row>
-        </ComponentCard>
-      </TabContent>
+        </TabContent>
+      </ComponentCard>
     </>
   );
 };

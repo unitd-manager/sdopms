@@ -5,11 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
-import moment from 'moment';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -18,44 +17,35 @@ import CommonTable from '../../components/CommonTable';
 const ExpenseHead = () => {
   //Const Variables
   const [accounts, setExpensehead] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // get ExpenseHead
   const getExpensehead = () => {
-    api.get('/expensehead/getExpenseHead').then((res) => {
-      setExpensehead(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        buttons: [ {
-          extend: 'print',
-          text: "Print",
-          className:"shadow-none btn btn-primary",
-      }],
+    api
+      .get('/expensehead/getExpenseHead')
+      .then((res) => {
+        setExpensehead(res.data.data);
+        $('#example').DataTable({
+          pagingType: 'full_numbers',
+          pageLength: 20,
+          processing: true,
+          dom: 'Bfrtip',
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-      setLoading(false)
-    }).catch(()=>{
-      setLoading(false)
-    });
   };
 
   useEffect(() => {
-    // setTimeout(() => {
-    //   $('#example').DataTable({
-    //     pagingType: 'full_numbers',
-    //     pageLength: 20,
-    //     processing: true,
-    //     dom: 'Bfrtip',
-    //     buttons: [ {
-    //       extend: 'print',
-    //       text: "Print",
-    //       className:"shadow-none btn btn-primary",
-    //   }],
-    //   });
-    // }, 1000);
-
     getExpensehead();
   }, []);
   //  stucture of expenseHead list view
@@ -96,10 +86,10 @@ const ExpenseHead = () => {
     <div className="MainDiv">
       {/* ExpenseHeadDetails */}
       <div className=" pt-xs-25">
-      <BreadCrumbs/>
+        <BreadCrumbs />
 
-      <CommonTable
-      loading={loading}
+        <CommonTable
+          loading={loading}
           title="Expense Head List"
           Button={
             <Link to="/ExpenseHeadDetails">
@@ -128,13 +118,12 @@ const ExpenseHead = () => {
                       </Link>
                     </td>
                     <td>{element.title}</td>
-                    <td>{element.modification_date ? moment(element.modification_date).format('YYYY-MM-DD') : ''}</td>
+                    <td>{element.modification_date}</td>
                   </tr>
                 );
               })}
           </tbody>
-          </CommonTable>
-
+        </CommonTable>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Card } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import moment from 'moment';
@@ -8,16 +8,20 @@ import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import message from '../../components/Message';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import api from '../../constants/api';
 import AccountsMainDetails from '../../components/AccountTable/AccountsMainDetails';
 import AccountsDetailsButton from '../../components/AccountTable/AccountsDetailsButton';
 import creationdatetime from '../../constants/creationdatetime';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 
 const AccountsDetails = () => {
   //Const Variables
   const [totalAmount, setTotalAmount] = useState('');
+  const [gstAmount, setGstAmount] = useState('');
   const [groups, setGroup] = useState();
   const [subgroup, setSubgroup] = useState();
+  const [selectedType, setSelectedType] = useState(''); // Default to 'Expense'
 
   // Navigation and Parameter Constants
   const navigate = useNavigate();
@@ -27,7 +31,12 @@ const AccountsDetails = () => {
   const getGroup = () => {
     api.get('/accounts/getGroupTitle').then((res) => {
       setGroup(res.data.data);
-      console.log(res.data.data);
+    });
+  };
+
+  const getIncomeGroup = () => {
+    api.get('/accounts/getIncomeGroupTitle').then((res) => {
+      setGroup(res.data.data);
     });
   };
   // get subgroup
@@ -38,16 +47,27 @@ const AccountsDetails = () => {
         setSubgroup(res.data.data);
       })
       .catch(() => {
-        message('ExpenseHead Data Not Found', 'info');
+        //message('ExpenseHead Data Not Found', 'info');
+      });
+  };
+
+  const getIncomeSubGroup = (incomeGroupId) => {
+    api
+      .post('/accounts/getIncomeSubGroupTitle', { income_group_id: incomeGroupId })
+      .then((res) => {
+        setSubgroup(res.data.data);
+      })
+      .catch(() => {
+        //message('ExpenseHead Data Not Found', 'info');
       });
   };
   // insertExpense const
   const [AccountsDetail, setAccountsDetail] = useState({
     expense_id: '',
-    date:moment(Date.now()).format('YYYY-MM-DD'),
+    date: moment(Date.now()).format('YYYY-MM-DD'),
     group: '',
     sub_group: '',
-    gst: '',
+    gst: '1',
     amount: 0,
     gst_amount: 0,
     service_charge: 0,
@@ -60,6 +80,7 @@ const AccountsDetails = () => {
     job_id: '',
     payment_status: '',
     remarks: '',
+    type: '',
   });
   // calculation connect with radio button
   const handleRadioGst = (radioVal, totalAmountF, gstValue, serviceCharge) => {
@@ -73,65 +94,91 @@ const AccountsDetails = () => {
     if (gstValue == '') {
       gstValue = 0;
     }
+    let calculatedGstAmount = 0;
     if (radioVal === '1') {
-      setTotalAmount(
-        parseFloat(totalAmountF) +
-          (parseFloat(gstValue) / 100) * parseFloat(totalAmountF) +
-          parseFloat(serviceCharge),
-      );
-    } else {
-      setTotalAmount(parseFloat(totalAmountF) + parseFloat(serviceCharge));
+      calculatedGstAmount = (parseFloat(totalAmountF) * 7) / 100;
     }
+
+    setGstAmount(calculatedGstAmount);
+    setTotalAmount(parseFloat(totalAmountF) + calculatedGstAmount + parseFloat(serviceCharge));
   };
-  /* eslint-disable */
+
   const handleInputs = (e) => {
     setAccountsDetail({ ...AccountsDetail, [e.target.name]: e.target.value });
+
+    if (e.target.name === 'group') {
+      const selectedGroupId = e.target.value;
+      if (selectedType === 'Expense') {
+        getSubGroup(selectedGroupId);
+      } else if (selectedType === 'Income') {
+        getIncomeSubGroup(selectedGroupId);
+      }
+    }
   };
 
   // insertExpense
- const insertExpense = () => {
+  // insertExpense
+  const insertExpense = () => {
+    // Check if the description is not empty
     if (
       AccountsDetail.group !== '' &&
       AccountsDetail.amount !== '' &&
-      AccountsDetail.description !== ''
-    ){
-      AccountsDetail.date = moment()
-      AccountsDetail.total_amount = totalAmount
-      AccountsDetail.creation_date = creationdatetime
+      AccountsDetail.description !== '' &&
+      AccountsDetail.invoice_code !== ''
+    ) {
+      // Check if the description already exists in the database
       api
-      .post('/accounts/insertexpense', AccountsDetail)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message('Expense inserted successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/AccountsEdit/${insertedDataId}`);
-        }, 300);
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-      console.log(AccountsDetail)
-    }
-      
-    else {
+        .post('/accounts/checkInvoiceCodeUnique', { invoice_code: AccountsDetail.invoice_code })
+        .then((response) => {
+          const count = response.data.count;
+          if (count > 0) {
+            message(
+              'Invoice Code  must be unique. Another record with the same invoice code already exists.',
+              'warning',
+            );
+          } else {
+            // If the description is unique, proceed with inserting the expense data
+            AccountsDetail.date = moment();
+            AccountsDetail.total_amount = totalAmount;
+            AccountsDetail.gst_amount = gstAmount;
+            AccountsDetail.creation_date = creationdatetime;
+            api.post('/accounts/insertexpense', AccountsDetail).then((res) => {
+              const insertedDataId = res.data.data.insertId;
+              console.log(insertedDataId);
+              message('Expense inserted successfully.', 'success');
+              setTimeout(() => {
+                navigate(`/AccountsEdit/${insertedDataId}`);
+              }, 300);
+            });
+          }
+        });
+    } else {
       message('Please fill all required fields', 'warning');
     }
   };
-
   useEffect(() => {
-    getGroup();
-  }, [groupss]);
+    if (selectedType === 'Income') {
+      getIncomeGroup();
+    } else if (selectedType === 'Expense') {
+      getGroup();
+    }
+    setSubgroup([]);
+  }, [selectedType]);
 
   return (
     <>
       <BreadCrumbs heading={AccountsDetail && AccountsDetail.expense_id} />
+      <Card className="p-2">
+        <AccountsDetailsButton
+          insertExpense={insertExpense}
+          navigate={navigate}
+        ></AccountsDetailsButton>
+      </Card>
       <ToastContainer></ToastContainer>
       {/* Main Details Insert */}
       <Form>
         <FormGroup>
           <ComponentCard title="New Accounts">
-           
             <Row>
               <Col md="3">
                 <FormGroup>
@@ -142,38 +189,98 @@ const AccountsDetails = () => {
                     type="date"
                     onChange={handleInputs}
                     defaultValue={moment(Date.now()).format('YYYY-MM-DD')}
-                    name="date"/>
+                    name="date"
+                  />
                 </FormGroup>
               </Col>
               <Col md="3">
-                <Label>Head <span className="required"> *</span> </Label>
+                <FormGroup>
+                  <Label>Type</Label>
+                  <Input
+                    type="select"
+                    name="type"
+                    value={selectedType}
+                    onChange={(e) => {
+                      setSelectedType(e.target.value);
+                      handleInputs(e);
+                    }}
+                  >
+                    <option value="" selected>
+                      Please Select
+                    </option>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <Label>
+                  Head <span className="required"> *</span>{' '}
+                </Label>
                 <Input
                   type="select"
                   name="group"
                   onChange={(e) => {
-                    getSubGroup(e.target.value);
                     handleInputs(e);
-                  }}value={groupss}>
+                    const selectedGroupId = e.target.value;
+                    if (selectedType === 'Expense') {
+                      getSubGroup(selectedGroupId);
+                    } else if (selectedType === 'Income') {
+                      getIncomeSubGroup(selectedGroupId);
+                    }
+                  }}
+                  value={groupss}
+                >
                   <option value="" selected>
                     Please Select
                   </option>
+
                   {groups &&
                     groups.map((ele) => {
-                      return <option value={ele.expense_group_id}>{ele.title}</option>;})}
+                      return (
+                        <option
+                          key={ele.expense_group_id}
+                          value={
+                            selectedType === 'Income' ? ele.income_group_id : ele.expense_group_id
+                          }
+                        >
+                          {ele.title}
+                        </option>
+                      );
+                    })}
                 </Input>
               </Col>
+
               <Col md="3">
                 <Label>Sub Head </Label>
-                <Input type="select" name="sub_group" onChange={handleInputs} value={groupss}>
+                <Input
+                  type="select"
+                  name="sub_group"
+                  onChange={handleInputs}
+                  value={AccountsDetail.sub_group}
+                >
                   <option value="" selected>
                     Please Select
                   </option>
                   {subgroup &&
                     subgroup.map((ele) => {
-                      return <option value={ele.title}>{ele.title}</option>;
+                      return (
+                        <option
+                          key={ele.expense_sub_group_id}
+                          value={
+                            selectedType === 'Income'
+                              ? ele.income_sub_group_id
+                              : ele.expense_sub_group_id
+                          }
+                        >
+                          {ele.title}
+                        </option>
+                      );
                     })}
                 </Input>
               </Col>
+            </Row>
+            <Row>
               {/* radio button */}
               <Col md="3">
                 <Label>GST</Label>
@@ -187,8 +294,12 @@ const AccountsDetails = () => {
                         e.target.value,
                         AccountsDetail.amount,
                         AccountsDetail.gst_amount,
-                        AccountsDetail.service_charge, );}}
-                    type="radio"/>
+                        AccountsDetail.service_charge,
+                      );
+                    }}
+                    checked={AccountsDetail.gst === '1'}
+                    type="radio"
+                  />
                   <Label check>Yes</Label>
                 </FormGroup>
                 <FormGroup check>
@@ -204,6 +315,7 @@ const AccountsDetails = () => {
                         AccountsDetail.service_charge,
                       );
                     }}
+                    checked={AccountsDetail.gst === '0'}
                     type="radio"
                   />{' '}
                   <Label check> No </Label>
@@ -222,8 +334,11 @@ const AccountsDetails = () => {
                         AccountsDetail.gst,
                         e.target.value,
                         AccountsDetail.gst_amount,
-                        AccountsDetail.service_charge,); }}
-                    name="amount"/>
+                        AccountsDetail.service_charge,
+                      );
+                    }}
+                    name="amount"
+                  />
                 </FormGroup>
               </Col>
               <Col md="3">
@@ -237,8 +352,12 @@ const AccountsDetails = () => {
                         AccountsDetail.gst,
                         AccountsDetail.amount,
                         e.target.value,
-                        AccountsDetail.service_charge,);}}
-                    name="gst_amount"/>
+                        AccountsDetail.service_charge,
+                      );
+                    }}
+                    name="gst_amount"
+                    value={gstAmount}
+                  />
                 </FormGroup>
               </Col>
               <Col md="3">
@@ -253,36 +372,25 @@ const AccountsDetails = () => {
                         AccountsDetail.gst,
                         AccountsDetail.amount,
                         AccountsDetail.gst_amount,
-                        e.target.value,);}}
-                    value={AccountsDetail && AccountsDetail.service_charge}
-                    name="service_charge"/>
-                </FormGroup>
-              </Col>
-              {/* Total Amount */}
-              <Col md="3">
-                <FormGroup>
-                  <Label>Total Amount </Label>
-                  <Input
-                  disabled
-                    type="text"
-                    onChange={(e) => {
-                      handleInputs(e);
+                        e.target.value,
+                      );
                     }}
-                    value={totalAmount}
-                    name="total_amount"
+                    value={AccountsDetail && AccountsDetail.service_charge}
+                    name="service_charge"
                   />
                 </FormGroup>
               </Col>
+            </Row>
+            <Row>
               <AccountsMainDetails
                 handleInputs={handleInputs}
                 AccountsDetails={AccountsDetails}
+                totalAmount={totalAmount}
               ></AccountsMainDetails>
             </Row>
-           <AccountsDetailsButton insertExpense={insertExpense}navigate={navigate}></AccountsDetailsButton>
           </ComponentCard>
         </FormGroup>
       </Form>
-      
     </>
   );
 };
