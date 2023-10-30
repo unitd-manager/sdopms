@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import {  Link } from 'react-router-dom';
 import { Form, Table } from 'reactstrap';
 import ComponentCard from '../ComponentCard';
 
@@ -58,7 +58,9 @@ export default function SupplierTable({ purchaseOrder }) {
                         </td>
                         <td>{element.po_value}</td>
                         <td>
-                          {parseFloat ? element.po_value - parseFloat(element.prev_amount) : 0}
+                        {element.po_value
+                            ? parseFloat(element.po_value) - parseFloat(element.prev_amount) 
+                            : 0}
                         </td>
                         <td>{element.payment_status}</td>
                         <td>
