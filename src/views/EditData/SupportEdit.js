@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import {
   Row,
   Col,
@@ -38,6 +38,8 @@ import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
 import SupportState from '../../components/SupportTable/SupportState';
 import ApiButton from '../../components/ApiButton';
+import AppContext from '../../context/AppContext';
+
 
 const SupportEdit = () => {
   // All state variables
@@ -52,7 +54,7 @@ const SupportEdit = () => {
   const [attachmentData, setDataForAttachment] = useState({
     modelType: '',
   });
-
+  const { loggedInuser } = useContext(AppContext);
   const [description, setDescription] = useState(() => EditorState.createEmpty());
   // Navigation and Parameter Constants
   const { id } = useParams();
@@ -145,6 +147,8 @@ const SupportEdit = () => {
 
   const editSupportData = () => {
     supportDetails.modification_date = creationdatetime;
+    supportDetails.modified_by = loggedInuser.first_name;;
+
     if (supportDetails.title) {
       api
         .post('/support/editSupport', supportDetails)
