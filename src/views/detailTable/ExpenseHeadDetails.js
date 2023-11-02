@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import message from '../../components/Message';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
 
-const ContentDetails = () => {
-// Navigation and Parameter Constants
-  const { id } = useParams();
+const ExpenseHeadDetails = () => {
+  // Navigation and Parameter Constants
   const navigate = useNavigate();
 
   //Const Variables
@@ -21,15 +20,15 @@ const ContentDetails = () => {
   const handleExpenseForms = (e) => {
     setExpenseForms({ ...expenseForms, [e.target.name]: e.target.value });
   };
-  
+
   //  Api insertExpense
   const insertExpense = () => {
-    expenseForms.creation_date = creationdatetime
+    if (expenseForms.title !== '') {
+    expenseForms.creation_date = creationdatetime;
     api
       .post('/expensehead/insertExpGroup', expenseForms)
       .then((res) => {
         const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
         message('Expense inserted successfully.', 'success');
         setTimeout(() => {
           navigate(`/ExpenseHeadEdit/${insertedDataId}`);
@@ -38,8 +37,11 @@ const ContentDetails = () => {
       .catch(() => {
         message('Network connection error.', 'error');
       });
+    } else {
+      message('Please fill all required fields', 'warning');
+    }
   };
-  useEffect(() => {}, [id]);
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -58,7 +60,7 @@ const ContentDetails = () => {
                       type="text"
                       name="title"
                       onChange={(e) => {
-                      handleExpenseForms(e);
+                        handleExpenseForms(e);
                       }}
                     ></Input>
                   </Col>
@@ -67,15 +69,17 @@ const ContentDetails = () => {
               <FormGroup>
                 <Row>
                   <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                    <Button color="primary"
+                  <Button
+                      color="primary"
                       onClick={() => {
                         insertExpense();
                       }}
                       type="button"
                       className="btn mr-2 shadow-none"
                     >
-                      submit
+                      Save & Continue
                     </Button>
+                   
                     <Button
                       onClick={() => {
                         navigate(-1);
@@ -83,7 +87,7 @@ const ContentDetails = () => {
                       type="button"
                       className="btn btn-dark shadow-none"
                     >
-                      Cancel
+                      Go to List
                     </Button>
                   </div>
                 </Row>
@@ -96,4 +100,4 @@ const ContentDetails = () => {
   );
 };
 
-export default ContentDetails;
+export default ExpenseHeadDetails;

@@ -1,12 +1,11 @@
 import React from 'react';
-import { Row, Col,FormGroup, Label, Input, Form } from 'reactstrap';
+import { Row, Col, Button, FormGroup, Label, Input, Form } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../ComponentCard';
 import ComponentCardV2 from '../ComponentCardV2';
-import ApiButton from '../ApiButton';
 
 function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }) {
   InventoryEditPart.propTypes = {
@@ -29,15 +28,7 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
         <Form>
           <FormGroup>
             <ComponentCardV2>
-            <ApiButton
-              editData={editinventoryData}
-              navigate={navigate}
-              applyChanges={applyChanges}
-              backToList={backToList}
-             // deleteData={deleteLoanData}
-              module="Inventory"
-            ></ApiButton>
-              {/* <Row>
+              <Row>
                 <Col>
                   <Button
                     className="shadow-none"
@@ -57,7 +48,6 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                     onClick={() => {
                       editinventoryData();
                       applyChanges();
-                      console.log('cancel process');
                     }}
                   >
                     Apply
@@ -69,36 +59,38 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                     color="dark"
                     onClick={() => {
                       backToList();
-                      console.log('back to list');
                     }}
                   >
                     {' '}
                     Back to List{' '}
                   </Button>
                 </Col>
-              </Row> */}
+              </Row>
             </ComponentCardV2>
-           
-            <ComponentCard title="Product Details" righttitle={<Row>
-                <Col className='fs-10 small'>
-                  <small>Creation :</small>
-                  <small>
-                    {inventoryDetails && inventoryDetails.created_by}
-                    {inventoryDetails &&
-                      inventoryDetails.creation_date}
-                  </small>
-                </Col>
 
-                <Col className='fs-10 small'>
-                  <small>Modification :</small>
+            <ComponentCard
+              title="Product Details"
+              righttitle={
+                <Row>
+                  <Col className="fs-10 small">
+                    <small>Creation :</small>
+                    <small>
+                      {inventoryDetails && inventoryDetails.created_by}
+                      {inventoryDetails && inventoryDetails.creation_date}
+                    </small>
+                  </Col>
 
-                  <small>
-                    {inventoryDetails && inventoryDetails.modified_by}
-                    {inventoryDetails &&
-                      inventoryDetails.modification_date}
-                  </small>
-                </Col>
-              </Row>}>
+                  <Col className="fs-10 small">
+                    <small>Modification :</small>
+
+                    <small>
+                      {inventoryDetails && inventoryDetails.modified_by}
+                      {inventoryDetails && inventoryDetails.modification_date}
+                    </small>
+                  </Col>
+                </Row>
+              }
+            >
               <Row>
                 <Col md="3">
                   <FormGroup>

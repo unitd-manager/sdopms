@@ -15,7 +15,7 @@ const PurchaseOrderDetails = () => {
     supplier_id: '',
     company_name: '',
   });
-  
+
   //Navigation and Parameters
   const { id } = useParams();
   const navigate = useNavigate();
@@ -24,7 +24,6 @@ const PurchaseOrderDetails = () => {
     api
       .get('/purchaseorder/getSupplier')
       .then((res) => {
-        console.log(res.data.data);
         setSupplier(res.data.data);
       })
       .catch(() => {});
@@ -33,24 +32,40 @@ const PurchaseOrderDetails = () => {
   const handleInputs = (e) => {
     setPurchaseForms({ ...purchaseForms, [e.target.name]: e.target.value });
   };
-  //inserting data of Purchase Order
-  const insertPurchaseOrder = () => {
-    purchaseForms.purchase_order_date = moment()
+  
+   //inserting data of Purchase Order
+   const insertPurchaseOrder = (code) => {
+    purchaseForms.purchase_order_date = moment();
+    purchaseForms.po_code=code;
+    if (purchaseForms.supplier_id !== '') {
+      api
+        .post('/purchaseorder/insertPurchaseOrder', purchaseForms)
+        .then((res) => {
+          const insertedDataId = res.data.data.insertId;
+          message('Purchase Order inserted successfully.', 'success');
+          setTimeout(() => {
+            navigate(`/PurchaseOrderEdit/${insertedDataId}`);
+          }, 500);
+        })
+        .catch(() => {
+          message('Unable to edit record.', 'error');
+        });
+    } else {
+      message('Please fill all required fields.', 'warning');
+    }
+  };
+
+  const generateCode = () => {
     api
-      .post('/purchaseorder/insertPurchaseOrder', purchaseForms)
+      .post('/commonApi/getCodeValue', { type: 'purchaseOrder' })
       .then((res) => {
-        const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
-        message('Purchase Order inserted successfully.', 'success');
-        setTimeout(() => {
-          navigate(`/PurchaseOrderEdit/${insertedDataId}`);
-        }, 300);
+        insertPurchaseOrder(res.data.data);
       })
       .catch(() => {
-        message('Unable to edit record.', 'error');
+        insertPurchaseOrder('');
       });
-     
   };
+
   useEffect(() => {
     editPurchaseById();
   }, [id]);
@@ -70,37 +85,43 @@ const PurchaseOrderDetails = () => {
                     name="supplier_id"
                     onChange={(e) => {
                       handleInputs(e);
-                    }}>
-                    <option value="" selected >Please Select</option>
+                    }}
+                  >
+                    <option value="" selected>
+                      Please Select
+                    </option>
                     {supplier &&
                       supplier.map((ele) => {
                         return (
-                          (<option key={ele.supplier_id} value={ele.supplier_id}>
+                          <option key={ele.supplier_id} value={ele.supplier_id}>
                             {ele.company_name}
-                          </option>)
+                          </option>
                         );
                       })}
                   </Input>
                 </Row>
-                
+
                 <FormGroup>
                   <Row>
                     <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-                      <Button color="primary"
+                      <Button
+                        color="primary"
                         type="button"
                         className="btn mr-2 shadow-none"
                         onClick={() => {
-                          insertPurchaseOrder();
-                        }}>
+                          generateCode();
+                        }}
+                      >
                         Save & Continue
                       </Button>
                       <Button
-                      onClick={() => {
-                        navigate('/PurchaseOrder');
-                      }}
-                      type="button"
-                      className="btn btn-dark shadow-none">
-                        Cancel
+                        onClick={() => {
+                          navigate('/PurchaseOrder');
+                        }}
+                        type="button"
+                        className="btn btn-dark shadow-none"
+                      >
+                       Go to List
                       </Button>
                     </div>
                   </Row>

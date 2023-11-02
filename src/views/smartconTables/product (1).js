@@ -8,10 +8,9 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
-//  import Api from 'datatables.net';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import apiCall from '../../constants/api';
 import { columns } from '../../data/Tender/ProductData';
@@ -34,80 +33,8 @@ const Test = () => {
   };
 
   useEffect(() => {
-    // setTimeout(() => {
-    //     $('#example').DataTable(
-    //     {
-    //         pagingType: 'full_numbers',
-    //           pageLength: 20,
-    //           processing: true,
-
-    //           dom: 'Bfrtip',
-    //               buttons: ['print'],
-
-    //   searching: true
-    //               }
-    //           );
-
-    // }, 1000);
-
     getAllProducts();
   }, []);
-
-  //   const tableRef = React.useRef()
-  // console.log(tableRef)
-
-  //   useEffect(() => {
-  //    /* eslint-disable */
-  //    $('#example thead tr')
-  //    .clone(true)
-  //    .addClass('filters')
-  //    .appendTo('#example thead');
-
-  //     $('#example').DataTable({
-  //       orderCellsTop: true,
-  //       fixedHeader: true,
-  //       pageLength: 20,
-  //       pagingType: 'full_numbers',
-  //       dom: 'Bfrtip',
-  //       buttons: ['print'],
-  //       initComplete: () => {
-  //         const api = new Api()
-  //         let cursorPosition;
-
-  //           api.columns().map((colIdx) => {
-  //             const cell = $('.filters th').eq($(api.column(colIdx).header()).index());
-  //             const title = $(cell).text();
-  //             $(cell).html(<input type="text" placeholder={title} />);
-
-  //             $('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
-  //               .off('keyup change')
-  //               .on('change', function () {
-  //                 $(this).attr('title', $(this).val());
-  //                 const regexr = '({search})';
-
-  //                 cursorPosition = this.selectionStart;
-  //                 api
-  //                   .column(colIdx)
-  //                   .search(
-  //                     this.value !== '' ? regexr.replace('{search}', this.value) : '',
-  //                     this.value !== '',
-  //                     this.value === '',
-  //                   )
-  //                   .draw();
-  //               })
-  //               .on('keyup', function (e) {
-  //                 e.stopPropagation();
-
-  //                 $(this).trigger('change');
-  //                 $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
-  //               });
-  //           });
-
-  //       },
-  //     });
-
-  //     /* eslint-enable */
-  // },[])
 
   useEffect(() => {
     /* eslint-disable */
@@ -154,7 +81,6 @@ const Test = () => {
         },
       });
     });
-
     /* eslint-disable */
   }, []);
 
@@ -168,11 +94,7 @@ const Test = () => {
             Add New
           </Button>
         </Link>
-        <table
-          // ref={tableRef}
-          id="example"
-          className="display border border-secondary rounded"
-        >
+        <table id="example" className="display border border-secondary rounded">
           <thead>
             <tr>
               {columns.map((cell) => {
@@ -187,7 +109,7 @@ const Test = () => {
                   <tr key={element.product_id}>
                     <td>{element.product_id}</td>
                     <td>
-                      <Link to={`/ProductEdit/${element.product_id}`}>
+                      <Link to={`/ProductEdit/${element.product_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
@@ -198,12 +120,14 @@ const Test = () => {
                     <td>{element.unit}</td>
                     <td>{element.qty_in_stock}</td>
                     <td>{element.modified_by}</td>
-                    <td><Publish
+                    <td>
+                      <Publish
                         idColumn="product_id"
                         tablename="product"
                         idValue={element.product_id.toString()}
                         value={element.published}
-                      ></Publish></td>
+                      ></Publish>
+                    </td>
                   </tr>
                 );
               })}

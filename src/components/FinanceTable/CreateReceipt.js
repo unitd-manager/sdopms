@@ -18,18 +18,21 @@ import moment from 'moment';
 import api from '../../constants/api';
 import message from '../Message';
 
-const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
-  CreateReceipt.propTypes = {
+const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId, projectInfo }) => {
+  FinanceReceiptData.propTypes = {
     editCreateReceipt: PropTypes.bool,
     setEditCreateReceipt: PropTypes.func,
+    orderId: PropTypes.any,
+    projectInfo: PropTypes.any,
   };
   //All const Variable
   const [invoiceReceipt, setInvoiceReceipt] = useState();
+  const [submitting, setSubmitting] = useState(false);
   const { id } = useParams();
   const [totalAmount, setTotalAmount] = useState(0);
   const [createReceipt, setCreateReceipt] = useState({
     amount: 0,
-    order_id:id,
+    order_id:orderId,
     receipt_status:"Paid",
     receipt_date:moment(),
     receipt_code: '',
@@ -44,6 +47,19 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
     setCreateReceipt({ ...createReceipt, [e.target.name]: e.target.value });
   };
 
+  
+  const insertReceiptHistory = (createReceiptHistory) => {
+    api
+      .post('/finance/insertInvoiceReceiptHistory', createReceiptHistory)
+      .then(() => {
+        message('data inserted successfully.');
+        window.location.reload()
+      })
+      .catch(() => {
+        message('Network connection error.');
+      });
+  };
+  
   const editInvoiceStatus = (invoiceId, Status) => {
     api
       .post('/invoice/editInvoiceStatus', {
@@ -70,19 +86,7 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
         message('Network connection error.');
       });
   };
-  
-  const insertReceiptHistory = (createReceiptHistory) => {
-    api
-      .post('/finance/insertInvoiceReceiptHistory', createReceiptHistory)
-      .then(() => {
-        message('data inserted successfully.');
-        window.location.reload()
-      })
-      .catch(() => {
-        message('Network connection error.');
-      });
-  };
-  
+
   //Logic for deducting receipt amount
   const finalCalculation = (receipt) => {
     let leftamount = totalAmount 
@@ -95,7 +99,7 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
     // });
      // Insert Receipt History
   
-    for (let j = 0; j < selectedInvoice.length; j++){
+     for (let j = 0; j < selectedInvoice.length; j++){
 
       if(selectedInvoice[j].remainingAmount <= leftamount){
         leftamount = parseFloat(leftamount) - selectedInvoice[j].remainingAmount
@@ -137,10 +141,11 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
 
   //Insert Receipt
   const insertReceipt =async (code)=> {
+    createReceipt.project_id = projectInfo;
     createReceipt.receipt_code = code;
     // createReceipt.receipt_date = moment()
-    if (createReceipt.mode_of_payment && (selectedInvoice.length>0)){
-    if(totalAmount>=createReceipt.amount) {
+    // if (createReceipt.mode_of_payment && (selectedInvoice.length>0)){
+    // if(totalAmount>=createReceipt.amount) {
     api
       .post('/finance/insertreceipt', createReceipt)
       .then((res) => {
@@ -149,12 +154,14 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
       })
       .catch(() => {
         message('Network connection error.');
+      }) .finally(() => {
+        setSubmitting(false); // Reset the submitting state after the API call completes (success or error).
       });
-    }
-    else {
-      message('Please fill all required fields', 'warning');
-   }
-  }
+  //   }
+  // }
+  // //    else {
+  //     message('Please fill all required fields', 'warning');
+  //  }
   };
   const generateCode = () => {
     api
@@ -195,7 +202,7 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
 
   //Getting receipt data by order id
   const getinvoiceReceipt = () => {
-    api.post('/invoice/getInvoiceReceiptById', { order_id: id }).then((res) => {
+    api.post('/invoice/getInvoiceReceiptById', { order_id: orderId }).then((res) => {
       const datafromapi = res.data.data
       datafromapi.forEach(element => {
         element.remainingAmount = element.invoice_amount - element.prev_amount
@@ -270,7 +277,7 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
                         );
                       })}
                     <br></br>
-                    { invoiceReceipt && invoiceReceipt.length>0?
+                    {/* { invoiceReceipt && invoiceReceipt.length>0? */}
                     <Row>
                       <Col md="12">
                         <FormGroup>
@@ -358,23 +365,33 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
                           />
                         </FormGroup>
                       </Col>
-                    </Row>:<span>Sorry</span>}
+                    </Row>
+                    {/* :<span>Sorry</span>} */}
                   </Form>
             </Col>
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button className='shadow-none'
-            color="primary"
-            onClick={() => {
-              generateCode();
-              //insertReceipt();
-              //insertInvoices();
-            }}
-          >
-            {' '}
-            Submit{' '}
-          </Button>
+        <Button
+  className="shadow-none"
+  color="primary"
+  onClick={() => {
+    if (!submitting) {
+      setSubmitting(true);
+      if (parseFloat(createReceipt.amount) > 0) {
+        generateCode();
+      } else {
+        // Show an error message indicating that the amount should be greater than 0
+        message('Amount must be greater than 0', 'warning');
+        setSubmitting(false); // Reset submitting state
+      }
+    }
+  }}
+  disabled={submitting}
+>
+  {' '}
+  Submit{' '}
+</Button>
           <Button className='shadow-none'
             color="secondary"
             onClick={() => {
@@ -389,4 +406,4 @@ const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt }) => {
   );
 };
 
-export default CreateReceipt;
+export default FinanceReceiptData;

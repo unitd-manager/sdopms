@@ -14,26 +14,29 @@ function PurchaseOrderDetailsPart({ purchaseDetails, handleInputs, supplier }) {
     <div>
       <Form>
         <FormGroup>
-          <ComponentCard title="PurchaseOrder Details" righttitle={<Row>
-                <Col className='fs-10 small'>
+          <ComponentCard
+            title="PurchaseOrder Details"
+            righttitle={
+              <Row>
+                <Col className="fs-10 small">
                   <small>Creation :</small>
                   <small>
                     {purchaseDetails && purchaseDetails.created_by}
-                    {purchaseDetails &&
-                      purchaseDetails.creation_date}
+                    {purchaseDetails && purchaseDetails.creation_date}
                   </small>
                 </Col>
 
-                <Col className='fs-10 small'>
+                <Col className="fs-10 small">
                   <small>Modification :</small>
 
                   <small>
                     {purchaseDetails && purchaseDetails.modified_by}
-                    {purchaseDetails &&
-                      purchaseDetails.modification_date}
+                    {purchaseDetails && purchaseDetails.modification_date}
                   </small>
                 </Col>
-              </Row>}>
+              </Row>
+            }
+          >
             <Row>
               <Col md="3">
                 <FormGroup>
@@ -62,9 +65,7 @@ function PurchaseOrderDetailsPart({ purchaseDetails, handleInputs, supplier }) {
                     name="status"
                     onChange={handleInputs}
                   >
-                    <option defaultValue="selected">
-                      Please Select
-                    </option>
+                    <option defaultValue="selected">Please Select</option>
                     <option value="in progress">in progress</option>
                     <option value="sent to supplier">sent to supplier</option>
                     <option value="order acknowledged">order acknowledged</option>
@@ -84,12 +85,14 @@ function PurchaseOrderDetailsPart({ purchaseDetails, handleInputs, supplier }) {
                     value={purchaseDetails && purchaseDetails.supplier_id}
                     name="supplier_id"
                   >
-                    <option defaultValue="selected" >
-                      Please Select
-                    </option>
+                    <option defaultValue="selected">Please Select</option>
                     {supplier &&
                       supplier.map((e) => {
-                        return <option key={e.supplier_id} value={e.supplier_id}>{e.company_name}</option>;
+                        return (
+                          <option key={e.supplier_id} value={e.supplier_id}>
+                            {e.company_name}
+                          </option>
+                        );
                       })}
                   </Input>
                 </FormGroup>
@@ -104,9 +107,7 @@ function PurchaseOrderDetailsPart({ purchaseDetails, handleInputs, supplier }) {
                     onChange={handleInputs}
                     value={purchaseDetails && purchaseDetails.prirority}
                   >
-                    <option defaultValue="selected" >
-                      Please Select
-                    </option>
+                    <option defaultValue="selected">Please Select</option>
                   </Input>
                 </FormGroup>
               </Col>

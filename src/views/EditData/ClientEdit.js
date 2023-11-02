@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { TabPane, TabContent } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import AppContext from '../../context/AppContext';
 //import ClientButton from '../../components/ClientTable/ClientButton';
 import ClientMainDetails from '../../components/ClientTable/ClientMainDetails';
 import ContactEditModal from '../../components/Tender/ContactEditModal';
@@ -45,14 +46,15 @@ const ClientsEdit = () => {
   const backToList = () => {
     navigate('/client');
   };
-
-  // Start for tab refresh navigation  #Renuka 1-06-23  
-  const tabs =  [
-    {id:'1',name:'Contacts Linked'},
-    {id:'2',name:'Projects Linked'},
-    {id:'3',name:'Invoice Linked'},
-    {id:'4',name:'Tender Linked'},
-    {id:'5',name:'Add notes'},
+  //get staff details
+  const { loggedInuser } = useContext(AppContext);
+  // Start for tab refresh navigation  #Renuka 1-06-23
+  const tabs = [
+    { id: '1', name: 'Contacts Linked' },
+    { id: '2', name: 'Projects Linked' },
+    { id: '3', name: 'Invoice Linked' },
+    { id: '4', name: 'Tender Linked' },
+    { id: '5', name: 'Add notes' },
   ];
 
   const toggle = (tab) => {
@@ -83,6 +85,7 @@ const ClientsEdit = () => {
   const editClientsData = () => {
     if (clientsDetails.company_name !== '') {
       clientsDetails.modification_date = creationdatetime;
+      clientsDetails.modified_by = loggedInuser.first_name;
       api
         .post('/clients/editClients', clientsDetails)
         .then(() => {
@@ -140,27 +143,23 @@ const ClientsEdit = () => {
   });
 
   const AddNewContact = () => {
-  
-        const newContactWithCompanyId = newContactData;
+    const newContactWithCompanyId = newContactData;
     newContactWithCompanyId.company_id = id;
-    if (
-      newContactWithCompanyId.salutation !== '' &&
-      newContactWithCompanyId.first_name !== '' 
-    
-    ) {
-    api
-      .post('/clients/insertContact', newContactWithCompanyId)
-      .then(() => {
-        message('Contact inserted successfully.', 'success');
-        window.location.reload();
-      })
-      .catch(() => {
-        message('Network connection error.', 'error');
-      });
-  }else {
-    message('Please fill all required fields', 'warning');
-  }
-};
+    if (newContactWithCompanyId.salutation !== '' && newContactWithCompanyId.first_name !== '') {
+      api
+        .post('/clients/insertContact', newContactWithCompanyId)
+        .then(() => {
+          message('Contact inserted successfully.', 'success');
+          getContactLinked();
+          //window.location.reload();
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    } else {
+      message('Please fill all required fields', 'warning');
+    }
+  };
 
   //Contact Functions/Methods
   const handleAddNewContact = (e) => {
@@ -177,7 +176,7 @@ const ClientsEdit = () => {
   //       message('Unable to delete record.', 'error');
   //     });
   // };
-   // Delete Contact
+  // Delete Contact
   const DeleteClient = () => {
     Swal.fire({
       title: `Are you sure? `,
@@ -223,7 +222,7 @@ const ClientsEdit = () => {
         setInvoiceDetails(res.data.data);
       })
       .catch(() => {
-       // message('Invoice Data Not Found', 'info');
+        // message('Invoice Data Not Found', 'info');
       });
   };
 
@@ -289,17 +288,17 @@ const ClientsEdit = () => {
     <>
       {/* BreadCrumbs */}
       <BreadCrumbs heading={clientsDetails && clientsDetails.company_name} />
-     
-       <ApiButton
-              editData={editClientsData}
-              navigate={navigate}
-              applyChanges={editClientsData}
-              backToList={backToList}
-              deleteData={DeleteClient}
-              sendMail={sendMail}
-              module="Client"
-            ></ApiButton>
-         
+
+      <ApiButton
+        editData={editClientsData}
+        navigate={navigate}
+        applyChanges={editClientsData}
+        backToList={backToList}
+        deleteData={DeleteClient}
+        sendMail={sendMail}
+        module="Client"
+      ></ApiButton>
+
       {/* Client Main details */}
       <ComponentCard title="Client Details" creationModificationDate={clientsDetails}>
         <ClientMainDetails
@@ -328,6 +327,7 @@ const ClientsEdit = () => {
             ></ClientContactGetAndInsert>
             {/* Contact Linked Edit modal */}
             <ContactEditModal
+            getContactLinked={getContactLinked}
               editContactEditModal={editContactEditModal}
               setEditContactEditModal={setEditContactEditModal}
               contactData={contactData}
@@ -347,8 +347,8 @@ const ClientsEdit = () => {
           </TabPane>
           {/* ADD NOTE */}
           <TabPane tabId="5">
-              <AddNote recordId={id} roomName="ClientEdit" />
-              <ViewNote recordId={id} roomName="ClientEdit" />
+            <AddNote recordId={id} roomName="ClientEdit" />
+            <ViewNote recordId={id} roomName="ClientEdit" />
           </TabPane>
         </TabContent>
       </ComponentCard>

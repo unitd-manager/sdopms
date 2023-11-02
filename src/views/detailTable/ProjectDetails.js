@@ -77,13 +77,18 @@ const ProjectDetails = () => {
             >Save & Continue
             </Button>
             <Button
-              onClick={() => {
-                navigate('/Project');
-              }}
-              type="button"
-              className="btn btn-dark shadow-none" 
-            >Go to List
-            </Button>
+                      type="submit"
+                      className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/Project');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      Cancel
+                    </Button>
             </div>
                 </Row>
               </FormGroup>
