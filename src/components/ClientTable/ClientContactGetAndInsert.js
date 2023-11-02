@@ -110,52 +110,6 @@ export default function ClientContactGetAndInsert({
   return (
     <Form>
       <Row>
-        <Table id="example" className="display border border-secondary rounded">
-          <thead>
-            <tr>
-              {columns.map((cell) => {
-                return <td key={cell.name}>{cell.name}</td>;
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {contactsDetails &&
-              contactsDetails.map((element, i) => {
-                return (
-                  <tr key={element.contact_id}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <div className='anchor'>
-                        <span
-                          onClick={() => {
-                            setContactData(element);
-                            setEditContactEditModal(true);
-                          }}
-                        >
-                          <Icon.Edit2 />
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div color="primary" className='anchor'>
-                        <span onClick={() => deleteRecord(element.contact_id)}>
-                          <Icon.Trash2 />
-                        </span>
-                      </div>
-                    </td>
-                    <td>{element.first_name}</td>
-                    <td>{element.email}</td>
-                    <td>{element.phone_direct}</td>
-                    <td>{element.mobile}</td>
-                    <td>{element.position}</td>
-                    <td>{element.department}</td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </Table>
-      </Row>
-      <Row>
         <Col md="3">
           <FormGroup>
             <Button color="primary" className="shadow-none" onClick={addContactToggle.bind(null)}>
@@ -166,108 +120,111 @@ export default function ClientContactGetAndInsert({
               <ModalBody>
                 <Row>
                   <Col md="12">
-                      <CardBody>
-                        <Form>
-                          <Row>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Title<span className='required'>*</span></Label>
-                                <Input
-                                  type="select"
-                                  name="salutation"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.salutation}
-                                >
-                                  <option value="" selected="selected">
-                                    Please Select
-                                  </option>
-                                  <option value="Ms">Ms</option>
-                                  <option value="Mr">Mr</option>
-                                  <option value="Mrs">Mrs</option>
-                                </Input>
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Name<span className='required'>*</span></Label>
-                                <Input
-                                  type="text"
-                                  name="first_name"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.first_name}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Email</Label>
-                                <Input
-                                  type="text"
-                                  name="email"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.email}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Position</Label>
-                                <Input
-                                  type="text"
-                                  name="position"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.position}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Department</Label>
-                                <Input
-                                  type="text"
-                                  name="department"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.department}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Phone (Direct)</Label>
-                                <Input
-                                  type="number"
-                                  name="phone_direct"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.phone_direct}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Fax (Direct)</Label>
-                                <Input
-                                  type="number"
-                                  name="fax"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.fax}
-                                />
-                              </FormGroup>
-                            </Col>
-                            <Col md="4">
-                              <FormGroup>
-                                <Label>Mobile</Label>
-                                <Input
-                                  type="number"
-                                  name="mobile"
-                                  onChange={handleAddNewContact}
-                                  value={newContactData && newContactData.mobile}
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                        </Form>
-                      </CardBody>
-                   
+                    <CardBody>
+                      <Form>
+                        <Row>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Title<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="select"
+                                name="salutation"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.salutation}
+                              >
+                                <option value="" selected="selected">
+                                  Please Select
+                                </option>
+                                <option value="Ms">Ms</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Name<span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="first_name"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.first_name}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Email</Label>
+                              <Input
+                                type="text"
+                                name="email"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.email}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Position</Label>
+                              <Input
+                                type="text"
+                                name="position"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.position}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Department</Label>
+                              <Input
+                                type="text"
+                                name="department"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.department}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Phone (Direct)</Label>
+                              <Input
+                                type="number"
+                                name="phone_direct"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.phone_direct}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Fax (Direct)</Label>
+                              <Input
+                                type="number"
+                                name="fax"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.fax}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Mobile</Label>
+                              <Input
+                                type="number"
+                                name="mobile"
+                                onChange={handleAddNewContact}
+                                value={newContactData && newContactData.mobile}
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </CardBody>
                   </Col>
                 </Row>
               </ModalBody>
@@ -293,6 +250,52 @@ export default function ClientContactGetAndInsert({
             </Modal>
           </FormGroup>
         </Col>
+      </Row>
+      <Row>
+        <Table id="example" className="display border border-secondary rounded">
+          <thead>
+            <tr>
+              {columns.map((cell) => {
+                return <td key={cell.name}>{cell.name}</td>;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {contactsDetails &&
+              contactsDetails.map((element, i) => {
+                return (
+                  <tr key={element.contact_id}>
+                    <td>{i + 1}</td>
+                    <td>
+                      <div className="anchor">
+                        <span
+                          onClick={() => {
+                            setContactData(element);
+                            setEditContactEditModal(true);
+                          }}
+                        >
+                          <Icon.Edit2 />
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div color="primary" className="anchor">
+                        <span onClick={() => deleteRecord(element.contact_id)}>
+                          <Icon.Trash2 />
+                        </span>
+                      </div>
+                    </td>
+                    <td>{element.first_name}</td>
+                    <td>{element.email}</td>
+                    <td>{element.phone_direct}</td>
+                    <td>{element.mobile}</td>
+                    <td>{element.position}</td>
+                    <td>{element.department}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </Table>
       </Row>
     </Form>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import ComponentCard from '../ComponentCard';
 
@@ -8,7 +9,10 @@ export default function FinanceMainDetails({ financeDetails, handleInputs }) {
   FinanceMainDetails.propTypes = {
     financeDetails: PropTypes.object,
     handleInputs: PropTypes.func,
+    
+ 
   };
+ 
   return (
     <Form>
         <FormGroup>
@@ -27,8 +31,8 @@ export default function FinanceMainDetails({ financeDetails, handleInputs }) {
                   <br />
                   <td>
                     {' '}
-                    <Link to={`/ProjectEdit/${financeDetails && financeDetails.project_id}`}>
-                      {financeDetails && financeDetails.project_id}
+                    <Link to={`/ProjectEdit/${financeDetails && financeDetails.project_id}?tab=11`}>
+                      {financeDetails && financeDetails.project_code}
                     </Link>
                   </td>
                 </FormGroup>
@@ -45,7 +49,7 @@ export default function FinanceMainDetails({ financeDetails, handleInputs }) {
                   <Label>Order Date</Label>
                   <br />
                   <span>
-                    {financeDetails && financeDetails.order_date}
+                    {moment(financeDetails && financeDetails.order_date).format('DD-MM-YYYY')}
                   </span>
                 </FormGroup>
               </Col>

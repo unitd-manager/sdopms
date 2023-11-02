@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -18,12 +18,12 @@ const ClientDetails = () => {
     company_name: '',
     created_by: '',
   });
-
+  //get staff details
+  const { loggedInuser } = useContext(AppContext);
   //Client Functions/Methods
   const handleClientForms = (e) => {
     setClientForms({ ...clientForms, [e.target.name]: e.target.value });
   };
-  const { loggedInuser } = useContext(AppContext);
 
   // Client Insert
   const insertClient = () => {
@@ -36,7 +36,7 @@ const ClientDetails = () => {
           const insertedDataId = res.data.data.insertId;
           message('Client inserted successfully.', 'success');
           setTimeout(() => {
-            navigate(`/ClientEdit/${insertedDataId}`);
+            navigate(`/ClientEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {
@@ -88,14 +88,20 @@ const ClientDetails = () => {
                       Save & Continue
                     </Button>
                     <Button
-                      onClick={() => {
+                    className="shadow-none"
+                    color="dark"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          'Are you sure you want to cancel  \n  \n You will lose any changes made',
+                        )
+                      ) {
                         navigate(-1);
-                      }}
-                      type="button"
-                      className="btn btn-dark shadow-none"
-                    >
-                      Go to List
-                    </Button>
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   </div>
                 </Row>
               </FormGroup>

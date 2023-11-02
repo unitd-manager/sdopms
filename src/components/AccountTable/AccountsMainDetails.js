@@ -3,15 +3,31 @@ import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-export default function AccountsMainDetails({ handleInputs, AccountsDetail }) {
+export default function AccountsMainDetails({ handleInputs, AccountsDetail,totalAmount }) {
   AccountsMainDetails.propTypes = {
     handleInputs: PropTypes.object,
     AccountsDetail: PropTypes.object,
+    totalAmount:PropTypes.any,
   };
   return (
     <Form>
       <FormGroup>
         <Row>
+           {/* Total Amount */}
+           <Col md="3">
+                <FormGroup>
+                  <Label>Total Amount </Label>
+                  <Input
+                    disabled
+                    type="text"
+                    onChange={(e) => {
+                      handleInputs(e);
+                    }}
+                    value={totalAmount}
+                    name="total_amount"
+                  />
+                </FormGroup>
+              </Col>
           <Col md="3">
             <FormGroup>
               <Label>

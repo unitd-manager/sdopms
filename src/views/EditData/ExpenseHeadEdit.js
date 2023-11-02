@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import {Row,Col,Form,FormGroup,Label,Input,Button,Modal,ModalHeader,ModalBody,ModalFooter,CardBody,Card} from 'reactstrap';
-import Swal from 'sweetalert2'
+import {
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  CardBody,
+} from 'reactstrap';
+import Swal from 'sweetalert2';
 import ExpenseHeadModal from '../../components/Tender/ExpenseHeadModal';
 import ComponentCard from '../../components/ComponentCard';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -13,7 +26,6 @@ import api from '../../constants/api';
 //import ExpenseButton from '../../components/ExpenseHeadTable/ExpenseButton';
 import ExpenseHeadMainDetails from '../../components/ExpenseHeadTable/ExpenseHeadMainDetails';
 import ExpenseHeadSubHead from '../../components/ExpenseHeadTable/ExpenseHeadSubHead';
-import ExpenseHeadCreationModification from '../../components/ExpenseHeadTable/ExpenseHeadCreationModification';
 import creationdatetime from '../../constants/creationdatetime';
 import ApiButton from '../../components/ApiButton';
 
@@ -44,7 +56,7 @@ const ExpenseEdit = () => {
     setAddContactModal(!addContactModal);
   };
   // Button
-  const applyChanges = () => {};
+  //const applyChanges = () => {};
   const backToList = () => {
     navigate('/Expensehead');
   };
@@ -61,18 +73,20 @@ const ExpenseEdit = () => {
   };
   //Logic for edit data in db
   const editExpenseData = () => {
-    if(expenseDetails.title !==""){
-      expenseDetails.modification_date = creationdatetime
-    api
-      .post('/expensehead/editExpenseHead', expenseDetails)
-      .then(() => {
-        message('Record editted successfully', 'success');
-      })
-      .catch(() => {
-        message('Unable to edit record.', 'error');
-      });
-    }else{
-      message('Please fill all required fields','warning');
+    if (expenseDetails.title !== '') {
+      expenseDetails.modification_date = creationdatetime;
+      api
+        .post('/expensehead/editExpenseHead', expenseDetails)
+        .then(() => {
+          message('Record editted successfully', 'success');
+          //navigate('/ExpenseHead');
+
+        })
+        .catch(() => {
+          message('Unable to edit record.', 'error');
+        });
+    } else {
+      message('Please fill all required fields', 'warning');
     }
   };
 
@@ -82,83 +96,105 @@ const ExpenseEdit = () => {
       setSubExpenseDetails(res.data.data);
     });
   };
-  //Api Insert ExpenseHead
-  const AddNewSubHead = () => {
-    if(expensehead.title !==""){
-    const ExpenseHeadExpenseId = expensehead;
-    ExpenseHeadExpenseId.expense_group_id = id;
+
+  const [subExpenseRec, setSubExpenseRec] = useState([]);
+
+  // ... Other functions ...
+
+  // Api Get Expense SubHead Cannot Edit
+  const getExpenseSubHeadCannotEdit = () => {
     api
-      .post('/expensehead/insertExp', ExpenseHeadExpenseId)
-      .then(() => {
-        message('Expense inserted successfully.', 'success');
-        window.location.reload();
+      .post('/expensehead/getExpenseSubHeadcannotedit', { expense_group_id: id })
+      .then((res) => {
+        setSubExpenseRec(res.data.data);
       })
       .catch(() => {
-        message('Network connection error.', 'error');
+        message('Unable to fetch data.', 'error');
       });
-       }else{
-      message('Please fill all required fields','warning');
+  };
+
+  useEffect(() => {
+  
+    getExpenseSubHeadCannotEdit();
+
+  }, []);
+
+
+  //Api Insert ExpenseHead
+  const AddNewSubHead = () => {
+    if (expensehead.title !== '') {
+      const ExpenseHeadExpenseId = expensehead;
+      ExpenseHeadExpenseId.expense_group_id = id;
+      api
+        .post('/expensehead/insertExp', ExpenseHeadExpenseId)
+        .then(() => {
+          message('Expense inserted successfully.', 'success');
+          window.location.reload();
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    } else {
+      message('Please fill all required fields', 'warning');
     }
   };
- // Delete Contact
- const deleteRecord = (staffId) => {
-  Swal.fire({
-    title: `Are you sure? `,
-    text: "You won't be able to revert this!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-  api.post('/expensehead/deleteExp', { expense_sub_group_id: staffId })
-    .then((res) => {
-      console.log(res)
-      Swal.fire(
-        'Deleted!',
-        'Contact has been deleted.',
-        'success'
-      )
-      message('Record deleted successfully', 'success')
-      window.location.reload();
-    })
-    .catch(() => {
-      message('Unable to delete record.', 'error')
-    })
-  }
-})
-}
+  // Delete Contact
+  const deleteRecord = (staffId) => {
+    Swal.fire({
+      title: `Are you sure? `,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/expensehead/deleteExp', { expense_sub_group_id: staffId })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
+      }
+    });
+  };
+ 
   useEffect(() => {
     editExpenseById();
     SubExpenseById();
+
   }, [id]);
 
   return (
     <>
-     <BreadCrumbs heading={expenseDetails && expenseDetails.title} />
+      <BreadCrumbs heading={expenseDetails && expenseDetails.title} />
       {/* button */}
-      {/* <ExpenseButton editExpenseData={editExpenseData} navigate={navigate} applyChanges={applyChanges} 
-      backToList={backToList}></ExpenseButton> */}
-     <ApiButton
+      {/* <ExpenseButton
+        editExpenseData={editExpenseData}
+        navigate={navigate}
+        applyChanges={applyChanges}
+        backToList={backToList}
+      ></ExpenseButton> */}
+<ApiButton
               editData={editExpenseData}
               navigate={navigate}
-              applyChanges={applyChanges}
+              applyChanges={editExpenseData}
               backToList={backToList}
-             // deleteData={deleteLoanData}
               module="ExpenseHead"
             ></ApiButton>
       {/* Expense Head Details */}
-      <ComponentCard
-            title="Expense Head Details"
-            creationModificationDate={expenseDetails}
-          
-          > 
-      <ExpenseHeadMainDetails handleInputs={handleInputs} expenseDetails={expenseDetails}></ExpenseHeadMainDetails>
+      <ComponentCard title="Expense Head Details" creationModificationDate={expenseDetails}>
+        <ExpenseHeadMainDetails
+          handleInputs={handleInputs}
+          expenseDetails={expenseDetails}
+        ></ExpenseHeadMainDetails>
       </ComponentCard>
-      <ComponentCard title='Creation and Modification'>
-      <ExpenseHeadCreationModification expenseDetails={expenseDetails}></ExpenseHeadCreationModification>
-      </ComponentCard>
+
       {/* Expense sup Head */}
       <ComponentCard title="Expense Sup Head Linked">
         <ToastContainer></ToastContainer>
@@ -169,6 +205,7 @@ const ExpenseEdit = () => {
             setExpenseData={setExpenseData}
             SetExpenseSuphead={SetExpenseSuphead}
             deleteRecord={deleteRecord}
+            subExpenseRec={subExpenseRec}
           ></ExpenseHeadSubHead>
           {/*ExpenseHead edit modal*/}
           <ExpenseHeadModal
@@ -180,7 +217,7 @@ const ExpenseEdit = () => {
         <Row>
           <Col md="3">
             <FormGroup>
-              <Button color="primary" className='shadow-none' onClick={addContactToggle.bind(null)}>
+              <Button color="primary" className="shadow-none" onClick={addContactToggle.bind(null)}>
                 Add Expense Sup Head{' '}
               </Button>
               {/* Expense SubHead insert modal */}
@@ -189,7 +226,6 @@ const ExpenseEdit = () => {
                 <ModalBody>
                   <Row>
                     <Col md="12">
-                      <Card>
                         <CardBody>
                           <Form>
                             <Row>
@@ -207,18 +243,24 @@ const ExpenseEdit = () => {
                             </Row>
                           </Form>
                         </CardBody>
-                      </Card>
                     </Col>
                   </Row>
                 </ModalBody>
                 <ModalFooter>
-                  <Button className='shadow-none'
+                  <Button
+                    className="shadow-none"
                     color="primary"
                     onClick={() => {
                       AddNewSubHead();
-                    }} >Submit
+                    }}
+                  >
+                    Submit
                   </Button>
-                  <Button color="secondary" className='shadow-none' onClick={addContactToggle.bind(null)}>
+                  <Button
+                    color="secondary"
+                    className="shadow-none"
+                    onClick={addContactToggle.bind(null)}
+                  >
                     Cancel
                   </Button>
                 </ModalFooter>

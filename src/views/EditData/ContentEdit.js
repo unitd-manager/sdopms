@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,6 +19,10 @@ import PictureAttachmentModalV2 from '../../components/Tender/PictureAttachmentM
 import message from '../../components/Message';
 import api from '../../constants/api';
 import ApiButton from '../../components/ApiButton';
+import AppContext from '../../context/AppContext';
+import creationdatetime from '../../constants/creationdatetime';
+
+
 
 const ContentUpdate = () => {
   // All state variables
@@ -33,6 +37,8 @@ const ContentUpdate = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
+    const { loggedInuser } = useContext(AppContext);
+
 
   // Navigation and Parameter Constants
   const { id } = useParams();
@@ -90,7 +96,8 @@ const backToList=()=>{
       contentDetails.title !== '' &&
       contentDetails.sub_category_id !== '' &&
       contentDetails.published !== ''
-    ) {
+    ) {contentDetails.modified_date = creationdatetime;
+      contentDetails.modified_by= loggedInuser.first_name;
       api
         .post('/content/editContent', contentDetails)
         .then(() => {

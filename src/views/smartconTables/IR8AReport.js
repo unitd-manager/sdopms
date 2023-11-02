@@ -131,7 +131,7 @@ const InvoiceMonthReports = () => {
                     <td>{element.status}</td>
                     <td>{(element.dob)?moment(element.dob).format('DD-MM-YYYY'):''}</td>
                     <td>{element.nric_fin}</td>
-                    <td>{element.pyrol_month}</td>
+                    <td>{element.payroll_month}</td>
                     <td>{element.gross_salary}</td>
                     <td>{element.total_allowance}</td>
                     <td>{element.total_allowance?element.total_income:element.gross_salary}</td>
