@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import message from '../../components/Message';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
+import AppContext from '../../context/AppContext';
 import creationdatetime from '../../constants/creationdatetime';
 
 const ClientDetails = () => {
@@ -16,17 +16,20 @@ const ClientDetails = () => {
   //  insertClient
   const [clientForms, setClientForms] = useState({
     company_name: '',
+    created_by: '',
   });
 
   //Client Functions/Methods
   const handleClientForms = (e) => {
     setClientForms({ ...clientForms, [e.target.name]: e.target.value });
   };
+  const { loggedInuser } = useContext(AppContext);
 
   // Client Insert
   const insertClient = () => {
     if (clientForms.company_name !== '') {
       clientForms.creation_date = creationdatetime;
+      clientForms.created_by = loggedInuser.first_name;
       api
         .post('/clients/insertCompany', clientForms)
         .then((res) => {
