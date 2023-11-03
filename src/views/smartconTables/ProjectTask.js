@@ -80,18 +80,15 @@ export default function ProjectTask({
   const [fileTypes, setFileTypes] = useState();
   const [moduleId, setModuleId] = useState('');
   const [filteredData, setFilteredData] = useState([]);
-  const [employeeTeam, setEmployeeTeam] = useState([]);
-  const [tasktypedetails, setTaskTypetDetails] = useState();
-  //const [formSubmitted, setFormSubmitted] = useState(false);
-
   const [updateFile, setUpdateFile] = useState(true);
-  // const [selectedTeam, setSelectedTeam] = useState(''); // To store selected team
-  // const [filteredStaffMembers, setFilteredStaffMembers] = useState([]); // To store staff members based on the selected team
+  // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
+  const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
+  
 
   // Gettind data from Job By Id
   const editJobById = () => {
     api
-      .get('/projectteam/getProjectTeams')
+      .get('/projectteam/getProjectTeam')
       .then((res) => {
         console.log(res.data.data);
         setEmployees(res.data.data);
@@ -100,51 +97,47 @@ export default function ProjectTask({
   };
   const getStaffName = () => {
     api
-      .post('/projectteam/getEmployeeByID', { project_team_id: id })
+      .post('/projectteam/getEmployeeByID', { project_team_id : id })
       .then((res) => {
         setEmployee(res.data.data);
       })
       .catch(() => {});
   };
-
-  //Api call for getting Task Type From Valuelist
-  const getTaskType = () => {
-    api
-      .get('/project/getTaskTypeFromValueList')
-      .then((res) => {
-        setTaskTypetDetails(res.data.data);
-      })
-      .catch(() => {
-        message('Staff Data Not Found', 'info');
-      });
+  const handleCheckboxChange = (event, employeeId) => {
+    if (event.target.checked === true ? 1 : 0) {
+      // If the checkbox is checked, add the employeeId to the selectedNames array
+      setSelectedNames([...selectedNames, employeeId]);
+    } else {
+      // If the checkbox is unchecked, remove the employeeId from the selectedNames array
+      setSelectedNames(selectedNames.includes(employeeId));
+    }
+    console.log('Employee ID:', employeeId);
+    console.log('Selected Employee IDs:', selectedNames);
   };
-
-  //Milestone data in milestoneDetails
-  const handleInputsTask = (e) => {
-    setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
-  };
+  
   //get staff details
   const { loggedInuser } = useContext(AppContext);
-
   const insertTaskData = () => {
     if (isSubmitting) {
       return; // Prevent multiple submissions
     }
-
     if (
       insertTask.project_milestone_id !== '' &&
-      insertTask.task_title !== '' &&
-      insertTask.employee_id !== ''
+      insertTask.task_title !== '' 
     ) {
       setIsSubmitting(true); // Set submission in progress
       const newContactWithCompanyId = insertTask;
       newContactWithCompanyId.creation_date = creationdatetime;
       newContactWithCompanyId.created_by = loggedInuser.first_name;
       newContactWithCompanyId.project_id = id;
+       newContactWithCompanyId.project_team_id = employees;
+       selectedNames.forEach((employeeId) => {
+        newContactWithCompanyId.employee_id = employeeId;
       api
         .post('/projecttask/insertTask', newContactWithCompanyId)
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
+          console.log('Inserted Data ID:', insertedDataId);
           console.log(insertedDataId);
           message('Task inserted successfully.', 'success');
           getTaskById();
@@ -163,6 +156,7 @@ export default function ProjectTask({
             project_milestone_id: '',
             project_team_id: '',
           });
+          setSelectedNames([]); // Clear the selected names after insertion
         })
         .catch(() => {
           message('Network connection error.', 'error');
@@ -170,10 +164,11 @@ export default function ProjectTask({
         .finally(() => {
           setIsSubmitting(false); // Reset submission status
         });
-    } else {
-      message('Please fill all required fields', 'warning');
-    }
-  };
+    });
+  } else {
+    message('Please fill all required fields', 'warning');
+  }
+};
   console.log(filteredData);
   const handleSearch = () => {
     const newData = taskById
@@ -183,10 +178,8 @@ export default function ProjectTask({
     // Store the filtered data in the state variable
     setFilteredData(newData);
   };
-
   const [sortColumn, setSortColumn] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-
   const handleSort = (column) => {
     if (sortColumn === column) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -195,9 +188,7 @@ export default function ProjectTask({
       setSortOrder('asc');
     }
   };
-
   const sortedData = [...userSearchData];
-
   if (sortColumn === 'Title') {
     sortedData.sort((a, b) => {
       const order = sortOrder === 'asc' ? 1 : -1;
@@ -218,42 +209,39 @@ export default function ProjectTask({
   }
   // Pagination
   const [page, setPage] = useState(0);
-
   const employeesPerPage = 10;
   const numberOfEmployeesVistited = page * employeesPerPage;
   const displayEmployees = sortedData.slice(
     numberOfEmployeesVistited,
     numberOfEmployeesVistited + employeesPerPage,
   );
-
   console.log('displayEmployees', displayEmployees);
   const totalPages = Math.ceil(userSearchData.length / employeesPerPage);
   const changePage = ({ selected }) => {
     setPage(selected);
   };
-
   const [searchQuery, setSearchQuery] = useState('');
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
+ 
   const handleSearchData = () => {
     const newData = taskById.filter((task) => {
       // Check if task.title exists and perform a case-insensitive search
-      const titleMatches =
-        task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
-
+      const titleMatches = task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
+  
       // Check if task.first_name exists and perform a case-insensitive search
-      const firstNameMatches =
-        task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
-
+      const firstNameMatches = task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
+  
       // Include the task in newData if either title or first_name matches
       return titleMatches || firstNameMatches;
     });
-
+  
     setUserSearchData(newData);
     setFilteredData(newData);
   };
+
 
   // Api call for getting milestone dropdown based on project ID
   const getMilestoneTitle = () => {
@@ -270,10 +258,12 @@ export default function ProjectTask({
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
       .then((res) => {
-        setEmployeeTeam(res.data.data);
+        setEmployees(res.data.data);
+
       })
       .catch(() => {});
   };
+
 
   //attachments
   const dataForAttachment = () => {
@@ -282,20 +272,30 @@ export default function ProjectTask({
     });
     console.log('inside DataForAttachment');
   };
+  
+  //Milestone data in milestoneDetails
+  const handleInputsTask = (e) => {
+    setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
+  };
+ 
 
   useEffect(() => {
     getStaffName();
     editJobById();
-    getTaskType();
     dataForAttachment();
     getMilestoneTitle();
-    fetchEmployeeDetails();
   }, [id]);
 
   useEffect(() => {
     handleSearchData();
   }, [searchQuery]);
-
+  
+  useEffect(() => {
+    if (insertTask.project_team_id) {
+      const selectedTeams = insertTask.project_team_id;
+      fetchEmployeeDetails(selectedTeams);
+    }
+  }, [insertTask.project_team_id]);
   //Structure of projectTask list view
   const Projecttaskcolumn = [
     {
@@ -398,8 +398,6 @@ export default function ProjectTask({
                     <option value="InProgress">InProgress</option>
                     <option value="Completed">Completed</option>
                     <option value="OnHold">OnHold</option>
-                    {/* <option value="tenancy work">Tenancy Work</option>
-                <option value="maintenance">Maintenance</option> */}
                   </Input>
                 </FormGroup>
               </Col>
@@ -413,10 +411,8 @@ export default function ProjectTask({
                   // Clear the filter criteria for both Select Staff and Select Category
                   setCompanyName('');
                   setCategoryName('');
-
                   // Restore the full data
                   setUserSearchData(taskById);
-
                   // Clear the filtered data
                   setFilteredData([]);
                 }}
@@ -454,11 +450,7 @@ export default function ProjectTask({
               </FormGroup>
             </Col>
           </Row>
-          {/* <Col md="1" className="mt-3">
-              <Button color="primary" className="shadow-none" onClick={handleSearchData}>
-                Search
-              </Button>
-            </Col> */}
+         
           <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
             <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
             <ModalBody>
@@ -502,59 +494,54 @@ export default function ProjectTask({
                             </FormGroup>
                           </Col>
                           <Col md="4">
-                            <FormGroup>
-                              <Label>
-                                Team Name<span className="required">*</span>
-                              </Label>
-                              <Input
-                                type="select"
-                                name="project_team_id"
-                                onChange={(e) => {
-                                  handleInputsTask(e);
-                                }}
-                                value={insertTask && insertTask.project_team_id}
-                              >
-                                <option value="" selected>
-                                  Please Select
-                                </option>
-                                {employees &&
-                                  employees.map((ele) => {
-                                    return (
-                                      <option key={ele.project_team_id} value={ele.team_title}>
-                                        {ele.team_title}
-                                      </option>
-                                    );
-                                  })}
-                              </Input>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>
-                                Employee Name<span className="required">*</span>
-                              </Label>
-                              <Input
-                                type="select"
-                                name="project_team_id"
-                                onChange={(e) => {
-                                  handleInputsTask(e);
-                                }}
-                                value={insertTask && insertTask.project_team_id}
-                              >
-                                <option value="" selected>
-                                  Please Select
-                                </option>
-                                {employeeTeam &&
-                                  employeeTeam.map((ele) => {
-                                    return (
-                                      <option key={ele.employee_id} value={ele.first_name}>
-                                        {ele.first_name}
-                                      </option>
-                                    );
-                                  })}
-                              </Input>
-                            </FormGroup>
-                          </Col>
+                          <FormGroup>
+                   <Label>Team Title</Label>
+                   <Input
+                    type="select"
+                    name="project_team_id"
+                    onChange={(e) => {
+                    const selectedEmployeeId = e.target.value;
+                    fetchEmployeeDetails(selectedEmployeeId);
+                             }}
+                           >
+               <option value="">Please Select</option>
+                   {employees &&
+                      employees.map((ele) => (
+           <option key={ele.project_team_id} value={ele.project_team_id}>
+                        {ele.team_title}
+                       </option>
+                            ))}
+                        </Input>
+                      </FormGroup>
+                           </Col>                    
+                          <Row>
+                          <Table className="no-wrap mt-3 align-middle" responsive borderless>                 
+                               <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>First Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {employees &&
+  employees.map((element) => {
+    return (
+      <tr key={element.project_team_id}>
+        <td>
+        <input
+            type="checkbox"
+            name="employee_id"
+            onChange={(e) => handleCheckboxChange(e, element.employee_id)}
+            checked= {selectedNames.includes(element.employee_id) === 'true' }// Always checked by default
+          />      
+        </td>
+        <td>{element.first_name}</td>
+      </tr>
+    );
+  })}
+</tbody>
+                    </Table>
+                  </Row>
                           <Col md="4">
                             <FormGroup>
                               <Label>Start date</Label>
@@ -604,7 +591,7 @@ export default function ProjectTask({
                               />
                             </FormGroup>
                           </Col>
-
+                        
                           <Col md="4">
                             <FormGroup>
                               <Label>Task Type</Label>
@@ -615,15 +602,12 @@ export default function ProjectTask({
                                 value={insertTask && insertTask.task_type}
                               >
                                 {' '}
-                                <option defaultValue="selected">Please Select</option>
-                                {tasktypedetails &&
-                                  tasktypedetails.map((ele) => {
-                                    return (
-                                      <option key={ele.value} value={ele.value}>
-                                        {ele.value}
-                                      </option>
-                                    );
-                                  })}
+                                <option value="" selected="selected">
+                                  Please Select
+                                </option>
+                                <option value="Development">Development</option>
+                                <option value="ChangeRequest">ChangeRequest</option>
+                                <option value="Issues">Issues</option>
                               </Input>
                             </FormGroup>
                           </Col>
