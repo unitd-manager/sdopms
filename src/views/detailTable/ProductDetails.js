@@ -1,6 +1,7 @@
-import React, {useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
@@ -27,29 +28,32 @@ const ProductDetails = () => {
       productDetails.product_code = ProductCode;
       productDetails.item_code = ItemCode;
       productDetails.creation_date = creationdatetime;
-      productDetails.created_by= loggedInuser.first_name;   
+      productDetails.created_by = loggedInuser.first_name;
       api
         .post('/product/insertProduct', productDetails)
         .then((res) => {
           const insertedDataId = res.data.data.insertId;
           message('Product inserted successfully.', 'success');
           api
-          .post('/product/getCodeValue', { type: 'InventoryCode' })
+            .post('/product/getCodeValue', { type: 'InventoryCode' })
             .then((res1) => {
               const InventoryCode = res1.data.data;
               message('inventory created successfully.', 'success');
               api
-              .post('/inventory/insertinventory', { product_id: insertedDataId, inventory_code:InventoryCode  })
-            
-            .then(() => {
-              message('inventory created successfully.', 'success');
-            })
+                .post('/inventory/insertinventory', {
+                  product_id: insertedDataId,
+                  inventory_code: InventoryCode,
+                })
+
+                .then(() => {
+                  message('inventory created successfully.', 'success');
+                });
             })
             .catch(() => {
               message('Unable to create inventory.', 'error');
             });
           setTimeout(() => {
-            navigate(`/ProductEdit/${insertedDataId}`);
+            navigate(`/ProductEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {
@@ -60,19 +64,16 @@ const ProductDetails = () => {
     }
   };
 
-
   //Auto generation code
   const generateCode = () => {
     api
       .post('/product/getCodeValue', { type: 'ProductCode' })
       .then((res) => {
-        const ProductCode = res.data.data
-      api
-      .post('/product/getCodeValue', { type: 'ItemCode' })
-      .then((response) => {
-        const ItemCode = response.data.data
-        insertProductData(ProductCode, ItemCode);
-      })
+        const ProductCode = res.data.data;
+        api.post('/product/getCodeValue', { type: 'ItemCode' }).then((response) => {
+          const ItemCode = response.data.data;
+          insertProductData(ProductCode, ItemCode);
+        });
       })
       .catch(() => {
         insertProductData('');
@@ -80,9 +81,7 @@ const ProductDetails = () => {
   };
 
   //useeffect
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -95,7 +94,9 @@ const ProductDetails = () => {
               <FormGroup>
                 <Row>
                   <Col md="12">
-                    <Label>Product Name <span className="required"> *</span> </Label>
+                    <Label>
+                      Product Name <span className="required"> *</span>{' '}
+                    </Label>
                     <Input
                       type="text"
                       onChange={handleInputs}
@@ -118,13 +119,17 @@ const ProductDetails = () => {
                       Save & Continue
                     </Button>
                     <Button
-                      onClick={() => {
-                        navigate('/Product');
-                      }}
-                      type="button"
+                      type="submit"
                       className="btn btn-dark shadow-none"
+                      onClick={(e) => {
+                        if (window.confirm('Are you sure you want to cancel? ')) {
+                          navigate('/Product');
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
                     >
-                      Go to List
+                      Cancel
                     </Button>
                   </div>
                 </Row>

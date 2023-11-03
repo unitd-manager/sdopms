@@ -20,21 +20,21 @@ export default function FinanceSummary({invoicesummary,receiptsummary,invoiceite
           <Col md="4">
             <FormGroup>
               <Label>Total Order Amount</Label>{' '}
-              <Input type="text" name="orderamount" value={invoicesummary && invoicesummary.orderamount} disabled></Input>
+              <Input type="text" name="orderamount" value={invoiceitemsummary && invoiceitemsummary.TotalCost} disabled></Input>
             </FormGroup>
           </Col>
           <Col md="4">
             <FormGroup>
               <Label>Total GST Amount</Label>
               {' '}
-              <Input type="text" name="gstamount" value={invoiceitemsummary && invoiceitemsummary.gstamount} disabled></Input>
+              <Input type="text" name="gstamount" value={invoiceitemsummary && invoiceitemsummary.total_gst_value} disabled></Input>
             </FormGroup>
           </Col>
           <Col md="4">
             <FormGroup>
               <Label>Total Invoice raised</Label>
               {' '}
-              <Input type="text" name="invoiceRaised" value={invoicesummary && invoicesummary.invoiceRaised} disabled></Input>
+              <Input type="text" name="invoiceRaised" value={invoicesummary && invoicesummary.orderamount} disabled></Input>
             </FormGroup>
           </Col>
           <Col md="4">
@@ -48,7 +48,7 @@ export default function FinanceSummary({invoicesummary,receiptsummary,invoiceite
             <FormGroup>
               <Label>Outstanding Invoice</Label>
               {' '}
-              <Input type="text" name="outstandingInvoice" value={invoicesummary && invoicesummary.outstandingInvoice} disabled></Input>
+              <Input type="text" name="outstandingInvoice" value={receiptsummary && receiptsummary.outstandingInvoiceAmount} disabled></Input>
             </FormGroup>
           </Col>
           <Col md="4">

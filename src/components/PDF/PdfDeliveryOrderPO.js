@@ -9,43 +9,39 @@ import message from '../Message';
 import PdfFooter from './PdfFooter';
 import PdfHeader from './PdfHeader';
 
-
-const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
+const PdfDeliveryOrderPO = ({ deliveryOrderId, date }) => {
   PdfDeliveryOrderPO.propTypes = {
     deliveryOrderId: PropTypes.any,
-    date:PropTypes.any,
-    
-    
-  }
-    const [hfdata, setHeaderFooterData] = React.useState()
-    
-    const [deliverOrderProducts, setDeliveryOrderProducts] = React.useState();
-    
+    date: PropTypes.any,
+  };
+  const [hfdata, setHeaderFooterData] = React.useState();
+
+  const [deliverOrderProducts, setDeliveryOrderProducts] = React.useState();
+
   React.useEffect(() => {
     api.get('/setting/getSettingsForCompany').then((res) => {
-        setHeaderFooterData(res.data.data);
+      setHeaderFooterData(res.data.data);
     });
   }, [0]);
 
   const findCompany = (key) => {
-      const filteredResult = hfdata.find((e) => e.key_text === key);
-      return filteredResult.value
-  }
-  
-  
+    const filteredResult = hfdata.find((e) => e.key_text === key);
+    return filteredResult.value;
+  };
 
-  const getDeliveryOrderId=()=>{
-    api.post('purchaseorder/getDeliveryOrderHistory',{delivery_order_id:deliveryOrderId})
-    .then((res)=>{
-      setDeliveryOrderProducts(res.data.data);
-    }).catch(()=>{
-      message('delivery data are not found','error');
-    })
-  }
-  
+  const getDeliveryOrderId = () => {
+    api
+      .post('purchaseorder/getDeliveryOrderHistory', { delivery_order_id: deliveryOrderId })
+      .then((res) => {
+        setDeliveryOrderProducts(res.data.data);
+      })
+      .catch(() => {
+        message('delivery data are not found', 'error');
+      });
+  };
+
   React.useEffect(() => {
     getDeliveryOrderId();
-    
   }, []);
 
   const GetPdf = () => {
@@ -67,7 +63,6 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
           text: 'Remarks',
           style: 'tableHead',
         },
-        
       ],
     ];
     deliverOrderProducts.forEach((element, index) => {
@@ -78,12 +73,12 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
           border: [false, false, false, true],
         },
         {
-          text: `${element.item_title? element.item_title : ''}`,
+          text: `${element.item_title ? element.item_title : ''}`,
           border: [false, false, false, true],
           style: 'tableBody',
         },
         {
-          text: `${element.quantity? element.quantity : ''}`,
+          text: `${element.quantity ? element.quantity : ''}`,
           border: [false, false, false, true],
           style: 'tableBody',
         },
@@ -92,7 +87,6 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
           border: [false, false, false, true],
           style: 'tableBody',
         },
-        
       ]);
     });
     const dd = {
@@ -100,7 +94,7 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
       header: PdfHeader({ findCompany }),
       pageMargins: [40, 150, 40, 80],
       footer: PdfFooter,
-     
+
       content: [
         {
           layout: {
@@ -121,11 +115,8 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
               return '#eaeaea';
             },
             hLineStyle: () => {
-              // if (i === 0 || i === node.table.body.length) {
               return null;
-              //}
             },
-            // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
             paddingLeft: () => {
               return 10;
             },
@@ -158,160 +149,156 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
           },
         },
         '\n\n',
-        {columns: [
-           
+        {
+          columns: [
             {
               text: `Date :${date ? moment(date).format('DD-MM-YYYY') : ''} `,
               style: 'textSize',
-              margin:[0,0,65,0],
-              bold:true
+              margin: [0, 0, 65, 0],
+              bold: true,
             },
-              ],},
-              '\n',
-          
-              '\n',
-              '\n',
-  
-      
-              {
-                layout: {
-                  defaultBorder: false,
-                  hLineWidth: () => {
-                    return 1;
-                  },
-                  vLineWidth: () => {
-                    return 1;
-                  },
-                  hLineColor: (i) => {
-                    if (i === 1 || i === 0) {
-                      return '#bfdde8';
-                    }
-                    return '#eaeaea';
-                  },
-                  vLineColor: () => {
-                    return '#eaeaea';
-                  },
-                  hLineStyle: () => {
-                    // if (i === 0 || i === node.table.body.length) {
-                    return null;
-                    //}
-                  },
-                  // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
-                  paddingLeft: () => {
-                    return 10;
-                  },
-                  paddingRight: () => {
-                    return 10;
-                  },
-                  paddingTop: () => {
-                    return 2;
-                  },
-                  paddingBottom: () => {
-                    return 2;
-                  },
-                  fillColor: () => {
-                    return '#fff';
-                  },
+          ],
+        },
+        '\n',
+
+        '\n',
+        '\n',
+
+        {
+          layout: {
+            defaultBorder: false,
+            hLineWidth: () => {
+              return 1;
+            },
+            vLineWidth: () => {
+              return 1;
+            },
+            hLineColor: (i) => {
+              if (i === 1 || i === 0) {
+                return '#bfdde8';
+              }
+              return '#eaeaea';
+            },
+            vLineColor: () => {
+              return '#eaeaea';
+            },
+            hLineStyle: () => {
+              return null;
+            },
+            paddingLeft: () => {
+              return 10;
+            },
+            paddingRight: () => {
+              return 10;
+            },
+            paddingTop: () => {
+              return 2;
+            },
+            paddingBottom: () => {
+              return 2;
+            },
+            fillColor: () => {
+              return '#fff';
+            },
+          },
+          table: {
+            headerRows: 1,
+            widths: ['10%', '41%', '20%', '30%'],
+
+            body: productItems,
+          },
+        },
+        '\n\n\n\n\n',
+        '\n\n\n\n\n',
+
+        {
+          columns: [
+            {
+              stack: [
+                {
+                  text: 'Your Faithfully :',
+                  alignment: 'left',
+                  bold: true,
+                  fontSize: 10,
+                  style: ['invoiceAdd', 'textSize1'],
                 },
-                table: {
-                  headerRows: 1,
-                  widths: ['10%', '41%', '20%', '30%'],
-      
-                  body: productItems,
+                '\n\n\n',
+                { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 190, y2: 0, lineWidth: 1 }] },
+                {
+                  text: `Authorised Signature/Date`,
+                  fontSize: 10,
+                  style: ['textSize1'],
+                  margin: [0, 0, 0, 0],
                 },
-              },
-              '\n\n\n\n\n',
-              '\n\n\n\n\n',
-      
-              {
-                columns: [
-                  {
-                    stack: [
-                      {
-                        text: 'Your Faithfully :',
-                        alignment: 'left',
-                        bold:true,
-                        fontSize: 10,
-                        style: ['invoiceAdd', 'textSize1'],
-                      },
-                      '\n\n\n',
-                      { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 190, y2: 0, lineWidth: 1 }] },
-                      {
-                        text: `Authorised Signature/Date`,
-                        fontSize: 10,
-                        style: ['textSize1'],
-                        margin: [0, 0, 0, 0],
-                      },
-                    ],
-                  },
-                  {
-                    stack: [
-                      '\n\n\n\n',
-                      {
-                        canvas: [
-                          {
-                            type: 'line',
-                            margin: [0, 0, 0, 0],
-                            x1: 0,
-                            y1: 0,
-                            x2:200,
-                            y2: 0,
-                            lineWidth: 1,
-                          },
-                        ],
-                      },
-                      {
-                        text: `Accepted By/date`,
-                        fontSize: 10,
-                        style: ['textSize1'],
-                        margin: [0, 0, 0, 0],
-                      },
-                    ],
-                  },
-                ],
-              },
-              '\n\n\n\n\n',
-            ],
-      margin:[0,50,50,50],
+              ],
+            },
+            {
+              stack: [
+                '\n\n\n\n',
+                {
+                  canvas: [
+                    {
+                      type: 'line',
+                      margin: [0, 0, 0, 0],
+                      x1: 0,
+                      y1: 0,
+                      x2: 200,
+                      y2: 0,
+                      lineWidth: 1,
+                    },
+                  ],
+                },
+                {
+                  text: `Accepted By/date`,
+                  fontSize: 10,
+                  style: ['textSize1'],
+                  margin: [0, 0, 0, 0],
+                },
+              ],
+            },
+          ],
+        },
+        '\n\n\n\n\n',
+      ],
+      margin: [0, 50, 50, 50],
       styles: {
-        logo:{
-            margin:[-20,20,0,0],
+        logo: {
+          margin: [-20, 20, 0, 0],
         },
-        address:{
-          margin:[-10,20,0,0],
+        address: {
+          margin: [-10, 20, 0, 0],
         },
-        invoice:{
-           margin:[0,30,0,10],
-           alignment:'right',
+        invoice: {
+          margin: [0, 30, 0, 10],
+          alignment: 'right',
         },
-        invoiceAdd:{
-           alignment:'right',
+        invoiceAdd: {
+          alignment: 'right',
         },
         textSize: {
-           fontSize: 10,
-           alignment:'right',
+          fontSize: 10,
+          alignment: 'right',
         },
         textSize1: {
-          fontSize: 10
-          
-       },
+          fontSize: 10,
+        },
         notesTitle: {
-       bold: true,
-       margin: [0, 50, 0, 3],
-     },
-       tableHead:{
-           border: [false, true, false, true],
-           fillColor: '#eaf2f5',
-           margin: [0, 5, 0, 5],
-           fontSize: 10,
-           bold:'true',
-     },
-       tableBody:{
-         border: [false, false, false, true],
-           margin: [0, 5, 0, 5],
-           alignment: 'left',
-           fontSize:10
-       }
+          bold: true,
+          margin: [0, 50, 0, 3],
+        },
+        tableHead: {
+          border: [false, true, false, true],
+          fillColor: '#eaf2f5',
+          margin: [0, 5, 0, 5],
+          fontSize: 10,
+          bold: 'true',
+        },
+        tableBody: {
+          border: [false, false, false, true],
+          margin: [0, 5, 0, 5],
+          alignment: 'left',
+          fontSize: 10,
+        },
       },
     };
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -320,12 +307,11 @@ const PdfDeliveryOrderPO = ({deliveryOrderId,date}) => {
 
   return (
     <>
-       
-       <span onClick={GetPdf}><Icon.Printer/></span>
-      
+      <span onClick={GetPdf}>
+        <Icon.Printer />
+      </span>
     </>
   );
 };
-
 
 export default PdfDeliveryOrderPO;

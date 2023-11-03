@@ -133,42 +133,7 @@ const SubConEdit = () => {
               backToList={backToList}
               module="SubCon"
             ></ApiButton>
-            {/* <Row>
-              <Col>
-                <Button
-                  color="primary"
-                  className="shadow-none"
-                  onClick={() => {
-                    editSubConData();
-                    navigate('/Subcon');
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="primary"
-                  className="shadow-none"
-                  onClick={() => {
-                    editSubConData();
-                  }}
-                >
-                  Apply
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="secondary"
-                  className="shadow-none"
-                  onClick={() => {
-                    navigate('/Subcon');
-                  }}
-                >
-                  Back to List
-                </Button>
-              </Col>
-            </Row> */}
+           
           </ComponentCardV2>
           <ComponentCard title="SubCon Details" creationModificationDate={subCon}>
             <Row>

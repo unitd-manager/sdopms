@@ -6,19 +6,17 @@ import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import moment from 'moment';
 import 'datatables.net-buttons/js/buttons.flash';
-import 'datatables.net-buttons/js/buttons.html5';
-import 'datatables.net-buttons/js/buttons.print';
+// import 'datatables.net-buttons/js/buttons.html5';
+// import 'datatables.net-buttons/js/buttons.print';
 import api from '../../constants/api';
-// import message from '../../components/Message';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
-
 
 //geting data from invoice
 const InvoiceData = () => {
   //State variable
   const [invoice, setInvoice] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   //getting data from invoice table
   const getInvoice = () => {
@@ -32,31 +30,21 @@ const InvoiceData = () => {
           pageLength: 20,
           processing: true,
           dom: 'Bfrtip',
-          buttons: [ {
-            extend: 'print',
-            text: "Print",
-            className:"shadow-none btn btn-primary",
-        }],
+          // buttons: [
+          //   {
+          //     extend: 'print',
+          //     text: 'Print',
+          //     className: 'shadow-none btn btn-primary',
+          //   },
+          // ],
         });
-        setLoading(false)
-      }).catch(()=>{
-        setLoading(false)
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-    };
+  };
   useEffect(() => {
-    // setTimeout(() => {
-    //   $('#example').DataTable({
-    //     pagingType: 'full_numbers',
-    //     pageLength: 20,
-    //     processing: true,
-    //     dom: 'Bfrtip',
-    //     buttons: [ {
-    //       extend: 'print',
-    //       text: "Print",
-    //       className:"shadow-none btn btn-primary",
-    //   }],
-    //   });
-    // }, 1000);
     getInvoice();
   }, []);
   //Structure of Invoice list view
@@ -131,13 +119,10 @@ const InvoiceData = () => {
   return (
     <div className="MainDiv">
       <div className=" pt-xs-25">
-        <BreadCrumbs/>
+        <BreadCrumbs />
 
-        <CommonTable 
-        loading={loading}
-        title="Invoice List" >
-
-        <thead>
+        <CommonTable loading={loading} title="Invoice List">
+          <thead>
             <tr>
               {columns.map((cell) => {
                 return <td key={cell.name}>{cell.name}</td>;
@@ -163,8 +148,7 @@ const InvoiceData = () => {
                 );
               })}
           </tbody>
-
-          </CommonTable>
+        </CommonTable>
       </div>
     </div>
   );

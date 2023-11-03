@@ -92,15 +92,21 @@ const ContentDetails = () => {
                     }}>
                     Save
                   </Button>
-                  <Button 
-                      onClick={() => {
+                  <Button
+                    className="shadow-none"
+                    color="dark"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          'Are you sure you want to cancel  \n  \n You will lose any changes made',
+                        )
+                      ) {
                         navigate(-1);
-                      }}
-                      type="button"
-                      className="btn btn-dark shadow-none"
-                    >
-                      Cancel
-                    </Button>
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   </div>
                 </Row>
               </FormGroup>

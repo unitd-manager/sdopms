@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col,FormGroup, Label, Input, Form } from 'reactstrap';
+import { Row, Col, Button, FormGroup, Label, Input, Form } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
@@ -57,7 +57,6 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                     onClick={() => {
                       editinventoryData();
                       applyChanges();
-                      console.log('cancel process');
                     }}
                   >
                     Apply
@@ -69,7 +68,6 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                     color="dark"
                     onClick={() => {
                       backToList();
-                      console.log('back to list');
                     }}
                   >
                     {' '}
@@ -89,16 +87,17 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                   </small>
                 </Col>
 
-                <Col className='fs-10 small'>
-                  <small>Modification :</small>
+                  <Col className="fs-10 small">
+                    <small>Modification :</small>
 
-                  <small>
-                    {inventoryDetails && inventoryDetails.modified_by}
-                    {inventoryDetails &&
-                      inventoryDetails.modification_date}
-                  </small>
-                </Col>
-              </Row>}>
+                    <small>
+                      {inventoryDetails && inventoryDetails.modified_by}
+                      {inventoryDetails && inventoryDetails.modification_date}
+                    </small>
+                  </Col>
+                </Row>
+              }
+            >
               <Row>
                 <Col md="3">
                   <FormGroup>

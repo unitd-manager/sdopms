@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -18,6 +19,10 @@ import PictureAttachmentModalV2 from '../../components/Tender/PictureAttachmentM
 import message from '../../components/Message';
 import api from '../../constants/api';
 import ApiButton from '../../components/ApiButton';
+import AppContext from '../../context/AppContext';
+import creationdatetime from '../../constants/creationdatetime';
+
+
 
 const ContentUpdate = () => {
   // All state variables
@@ -32,6 +37,8 @@ const ContentUpdate = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
+    const { loggedInuser } = useContext(AppContext);
+
 
   // Navigation and Parameter Constants
   const { id } = useParams();
@@ -89,7 +96,8 @@ const backToList=()=>{
       contentDetails.title !== '' &&
       contentDetails.sub_category_id !== '' &&
       contentDetails.published !== ''
-    ) {
+    ) {contentDetails.modified_date = creationdatetime;
+      contentDetails.modified_by= loggedInuser.first_name;
       api
         .post('/content/editContent', contentDetails)
         .then(() => {
@@ -135,6 +143,31 @@ const backToList=()=>{
       getSubCategory(selectedcategory);
     }
   }, [contentDetails && contentDetails.category_id]);
+
+   const deleteContentData = () => {
+    Swal.fire({
+      title: `Are you sure? `,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/content/deleteContent', { content_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Contact has been deleted.', 'success');
+            message('Record deleted successfully', 'success');
+            window.location.reload();
+          })
+          .catch(() => {
+            message('Unable to delete record.', 'error');
+          });
+      }
+    });
+  };
   //Pictures
   const dataForPicture = () => {
     setDataForPicture({
@@ -161,7 +194,7 @@ const backToList=()=>{
               navigate={navigate}
               applyChanges={editContentData}
               backToList={backToList}
-             // deleteData={deleteLoanData}
+             deleteData={deleteContentData}
               module="Content"
             ></ApiButton>
        
@@ -268,7 +301,7 @@ const backToList=()=>{
                   <Input
                     type="select"
                     onChange={handleInputs}
-                    defaultValue={contentDetails && contentDetails.content_type}
+                    value={contentDetails && contentDetails.content_type}
                     name="content_type"
                   >
                    <option defaultValue="selected">Please Select</option>
@@ -288,28 +321,8 @@ const backToList=()=>{
           {/* Content Details Form */}
           <ComponentCard title="Content details">
             <Row>
-              <Col md="4">
-                <FormGroup>
-                  <Label> Show Title</Label>
-                  <br></br>
-                  <Label> Yes </Label>
-                  <Input
-                    name="show_title"
-                    value="1"
-                    type="radio"
-                    defaultChecked={contentDetails && contentDetails.show_title === 1 && true}
-                    onChange={handleInputs}
-                  />
-                  <Label> No </Label>
-                  <Input
-                    name="show_title"
-                    value="0"
-                    type="radio"
-                    Checked={contentDetails && contentDetails.show_title === 0 && true}
-                    onChange={handleInputs}
-                  />
-                </FormGroup>
-              </Col>
+             
+               
               <Col md="4">
                 <FormGroup>
                   <Label>Published</Label>
@@ -328,6 +341,28 @@ const backToList=()=>{
                     value="0"
                     type="radio"
                     defaultChecked={contentDetails && contentDetails.published === 0 && true}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Show Title</Label>
+                  <br></br>
+                  <Label>Yes</Label>
+                  <Input
+                    name="show_title"
+                    value="1"
+                    type="radio"
+                    defaultChecked={contentDetails && contentDetails.show_title === 1 && true}
+                    onChange={handleInputs}
+                  />
+                  <Label>No</Label>
+                  <Input
+                    name="show_title"
+                    value="0"
+                    type="radio"
+                    Checked={contentDetails && contentDetails.show_title === 0 && true}
                     onChange={handleInputs}
                   />
                 </FormGroup>

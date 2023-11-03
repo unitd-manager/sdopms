@@ -11,13 +11,13 @@ import {
   ModalFooter,
   Label,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as $ from 'jquery';
 import random from 'random';
 import Select from 'react-select';
 import api from '../../constants/api';
-import message from '../Message';
+import message from '../Message'
+import creationdatetime from '../../constants/creationdatetime';
 
 const AddPoModal = ({
   projectId,
@@ -33,10 +33,8 @@ const AddPoModal = ({
     PurchaseOrderId: PropTypes.any,
     setAddPurchaseOrderModal: PropTypes.func,
   };
-
   const [addNewProductModal, setAddNewProductModal] = useState(false);
-  const [getProductValue, setProductValue] = useState();
-  //const [totalAmount, setTotalAmount] = useState(0);
+   const [getProductValue, setProductValue] = useState();
   const [productDetail, setProductDetail] = useState({
     category_id: null,
     sub_category_id: null,
@@ -78,10 +76,49 @@ const AddPoModal = ({
       description: '',
     },
   ]);
-  //const [ totalAmount, setTotalAmount ] = useState(0);
+
+  // const [query, setQuery] = useState('');
+  // const [filteredOptions, setFilteredOptions] = useState([]);
+
+  // const handleInputChange = async (event) => {
+  //   const inputQuery = event.target.value;
+  //   setQuery(inputQuery);
+
+  //   try {
+  //     if (inputQuery.trim() === '') {
+  //       setFilteredOptions([]);
+  //     } else {
+  //       api.post('/product/getProductsbySearchFilter',{keyword:inputQuery}).then((res) => {
+  //         const items = res.data.data;
+  //         const finaldat = [];
+  //         items.forEach((item) => {
+  //           finaldat.push({ value: item.product_id, label: item.title });
+  //         });
+  //         console.log('productsearchdata',finaldat)
+  //         console.log('finaldat',finaldat)
+  //         // setProductValue(finaldat);
+  //         setFilteredOptions(finaldat);
+  //       });
+        
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
+
+  // const handleSelectOption = (selectedOption,itemId) => {
+  //   setQuery(selectedOption);
+  //   const element = addMoreItem.find((el) => el.id === itemId);
+  //   element.title = selectedOption.label;
+  //   element.item_title = selectedOption.label;
+  //   element.product_id = selectedOption.value.toString();
+  //   setMoreItem(addMoreItem);
+  //   setFilteredOptions([]); // Clear the suggestions when an option is selected
+  //   // Additional actions to perform when an option is selected
+  //   console.log('selectedoption',selectedOption)
+  // };
 
   const AddNewLineItem = () => {
-    //setMoreItem(addMoreItem + 1)
     setMoreItem([
       ...addMoreItem,
       {
@@ -142,29 +179,51 @@ const AddPoModal = ({
   };
 
   //   Get Products
-  const getProduct = () => {
-    api.get('/product/getProducts', getProductValue).then((res) => {
-      const items = res.data.data;
-      const finaldat = [];
-      items.forEach((item) => {
-        finaldat.push({ value: item.product_id, label: item.title });
-      });
-      setProductValue(finaldat);
+  // const getProduct = (e) => {
+  //   api.post('/product/getProductsbySearchFilter',{keyword:e.target.value}).then((res) => {
+  //     const items = res.data.data;
+  //     const finaldat = [];
+  //     items.forEach((item) => {
+  //       finaldat.push({ value: item.product_id, label: item.title });
+  //     });
+  //     console.log('productsearchdata',finaldat)
+  //     setProductValue(finaldat);
+  //   });
+  // };
+ //   Get Products
+ const getProduct = () => {
+  api.get('/product/getProducts').then((res) => {
+    const items = res.data.data;
+    const finaldat = [];
+    items.forEach((item) => {
+      finaldat.push({ value: item.product_id, label: item.title });
     });
-  };
+    setProductValue(finaldat);
+  });
+};
 
-  const insertProduct = () => {
+const insertProduct = (ProductCode, ItemCode) => {
+  if (productDetail.title !== '') {
+    productDetail.product_code = ProductCode;
+    productDetail.item_code = ItemCode;
+    productDetail.creation_date = creationdatetime;
     api
       .post('/purchaseorder/insertPurchaseProduct', productDetail)
       .then((res) => {
         const insertedDataId = res.data.data.insertId;
-        console.log(insertedDataId);
         message('Product inserted successfully.', 'success');
         api
-          .post('/inventory/insertinventory', { product_id: insertedDataId })
+          .post('/product/getCodeValue', { type: 'InventoryCode' })
+          .then((res1) => {
+            const InventoryCode = res1.data.data;
+            message('inventory created successfully.', 'success');
+            api
+            .post('/inventory/insertinventory', { product_id: insertedDataId, inventory_code:InventoryCode  })
+          
           .then(() => {
             message('inventory created successfully.', 'success');
-            getProduct();
+             getProduct();
+          })
           })
           .catch(() => {
             message('Unable to create inventory.', 'error');
@@ -173,10 +232,30 @@ const AddPoModal = ({
       .catch(() => {
         message('Unable to insert product.', 'error');
       });
+    } else {
+      message('Please fill the Product Name ', 'warning');
+    }
+  };
+
+  //Auto generation code
+  const generateCode = () => {
+    api
+      .post('/product/getCodeValue', { type: 'ProductCode' })
+      .then((res) => {
+        const ProductCode = res.data.data
+      api
+      .post('/product/getCodeValue', { type: 'ItemCode' })
+      .then((response) => {
+        const ItemCode = response.data.data
+        insertProduct(ProductCode, ItemCode);
+      })
+      })
+      .catch(() => {
+        insertProduct('');
+      });
   };
 
   // Materials Purchased
-
   const TabMaterialsPurchased = () => {
     api
       .get('/purchaseorder/TabPurchaseOrderLineItem')
@@ -186,14 +265,12 @@ const AddPoModal = ({
         items.forEach((item) => {
           finaldat.push({ value: item.product_id, label: item.title });
         });
-        //setTabMaterialsPurchased(finaldat)
       })
       .catch(() => {
         message('Tab Purchase Order not found', 'info');
       });
   };
   const poProduct = (itemObj) => {
-    console.log('itembj', itemObj);
     api
       .post('/purchaseorder/insertPoProduct', {
         purchase_order_id: PurchaseOrderId,
@@ -211,7 +288,7 @@ const AddPoModal = ({
         selling_price: itemObj.mrp,
         qty_updated: parseInt(itemObj.qty, 10),
         qty: parseInt(itemObj.qty, 10),
-        product_id: parseInt(itemObj.product_id, 10),
+        product_id: itemObj.product_id,
         supplier_id: insertPurchaseOrderData.supplier_id,
         gst: itemObj.gst,
         damage_qty: 0,
@@ -220,9 +297,11 @@ const AddPoModal = ({
         qty_delivered: 0,
         price: itemObj.price,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         message('Product Added!', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
       })
       .catch(() => {
         message('Unable to add Product!', 'error');
@@ -237,10 +316,10 @@ const AddPoModal = ({
 
   //        })
   //    }
+
   const getAllValues = () => {
     const result = [];
     const oldArray = addMoreItem;
-    console.log('oldarray', oldArray);
     $('.lineitem tbody tr').each(() => {
       const allValues = {};
       $(this)
@@ -251,31 +330,33 @@ const AddPoModal = ({
         });
       result.push(allValues);
     });
-    console.log('result', result);
-    result.forEach((obj) => {
+    oldArray.forEach((obj) => {
       if (obj.id) {
         /* eslint-disable */
         // const objId = parseInt(obj.id)
         const foundObj = oldArray.find((el) => el.id === obj.id);
-        console.log('foundobj', foundObj);
         if (foundObj) {
           obj.product_id = foundObj.product_id;
           obj.title = foundObj.title;
           obj.item_title = foundObj.item_title;
         }
-        console.log('foundobj', foundObj);
+        if(obj.unit){
+          poProduct(foundObj);
+          }
       }
     });
-    result.forEach((obj) => {
-      console.log('obj', obj);
-      if (obj.qty !== '') {
-        poProduct(obj);
-      }
-    });
+
   };
 
+  function updateState(index, property, e) {
+    const copyDeliverOrderProducts = [...addMoreItem];
+    const updatedObject = { ...copyDeliverOrderProducts[index], [property]: e.target.value };
+    copyDeliverOrderProducts[index] = updatedObject;
+    setMoreItem(copyDeliverOrderProducts);
+  }
+
   useEffect(() => {
-    getProduct();
+     getProduct();
     TabMaterialsPurchased();
   }, []);
   useEffect(() => {
@@ -319,8 +400,15 @@ const AddPoModal = ({
     element.item_title = str.label;
     element.product_id = str.value.toString();
     setMoreItem(addMoreItem);
-    console.log('addmoreitem', addMoreItem);
-    console.log('element', element);
+  };
+
+  // Clear row value
+  const ClearValue = (ind) => {
+    setMoreItem((current) =>
+      current.filter((obj) => {
+        return obj.id !== ind.id;
+      }),
+    );
   };
 
   return (
@@ -368,14 +456,14 @@ const AddPoModal = ({
                   </th>
                   <th scope="col">Unit</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">Cost Price (without GST)</th>
-                  <th scope="col">Selling Price (without GST)</th>
-                  <th scope="col">GST</th>
+                  <th scope="col">Cost Price (without VAT)</th>
+                  <th scope="col">Selling Price (without VAT)</th>
+                  <th scope="col">VAT</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                {addMoreItem.map((item) => {
+                {addMoreItem.map((item, index) => {
                   return (
                     <tr key={item.id}>
                       <td data-label="title">
@@ -389,6 +477,30 @@ const AddPoModal = ({
                         />
                         <Input value={item.product_id} type="hidden" name="product_id"></Input>
                         <Input value={item.title} type="hidden" name="title"></Input>
+                          {/* <div className="autocomplete-container">
+      <Input className="autocomplete-input"
+        type="text"
+        value={query.label}
+        onChange={(e)=>{handleInputChange(e,item.id)}}
+        placeholder="Search..."
+      />
+
+      {filteredOptions.length > 0 && (
+        <ul className="autocomplete-suggestions">
+          {filteredOptions.map((option) => (
+            <option
+              key={option.product_id}
+              onClick={() => handleSelectOption(option,item.id)}
+              value={option.product_id}
+            >
+              {option.label}
+            </option>
+          ))}
+        </ul>
+      )}
+      <Input value={item.product_id} type="hidden" name="product_id"></Input>
+                        <Input value={item.title} type="hidden" name="title"></Input> 
+    </div> */}
                       </td>
 
                       <td data-label="Unit">
@@ -396,6 +508,7 @@ const AddPoModal = ({
                           defaultValue={item.uom}
                           type="text"
                           name="unit"
+                          onChange={(e) => updateState(index, 'unit', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.unit}
                         />
                       </td>
@@ -404,6 +517,7 @@ const AddPoModal = ({
                           defaultValue={item.qty}
                           type="number"
                           name="qty"
+                          onChange={(e) => updateState(index, 'qty', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.qty}
                         />
                       </td>
@@ -411,6 +525,7 @@ const AddPoModal = ({
                         <Input
                           defaultValue={item.cost_price}
                           type="number"
+                          onChange={(e) => updateState(index, 'cost_price', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.cost_price}
                           name="cost_price"
                         />
@@ -420,24 +535,32 @@ const AddPoModal = ({
                           type="input"
                           defaultValue={item.price}
                           name="mrp"
+                          onChange={(e) => updateState(index, 'mrp', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.mrp}
                         />
                         {item.price}
                       </td>
-                      <td data-label="GST">
+                      <td data-label="VAT">
                         <Input
                           type="number"
                           defaultValue={item.gst}
                           name="gst"
+                          onChange={(e) => updateState(index, 'gst', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.gst}
                         />
                       </td>
                       <td data-label="Action">
                         {' '}
                         <Input defaultValue={item.id} type="hidden" name="id"></Input>
-                        <Link to="">
-                          <span>Clear</span>
-                        </Link>
+                          <div className="anchor">
+                            <span
+                              onClick={() => {
+                                ClearValue(item);
+                              }}
+                            >
+                              Clear
+                            </span>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -453,10 +576,6 @@ const AddPoModal = ({
             onClick={() => {
               getAllValues();
               getProduct();
-              setTimeout(() => {
-                window.location.reload();
-              }, 300);
-              setAddPurchaseOrderModal(false);
             }}
           >
             Submit
@@ -508,12 +627,11 @@ const AddPoModal = ({
             className="shadow-none"
             onClick={() => {
               setAddNewProductModal(false);
-              insertProduct();
+              generateCode();
               getProduct();
               setTimeout(() => {
                 window;
               }, 300);
-              console.log(productDetail);
             }}
           >
             Submit

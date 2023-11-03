@@ -62,7 +62,7 @@ export default function SupplierTable({ subConWorkOrder }) {
                         <td>
                           {element.amount
                             ? parseFloat(element.amount) - parseFloat(element.prev_amount)
-                            : ''}
+                            : 0}
                         </td>
                         <td>
                           <Link to={`/SubConHistory/${element.sub_con_work_order_id}`}>

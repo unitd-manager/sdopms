@@ -74,7 +74,7 @@ const Employeertrainingeports = () => {
 
     {
       name: 'Employee',
-      selector: 'first_name',
+      selector: 'employee_name',
       sortable: true,
       grow: 0,
       wrap: true,

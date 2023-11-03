@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Button, Table } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import * as Icon from 'react-feather';
 import PropTypes from 'prop-types';
 import { purchaseTableColumn } from '../../data/PurchaseOrder/PurchaseTableColumn';
@@ -48,7 +47,7 @@ function ProductLinkedTable({
                         name="sno"
                         value={element.po_product_id}
                         onChange={(e) => {
-                          getCheckedPoProducts(e,index,element);
+                          getCheckedPoProducts(e, index, element);
                         }}
                       />
                     </td>
@@ -59,7 +58,7 @@ function ProductLinkedTable({
                         name="do"
                         value={element.po_product_id}
                         onChange={(e) => {
-                          getCheckedDeliverProducts(e, index,element);
+                          getCheckedDeliverProducts(e, index, element);
                         }}
                       />
                     </td>
@@ -90,24 +89,19 @@ function ProductLinkedTable({
                       </Button>
                     </td>
                     <td>
-                      <Link to="">
+                      <div className="anchor">
                         <span
-                          onClick={(e) => {
-                            if (window.confirm('Are you sure you want to delete? ')) {
-                              deletePoProduct(element.po_product_id);
-                            } else {
-                              e.preventDefault();
-                            }
+                          onClick={() => {
+                            deletePoProduct(element.po_product_id);
                           }}
                         >
                           <Icon.Trash2 />
                         </span>
-                      </Link>
+                      </div>
                     </td>
                     <td>
-                      <Link
-                        to=""
-                        color="primary"
+                      <div
+                        className="anchor"
                         onClick={() => {
                           setHistoryProduct(element.product_id);
                           setViewHistoryModal(true);
@@ -116,7 +110,7 @@ function ProductLinkedTable({
                         <b>
                           <u>View History</u>
                         </b>
-                      </Link>
+                      </div>
                     </td>
                   </tr>
                 );

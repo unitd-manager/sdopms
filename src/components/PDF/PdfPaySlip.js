@@ -243,7 +243,7 @@ const PdfPaySlip = () => {
                   text: `${payroll.basic_pay.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   })}`,
-                  alignment: 'center',
+                  alignment: 'right',
                   colSpan: 1,
                   margin: [0, 6, 0, 0],
                   style: 'tableHeader2',
@@ -283,14 +283,10 @@ const PdfPaySlip = () => {
                   style: 'tableHeader2',
                   margin: [0, 6, 0, 0],
                 },
-                { text: '', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
-                { text: `${
-                  payroll.total_allowance
-                    ? payroll.total_allowance.toLocaleString('en-IN', {
-                        minimumFractionDigits: 2,
-                      })
-                    : 0.0
-                }`, alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2' },
+                { text: ``, alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: `${payroll.total_allowance.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2,
+                })}`, alignment: 'right', margin: [0, 6, 0, 0], style: 'tableHeader2' },
                 { text: '[B]', alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2',fillColor:'#FFE5CC' },
                 {
                   text: 'Overtime Hours Worked',
@@ -330,10 +326,10 @@ const PdfPaySlip = () => {
               ],
               [
                 { text: 'Gross(A+B)', alignment: 'center', colSpan: 2, style: 'tableHeader2' },
-                { text: '430.00', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: '', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                   minimumFractionDigits: 2,
-                })}`, alignment: 'center',style: 'tableHeader2', },
+                })}`, alignment: 'right',style: 'tableHeader2', },
                 { text: '[C]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
                 { text: 'Item', alignment: 'center', colSpan: 1 ,style: 'tableHeader1'},
                 { text: 'Amount', alignment: 'center', colSpan: 2,style: 'tableHeader1' },
@@ -342,22 +338,22 @@ const PdfPaySlip = () => {
               [
                 { text: '', alignment: 'center', colSpan: 2 },
                 { text: 'Total Allowances', alignment: 'left', colSpan: 1,style: 'tableHeader2', },
-                { text: '', alignment: 'center', colSpan: 2 },
+                { text: ``, alignment: 'center', colSpan: 2 },
                 {},
                 { text: 'Other Additional Payments (Performance Allowance)', alignment: 'left',style: 'tableHeader2',margin: [0, 8, 0, 0], },
-                { text: '32.00', alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
+                { text: '', alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
                 { text: '[F]', alignment: 'center' ,style: 'tableHeader2',fillColor:'#FFE5CC',margin: [0, 10, 0, 0],},
               ],
               [
                 { text: 'Total Deductions', alignment: 'left', colSpan: 2, style: 'tableHeader2',margin: [0, 2, 0, 0],  },
-                { text: '430.00', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: '', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${
                   payroll.total_deductions
                     ? payroll.total_deductions.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
-                } `, alignment: 'center' ,style: 'tableHeader2',},
+                } `, alignment: 'right' ,style: 'tableHeader2',},
                 { text: '[D]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
                 { text: 'Annual Bonus', alignment: 'left', style: 'tableHeader2',margin: [0, 2, 0, 0],  },
                 { text: '', alignment: 'center', colSpan: 2 , style: 'tableHeader2' },
@@ -373,7 +369,7 @@ const PdfPaySlip = () => {
                   style: 'tableHeader2',
                 },
                 { text: '', alignment: 'center', colSpan: 1 },
-                { text: `20.00 \n   ${payroll.cpf_employee
+                { text: ` \n   ${payroll.cpf_employee
                     ? payroll.cpf_employee.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                       })
@@ -384,7 +380,7 @@ const PdfPaySlip = () => {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
-                } `, alignment: 'center', colSpan: 1, rowSpan: 2 , style: 'tableHeader2',margin: [0, 10, 0, 0], },
+                } `, alignment: 'right', colSpan: 1, rowSpan: 2 , style: 'tableHeader2',margin: [0, 10, 0, 0], },
                 { text: '', rowSpan: 2, alignment: 'center' },
                 { text: 'Net Pay[C-D+E+F] ', alignment: 'center', margin: [0, 6, 0, 0],style: 'tableHeader2', },
                 {  text: ` ${

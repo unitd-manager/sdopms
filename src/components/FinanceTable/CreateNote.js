@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
   CardBody,
   Row,
   Col,
@@ -39,19 +38,13 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
 
   const editInvoiceCreditData = (obj) => {
     api
-      .post('/finance/insertcredit_note_history', obj)
+      .post('/Finance/insertcredit_note_history', obj)
       .then((res) => {
-        console.log('Inserted successfully.');
         setCreateInvoiceNote(res.data.data);
-        //  window.location.reload()
       })
-      .catch(() => {
-        console.log('Network connection error.');
-      });
   };
 
   const finalapicall = (receipt, results) => {
-
     // Insert Receipt History
 
     for (let j = 0; j < results.length; j++) {
@@ -69,20 +62,15 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
     }
   };
 
-  const editCreditData = async(results,code) => {
+  const editCreditData = async (results, code) => {
     amount.credit_note_code = code;
     api
-      .post('/finance/insertcredit_note', amount)
+      .post('/Finance/insertcredit_note', amount)
       .then((res) => {
-        console.log('Inserted successfully.');
-        console.log('amount', amount);
         setCreateNoteAmount(res.data.data);
         finalapicall(res.data.data.insertId, results);
         window.location.reload();
       })
-      .catch(() => {
-        console.log('Network connection error.');
-      });
   };
 
   //generateCode
@@ -110,7 +98,6 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
         });
       result.push(allValues);
     });
-    console.log(result);
     result.forEach((e) => {
       if (e.amount) {
         totalValue += parseFloat(e.amount) + (7 / 100) * e.amount;
@@ -119,7 +106,6 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
     });
     setAmount({ amount: totalValue });
     generateCode(result, 'creditNote');
-    console.log(totalValue);
 
     result.forEach((obj) => {
       if (obj.item_title !== '' && obj.description && obj.amount) {
@@ -134,10 +120,8 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
   const getCredit = () => {
     api.post('/invoice/getInvoiceById', { order_id: id }).then((res) => {
       setCreditNote(res.data.data);
-      // console.log(res.data.data)
     });
   };
-  console.log('creditnote', crediteNote);
   useEffect(() => {
     getCredit();
   }, [id]);
@@ -204,8 +188,7 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
         <ModalBody>
           <Row>
             <Col md="12">
-              <Card>
-              <CardBody>
+                <CardBody>
                   <Form>
                     <Row>
                       <div className="container">
@@ -277,7 +260,6 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
                     </Row>
                   </Form>
                 </CardBody>
-              </Card>
             </Col>
           </Row>
         </ModalBody>
@@ -291,7 +273,7 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
           >
             Submit
           </Button>
-          <Button color="secondary">Cancel</Button>
+          <Button color="secondary" onClick={() => { setEditCreateNote(false) }}>Cancel</Button>
         </ModalFooter>
       </Modal>
     </>

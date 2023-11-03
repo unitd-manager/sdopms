@@ -206,6 +206,8 @@ const TrainingEdit = () => {
     }
   };
 
+  
+
   //Insert Training
   const insertTrainingData = () => {
     const result = [];
