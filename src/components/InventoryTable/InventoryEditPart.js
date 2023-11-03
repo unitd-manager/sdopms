@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../ComponentCard';
-import ComponentCardV2 from '../ComponentCardV2';
+//import ComponentCardV2 from '../ComponentCardV2';
 import ApiButton from '../ApiButton';
 
 function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }) {
@@ -28,7 +28,7 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
         <ToastContainer></ToastContainer>
         <Form>
           <FormGroup>
-            <ComponentCardV2>
+          
             <ApiButton
               editData={editinventoryData}
               navigate={navigate}
@@ -77,7 +77,7 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                   </Button>
                 </Col>
               </Row> */}
-            </ComponentCardV2>
+           
            
             <ComponentCard title="Product Details" righttitle={<Row>
                 <Col className='fs-10 small'>

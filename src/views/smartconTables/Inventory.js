@@ -118,8 +118,12 @@ function Inventory() {
         message('File uploaded successfully', 'success');
         $('#upload_file').val(null);
       })
-      .catch(() => {
+      .catch((err) => {
         message('Failed to upload.', 'error');
+        console.log(err.stack);
+        console.log('err.response', err.response)
+        console.log('err.request', err.request)
+        console.log('err.config', err.config)
       });
   }
 
@@ -149,7 +153,6 @@ function Inventory() {
   // IMPORTING EXCEL FILE
   const importExcelFile = (e) => {
     console.log(e.target.id)
-    message('test1', 'success');
     const reader = new FileReader();
     reader.onload = () => {
       console.log(reader.readyState)
@@ -287,11 +290,11 @@ function Inventory() {
                        <Link to="">view</Link> 
                       </span>
                     </td>
-                    <ViewAdjustStockHistoryModal
+                  {adjustStockHistoryModal && (modalId===element.inventory_id) && <ViewAdjustStockHistoryModal
                       adjustStockHistoryModal={adjustStockHistoryModal}
                       setAdjustStockHistoryModal={setAdjustStockHistoryModal}
                       inventoryId={modalId}
-                    />
+                    />}
                     <td>{element.minimum_order_level}</td>
                   </tr>
                 );

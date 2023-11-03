@@ -165,7 +165,7 @@ const PurchaseOrder = () => {
                       </Link>
                     </td>
                     <td>{element.po_code}</td>
-                    <td>{element.title}</td>
+                    <td>{element.title ? element.title :element.title_field}</td>
                     <td>{element.po_value}</td>
                     <td>{element.status}</td>
                     <td>{element.purchase_order_date? moment(element.purchase_order_date).format('YYYY-MM-DD'):''}</td>

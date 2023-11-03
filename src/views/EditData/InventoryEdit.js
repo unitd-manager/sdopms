@@ -21,6 +21,8 @@ const Test = () => {
   const [tabPurchaseOrdersLinked, setTabPurchaseOrdersLinked] = useState([]);
   const [projectsLinked, setProjectsLinked] = useState([]);
   const [productQty, setProductQty] = useState({});
+  const [adjustedStocks, setAdjustedStocks] = useState([]);
+  const [damagedStock, setDamagedStock] = useState(0);
   const [inventoryDetails, setInventoryDetails] = useState({
     inventory_code: '',
     inventory_id: '',
@@ -87,6 +89,30 @@ const Test = () => {
         message('Unable to get inventory data.', 'error');
       });
   };
+
+
+  const getAdjustHistory = () => {
+    api
+      .post('/inventory/getAdjustStockHistory', { product_id: id })
+      .then((res) => {
+        setAdjustedStocks(res.data.data);
+        console.log('stockchanges',res.data.data)
+        let changestock=0;
+        res.data.data.forEach(element => {
+          if(element.adjust_stock){
+          changestock += parseFloat(element.adjust_stock)
+          console.log('changeStocklog',changestock)
+          }
+        });
+        setDamagedStock(changestock);
+        console.log(adjustedStocks)
+        console.log('changeStock',changestock)
+      })
+      .catch(() => {
+        message('Unable to get inventory data.', 'error');
+      });
+  };
+
   //update Inventory
   const editinventoryData = () => {
     inventoryDetails.modification_date = creationdatetime;
@@ -105,6 +131,7 @@ const Test = () => {
   };
 
   useEffect(() => {
+    getAdjustHistory();
     getInventoryData();
     getAllpurchaseOrdersLinked();
     getAllProjectsLinked();
@@ -124,26 +151,35 @@ const Test = () => {
           <Form>
             <ComponentCard title="Stock Details">
               <Row>
-                <Col xs="12" md="4">
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Total Purchased quantity</h5>
                   </Row>
                   <span>{productQty && productQty.materials_purchased}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="4">
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Sold quantity</h5>
                   </Row>
                   <span>{productQty && productQty.materials_used}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="4">
+                <Col xs="12" md="3">
+                  <Row>
+                    <h5>Changed quantity</h5>
+                  </Row>
+                  <span>
+                    {damagedStock}
+                  </span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Remaining quantity</h5>
                   </Row>
                   <span>
-                    {productQty && productQty.materials_purchased - productQty.materials_used}
+                    {productQty && productQty.materials_purchased - productQty.materials_used + parseFloat(damagedStock)}
                   </span>
                   <Row></Row>
                 </Col>
