@@ -11,6 +11,7 @@ import 'datatables.net-buttons/js/buttons.flash';
 // import 'datatables.net-buttons/js/buttons.print';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import readXlsxFile from 'read-excel-file';
 import api from '../../constants/api';
 import message from '../../components/Message';
 import { columns } from '../../data/Tender/InventoryData';
@@ -207,11 +208,12 @@ function Inventory() {
             <>
               <Row>
                 <Col md="6">
-                  <Link to="">
-                    <Button color="primary" className="shadow-none mr-2">
-                      Import
-                    </Button>
-                  </Link>
+                <Button color="primary" className="shadow-none mr-2" onClick={() => importExcel()}>
+                Import
+              </Button>
+            {/* </Link> */}
+            <input type='file' style={{display: 'none'}} id="import_excel" onChange={importExcelFile} />
+          
                 </Col>
                 <Col md="6">
                   <a
