@@ -22,6 +22,8 @@ const Test = () => {
   const [tabPurchaseOrdersLinked, setTabPurchaseOrdersLinked] = useState([]);
   const [projectsLinked, setProjectsLinked] = useState([]);
   const [productQty, setProductQty] = useState({});
+  const [adjustedStocks, setAdjustedStocks] = useState([]);
+  const [damagedStock, setDamagedStock] = useState(0);
   const [inventoryDetails, setInventoryDetails] = useState({
     inventory_code: '',
     inventory_id: '',
@@ -46,17 +48,17 @@ const Test = () => {
   const handleInputs = (e) => {
     setInventoryDetails({ ...inventoryDetails, [e.target.name]: e.target.value, inventory_id: id });
   };
-  //get data for purchaseorder table
-  const getInventoryData = (inventoryid) => {
-    api
-      .post(`inventory/getinventoryById`, { inventory_id: inventoryid })
-      .then(({ data }) => {
-        setInventoryDetails(data.data[0]);
-      })
-      .catch(() => {
-        message('Unable to get inventory data.', 'error');
-      });
-  };
+  // //get data for purchaseorder table
+  // const getInventoryData = (inventoryid) => {
+  //   api
+  //     .post(`inventory/getinventoryById`, { inventory_id: inventoryid })
+  //     .then(({ data }) => {
+  //       setInventoryDetails(data.data[0]);
+  //     })
+  //     .catch(() => {
+  //       message('Unable to get inventory data.', 'error');
+  //     });
+  // };
 
   const getAllpurchaseOrdersLinked = (productid) => {
     api
@@ -90,6 +92,40 @@ const Test = () => {
         message('Unable to get product qty data.', 'error');
       });
   };
+  //get inventoryby product id
+  const getInventoryData = () => {
+    api
+      .post('/inventory/getinventoryById', { productId: id })
+      .then((res) => {
+        setInventoryDetails(res.data.data[0]);
+      })
+      .catch(() => {
+        message('Unable to get inventory data.', 'error');
+      });
+  };
+
+
+  const getAdjustHistory = () => {
+    api
+      .post('/inventory/getAdjustStockHistory', { product_id: id })
+      .then((res) => {
+        setAdjustedStocks(res.data.data);
+        console.log('stockchanges',res.data.data)
+        let changestock=0;
+        res.data.data.forEach(element => {
+          if(element.adjust_stock){
+          changestock += parseFloat(element.adjust_stock)
+          console.log('changeStocklog',changestock)
+          }
+        });
+        setDamagedStock(changestock);
+        console.log(adjustedStocks)
+        console.log('changeStock',changestock)
+      })
+      .catch(() => {
+        message('Unable to get inventory data.', 'error');
+      });
+  };
 
   //update Inventory
   const editinventoryData = () => {
@@ -109,9 +145,11 @@ const Test = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      getInventoryData(id);
-    }
+    getAdjustHistory();
+    getInventoryData();
+    getAllpurchaseOrdersLinked();
+    getAllProjectsLinked();
+    getproductquantity(id);
   }, [id]);
 
   useEffect(() => {
@@ -144,36 +182,36 @@ const Test = () => {
           <Form>
             <ComponentCard title="Stock Details">
               <Row>
-                <Col xs="12" md="4">
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Total Purchased quantity</h5>
                   </Row>
                   <span>{productQty && productQty.materials_purchased}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="4">
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Sold quantity</h5>
                   </Row>
                   <span>{productQty && productQty.materials_used}</span>
                   <Row></Row>
                 </Col>
-                {/* <Col xs="12" md="3">
+                <Col xs="12" md="3">
+                  <Row>
+                    <h5>Changed quantity</h5>
+                  </Row>
+                  <span>
+                    {damagedStock}
+                  </span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="3">
                   <Row>
                     <h5>Remaining Purchased quantity</h5>
                   </Row>
                   <span>
-                    {productQty && productQty.materials_purchased - productQty.materials_used}
+                    {productQty && productQty.materials_purchased - productQty.materials_used + parseFloat(damagedStock)}
                   </span>
-                  <Row></Row>
-                </Col> */}
-                <Col xs="12" md="4">
-                  <Row>
-                    <h5>Available Quantity in Stock</h5>
-                  </Row>
-                  <span>
-                  {productQty && productQty.actual_stock}
-  </span>
                   <Row></Row>
                 </Col>
               </Row>

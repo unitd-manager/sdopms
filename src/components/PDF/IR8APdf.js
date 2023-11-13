@@ -18,6 +18,7 @@ const IR8Pdf = ({ payrollsYear }) => {
 
   //   // Gettind data from Job By Id
   const getPayslip = () => {
+    console.log('payrollsYearpayrollsYear', payrollsYear)
     api
       .post('/PayrollManagement/getpayrollmanagementFilterYear', {
         year: payrollsYear,

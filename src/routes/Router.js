@@ -308,21 +308,17 @@ const PurchaseGstReport = Loadable(lazy(() => import('../views/smartconTables/Pu
 
 const Routernew = () => {
   const { token, setToken } = UserToken();
-
-  if (!token) {
-    return <LoginFormik setToken={setToken} />;
-  }
   return (
     <div>
       <Routes>
-        <Route path="/" element={<FullLayout></FullLayout>}>
+        <Route path="/" element={!token ? <LoginFormik setToken={setToken} /> : <FullLayout></FullLayout>}>
           {/* Tendar Modal */}
           <Route
             path="/editcostingsummary"
             name="editcostingsummary"
             element={<EditCostingSummaryModal />}
           ></Route>
-           <Route path="/EnquiryDetails" name="clienttdata" element={<EnquiryDetails />}></Route>
+          <Route path="/EnquiryDetails" name="clienttdata" element={<EnquiryDetails />}></Route>
           <Route path="/addlineitem" name="addlineitem" element={<AddLineItemModal />}></Route>
           <Route path="/editquote" name="editquote" element={<EditQuoteModal />}></Route>
           <Route path="/editlineitem" name="editlineitem" element={<EditLineItemModal />}></Route>

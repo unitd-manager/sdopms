@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../ComponentCard';
-import ComponentCardV2 from '../ComponentCardV2';
+//import ComponentCardV2 from '../ComponentCardV2';
+import ApiButton from '../ApiButton';
 
 function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }) {
   InventoryEditPart.propTypes = {
@@ -27,8 +28,16 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
         <ToastContainer></ToastContainer>
         <Form>
           <FormGroup>
-            <ComponentCardV2>
-              <Row>
+          
+            <ApiButton
+              editData={editinventoryData}
+              navigate={navigate}
+              applyChanges={applyChanges}
+              backToList={backToList}
+             // deleteData={deleteLoanData}
+              module="Inventory"
+            ></ApiButton>
+              {/* <Row>
                 <Col>
                   <Button
                     className="shadow-none"
@@ -65,20 +74,18 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                     Back to List{' '}
                   </Button>
                 </Col>
-              </Row>
-            </ComponentCardV2>
-
-            <ComponentCard
-              title="Product Details"
-              righttitle={
-                <Row>
-                  <Col className="fs-10 small">
-                    <small>Creation :</small>
-                    <small>
-                      {inventoryDetails && inventoryDetails.created_by}
-                      {inventoryDetails && inventoryDetails.creation_date}
-                    </small>
-                  </Col>
+              </Row> */}
+           
+           
+            <ComponentCard title="Product Details" righttitle={<Row>
+                <Col className='fs-10 small'>
+                  <small>Creation :</small>
+                  <small>
+                    {inventoryDetails && inventoryDetails.created_by}
+                    {inventoryDetails &&
+                      inventoryDetails.creation_date}
+                  </small>
+                </Col>
 
                   <Col className="fs-10 small">
                     <small>Modification :</small>
