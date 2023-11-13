@@ -3,12 +3,12 @@ import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
 import api from '../../constants/api';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 import ApiButton from '../../components/ApiButton';
 
 const TimesheetEdit = () => {
@@ -27,10 +27,9 @@ const TimesheetEdit = () => {
   };
   const editPurchaseOrderById = () => {
     api
-      .post('/timesheet/getTimeSheetByAttendanceId', { attendance_id: id })
+      .post('/attendance/getAttendanceById', { attendance_id: id })
       .then((res) => {
         setPurchaseOrderDetails(res.data.data[0]);
-        console.log(res.data.data[0]);
       })
       .catch(() => {
         message('Purchase Order Data Not Found', 'info');
@@ -38,7 +37,7 @@ const TimesheetEdit = () => {
   };
   const editTimesheetData = () => {
     api
-      .post('/timesheet/editTimeSheet', timesheetDetails)
+      .post('/attendance/editAttendance', timesheetDetails)
       .then(() => {
         message('Record edited successfully', 'success');
       })
@@ -51,7 +50,7 @@ const TimesheetEdit = () => {
     getStaff();
   }, [id]);
   const backToList = () => {
-    navigate('/Leave');
+    navigate('/Timesheet');
   };
 
   return (
@@ -60,18 +59,17 @@ const TimesheetEdit = () => {
 
       <Form>
         <FormGroup>
-          <ComponentCardV2>
-            <ApiButton
-              editData={editTimesheetData}
-              navigate={navigate}
-              applyChanges={editTimesheetData}
-              backToList={backToList}
-              module="Timesheet"
-            ></ApiButton>
-          </ComponentCardV2>
+          <ApiButton
+            editData={editTimesheetData}
+            navigate={navigate}
+            applyChanges={editTimesheetData}
+            backToList={backToList}
+            module="Timesheet"
+          ></ApiButton>
+
           <ComponentCard title="`Details">
             <Row>
-              <Col md="3">
+              {/* <Col md="3">
                 <FormGroup>
                   <Label>Staff</Label>
                   <Input
@@ -88,6 +86,18 @@ const TimesheetEdit = () => {
                         return <option value={ele.staff_id}>{ele.staff_name}</option>;
                       })}
                   </Input>
+                </FormGroup>
+              </Col> */}
+              <Col md="3">
+                <FormGroup>
+                  <Label>Employee Name</Label>
+                  <Input
+                    type="text"
+                    name="employee_name"
+                    value={timesheetDetails && timesheetDetails.employee_name}
+                    onChange={handleInputs}
+                    disabled
+                  ></Input>
                 </FormGroup>
               </Col>
               <Col md="3">
@@ -126,9 +136,7 @@ const TimesheetEdit = () => {
                   />
                 </FormGroup>
               </Col>
-            </Row>
-            <Row>
-              <Col md="3">
+                        <Col md="3">
                 <FormGroup>
                   <Label>Type Of Leave</Label>
                   <Input
@@ -144,39 +152,40 @@ const TimesheetEdit = () => {
                   </Input>
                 </FormGroup>
               </Col>
-              <Col md="3">
+              {/* <Col md="3">
                 <FormGroup>
-                  <Label>Latitude</Label>
-                  <Input
-                    value={timesheetDetails && timesheetDetails.latitude}
-                    type="text"
-                    onChange={handleInputs}
-                    name="latitude"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md="3">
-                <FormGroup>
-                  <Label>Longitude</Label>
+                  <Label>Normal Hours</Label>
                   <Input
                     type="text"
+                    value={timesheetDetails && timesheetDetails.hours}
                     onChange={handleInputs}
-                    value={timesheetDetails && timesheetDetails.longitude}
-                    name="longitude"
+                    name="hours"
                   />
                 </FormGroup>
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Notes</Label>
+                  <Label>OT Hours</Label>
                   <Input
-                    type="textarea"
-                    value={timesheetDetails && timesheetDetails.notes}
+                    type="text"
+                    value={timesheetDetails && timesheetDetails.employee_ot_hours}
                     onChange={handleInputs}
-                    name="notes"
+                    name="employee_ot_hours"
                   />
                 </FormGroup>
               </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>PH Hours</Label>
+                  <Input
+                    type="text"
+                    value={timesheetDetails && timesheetDetails.employee_ph_hours}
+                    onChange={handleInputs}
+                    name="employee_ph_hours"
+                  />
+                </FormGroup>
+              </Col> */}
+             
             </Row>
             <Row>
               <Col md="3">
@@ -201,6 +210,46 @@ const TimesheetEdit = () => {
                   />
                 </FormGroup>
               </Col>
+              
+              <Col md="3">
+                <FormGroup>
+                  <Label>Time in1 (HH:MM)</Label>
+                  <Input
+                    type="textarea"
+                    value={timesheetDetails && timesheetDetails.time_in1}
+                    onChange={handleInputs}
+                    name="time_in1"
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Time out1 (HH:MM)</Label>
+                  <Input
+                    type="textarea"
+                    value={timesheetDetails && timesheetDetails.leave_time1}
+                    onChange={handleInputs}
+                    name="leave_time1"
+                  />
+                </FormGroup>
+              </Col>
+              {/* Display the calculated hours */}
+            {/* <FormGroup>
+              <Row>
+                <Col md="10">
+                  <Label>
+                    Hours Difference
+                  </Label>
+                  <Input
+                    name="hours"
+                    value={timesheetDetails && timesheetDetails.hours}
+                    type="text"
+                    readOnly
+                  ></Input>
+                </Col>
+              </Row>
+            </FormGroup> */}
+
               <Col md="3">
                 <FormGroup>
                   <Label>Description</Label>
