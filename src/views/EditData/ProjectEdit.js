@@ -41,6 +41,8 @@ import MaterialPurchased from '../../components/ProjectModal/MaterialPurchased';
 import MaterialsusedTab from '../../components/ProjectModal/MaterialsusedTab';
 import TransferModal from '../../components/ProjectModal/TransferModal';
 import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDetails';
+import TaskHistoryModal from '../../components/TaskHistory modal';
+import TaskHistoriesModal from '../../components/TaskHistoriesModal';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -91,7 +93,9 @@ const ProjectEdit = () => {
   const [POId, setPOId] = useState('');
   const [testJsonData, setTestJsonData] = useState(null);
   const [viewLineModal, setViewLineModal] = useState(false);
-  
+  const [taskhistorymodal, setTaskhistorymodal] = useState(false);
+  const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
+  console.log('contactdatas',contactDatas)
 
   // Start for tab refresh navigation
   const tabs = [
@@ -674,14 +678,30 @@ const ProjectEdit = () => {
               addContactToggle={addContactToggle}
               addContactModal={addContactModal}
               setEditTaskEditModal={setEditTaskEditModal}
+              setTaskhistorymodal={setTaskhistorymodal}
+              setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></ProjectTask>
-            <ProjectTaskEdit
+            {editTaskEditModal&&<ProjectTaskEdit
               getTaskById={getTaskById}
               id={id}
               contactDatas={contactDatas}
               editTaskEditModal={editTaskEditModal}
               setEditTaskEditModal={setEditTaskEditModal}
-            ></ProjectTaskEdit>
+            ></ProjectTaskEdit>}
+              {taskhistorymodal&&<TaskHistoryModal
+              getTaskById={getTaskById}
+              id={id}
+              contactDatas={contactDatas}
+              taskhistorymodal={taskhistorymodal}
+              setTaskhistorymodal={setTaskhistorymodal}
+            ></TaskHistoryModal>}
+            {taskhistoriesmodal&&<TaskHistoriesModal
+              getTaskById={getTaskById}
+              id={id}
+              contactDatas={contactDatas}
+              taskhistoriesmodal={taskhistoriesmodal}
+              setTaskhistoriesmodal={setTaskhistoriesmodal}
+            ></TaskHistoriesModal>}
           </TabPane>
           {/* Start Tab Content 6  Delivery Order */}
           <TabPane tabId="6">

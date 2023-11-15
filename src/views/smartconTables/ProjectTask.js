@@ -37,10 +37,15 @@ export default function ProjectTask({
   getTaskById,
   setUserSearchData,
   userSearchData,
+  setTaskhistorymodal,
+  setTaskhistoriesmodal,
+  
 }) {
   ProjectTask.propTypes = {
     addContactToggle: PropTypes.func,
     setEditTaskEditModal: PropTypes.func,
+    setTaskhistoriesmodal: PropTypes.func,
+    setTaskhistorymodal: PropTypes.func,
     addContactModal: PropTypes.bool,
     id: PropTypes.any,
     taskById: PropTypes.object,
@@ -58,6 +63,7 @@ export default function ProjectTask({
     start_date: '',
     end_date: '',
     completion: '',
+    head_count:'',
     status: '',
     task_type: '',
     description: '',
@@ -76,6 +82,9 @@ export default function ProjectTask({
 
   const [employee, setEmployee] = useState();
   const [employees, setEmployees] = useState();
+  const [Team, setTeam] = useState();
+  const [selectAll, setSelectAll] = useState(true);
+  const [TeamID, setTeamID] = useState();
   const [roomName, setRoomName] = useState('');
   const [fileTypes, setFileTypes] = useState();
   const [moduleId, setModuleId] = useState('');
@@ -83,6 +92,23 @@ export default function ProjectTask({
   const [updateFile, setUpdateFile] = useState(true);
   // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
+
+
+  // const [selectedTeam, setSelectedTeam] = useState(null);
+  // const [selectedEmployees, setSelectedEmployees] = useState({});
+
+  // const handleTeamChange = (teamId) => {
+  //   setSelectedTeam(teamId);
+  //   setSelectedEmployees({});
+  // };
+
+  // const handleEmployeeChange = (employeeId) => {
+  //   setSelectedEmployees((prevSelectedEmployees) => ({
+  //     ...prevSelectedEmployees,
+  //     [employeeId]: !prevSelectedEmployees[employeeId],
+  //   }));
+  // };
+
   
 
   // Gettind data from Job By Id
@@ -91,84 +117,117 @@ export default function ProjectTask({
       .get('/projectteam/getProjectTeam')
       .then((res) => {
         console.log(res.data.data);
-        setEmployees(res.data.data);
+        setTeam(res.data.data);
       })
       .catch(() => {});
   };
   const getStaffName = () => {
     api
-      .post('/projectteam/getEmployeeByID', { project_team_id : id })
+      .post('/projectteam/getEmployeeByID', { project_team_id: id })
       .then((res) => {
         setEmployee(res.data.data);
       })
       .catch(() => {});
   };
-  const handleCheckboxChange = (event, employeeId) => {
-    if (event.target.checked === true ? 1 : 0) {
-      // If the checkbox is checked, add the employeeId to the selectedNames array
-      setSelectedNames([...selectedNames, employeeId]);
-    } else {
-      // If the checkbox is unchecked, remove the employeeId from the selectedNames array
-      setSelectedNames(selectedNames.includes(employeeId));
+  const checkAll = (e) => {
+    const {checked} = e.target;
+    const arr = selectedNames.slice();
+    arr.forEach(val => {
+      if (val.project_team_id === TeamID) {
+        val.checked = checked;
+      }
+    });
+    setSelectedNames(arr);
+    const checkboxes = document.getElementsByName('employee_id_checkbox');
+    for(let x = 0; x<checkboxes.length; x++){
+      checkboxes[x].checked = checked;
     }
+    setSelectAll(checked);
+  }
+  const handleCheckboxChange = (event, employeeId) => {
+    const { checked } = event.target;
+    const arr = selectedNames.slice();
+    const index = arr.findIndex(value => {return value.employeeId === employeeId});
+    if (checked) {
+      // If the checkbox is checked, add the employeeId to the selectedNames array
+      arr[index].checked = true;
+      setSelectedNames(arr);
+    }else {
+      // If the checkbox is unchecked, remove the employeeId from the selectedNames array
+      arr[index].checked = false;
+      setSelectedNames(arr);
+    }
+    // if (event.target.checked === true ? 1 : 0) {
+    //   setSelectedNames([...selectedNames, employeeId]);
+    // } else {
+    //   setSelectedNames(selectedNames.includes(employeeId));
+    // }
     console.log('Employee ID:', employeeId);
-    console.log('Selected Employee IDs:', selectedNames);
   };
-  
+
+  const employeesInTask=selectedNames.filter(val => val.checked)
+  const empCount=selectedNames.filter(val => val.checked).length
   //get staff details
   const { loggedInuser } = useContext(AppContext);
   const insertTaskData = () => {
     if (isSubmitting) {
       return; // Prevent multiple submissions
     }
-    if (
-      insertTask.project_milestone_id !== '' &&
-      insertTask.task_title !== '' 
-    ) {
+    if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
       setIsSubmitting(true); // Set submission in progress
       const newContactWithCompanyId = insertTask;
       newContactWithCompanyId.creation_date = creationdatetime;
       newContactWithCompanyId.created_by = loggedInuser.first_name;
       newContactWithCompanyId.project_id = id;
-       newContactWithCompanyId.project_team_id = employees;
-       selectedNames.forEach((employeeId) => {
-        newContactWithCompanyId.employee_id = employeeId;
-      api
-        .post('/projecttask/insertTask', newContactWithCompanyId)
-        .then((res) => {
-          const insertedDataId = res.data.data.insertId;
-          console.log('Inserted Data ID:', insertedDataId);
-          console.log(insertedDataId);
-          message('Task inserted successfully.', 'success');
-          getTaskById();
-          getStaffName();
-          addContactToggle(false);
-          // Clear the form fields by resetting the state
-          setInsertTask({
-            task_title: '',
-            employee_id: '',
-            start_date: '',
-            end_date: '',
-            completion: '',
-            status: '',
-            task_type: '',
-            description: '',
-            project_milestone_id: '',
-            project_team_id: '',
+      newContactWithCompanyId.project_team_id = employees;
+      newContactWithCompanyId.head_count = empCount;
+        api
+          .post('/projecttask/insertTask', newContactWithCompanyId)
+          .then((res) => {
+            const insertedDataId = res.data.data.insertId;
+            console.log('Inserted Data ID:', insertedDataId);
+            console.log(insertedDataId);
+            employeesInTask.forEach((el)=>{
+              el.project_task_id=insertedDataId;
+              el.project_id=id
+              console.log('el',el)
+
+              api
+              .post('/projecttask/insertTaskStaff', el)
+              .then(() => {}).catch(()=>{
+
+              })
+          })
+            message('Task inserted successfully.', 'success');
+            getTaskById();
+            getStaffName();
+            addContactToggle(false);
+            // Clear the form fields by resetting the state
+            setInsertTask({
+              task_title: '',
+              employee_id: '',
+              start_date: '',
+              end_date: '',
+              completion: '',
+              status: '',
+              task_type: '',
+              description: '',
+              project_milestone_id: '',
+              project_team_id: '',
+            });
+            setSelectedNames([]); // Clear the selected names after insertion
+          })
+          .catch(() => {
+            message('Network connection error.', 'error');
+          })
+          .finally(() => {
+            setIsSubmitting(false); // Reset submission status
           });
-          setSelectedNames([]); // Clear the selected names after insertion
-        })
-        .catch(() => {
-          message('Network connection error.', 'error');
-        })
-        .finally(() => {
-          setIsSubmitting(false); // Reset submission status
-        });
-    });
-  } else {
-    message('Please fill all required fields', 'warning');
-  }
-};
+      
+    } else {
+      message('Please fill all required fields', 'warning');
+    }
+  };
   console.log(filteredData);
   const handleSearch = () => {
     const newData = taskById
@@ -225,23 +284,23 @@ export default function ProjectTask({
     setSearchQuery(e.target.value);
   };
 
- 
   const handleSearchData = () => {
     const newData = taskById.filter((task) => {
       // Check if task.title exists and perform a case-insensitive search
-      const titleMatches = task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
-  
+      const titleMatches =
+        task.task_title && task.task_title.toLowerCase().includes(searchQuery.toLowerCase());
+
       // Check if task.first_name exists and perform a case-insensitive search
-      const firstNameMatches = task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
-  
+      const firstNameMatches =
+        task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
+
       // Include the task in newData if either title or first_name matches
       return titleMatches || firstNameMatches;
     });
-  
+
     setUserSearchData(newData);
     setFilteredData(newData);
   };
-
 
   // Api call for getting milestone dropdown based on project ID
   const getMilestoneTitle = () => {
@@ -258,13 +317,21 @@ export default function ProjectTask({
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
       .then((res) => {
+        const arr = selectedNames.slice();
+        res.data.data.forEach(val => {
+          if (arr.findIndex(value => value.employeeId === val.employee_id) < 0) {
+            arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id})
+          }
+        });
+        
+        setSelectedNames(arr);
         setEmployees(res.data.data);
-
+        setTeamID(projectTeamId);
       })
       .catch(() => {});
   };
 
-
+  console.log('selected names',selectedNames)
   //attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -272,14 +339,14 @@ export default function ProjectTask({
     });
     console.log('inside DataForAttachment');
   };
-  
+
   //Milestone data in milestoneDetails
   const handleInputsTask = (e) => {
     setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
   };
- 
 
   useEffect(() => {
+
     getStaffName();
     editJobById();
     dataForAttachment();
@@ -287,9 +354,21 @@ export default function ProjectTask({
   }, [id]);
 
   useEffect(() => {
+    setSelectAll(true);
+    selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
+      let check = true;
+      if (!val.checked) {
+        setSelectAll(false);
+        check = false;
+      }
+      return check;
+    });
+  }, [selectedNames, TeamID]);
+
+  useEffect(() => {
     handleSearchData();
   }, [searchQuery]);
-  
+
   useEffect(() => {
     if (insertTask.project_team_id) {
       const selectedTeams = insertTask.project_team_id;
@@ -307,50 +386,67 @@ export default function ProjectTask({
       cell: () => <Icon.Edit2 />,
     },
     {
+      name: 'Logs',
+      selector: 'logs',
+      cell: () => <Icon.Lock />,
+    },
+    {
+      name: 'Histories',
+      selector: 'logs',
+      cell: () => <Icon.Lock />,
+    },
+    {
       name: 'Title',
-      sortable: true,
-    },
-    {
-      name: 'Staff',
-    },
-    {
-      name: 'startdate',
-      sortable: true,
-    },
-    {
-      name: 'End Date',
-    },
-    {
-      name: 'Actual completed Date',
-    },
-    {
-      name: 'Actual Hours',
-    },
-    {
-      name: 'Est Hours',
-    },
-    {
-      name: 'Completion',
-    },
-    {
-      name: 'Status',
       sortable: true,
     },
     {
       name: 'Task Type',
     },
     {
-      name: 'Priority',
+      name: 'Head Count',
+    },
+    {
+      name: 'Status',
+      sortable: true,
     },
     {
       name: 'File',
     },
+    // {
+    //   name: 'Staff',
+    // },
+    // {
+    //   name: 'startdate',
+    //   sortable: true,
+    // },
+    // {
+    //   name: 'End Date',
+    // },
+    // {
+    //   name: 'Actual completed Date',
+    // },
+    // {
+    //   name: 'Actual Hours',
+    // },
+    // {
+    //   name: 'Est Hours',
+    // },
+   
+    // {
+    //   name: 'Completion',
+    // },
+    
+    
     {
-      name: 'Creation ',
+      name: 'Priority',
     },
-    {
-      name: 'Modification ',
-    },
+    
+    // {
+    //   name: 'Creation ',
+    // },
+    // {
+    //   name: 'Modification ',
+    // },
   ];
 
   return (
@@ -450,7 +546,7 @@ export default function ProjectTask({
               </FormGroup>
             </Col>
           </Row>
-         
+          
           <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
             <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
             <ModalBody>
@@ -494,54 +590,80 @@ export default function ProjectTask({
                             </FormGroup>
                           </Col>
                           <Col md="4">
-                          <FormGroup>
-                   <Label>Team Title</Label>
-                   <Input
-                    type="select"
-                    name="project_team_id"
-                    onChange={(e) => {
-                    const selectedEmployeeId = e.target.value;
-                    fetchEmployeeDetails(selectedEmployeeId);
-                             }}
-                           >
-               <option value="">Please Select</option>
-                   {employees &&
-                      employees.map((ele) => (
-           <option key={ele.project_team_id} value={ele.project_team_id}>
-                        {ele.team_title}
-                       </option>
-                            ))}
-                        </Input>
-                      </FormGroup>
-                           </Col>                    
+                            <FormGroup>
+                              <Label>Team Title</Label>
+                              <Input
+                                type="select"
+                                name="project_team_id"
+                                onChange={(e) => {
+                                  const selectedEmployeeId = e.target.value;
+                                  fetchEmployeeDetails(selectedEmployeeId);
+                                }}
+                              >
+                                <option value="">Please Select</option>
+                                {Team &&
+                                  Team.map((ele) => (
+                                    <option key={ele.project_team_id} value={ele.project_team_id}>
+                                      {ele.team_title}
+                                    </option>
+                                  ))}
+                              </Input>
+                            </FormGroup>
+                          </Col>
                           <Row>
-                          <Table className="no-wrap mt-3 align-middle" responsive borderless>                 
-                               <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {employees &&
-  employees.map((element) => {
-    return (
-      <tr key={element.project_team_id}>
-        <td>
-        <input
-            type="checkbox"
-            name="employee_id"
-            onChange={(e) => handleCheckboxChange(e, element.employee_id)}
-            checked= {selectedNames.includes(element.employee_id) === 'true' }// Always checked by default
-          />      
-        </td>
-        <td>{element.first_name}</td>
-      </tr>
-    );
-  })}
-</tbody>
-                    </Table>
-                  </Row>
+                            <Table className="no-wrap mt-3 align-middle" responsive borderless>
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <input
+                                      type="checkbox"
+                                      name="checkAll"
+                                      id="checkAll"
+                                      onChange={(e) =>
+                                        checkAll(e)
+                                      }
+                                      checked={selectAll}
+                                    />
+                                  </th>
+                                  <th>Employee Name</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {employees &&
+                                  employees.filter(val => val.project_team_id === TeamID).map((element) => {
+                                    const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
+                                    const isChecked = selectedNames[index].checked;
+                                    return (
+                                      <tr key={element.project_team_id}>
+                                        <td>
+                                          <input
+                                            type="checkbox"
+                                            name="employee_id_checkbox"
+                                            onChange={(e) =>
+                                              handleCheckboxChange(e, element.employee_id)
+                                            }
+                                            // checked= {selectedNames.includes(element.employee_id) === 'true' }// Always checked by default
+                                            defaultChecked={isChecked}
+                                          />
+                                        </td>
+                                        <td>{element.first_name}</td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </Table>
+                          </Row>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Head Counts</Label>
+                              <Input
+                                type="text"
+                                name="had_count"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.head_count || empCount}
+                              />
+                            </FormGroup>
+                          </Col>
                           <Col md="4">
                             <FormGroup>
                               <Label>Start date</Label>
@@ -580,6 +702,7 @@ export default function ProjectTask({
                               />
                             </FormGroup>
                           </Col>
+
                           <Col md="4">
                             <FormGroup>
                               <Label>Completion</Label>
@@ -591,7 +714,7 @@ export default function ProjectTask({
                               />
                             </FormGroup>
                           </Col>
-                        
+
                           <Col md="4">
                             <FormGroup>
                               <Label>Task Type</Label>
@@ -605,9 +728,8 @@ export default function ProjectTask({
                                 <option value="" selected="selected">
                                   Please Select
                                 </option>
-                                <option value="Development">Development</option>
-                                <option value="ChangeRequest">ChangeRequest</option>
-                                <option value="Issues">Issues</option>
+                                <option value="erection">Erection</option>
+                                <option value="Dismantel">Dismantel</option>
                               </Input>
                             </FormGroup>
                           </Col>
@@ -634,7 +756,7 @@ export default function ProjectTask({
                           </Col>
                           <Col md="4">
                             <FormGroup>
-                              <Label>Descrition</Label>
+                              <Label>Description</Label>
                               <Input
                                 type="textarea"
                                 name="description"
@@ -648,6 +770,12 @@ export default function ProjectTask({
                     </CardBody>
                   </Card>
                 </Col>
+                <p>Selected Employees</p>
+                {selectedNames.filter(val => val.checked).map(val => (<p>{val.employeeId}</p>))}
+                <div>
+                 
+                      
+                </div>
               </Row>
             </ModalBody>
             <ModalFooter>
@@ -713,31 +841,35 @@ export default function ProjectTask({
                               setContactData(element);
                               setEditTaskEditModal(true);
                             }}
+                          color='primary'>
+                            <Icon.Eye />
+                          </span>
+                        </td>
+                        <td rowSpan="2">
+                          <span
+                            onClick={() => {
+                              setContactData(element);
+                              setTaskhistorymodal(true);
+                            }}
                           >
-                            <Icon.Edit2 />
+                            <Icon.BookOpen />
+                          </span>
+                        </td>
+                        <td rowSpan="2">
+                          <span
+                            onClick={() => {
+                              setContactData(element);
+                              setTaskhistoriesmodal(true);
+                            }}
+                          color='primary'>
+                            <Icon.Book />
                           </span>
                         </td>
                         <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td>
-                        <td>{element.first_name}</td>
-                        <td>
-                          {element.start_date
-                            ? moment(element.start_date).format('DD-MM-YYYY')
-                            : ''}
-                        </td>
-                        <td>
-                          {element.end_date ? moment(element.end_date).format('DD-MM-YYYY') : ''}
-                        </td>
-                        <td>
-                          {element.actual_completed_date
-                            ? moment(element.actual_completed_date).format('DD-MM-YYYY')
-                            : ''}
-                        </td>
-                        <td>{element.actual_hours}</td>
-                        <td>{element.estimated_hours}</td>
-                        <td>{element.completion}</td>
-                        <td>{element.status}</td>
+                        
                         <td>{element.task_type}</td>
-                        <td>{element.priority}</td>
+                        <td>{element.head_count}</td>
+                        <td>{element.status}</td>
                         <td>
                           <span
                             onClick={() => {
@@ -771,12 +903,33 @@ export default function ProjectTask({
                             setUpdateFile={setUpdateFile}
                           />
                         </td>
+                        {/* <td>
+                          {element.start_date
+                            ? moment(element.start_date).format('DD-MM-YYYY')
+                            : ''}
+                        </td>
                         <td>
+                          {element.end_date ? moment(element.end_date).format('DD-MM-YYYY') : ''}
+                        </td>
+                        <td>
+                          {element.actual_completed_date
+                            ? moment(element.actual_completed_date).format('DD-MM-YYYY')
+                            : ''}
+                        </td>
+                        <td>{element.actual_hours}</td>
+                        <td>{element.estimated_hours}</td>
+                        
+                        <td>{element.completion}</td>
+                        
+                       */}
+                        <td>{element.priority}</td>
+                        
+                        {/* <td>
                           {element.created_by} {element.creation_date}
                         </td>
                         <td>
                           {element.modified_by} {element.modification_date}
-                        </td>
+                        </td> */}
                       </tr>
                       <tr>
                         <td colSpan="14" style={{ borderRight: 1, borderWidth: 1 }}>

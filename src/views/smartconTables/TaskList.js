@@ -123,6 +123,13 @@ const ProjectTask = () => {
       wrap: true,
     },
     {
+      name: 'Head Count',
+      selector: 'end_date',
+      sortable: true,
+      grow: 0,
+      wrap: true,
+    },
+    {
       name: 'Start date',
       selector: 'start_date',
       sortable: true,
@@ -282,6 +289,7 @@ const ProjectTask = () => {
                           </Link>
                         </td>
                         <td>{element.task_title}</td>
+                        <td>{element.head_count}</td>
                         <td>
                           {element.start_date
                             ? moment(element.start_date).format('DD-MM-YYYY')

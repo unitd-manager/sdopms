@@ -58,7 +58,7 @@ const TaskEdit = () => {
   const [fileTypes, setFileTypes] = useState();
   const [description, setDescription] = useState('');
   const [employeeTeam, setEmployeeTeam] = useState();
-
+  const [taskEmployees, setTaskEmployees] = useState([]);
   //navigation and parameters
   const { id } = useParams();
   const navigate = useNavigate();
@@ -139,6 +139,15 @@ const TaskEdit = () => {
       .catch(() => {});
   };
 
+  const getTaskEmployees = () => {
+    api
+      .post('/projectTask/getTaskEmployees',{task_id:id})
+      .then((res) => {
+        console.log(res.data.data);
+        setTaskEmployees(res.data.data);
+      })
+      .catch(() => {});
+  };
   //  Gettind data from Job By Id
   const editJob = () => {
     api
@@ -263,6 +272,7 @@ const TaskEdit = () => {
   ];
 
   useEffect(() => {
+    getTaskEmployees();
     getTaskById();
     getTimesheet();
     getMilestonename();
@@ -433,6 +443,19 @@ const TaskEdit = () => {
                   </Col>
                   <Col md="3">
                     <FormGroup>
+                      <Label>Head Count</Label>
+                      <Input
+                        type="text"
+                        onChange={handleInputs}
+                        value={projectTask && projectTask.head_count}
+                        name="head_count"
+                      >
+                        
+                      </Input>
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
                       <Label>Task Type</Label>
                       <Input
                         type="select"
@@ -498,6 +521,18 @@ const TaskEdit = () => {
                         value={projectTask && projectTask.estimated_hours}
                         name="hours"
                       />
+                    </FormGroup>
+                  </Col>
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Employees in this Task</Label>
+                      <ul>
+                      {taskEmployees && taskEmployees.map((el)=>{
+                        return <li >
+                          {el.first_name}
+                        </li>
+                      })}
+                      </ul>
                     </FormGroup>
                   </Col>
                 </Row>
