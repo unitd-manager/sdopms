@@ -163,6 +163,7 @@ const IR8AReport = Loadable(lazy(() => import('../views/smartconTables/IR8ARepor
 // Details Table
 const EnquiryDetails = Loadable(lazy(() => import('../views/detailTable/EnquiryDetails')));
 const ProductDetailsTable = Loadable(lazy(() => import('../views/detailTable/ProductDetails')));
+//const TaskDetailsTable = Loadable(lazy(() => import('../views/detailTable/TaskDetails')));
 const ClientDetailsTable = Loadable(lazy(() => import('../views/detailTable/ClientDetails')));
 const LeadDetailsTable = Loadable(lazy(() => import('../views/detailTable/LeadDetails')));
 const TimesheetDetailsTable = Loadable(lazy(() => import('../views/detailTable/TimesheetDetails')));
@@ -179,6 +180,7 @@ const SubConDetailsTable = Loadable(lazy(() => import('../views/detailTable/SubC
 const InventoryTable = Loadable(lazy(() => import('../views/smartconTables/Inventory')));
 const VehicleTable = Loadable(lazy(() => import('../views/smartconTables/Vehicle')));
 const VehicleDetails = Loadable(lazy(() => import('../views/detailTable/VehicleDetails')));
+const WorkSheetTable = Loadable(lazy(() => import('../views/smartconTables/WorkSheet')));
 
 // PayrollHR
 const LeaveTable = Loadable(lazy(() => import('../views/smartconTables/Leave')));
@@ -288,6 +290,7 @@ const MilestoneEdit = Loadable(lazy(() => import('../views/EditData/MilestoneEdi
 const TaskEdit = Loadable(lazy(() => import('../views/EditData/TaskEdit')));
 const ProjectTimesheetEdit = Loadable(lazy(() => import('../views/EditData/ProjectTimesheetEdit')));
 const TaskJobEdit = Loadable(lazy(() => import('../views/EditData/TaskJobEdit')));
+const WorkSheetEdit = Loadable(lazy(() => import('../views/EditData/WorkSheetEdit')));
 const EnquiryEdit = Loadable(lazy(() => import('../views/EditData/EnquiryEdit')));
 //Reports
 const ProjectReportTable = Loadable(lazy(() => import('../views/Reports/ProjectReport')));
@@ -334,6 +337,7 @@ const Routernew = () => {
           <Route path="/VehicleEdit/:id" name="vehicledata" element={<VehicleEdit />}></Route>
           <Route path="/ProjectEdit/:id" name="projectdata" element={<ProjectEdit />}></Route>
           <Route path="/clientEdit/:id" name="clienttdata" element={<ClientEdit />}></Route>
+          <Route path="/WorkSheetEdit/:id" name="worksheetdata" element={<WorkSheetEdit />}></Route>
           <Route path="/leadEdit/:id" name="leaddata" element={<LeadEdit />}></Route>
           <Route path="/sectionEdit/:id" name="sectiondata" element={<SectionEdit />}></Route>
           <Route path="/AccountsEdit/:id" name="accountdata" element={<AccountsEdit />}></Route>
@@ -511,10 +515,12 @@ const Routernew = () => {
           <Route path="/Project" name="projectdata" element={<ProjectTable />}></Route>
           <Route path="/Client" name="clienttdata" element={<ClientTable />}></Route>
           <Route path="/ClientDetails" name="clienttdata" element={<ClientDetailsTable />}></Route>
+          {/* <Route path="/TaskDetails" name="taskdata" element={<TaskDetailsTable />}></Route> */}
           <Route path="/Lead" name="leaddata" element={<LeadTable />}></Route>
           <Route path="/LeadDetails" name="leaddata" element={<LeadDetailsTable />}></Route>
           <Route path="/Product" name="productdata" element={<ProductTable />}></Route>
           <Route path="/Timesheet" name="timesheetdata" element={<TimesheetTable />}></Route>
+          <Route path="/WorkSheet" name="accountdata" element={<WorkSheetTable />}></Route>
           <Route
             path="/TimesheetDetails"
             name="timesheetdata"

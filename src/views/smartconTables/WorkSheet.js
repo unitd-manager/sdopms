@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import {Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -15,11 +14,11 @@ import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
 
-function Timesheet() {
-  const [timeSheet, setTimeSheet] = useState(null);
+function WorkSheetTask() {
+  const [WorkSheet, setWorkSheet] = useState(null);
   const getTimeSheet = () => {
-    api.get('/attendance/getAttendance').then((res) => {
-      setTimeSheet(res.data.data);
+    api.get('/worksheet/gettaskworksheet').then((res) => {
+      setWorkSheet(res.data.data);
       console.log(res.data.data);
     });
   };
@@ -47,7 +46,7 @@ function Timesheet() {
   const columns = [
     {
       name: '#',
-      selector: 'attendance_id',
+      selector: 'work_sheet_id',
       grow: 0,
       wrap: true,
       width: '4%',
@@ -71,31 +70,18 @@ function Timesheet() {
     },
     {
       name: 'Date',
-      selector: 'creation_date',
+      selector: 'date',
       sortable: true,
       grow: 2,
       wrap: true,
     },
     {
-      name: 'Time In',
-      selector: 'time_in',
+      name: 'Share Amount',
+      selector: 'amount_share_per_head',
       sortable: true,
       grow: 0,
     },
-    {
-      name: 'Time Out',
-      selector: 'leave_time',
-      sortable: true,
-      width: 'auto',
-      grow: 3,
-    },
-    {
-      name: 'On Leave',
-      selector: 'on_leave',
-      sortable: true,
-      grow: 2,
-      width: 'auto',
-    },
+    
   ];
 
   return (
@@ -104,15 +90,8 @@ function Timesheet() {
         <BreadCrumbs />
 
         <CommonTable
-          title="Timesheet List"
-          Button={
-            <Link to="/TimesheetDetails">
-              <Button color="primary" className="shadow-none">
-                Add New
-              </Button>
-            </Link>
-          }
-        >
+          title="WorkSheet List"
+          >
           <thead>
             <tr>
               {columns.map((cell) => {
@@ -121,21 +100,20 @@ function Timesheet() {
             </tr>
           </thead>
           <tbody>
-            {timeSheet &&
-              timeSheet.map((element,index) => {
+            {WorkSheet &&
+              WorkSheet.map((element,index) => {
                 return (
-                  <tr key={element.staff_id}>
+                  <tr key={element.work_sheet_id}>
                   <td>{index + 1}</td>
                     <td>
-                      <Link to={`/TimesheetEdit/${element.staff_id}`}>
+                      <Link to={`/WorkSheetEdit/${element.work_sheet_id}`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
                     <td>{element.employee_name}</td>
-                    <td>{element.creation_date}</td>
-                    <td>{element.time_in}</td>
-                    <td>{element.leave_time}</td>
-                    <td>{element.on_leave}</td>
+                    <td>{element.date}</td>
+                    <td>{element.amount_share_per_head}</td>
+                  
                   </tr>
                 );
               })}
@@ -146,4 +124,4 @@ function Timesheet() {
   );
 }
 
-export default Timesheet;
+export default WorkSheetTask;
