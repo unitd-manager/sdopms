@@ -23,7 +23,7 @@ function WorkSheetEdit() {
   const navigate = useNavigate();
   const [worksheet, setWorkSheet] = useState({
     employee_name: '',
-    erec_pipe:'',
+    pipe_erection:'',
   });
 
   //const [finalGrossPay, setFinalGrossPay] = useState(0);
@@ -107,7 +107,7 @@ function WorkSheetEdit() {
   // Get payroll By Id
   const getPayroll = () => {
     api
-      .post('/worksheet/getWorksheettaskById', { work_sheet_id: id })
+      .post('/projecttask/getWorksheetById', { work_sheet_id: id })
       .then((res) => {
         setWorkSheet(res.data.data[0]);
       })
@@ -118,11 +118,11 @@ function WorkSheetEdit() {
 
   const newTotalMonthPay =
 
-  parseFloat(worksheet.erec_pipe || 0) +
-  parseFloat(worksheet.erec_volume || 0) +
-  parseFloat(worksheet.erec_others || 0) +
-  parseFloat(worksheet.erec_planks || 0) +
-  parseFloat(worksheet.erec_t_b || 0);
+  parseFloat(worksheet.pipe_erection || 0) +
+  parseFloat(worksheet.volume_erection || 0) +
+  parseFloat(worksheet.tb_erection || 0) +
+  parseFloat(worksheet.plank_erection || 0) +
+  parseFloat(worksheet.others_erection || 0);
 // const newTotalMonthPay = finalGrossPay;
   // Edit Payroll Data Function
   const editPayrollData = () => {
@@ -142,7 +142,7 @@ function WorkSheetEdit() {
     const updatedPayrollData = {
       ...worksheet,
 
-      total_erec_amount: newTotalMonthPay,
+      total_erection_amount: newTotalMonthPay,
       // net_total: newNetTotal,
       // ot_amount: otAmount || (payroll && payroll.ot_amount) || 0, // Ensure ot_amount is always included
     };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Row,
   Col,
@@ -10,8 +10,7 @@ import {
   Modal,
   ModalHeader,
   ModalFooter,
-  Form,
-  Table
+  Form,Card,CardBody,Table
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import '../views/form-editor/editor.scss';
@@ -19,85 +18,64 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import moment from 'moment';
 import message from './Message';
 import api from '../constants/api';
-import creationdatetime from '../constants/creationdatetime';
-import AppContext from '../context/AppContext';
+
+//import creationdatetime from '../constants/creationdatetime';
+//import AppContext from '../context/AppContext';
 
 const TaskHistoryModal = ({
   taskhistorymodal,
   setTaskhistorymodal,
   contactDatas,
   getTaskById,
-  id
+  id,
 }) => {
   TaskHistoryModal.propTypes = {
     taskhistorymodal: PropTypes.bool,
     setTaskhistorymodal: PropTypes.func,
     contactDatas: PropTypes.object,
     getTaskById: PropTypes.any,
-    id:PropTypes.any
+    id: PropTypes.any,
   };
 
-  //All state variable
-  
-  const [employees, setEmployees] = useState();
-  
-  
-  const [taskProject, setTaskProject] = useState({
+  const [insertTask, setInsertTask] = useState({
     title: '',
-    task_id:contactDatas.project_task_id,
     date: '',
+    actual_hours: '',
     head_count:'',
-    pipe:'',
-    tb:'',
-    plank:'',
-    volume:'',
-    others:'',
-    pipe_value:'',
-    tb_value:'',
-    plank_value:'',
-    volume_value:'',
-    others_value:'',
-   actual_hours:'',
+   pipe:'',
+   tb:'',
+   plank:'',
+   volume:'',
+   others:'',
+   pipe_value:'',
+   tb_value:'',
+   plank_value:'',
+   volume_value:'',
+   others_value:'',
    total_amount:'',
     description: '',
-
+    
   });
+  
 
-      //get staff details
-      const { loggedInuser } = useContext(AppContext);
-      const [Team, setTeam] = useState();
+  const [employees, setEmployees] = useState();
+  const [Team, setTeam] = useState();
   const [selectAll, setSelectAll] = useState(true);
   const [TeamID, setTeamID] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+ 
+  // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
 
-  // Gettind data from Job By Id
-  const editJobByIds = () => {
+
+  const getStaffName = () => {
     api
-      .get('/jobinformation/getEmployee')
+      .post('/projectteam/getEmployeeByID', { project_team_id: id })
       .then((res) => {
         setEmployees(res.data.data);
       })
       .catch(() => {});
   };
-  const employeesInTask=selectedNames.filter(val => val.checked)
-  
-console.log(employees)
-  const handleInputs = (e) => {
-    if (e.target.type === 'checkbox') {
-      // If the event target is a checkbox, update task_input based on its checked state
-      setTaskProject({
-        ...taskProject,
-        [e.target.name]: e.target.checked ? 1 : 0,
-      });
-    } else {
-      // For other input fields, update normally
-      setTaskProject({
-        ...taskProject,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
-
   const checkAll = (e) => {
     const {checked} = e.target;
     const arr = selectedNames.slice();
@@ -133,10 +111,113 @@ console.log(employees)
     // }
     console.log('Employee ID:', employeeId);
   };
-  console.log('Set team', setTeam);
-  // const employeesInTask=selectedNames.filter(val => val.checked)
-  // const empCount=selectedNames.filter(val => val.checked).length
+console.log('contactDatas',contactDatas)
+  const employeesInTask=selectedNames.filter(val => val.checked)
+  const empCount=selectedNames.filter(val => val.checked).length
+  
+  //get staff details
+ // const { loggedInuser } = useContext(AppContext);
+  const insertTaskData = () => {
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
+    if (insertTask.date !== '' && insertTask.title !== '') {
+      setIsSubmitting(true); // Set submission in progress
+    
+      insertTask.pipe_value = insertTask.pipe * parseFloat(0.60);
+      insertTask.tb_value = insertTask.tb * parseFloat(0.60);
+      insertTask.plank_value = insertTask.plank * parseFloat(0.50);
+      insertTask.volume_value =insertTask.volume * parseFloat(0.60);
+      insertTask.others_value = insertTask.others * parseFloat(0.25);
+      insertTask.total_amount = parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
+      insertTask.head_count=empCount; 
+      const total=insertTask.total_amount;
+  const dates=insertTask.date;
+  insertTask.task_id=contactDatas.project_task_id;
+  const shares=parseFloat(total)/parseFloat(empCount)
+      api
+          .post('/projecttask/insertTaskHistory', insertTask)
+          .then((res) => {
+            const insertedDataId = res.data.data.insertId;
+            console.log('Inserted Data ID:', insertedDataId);
+            console.log(insertedDataId);
+            employeesInTask.forEach((el)=>{
+              el.task_history_id=insertedDataId;
+              
+              console.log('el',el)
 
+              api
+              .post('/projecttask/insertTaskHistoryStaff', el)
+              .then((result) => {
+                const insertedempId = result.data.data.insertId;
+                const work={};
+                work.employee_id=el.employeeId;
+                work.task_history_employee_id=insertedempId;
+                work.head_count=empCount;
+                work.date=dates;
+                work.team_id=el.project_team_id;
+                work.total_amount=total;
+                work.share_per_head=shares;
+if(contactDatas.task_type === 'Dismantel'){
+  work.pipe_dismantel=insertTask.pipe
+  work.tb_dismantel=insertTask.tb
+  work.plank_dismantel=insertTask.plank
+  work.volume_dismantel=insertTask.volume
+  work.others_dismantel=insertTask.others
+  work.total_dismantel_amount=parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
+}
+if(contactDatas.task_type === 'Erection'){
+  work.pipe_erection=insertTask.pipe
+  work.tb_erection=insertTask.tb
+  work.plank_erection=insertTask.plank
+  work.volume_erection=insertTask.volume
+  work.others_erection=insertTask.others
+  work.total_erection_amount=parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
+}
+work.total_amount=parseFloat(work.total_erection_amount)+parseFloat(work.total_dismantel_amount);              
+console.log('work',work)
+                api
+              .post('/projecttask/insertWorksheetforStaff', work)
+              .then(() => {
+               
+              }).catch(()=>{
+
+              })
+              }).catch(()=>{
+
+              })
+          })
+            message('Task inserted successfully.', 'success');
+            getTaskById();
+            getStaffName();
+           
+            // Clear the form fields by resetting the state
+            setInsertTask({
+              task_title: '',
+              employee_id: '',
+              start_date: '',
+              end_date: '',
+              completion: '',
+              status: '',
+              task_type: '',
+              description: '',
+              project_milestone_id: '',
+              project_team_id: '',
+            });
+            setSelectedNames([]); // Clear the selected names after insertion
+          })
+          .catch(() => {
+            message('Network connection error.', 'error');
+          })
+          .finally(() => {
+            setIsSubmitting(false); // Reset submission status
+          });
+      
+    } else {
+      message('Please fill all required fields', 'warning');
+    }
+  };
+  
   const fetchEmployeeDetails = (projectTeamId) => {
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
@@ -154,146 +235,75 @@ console.log(employees)
       })
       .catch(() => {});
   };
-
-  console.log('selected names',selectedNames)
-  const editTaskProject = () => {
-    taskProject.modification_date = creationdatetime;
-    taskProject.modified_by= loggedInuser.first_name; 
-    taskProject.pipe_value=taskProject.pipe *parseFloat(.60)
-    taskProject.tb_value=taskProject.tb *parseFloat(.60)
-    taskProject.plank_value=taskProject.plank *parseFloat(.60)
-    taskProject.volume_value=taskProject.volume *parseFloat(.60)
-    taskProject.others_value=taskProject.others *parseFloat(.60)
-    taskProject.total_amount=parseFloat(taskProject.pipe_value)+parseFloat(taskProject.tb_value)+parseFloat(taskProject.plank_value)+parseFloat(taskProject.volume_value)+parseFloat(taskProject.others_value)
-    if (taskProject.date !== '') {
-      api
-        .post('/projecttask/insertTaskHistory', taskProject)
-        .then((res) => {
-          
-          const insertedDataId = res.data.data.insertId;
-          message('Record editted successfully', 'success');
-          getTaskById();
-          employeesInTask.forEach((el)=>{
-            el.project_task_id=insertedDataId;
-            el.project_id=id
-            console.log('el',el)
-
-            api
-            .post('/projecttask/insertTaskHistories', el)
-            .then(() => {}).catch(()=>{
-
-            })
-        })
-          // setTimeout(() => {
-          //   setTaskhistorymodal(false);
-          // }, 300);
-        })
-        .catch(() => {
-          message('Network connection error.', 'error');
-        });
-    } else {
-      message('Please enter the Date');
-    }
+  const editJobById = () => {
+    api
+      .get('/projectteam/getProjectTeam')
+      .then((res) => {
+        console.log(res.data.data);
+        setTeam(res.data.data);
+      })
+      .catch(() => {});
   };
+  console.log('selected names',selectedNames)
+  //attachments
   
-    
-    const edittaskcompletiondate = () => {
-      taskProject.modification_date = creationdatetime;
-      taskProject.modified_by = loggedInuser.first_name;
-      
-      if (taskProject && taskProject.status === 'Completed') {
-        api
-          .post('/projecttask/editActualcompletedDate', { project_task_id: taskProject.project_task_id })
-          .then(() => {
-            // If the task is marked as Completed, update the milestone's actual_completed_date
-            if (taskProject.project_milestone_id) {
-              api
-                .post('/projecttask/UpdateActualcompletedDate', {
-                  project_milestone_id: taskProject.project_milestone_id,
-                  actual_completed_date: moment().format('YYYY-MM-DD'),
-                })
-                .then(() => {
-                  message('Task and milestone completed successfully', 'success');
-                })
-                .catch(() => {
-                  message('Unable to update milestone actual_completed_date.', 'error');
-                });
-            } else {
-              message('Task completed successfully', 'success');
-            }
-          })
-          .catch(() => {
-            message('Unable to edit task record.', 'error');
-          });
-      }
-    };
-    
-    useEffect(() => {
-      setSelectAll(true);
-      selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
-        let check = true;
-        if (!val.checked) {
-          setSelectAll(false);
-          check = false;
-        }
-        return check;
-      });
-    }, [selectedNames, TeamID]);
+  //Milestone data in milestoneDetails
+  const handleInputsTask = (e) => {
+    setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
-   
-    editJobByIds();
-    
-  }, [contactDatas]);
+
+    getStaffName();
+    editJobById();
+ 
+  }, [id]);
+
+  useEffect(() => {
+    setSelectAll(true);
+    selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
+      let check = true;
+      if (!val.checked) {
+        setSelectAll(false);
+        check = false;
+      }
+      return check;
+    });
+  }, [selectedNames, TeamID]);
 
   
-
+  useEffect(() => {
+    if (insertTask.project_team_id) {
+      const selectedTeams = insertTask.project_team_id;
+      fetchEmployeeDetails(selectedTeams);
+    }
+  }, [insertTask.project_team_id]);
   return (
     <>
-      <Modal size="lg" isOpen={taskhistorymodal}>
-        <ModalHeader>
-          Task Details
-          <Button
-            color="secondary"
-            onClick={() => {
-              setTaskhistorymodal(false);
-            }}
-          >
-            X
-          </Button>
-        </ModalHeader>
-
-        <ModalBody>
-          {/* task Details */}
-          <Form>
-            <FormGroup>
-                  <Form>
-                    <Row>
-                      
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Title</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.title}
-                            name="title"
-                          />
-                        </FormGroup>
-                      </Col>
-                     
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Head Count</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.head_count}
-                            name="head_count"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
+        <Modal size="lg" isOpen={taskhistorymodal} >
+            <ModalHeader >New Task Log</ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col md="12">
+                  <Card>
+                    <CardBody>
+                      <Form>
+                        <Row>
+                         
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>
+                                Title <span className="required">*</span>
+                              </Label>
+                              <Input
+                                type="text"
+                                name="title"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.title}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
                             <FormGroup>
                               <Label>Team Title</Label>
                               <Input
@@ -336,7 +346,7 @@ console.log(employees)
                                 {employees &&
                                   employees.filter(val => val.project_team_id === TeamID).map((element) => {
                                     const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
-                                    const isChecked = selectedNames[index].checked;
+                                    const isChecked = index >=0 ? selectedNames[index].checked : false;
                                     return (
                                       <tr key={element.project_team_id}>
                                         <td>
@@ -357,122 +367,138 @@ console.log(employees)
                               </tbody>
                             </Table>
                           </Row>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Date</Label>
-                          <Input
-                            type="date"
-                            onChange={handleInputs}
-                            value={moment(taskProject && taskProject.date).format(
-                              'YYYY-MM-DD',
-                            )}
-                            name="date"
-                          />
-                        </FormGroup>
-                      </Col>
-                      
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Pipe</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.pipe}
-                            name="pipe"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>T/B</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.tb}
-                            name="tb"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Plank</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.plank}
-                            name="plank"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Volume</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.volume}
-                            name="volume"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Others</Label>
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.others}
-                            name="others"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Actual Hours</Label>
-                          <br />
-                          <Input
-                            type="text"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.actual_hours}
-                            name="actual_hours"
-                           
-                          />
-                        </FormGroup>
-                      </Col>
-                    
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Head Counts</Label>
+                              <Input
+                                type="text"
+                                name="had_count"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.head_count || empCount}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Date</Label>
+                              <Input
+                                type="date"
+                                onChange={handleInputsTask}
+                                value={
+                                  insertTask && moment(insertTask.date).format('YYYY-MM-DD')
+                                }
+                                name="date"
+                              />
+                            </FormGroup>
+                          </Col>
+                         
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Actual Hours</Label>
+                              <Input
+                                type="text"
+                                name="actual_hours"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.actual_hours}
+                              />
+                            </FormGroup>
+                          </Col>
 
-                    </Row>
-                  </Form>
-            </FormGroup>
-           
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Row>
-            <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Pipe</Label>
+                              <Input
+                                type="text"
+                                name="pipe"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.pipe}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>TB</Label>
+                              <Input
+                                type="text"
+                                name="tb"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.tb}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Plank</Label>
+                              <Input
+                                type="text"
+                                name="plank"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.plank}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Volume</Label>
+                              <Input
+                                type="text"
+                                name="volume"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.volume}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Others</Label>
+                              <Input
+                                type="text"
+                                name="others"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.others}
+                              />
+                            </FormGroup>
+                          </Col>
+
+                         
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Description</Label>
+                              <Input
+                                type="textarea"
+                                name="description"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.description}
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </CardBody>
+                  </Card>
+                </Col>
+               
+              </Row>
+            </ModalBody>
+            <ModalFooter>
               <Button
+                className="shadow-none"
                 color="primary"
                 onClick={() => {
-                  editTaskProject();
-                  //editmilestonecompletiondate();
-                  edittaskcompletiondate();
-                 
+                  insertTaskData();
                 }}
               >
                 Submit
               </Button>
               <Button
                 color="secondary"
-                onClick={() => {
-                  setTaskhistorymodal(false);
-                }}
+                className="shadow-none"
+                onClick={()=>setTaskhistorymodal(false)}
               >
                 Cancel
               </Button>
-            </div>
-          </Row>
-        </ModalFooter>
-      </Modal>
+            </ModalFooter>
+          </Modal>
     </>
   );
 };

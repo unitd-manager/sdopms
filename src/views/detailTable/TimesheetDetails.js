@@ -14,7 +14,14 @@ const TimeSheetDetails = () => {
   // const [empcode, setEmpcode] = useState();
   const [employee, setEmployee] = useState();
   const [employeeData, setEmployeeData] = useState({
-    employee_name: '',
+    employee_id: '',
+    time_in:'',
+    time_out:'',
+    ot_hours:'',
+    normal_hours:'',
+    ph_hours:'',
+    date:'',
+    day:''
   });
 
   //routing
@@ -39,23 +46,117 @@ const TimeSheetDetails = () => {
   // Import necessary modules and components
 
   // ... Other code ...
-
+ 
   // Insert Employee Data
   const insertEmployee = () => {
-  
-    api
-      .post('/attendance/insertAttendance1', employeeData)
-      .then((res) => {
-        const insertedDataId = res.data.data.insertId;
+  console.log('empdata',employeeData)
+  let str1 = employeeData.time_out;
+let str2 = "18:00";
+
+str1 =  str1.split(':');
+str2 =  str2.split(':');
+const totalSeconds1 = parseFloat(str1[0] * 3600 + str1[1] * 60);
+const totalSeconds2 = parseFloat(str2[0] * 3600 + str2[1] * 60 )
+console.log('sec1',totalSeconds1)
+console.log('sec2',totalSeconds2)
+employeeData.date=new Date();
+employeeData.day=employeeData.date.getDay();
+
+console.log('day',employeeData.day)
+if(employeeData.day ===1 || employeeData.day ===2 || employeeData.day ===3 || employeeData.day ===4 ){
+if(totalSeconds1>totalSeconds2){
+  employeeData.normal_hours=9;
+  employeeData.ot_hours=1.5;
+  employeeData.ph_hours=0;
+}else{
+  employeeData.normal_hours=9;
+  employeeData.ot_hours=0;
+  employeeData.ph_hours=0;
+}
+ }
+ if(employeeData.day ===5 ){
+  if(totalSeconds1>totalSeconds2){
+    employeeData.normal_hours=8;
+    employeeData.ot_hours=2.5;
+    employeeData.ph_hours=0;
+  }else{
+    employeeData.normal_hours=8;
+    employeeData.ot_hours=0;
+    employeeData.ph_hours=0;
+  }
+   }
+   if(employeeData.day ===6 ){
+    if(totalSeconds1>totalSeconds2){
+      employeeData.ot_hours=10.5;
+      employeeData.ph_hours=0;
+      employeeData.normal_hours=0;
+    }else{
+      employeeData.normal_hours=0;
+      employeeData.ph_hours=0;
+      employeeData.ot_hours=8;
+    }
+     }
+     if(employeeData.day ===5 ){
+  if(totalSeconds1>totalSeconds2){
+    employeeData.normal_hours=8;
+    employeeData.ot_hours=2.5;
+    employeeData.ph_hours=0;
+  }else{
+    employeeData.normal_hours=8;
+    employeeData.ot_hours=0;
+    employeeData.ph_hours=0;
+  }
+   }
+   if(employeeData.day ===6 ){
+    if(totalSeconds1>totalSeconds2){
+      employeeData.ot_hours=10.5;
+      employeeData.ph_hours=0;
+      employeeData.normal_hours=0;
+    }else{
+      employeeData.ph_hours=0;
+      employeeData.ot_hours=8;
+      employeeData.normal_hours=0;
+    }
+     }
+     if(employeeData.day ===0 ){
+      if(totalSeconds1>totalSeconds2){
+        employeeData.ph_hours=10.5;
+        employeeData.normal_hours=0;
+        employeeData.ot_hours=0;
+      }else{
+        employeeData.normal_hours=0;
+        employeeData.ot_hours=0;
+        employeeData.ph_hours=8;
+      }
+       }
+       console.log('empdata',employeeData)
+// api
+//       .post('/attendance/insertAttendance1', employeeData)
+//       .then((res) => {
+//         const insertedDataId = res.data.data.insertId;
+//        employeeData.attendance_id=insertedDataId
+        api
+      .post('/projecttask/insertTimesheet', employeeData)
+      .then(() => {
+        
         message('Employee inserted successfully.', 'success');
-        setTimeout(() => {
+        
+        // setTimeout(() => {
           
-          navigate(`/TimesheetEdit/${insertedDataId}`);
-        }, 300);
+        //   navigate(`/TimesheetEdit/${insertedDataId}`);
+        // }, 300);
       })
       .catch(() => {
         message('Unable to create employee.', 'error');
       });
+        // setTimeout(() => {
+          
+        //   navigate(`/TimesheetEdit/${insertedDataId}`);
+        // }, 300);
+      // })
+      // .catch(() => {
+      //   message('Unable to create employee.', 'error');
+      // });
   };
   const calculateHours = () => {
     // Get "Time In" and "Time Out" values from state
@@ -71,6 +172,27 @@ const TimeSheetDetails = () => {
       hours: hoursDifference,
     });
   };
+
+
+  function convertTo24HourFormat(timeString) { 
+    const [time, period] = timeString.split(' '); 
+    const [hour, minute] = time.split(':'); 
+    let formattedHour = parseFloat(hour); 
+  
+    if (period === 'PM') { 
+        formattedHour += 12; 
+    } 
+  
+    return `${formattedHour}:${minute}`; 
+} 
+  
+
+const formattedTime = convertTo24HourFormat(employeeData.time_out); 
+console.log(formattedTime);
+
+
+
+
   useEffect(() => {
     getemployee();
   }, [id]);
@@ -103,7 +225,7 @@ const TimeSheetDetails = () => {
                         employee.map((ele) => {
                           return (
                             <option key={ele.employee_id} value={ele.employee_id}>
-                              {ele.employee_name}
+                              {ele.first_name}
                             </option>
                           );
                         })}
@@ -119,12 +241,13 @@ const TimeSheetDetails = () => {
                     Time In <span style={{ color: 'red' }}>*</span>
                   </Label>
                   <Input
-                    name="record_date"
-                    value={employeeData && employeeData.record_date}
+                    name="time_in"
+                    value={employeeData && employeeData.time_in}
                     onChange={(e) => {
                       handleInputs(e);
                     }}
-                    type="text"
+                    type="time"
+                    
                     onBlur={calculateHours} // Calculate hours when "Time In" is changed
                   ></Input>
                 </Col>
@@ -137,12 +260,12 @@ const TimeSheetDetails = () => {
                     Time Out <span style={{ color: 'red' }}>*</span>
                   </Label>
                   <Input
-                    name="leave_time"
-                    value={employeeData && employeeData.leave_time}
+                    name="time_out"
+                    value={employeeData && employeeData.time_out}
                     onChange={(e) => {
                       handleInputs(e);
                     }}
-                    type="text"
+                    type="time"
                     onBlur={calculateHours} // Calculate hours when "Time out" is changed
                   ></Input>
                 </Col>

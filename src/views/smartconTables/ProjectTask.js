@@ -632,7 +632,7 @@ export default function ProjectTask({
                                 {employees &&
                                   employees.filter(val => val.project_team_id === TeamID).map((element) => {
                                     const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
-                                    const isChecked = selectedNames[index].checked;
+                                    const isChecked = index >=0 ? selectedNames[index].checked : false;
                                     return (
                                       <tr key={element.project_team_id}>
                                         <td>
@@ -852,7 +852,7 @@ export default function ProjectTask({
                               setTaskhistorymodal(true);
                             }}
                           >
-                            <Icon.BookOpen />
+                            <Icon.PlusSquare />
                           </span>
                         </td>
                         <td rowSpan="2">

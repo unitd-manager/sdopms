@@ -22,22 +22,22 @@ function Dismantle({
 
   // Use useEffect to update totalDeductions whenever relevant fields change
   useEffect(() => {
-    const DismantlePipe = parseFloat(worksheet.dismantle_pipe || 0);
-    const DismantleVolume = parseFloat(worksheet.dismantle_volume || 0);
-    const DismantlePlanks = parseFloat(worksheet.dismantle_planks || 0);
-    const DismantleTB = parseFloat(worksheet.dismantle_t_b || 0);
-    const DismantleOthers = parseFloat(worksheet.dismantle_others || 0);
+    const DismantlePipe = parseFloat(worksheet.pipe_dismantel || 0);
+    const DismantleVolume = parseFloat(worksheet.volume_dismantel || 0);
+    const DismantlePlanks = parseFloat(worksheet.plank_dismantel || 0);
+    const DismantleTB = parseFloat(worksheet.tb_dismantel || 0);
+    const DismantleOthers = parseFloat(worksheet.others_dismantel || 0);
 
     const newGrossPay =
       DismantlePipe + DismantleVolume + DismantlePlanks + DismantleTB + DismantleOthers;
 
     setTotalDeductionsAmount(newGrossPay);
   }, [
-    worksheet.dismantle_pipe,
-    worksheet.dismantle_volume,
-    worksheet.dismantle_planks,
-    worksheet.dismantle_t_b,
-    worksheet.dismantle_others,
+    worksheet.pipe_dismantel,
+    worksheet.volume_dismantel,
+    worksheet.plank_dismantel,
+    worksheet.tb_dismantel,
+    worksheet.others_dismantel,
   ]);
 
 
@@ -48,17 +48,17 @@ function Dismantle({
         <Col md="3">
           <Input
             
-            name="dismantle_pipe"
+            name="pipe_dismantel"
             type="text"
-            value={worksheet && worksheet.dismantle_pipe}
+            value={worksheet && worksheet.pipe_dismantel}
             onChange={(e) => {
               handleInputs(e);
               handleDismantle(
                 e.target.value,
-                worksheet.dismantle_t_b,
-                worksheet.dismantle_planks,
-                worksheet.dismantle_others,
-                worksheet.dismantle_volume,
+                worksheet.tb_dismantel,
+                worksheet.plank_dismantel,
+                worksheet.others_dismantel,
+                worksheet.volume_dismantel,
                
               );
             }}
@@ -69,17 +69,17 @@ function Dismantle({
         <Col md="9"> T/B</Col>
         <Col md="3">
           <Input
-            name="dismantle_t_b"
+            name="tb_dismantel"
             type="text"
-            value={worksheet && worksheet.dismantle_t_b}
+            value={worksheet && worksheet.tb_dismantel}
             onChange={(e) => {
               handleInputs(e);
               handleDismantle(
                 e.target.value,
-                worksheet.dismantle_pipe,
-                worksheet.dismantle_planks,
-                worksheet.dismantle_others,
-                worksheet.dismantle_volume,
+                worksheet.pipe_dismantel,
+                worksheet.plank_dismantel,
+                worksheet.others_dismantel,
+                worksheet.volume_dismantel,
               );
             }}
           />
@@ -90,17 +90,17 @@ function Dismantle({
         <Col md="9">Planks</Col>
         <Col md="3">
           <Input
-            name="dismantle_planks"
+            name="plank_dismantel"
             type="text"
-            value={worksheet && worksheet.dismantle_planks}
+            value={worksheet && worksheet.plank_dismantel}
             onChange={(e) => {
               handleInputs(e);
               handleDismantle(
                 e.target.value,
-                worksheet.dismantle_pipe,
-                worksheet.dismantle_t_b,
-                worksheet.dismantle_others,
-                worksheet.dismantle_volume,
+                worksheet.pipe_dismantel,
+                worksheet.tb_dismantel,
+                worksheet.others_dismantel,
+                worksheet.volume_dismantel,
               );
             }}
           />
@@ -110,17 +110,17 @@ function Dismantle({
         <Col md="9">Others</Col>
         <Col md="3">
           <Input
-            name="dismantle_others"
+            name="others_dismantel"
             type="text"
-            value={worksheet && worksheet.dismantle_others}
+            value={worksheet && worksheet.others_dismantel}
             onChange={(e) => {
               handleInputs(e);
               handleDismantle(
                 e.target.value,
-                worksheet.dismantle_pipe,
-                worksheet.dismantle_t_b,
-                worksheet.dismantle_planks,
-                worksheet.dismantle_volume,
+                worksheet.pipe_dismantel,
+                worksheet.tb_dismantel,
+                worksheet.plank_dismantel,
+                worksheet.volume_dismantel,
               );
             }}
           />
@@ -130,17 +130,17 @@ function Dismantle({
         <Col md="9">Volume</Col>
         <Col md="3">
           <Input
-            name="dismantle_volume"
+            name="volume_dismantel"
             type="text"
-            value={worksheet && worksheet.dismantle_volume}
+            value={worksheet && worksheet.volume_dismantel}
             onChange={(e) => {
               handleInputs(e);
               handleDismantle(
                 e.target.value,
-                worksheet.dismantle_pipe,
-                worksheet.dismantle_t_b,
-                worksheet.dismantle_planks,
-                worksheet.dismantle_others,
+                worksheet.pipe_dismantel,
+                worksheet.tb_dismantel,
+                worksheet.plank_dismantel,
+                worksheet.others_dismantel,
               );
             }}
           />

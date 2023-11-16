@@ -18,7 +18,7 @@ import CommonTable from '../../components/CommonTable';
 function Timesheet() {
   const [timeSheet, setTimeSheet] = useState(null);
   const getTimeSheet = () => {
-    api.get('/attendance/getAttendance').then((res) => {
+    api.get('/projecttask/getTimesheet').then((res) => {
       setTimeSheet(res.data.data);
       console.log(res.data.data);
     });
@@ -64,14 +64,14 @@ function Timesheet() {
    
     {
       name: 'Employee Name',
-      selector: 'employee_name',
+      selector: 'first_name',
       sortable: true,
       grow: 0,
       wrap: true,
     },
     {
       name: 'Date',
-      selector: 'creation_date',
+      selector: 'entry_date',
       sortable: true,
       grow: 2,
       wrap: true,
@@ -84,11 +84,33 @@ function Timesheet() {
     },
     {
       name: 'Time Out',
-      selector: 'leave_time',
+      selector: 'time_out',
       sortable: true,
       width: 'auto',
       grow: 3,
     },
+      
+    {
+      name: 'Normal Hours',
+      selector: 'normal_hours',
+      sortable: true,
+      grow: 0,
+      wrap: true,
+    },
+    {
+      name: 'OT Hours',
+      selector: 'employee_ot_hours',
+      sortable: true,
+      grow: 2,
+      wrap: true,
+    },
+    {
+      name: 'Ph Hours',
+      selector: 'employee_ph_hours',
+      sortable: true,
+      grow: 0,
+    },
+    
     {
       name: 'On Leave',
       selector: 'on_leave',
@@ -131,10 +153,13 @@ function Timesheet() {
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{element.employee_name}</td>
-                    <td>{element.creation_date}</td>
+                    <td>{element.first_name}</td>
+                    <td>{element.entry_date}</td>
                     <td>{element.time_in}</td>
-                    <td>{element.leave_time}</td>
+                    <td>{element.time_out}</td>
+                    <td>{element.normal_hours}</td>
+                    <td>{element.employee_ot_hours}</td>
+                    <td>{element.employee_ph_hours}</td>
                     <td>{element.on_leave}</td>
                   </tr>
                 );

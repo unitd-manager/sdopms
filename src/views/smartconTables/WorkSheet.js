@@ -17,7 +17,7 @@ import CommonTable from '../../components/CommonTable';
 function WorkSheetTask() {
   const [WorkSheet, setWorkSheet] = useState(null);
   const getTimeSheet = () => {
-    api.get('/worksheet/gettaskworksheet').then((res) => {
+    api.get('/projecttask/gettaskworksheet').then((res) => {
       setWorkSheet(res.data.data);
       console.log(res.data.data);
     });
@@ -63,7 +63,7 @@ function WorkSheetTask() {
    
     {
       name: 'Employee Name',
-      selector: 'employee_name',
+      selector: 'first_name',
       sortable: true,
       grow: 0,
       wrap: true,
@@ -77,7 +77,7 @@ function WorkSheetTask() {
     },
     {
       name: 'Share Amount',
-      selector: 'amount_share_per_head',
+      selector: 'share_per_head',
       sortable: true,
       grow: 0,
     },
@@ -110,9 +110,9 @@ function WorkSheetTask() {
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{element.employee_name}</td>
+                    <td>{element.first_name}</td>
                     <td>{element.date}</td>
-                    <td>{element.amount_share_per_head}</td>
+                    <td>{element.share_per_head}</td>
                   
                   </tr>
                 );

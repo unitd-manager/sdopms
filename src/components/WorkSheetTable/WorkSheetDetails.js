@@ -46,7 +46,7 @@ function WorkSheetDetails({ worksheet, handleInputs }) {
                   </Label>
                   <Input
                     type="text"
-                    value={worksheet && worksheet.employee_name}
+                    value={worksheet && worksheet.first_name}
                     onChange={handleInputs}
                     name="employee_name"
                     disabled
@@ -66,22 +66,22 @@ function WorkSheetDetails({ worksheet, handleInputs }) {
               </Col>
               <Col md="4">
                 <FormGroup>                               
-                  <Label>Total One day Amount</Label>
+                  <Label>Total Amount</Label>
                   <Input
                     type="text"
-                    value={worksheet && worksheet.total_one_day_amount}
-                    name="total_one_day_amount"
+                    value={worksheet && worksheet.actual_total_amount}
+                    name="actual_total_amount"
                     disabled
                   />
                 </FormGroup>
               </Col>
               <Col md="4">
                 <FormGroup>                               
-                  <Label>Amount to Share Per Head</Label>
+                  <Label>Share Per Head</Label>
                   <Input
                     type="text"
-                    value={worksheet && worksheet.amount_share_per_head}
-                    name="amount_share_per_head"
+                    value={worksheet && worksheet.share_per_head}
+                    name="share_per_head"
                     disabled
                   />
                 </FormGroup>
