@@ -16,6 +16,7 @@ import api from '../constants/api';
 import AttachmentModalV2 from './Tender/AttachmentModalV2';
 import ViewFileComponentV2 from './ProjectModal/ViewFileComponentV2';
 import ViewNote from './Tender/ViewNote';
+import TaskHistoryEmployeeModal from './TaskHistoryEmployeeModal';
 
 const TaskHistoriesModal = ({
   taskhistoriesmodal,
@@ -106,8 +107,8 @@ const TaskHistoriesModal = ({
   const [moduleId, setModuleId] = useState('');
   const [roomName, setRoomName] = useState('');
       //get staff details
-      
-     
+    const [taskhistoryIdForEmployee,setTaskhistoryIdForEmployee]=useState(null);
+    const [taskhistoryEmployeeModal,setTaskhistoryEmployeeModal]=useState(false);
       const [taskhistories, setTaskhistories] = useState([]);
 
   const [attachmentData, setDataForAttachment] = useState({
@@ -206,6 +207,11 @@ console.log(employees)
                         <td>{element.plank}</td>
                         <td>{element.volume}</td>
                         <td>{element.total_amount}</td>
+                        <td>
+                          <button type='submit' onClick={()=>{setTaskhistoryIdForEmployee(element.task_history_id);setTaskhistoryEmployeeModal(true)}}>
+                            View Employees
+                          </button>
+                        </td>
                         
                         <td>
                           <span
@@ -299,6 +305,12 @@ console.log(employees)
           </Row>
         </ModalFooter>
       </Modal>
+      {taskhistoryEmployeeModal&&<TaskHistoryEmployeeModal
+      taskHistoryId={taskhistoryIdForEmployee}
+      taskhistoryEmployeemodal={taskhistoryEmployeeModal}
+      setTaskhistoryEmployeeModal={setTaskhistoryEmployeeModal}
+      >
+        </TaskHistoryEmployeeModal>}
     </>
   );
 };

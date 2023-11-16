@@ -26,6 +26,7 @@ import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponent
 import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
+import TaskEmployeesModal from '../../components/TaskEmployeesModal';
 
 export default function ProjectTask({
   addContactToggle,
@@ -93,7 +94,8 @@ export default function ProjectTask({
   // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
 
-
+  const [taskIdForEmployee,setTaskIdForEmployee]=useState(null);
+  const [taskEmployeesModal,setTaskEmployeesModal]=useState(false);
   // const [selectedTeam, setSelectedTeam] = useState(null);
   // const [selectedEmployees, setSelectedEmployees] = useState({});
 
@@ -440,6 +442,9 @@ export default function ProjectTask({
     {
       name: 'Priority',
     },
+    {
+      name: 'Employees',
+    },
     
     // {
     //   name: 'Creation ',
@@ -728,7 +733,7 @@ export default function ProjectTask({
                                 <option value="" selected="selected">
                                   Please Select
                                 </option>
-                                <option value="erection">Erection</option>
+                                <option value="Erection">Erection</option>
                                 <option value="Dismantel">Dismantel</option>
                               </Input>
                             </FormGroup>
@@ -923,7 +928,11 @@ export default function ProjectTask({
                         
                        */}
                         <td>{element.priority}</td>
-                        
+                        <td>
+                          <button type='submit' onClick={()=>{setTaskIdForEmployee(element.project_task_id);setTaskEmployeesModal(true)}}>
+                            View Employees
+                          </button>
+                        </td>
                         {/* <td>
                           {element.created_by} {element.creation_date}
                         </td>
@@ -932,6 +941,7 @@ export default function ProjectTask({
                         </td> */}
                       </tr>
                       <tr>
+
                         <td colSpan="14" style={{ borderRight: 1, borderWidth: 1 }}>
                           <ViewNote
                             recordId={id}
@@ -957,7 +967,14 @@ export default function ProjectTask({
             activeClassName="navigationActive"
           />
         </Form>
+        {taskEmployeesModal&&<TaskEmployeesModal
+      taskEmployeesModal={taskEmployeesModal}
+      setTaskEmployeesModal={setTaskEmployeesModal}
+      taskId={taskIdForEmployee}
+      >
+        </TaskEmployeesModal>}
       </div>
+      
     </div>
   );
 }
