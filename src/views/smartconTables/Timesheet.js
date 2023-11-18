@@ -11,6 +11,7 @@ import 'datatables.net-buttons/js/buttons.html5';
 import 'datatables.net-buttons/js/buttons.print';
 import 'react-data-table-component-extensions/dist/index.css';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
@@ -146,15 +147,15 @@ function Timesheet() {
             {timeSheet &&
               timeSheet.map((element,index) => {
                 return (
-                  <tr key={element.staff_id}>
+                  <tr key={element.timesheet_id}>
                   <td>{index + 1}</td>
                     <td>
-                      <Link to={`/TimesheetEdit/${element.staff_id}`}>
+                      <Link to={`/TimesheetEdit/${element.timesheet_id}`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
                     <td>{element.first_name}</td>
-                    <td>{element.entry_date}</td>
+                    <td>{element.entry_date? moment(element.entry_date).format('YYYY-MM-DD'):''}</td>
                     <td>{element.time_in}</td>
                     <td>{element.time_out}</td>
                     <td>{element.normal_hours}</td>

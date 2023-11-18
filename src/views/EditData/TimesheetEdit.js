@@ -12,13 +12,13 @@ import api from '../../constants/api';
 import ApiButton from '../../components/ApiButton';
 
 const TimesheetEdit = () => {
-  const [timesheetDetails, setPurchaseOrderDetails] = useState();
+  const [timesheetDetails, setTimesheetDetails] = useState();
   const [staffLinked, setStaffLinked] = useState();
   const { id } = useParams();
   const navigate = useNavigate();
 
   const handleInputs = (e) => {
-    setPurchaseOrderDetails({ ...timesheetDetails, [e.target.name]: e.target.value });
+    setTimesheetDetails({ ...timesheetDetails, [e.target.name]: e.target.value });
   };
   const getStaff = () => {
     api.get('/timesheet/getStaff', staffLinked).then((res) => {
@@ -27,17 +27,96 @@ const TimesheetEdit = () => {
   };
   const editPurchaseOrderById = () => {
     api
-      .post('/attendance/getAttendanceById', { attendance_id: id })
+      .post('/projecttask/getTimesheetById', { timesheet_id: id })
       .then((res) => {
-        setPurchaseOrderDetails(res.data.data[0]);
+        setTimesheetDetails(res.data.data[0]);
       })
       .catch(() => {
         message('Purchase Order Data Not Found', 'info');
       });
   };
   const editTimesheetData = () => {
+    let str1 = timesheetDetails.time_out;
+let str2 = "18:00";
+
+str1 =  str1.split(':');
+str2 =  str2.split(':');
+const totalSeconds1 = parseFloat(str1[0] * 3600 + str1[1] * 60);
+const totalSeconds2 = parseFloat(str2[0] * 3600 + str2[1] * 60 )
+console.log('sec1',totalSeconds1)
+console.log('sec2',totalSeconds2)
+timesheetDetails.day=new Date(timesheetDetails.entry_date).getDay();
+
+console.log('day',timesheetDetails.day)
+if(timesheetDetails.day ===1 || timesheetDetails.day ===2 || timesheetDetails.day ===3 || timesheetDetails.day ===4 ){
+if(totalSeconds1>totalSeconds2){
+  timesheetDetails.normal_hours=9;
+  timesheetDetails.employee_ot_hours=1.5;
+  timesheetDetails.employee_ph_hours=0;
+}else{
+  timesheetDetails.normal_hours=9;
+  timesheetDetails.employee_ot_hours=0;
+  timesheetDetails.employee_ph_hours=0;
+}
+ }
+ if(timesheetDetails.day ===5 ){
+  if(totalSeconds1>totalSeconds2){
+    timesheetDetails.normal_hours=8;
+    timesheetDetails.employee_ot_hours=2.5;
+    timesheetDetails.employee_ph_hours=0;
+  }else{
+    timesheetDetails.normal_hours=8;
+    timesheetDetails.employee_ot_hours=0;
+    timesheetDetails.employee_ph_hours=0;
+  }
+   }
+   if(timesheetDetails.day ===6 ){
+    if(totalSeconds1>totalSeconds2){
+      timesheetDetails.employee_ot_hours=10.5;
+      timesheetDetails.employee_ph_hours=0;
+      timesheetDetails.normal_hours=0;
+    }else{
+      timesheetDetails.normal_hours=0;
+      timesheetDetails.employee_ph_hours=0;
+      timesheetDetails.employee_ot_hours=8;
+    }
+     }
+     if(timesheetDetails.day ===5 ){
+  if(totalSeconds1>totalSeconds2){
+    timesheetDetails.normal_hours=8;
+    timesheetDetails.employee_ot_hours=2.5;
+    timesheetDetails.employee_ph_hours=0;
+  }else{
+    timesheetDetails.normal_hours=8;
+    timesheetDetails.employee_ot_hours=0;
+    timesheetDetails.employee_ph_hours=0;
+  }
+   }
+   if(timesheetDetails.day ===6 ){
+    if(totalSeconds1>totalSeconds2){
+      timesheetDetails.employee_ot_hours=10.5;
+      timesheetDetails.employee_ph_hours=0;
+      timesheetDetails.normal_hours=0;
+    }else{
+      timesheetDetails.employee_ph_hours=0;
+      timesheetDetails.employee_ot_hours=8;
+      timesheetDetails.normal_hours=0;
+    }
+     }
+     if(timesheetDetails.day ===0 ){
+      if(totalSeconds1>totalSeconds2){
+        timesheetDetails.employee_ph_hours=10.5;
+        timesheetDetails.normal_hours=0;
+        timesheetDetails.employee_ot_hours=0;
+      }else{
+        timesheetDetails.normal_hours=0;
+        timesheetDetails.employee_ot_hours=0;
+        timesheetDetails.employee_ph_hours=8;
+      }
+       }
+       console.log('timesheetdetails',timesheetDetails)
     api
-      .post('/attendance/editAttendance', timesheetDetails)
+      .post('/projecttask/editTimesheet', timesheetDetails)
       .then(() => {
         message('Record edited successfully', 'success');
       })
@@ -67,7 +146,7 @@ const TimesheetEdit = () => {
             module="Timesheet"
           ></ApiButton>
 
-          <ComponentCard title="`Details">
+          <ComponentCard title="Details">
             <Row>
               {/* <Col md="3">
                 <FormGroup>
@@ -94,7 +173,7 @@ const TimesheetEdit = () => {
                   <Input
                     type="text"
                     name="employee_name"
-                    value={timesheetDetails && timesheetDetails.employee_name}
+                    value={timesheetDetails && timesheetDetails.first_name}
                     onChange={handleInputs}
                     disabled
                   ></Input>
@@ -108,9 +187,20 @@ const TimesheetEdit = () => {
                     onChange={handleInputs}
                     value={
                       timesheetDetails &&
-                      moment(timesheetDetails.creation_date).format('YYYY-MM-DD')
+                      moment(timesheetDetails.entry_date).format('YYYY-MM-DD')
                     }
-                    name="creation_date"
+                    name="entry_date"
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Day</Label>
+                  <Input
+                    type="text"
+                    onChange={handleInputs}
+                    value={timesheetDetails && timesheetDetails.day}
+                    name="day"
                   />
                 </FormGroup>
               </Col>
@@ -119,19 +209,23 @@ const TimesheetEdit = () => {
                   <Label> On Leave</Label>
                   <br></br>
                   <Label> Yes </Label>
+                  &nbsp; 
                   <Input
                     name="on_leave"
                     value="1"
                     type="radio"
-                    defaultChecked={timesheetDetails && timesheetDetails.show_title === 1 && true}
+                    defaultChecked={timesheetDetails && timesheetDetails.on_leave === 1 && true}
                     onChange={handleInputs}
                   />
+                  &nbsp; 
+                  &nbsp; 
                   <Label> No </Label>
+                  &nbsp; 
                   <Input
                     name="on_leave"
                     value="0"
                     type="radio"
-                    defaultChecked={timesheetDetails && timesheetDetails.show_title === 0 && true}
+                    defaultChecked={timesheetDetails && timesheetDetails.on_leave === 0 && true}
                     onChange={handleInputs}
                   />
                 </FormGroup>
@@ -140,10 +234,10 @@ const TimesheetEdit = () => {
                 <FormGroup>
                   <Label>Type Of Leave</Label>
                   <Input
-                    value={timesheetDetails && timesheetDetails.type_of_leave}
+                    value={timesheetDetails && timesheetDetails.leave_type}
                     type="select"
                     onChange={handleInputs}
-                    name="type_of_leave"
+                    name="leave_type"
                   >
                     <option value="">Please Select</option>
                     <option value="earning leave">Earning Leave</option>
@@ -192,7 +286,7 @@ const TimesheetEdit = () => {
                 <FormGroup>
                   <Label>Time in (HH:MM)</Label>
                   <Input
-                    type="textarea"
+                    type="time"
                     value={timesheetDetails && timesheetDetails.time_in}
                     onChange={handleInputs}
                     name="time_in"
@@ -203,15 +297,15 @@ const TimesheetEdit = () => {
                 <FormGroup>
                   <Label>Time out (HH:MM)</Label>
                   <Input
-                    type="textarea"
-                    value={timesheetDetails && timesheetDetails.leave_time}
+                    type="time"
+                    value={timesheetDetails && timesheetDetails.time_out}
                     onChange={handleInputs}
-                    name="leave_time"
+                    name="time_out"
                   />
                 </FormGroup>
               </Col>
               
-              <Col md="3">
+              {/* <Col md="3">
                 <FormGroup>
                   <Label>Time in1 (HH:MM)</Label>
                   <Input
@@ -232,7 +326,7 @@ const TimesheetEdit = () => {
                     name="leave_time1"
                   />
                 </FormGroup>
-              </Col>
+              </Col> */}
               {/* Display the calculated hours */}
             {/* <FormGroup>
               <Row>
@@ -263,23 +357,34 @@ const TimesheetEdit = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Created By</Label>
+                  <Label>Normal Hours</Label>
                   <Input
                     type="text"
-                    value={timesheetDetails && timesheetDetails.created_by}
+                    value={timesheetDetails && timesheetDetails.normal_hours}
                     onChange={handleInputs}
-                    name="created_by"
+                    name="normal_hours"
                   />
                 </FormGroup>
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Modified By</Label>
+                  <Label>OT Hours</Label>
                   <Input
                     type="text"
-                    value={timesheetDetails && timesheetDetails.modified_by}
+                    value={timesheetDetails && timesheetDetails.employee_ot_hours}
                     onChange={handleInputs}
-                    name="modified_by"
+                    name="employee_ot_hours"
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>PH Hours</Label>
+                  <Input
+                    type="text"
+                    value={timesheetDetails && timesheetDetails.employee_ph_hours}
+                    onChange={handleInputs}
+                    name="employee_ph_hours"
                   />
                 </FormGroup>
               </Col>

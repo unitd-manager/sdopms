@@ -929,9 +929,11 @@ export default function ProjectTask({
                        */}
                         <td>{element.priority}</td>
                         <td>
-                          <button type='submit' onClick={()=>{setTaskIdForEmployee(element.project_task_id);setTaskEmployeesModal(true)}}>
+                        <Button
+                className="shadow-none"
+                color="primary" onClick={()=>{setTaskIdForEmployee(element.project_task_id);setTaskEmployeesModal(true)}}>
                             View Employees
-                          </button>
+                          </Button>
                         </td>
                         {/* <td>
                           {element.created_by} {element.creation_date}

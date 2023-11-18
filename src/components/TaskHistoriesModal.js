@@ -208,9 +208,11 @@ console.log(employees)
                         <td>{element.volume}</td>
                         <td>{element.total_amount}</td>
                         <td>
-                          <button type='submit' onClick={()=>{setTaskhistoryIdForEmployee(element.task_history_id);setTaskhistoryEmployeeModal(true)}}>
+                        <Button
+                className="shadow-none"
+                color="primary" onClick={()=>{setTaskhistoryIdForEmployee(element.task_history_id);setTaskhistoryEmployeeModal(true)}}>
                             View Employees
-                          </button>
+                          </Button>
                         </td>
                         
                         <td>
