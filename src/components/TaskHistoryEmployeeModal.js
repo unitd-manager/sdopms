@@ -6,7 +6,7 @@ import {
   Modal,
   ModalHeader,
   ModalFooter,
-  Table
+  
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import '../views/form-editor/editor.scss';
@@ -46,29 +46,13 @@ const TaskHistoryEmployeeModal = ({
   
 console.log(employees)
  
-<<<<<<< HEAD
 
 
-=======
-    
-const column = [
-  
-  {
-    name: 'Employee Name',
-    sortable: true,
-  },
-  {
-    name: 'Team',
-    sortable: true,
-  }]
->>>>>>> 57deb09e113600eb9cd8a4c2b2cb54503a7796ef
 
   useEffect(() => {
     getTaskHistoryEmployees();
    
   }, [contactDatas]);
-
-  
 
   return (
     <>
@@ -86,7 +70,6 @@ const column = [
         </ModalHeader>
 
         <ModalBody>
-<<<<<<< HEAD
   {/* Task Details */}
   {employees && employees.map((el, index) => {
       const uniqueKey = `${el.first_name}-${index}`; // Creating a unique key
@@ -97,39 +80,6 @@ const column = [
       );
     })}
 </ModalBody>
-=======
-        <Table
-            id="example"
-            className="display border border-secondary rounded"
-            title="projectTask List"
-          >
-            <thead>
-              <tr>
-                {column.map((cell) => {
-                  return (
-                    <th key={cell.name} >
-                      {cell.name}
-                      
-                    </th>
-                  );
-                  // return <td key={cell.name}>{cell.name}</td>;
-                })}
-              </tr>
-            </thead>
-            <tbody>
-            {employees&&employees.map((el)=>{
-            return<tr >
-                <td>{el.first_name}</td>
-                <td>{el.team_title}</td> 
-            </tr>
-         })}
-            </tbody>
-          </Table>
-          {/* task Details */}
-        
-          
-        </ModalBody>
->>>>>>> 57deb09e113600eb9cd8a4c2b2cb54503a7796ef
         <ModalFooter>
           <Row>
             <div className="pt-3 mt-3 d-flex align-items-center gap-2">

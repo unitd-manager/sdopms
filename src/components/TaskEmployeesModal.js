@@ -81,17 +81,15 @@ const column = [
 
         <ModalBody>
           {/* task Details */}
-<<<<<<< HEAD
           
-         {employees&&employees.map((el,index)=>{
+         {/* {employees&&employees.map((el,index)=>{
             const uniqueKey = `${el.first_name}-${index}`; // Creating a unique key
             return (
               <div key={uniqueKey}>
                 {index + 1}. {el.first_name}
               </div>
             );
-          })}
-=======
+          })} */}
           <Table
             id="example"
             className="display border border-secondary rounded"
@@ -119,7 +117,6 @@ const column = [
          })}
             </tbody>
           </Table>
->>>>>>> 57deb09e113600eb9cd8a4c2b2cb54503a7796ef
         </ModalBody>
         <ModalFooter>
           <Row>
