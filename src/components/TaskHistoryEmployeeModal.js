@@ -47,6 +47,17 @@ const TaskHistoryEmployeeModal = ({
 console.log(employees)
  
 
+    
+const column = [
+  
+  {
+    name: 'Employee Name',
+    sortable: true,
+  },
+  {
+    name: 'Team',
+    sortable: true,
+  }]
 
 
   useEffect(() => {
@@ -70,16 +81,40 @@ console.log(employees)
         </ModalHeader>
 
         <ModalBody>
-  {/* Task Details */}
-  {employees && employees.map((el, index) => {
-      const uniqueKey = `${el.first_name}-${index}`; // Creating a unique key
-      return (
-        <div key={uniqueKey}>
-          {index + 1}. {el.first_name}
-        </div>
-      );
-    })}
-</ModalBody>
+
+
+        <Table
+            id="example"
+            className="display border border-secondary rounded"
+            title="projectTask List"
+          >
+            <thead>
+              <tr>
+                {column.map((cell) => {
+                  return (
+                    <th key={cell.name} >
+                      {cell.name}
+                      
+                    </th>
+                  );
+                  // return <td key={cell.name}>{cell.name}</td>;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+            {employees&&employees.map((el)=>{
+            return<tr >
+                <td>{el.first_name}</td>
+                <td>{el.team_title}</td> 
+            </tr>
+         })}
+            </tbody>
+          </Table>
+          {/* task Details */}
+        
+          
+        </ModalBody>
+
         <ModalFooter>
           <Row>
             <div className="pt-3 mt-3 d-flex align-items-center gap-2">
