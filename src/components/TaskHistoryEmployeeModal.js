@@ -46,7 +46,7 @@ const TaskHistoryEmployeeModal = ({
   
 console.log(employees)
  
-    
+
 
 
   useEffect(() => {
@@ -72,14 +72,16 @@ console.log(employees)
         </ModalHeader>
 
         <ModalBody>
-          {/* task Details */}
-         {employees&&employees.map((el)=>{
-            return<li>
-                {el.first_name}
-            </li>
-         })}
-          
-        </ModalBody>
+  {/* Task Details */}
+  {employees && employees.map((el, index) => {
+      const uniqueKey = `${el.first_name}-${index}`; // Creating a unique key
+      return (
+        <div key={uniqueKey}>
+          {index + 1}. {el.first_name}
+        </div>
+      );
+    })}
+</ModalBody>
         <ModalFooter>
           <Row>
             <div className="pt-3 mt-3 d-flex align-items-center gap-2">
