@@ -497,7 +497,37 @@ export default function ProjectTask({
                   Go
                 </Button>
               </Col>
-              <Col md="1" className="mt-3">
+              
+            {/* </Row>
+          </CardBody>
+        </Card>
+        <Form>
+          <Row> */}
+     
+            <Col md="2"  className="mt-3">
+              {/* <FormGroup>
+              */}
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                />
+              {/* </FormGroup> */}
+            </Col>
+            <Col md="3"  className="mt-3">
+              {/* <FormGroup>
+               */}
+                <Button
+                  color="primary"
+                  className="shadow-none"
+                  onClick={addContactToggle.bind(null)}
+                >
+                  Add New Task{' '}
+                </Button>
+              {/* </FormGroup> */}
+            </Col>
+            <Col md="1" className="mt-3">
               <span
                 onClick={() => {
                   // Clear the filter criteria for both Select Staff and Select Category
@@ -516,32 +546,6 @@ export default function ProjectTask({
                 Reset
               </span>
               </Col>
-            {/* </Row>
-          </CardBody>
-        </Card>
-        <Form>
-          <Row> */}
-            <Col md="3" >
-              <FormGroup>
-                <Button
-                  color="primary"
-                  className="shadow-none"
-                  onClick={addContactToggle.bind(null)}
-                >
-                  Add New Task{' '}
-                </Button>
-              </FormGroup>
-            </Col>
-            <Col md="2">
-              <FormGroup>
-                <Input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={handleSearchInputChange}
-                />
-              </FormGroup>
-            </Col>
             </Row>
             </CardBody>
             </Card>
