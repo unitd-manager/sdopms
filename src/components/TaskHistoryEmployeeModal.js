@@ -6,7 +6,7 @@ import {
   Modal,
   ModalHeader,
   ModalFooter,
-  
+  Table
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import '../views/form-editor/editor.scss';
