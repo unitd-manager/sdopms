@@ -108,7 +108,6 @@ const column = [
          })}
             </tbody>
           </Table>
-
         </ModalBody>
         <ModalFooter>
           <Row>
