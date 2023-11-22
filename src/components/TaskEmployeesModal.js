@@ -73,7 +73,7 @@ console.log(employees)
           {/* task Details */}
          {employees&&employees.map((el)=>{
             return<li>
-                {el.first_name}
+                {el.first_name}(team)
             </li>
          })}
           
