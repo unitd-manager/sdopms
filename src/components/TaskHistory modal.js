@@ -158,7 +158,7 @@ console.log('contactDatas',contactDatas)
                 work.date=dates;
                 work.team_id=el.project_team_id;
                 work.total_amount=total;
-                work.share_per_head=shares;
+                work.share_per_head=shares;  
 if(contactDatas.task_type === 'Dismantel'){
   work.pipe_dismantel=insertTask.pipe
   work.tb_dismantel=insertTask.tb
