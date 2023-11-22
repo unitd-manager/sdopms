@@ -38,29 +38,32 @@ const ProjectTaskEdit = ({
 
   //All state variable
   const [taskProject, setTaskProject] = useState();
-  const [employees, setEmployees] = useState();
+  //const [employees, setEmployees] = useState();
+  const [Team, setTeam] = useState();
   const [milestonesTaskEdit, setMilestonesTaskEdit] = useState([]);
       //get staff details
       const { loggedInuser } = useContext(AppContext);
-      const [taskEmployees, setTaskEmployees] = useState([]);
+      //const [taskEmployees, setTaskEmployees] = useState([]);
   // Gettind data from Job By Id
-  const editJobByIds = () => {
+  // Gettind data from Job By Id
+  const editJobById = () => {
     api
-      .get('/jobinformation/getEmployee')
-      .then((res) => {
-        setEmployees(res.data.data);
-      })
-      .catch(() => {});
-  };
-  const getTaskEmployees = () => {
-    api
-      .post('/projectTask/getTaskEmployees',{task_id:contactDatas.project_task_id})
+      .get('/projectteam/getProjectTeam')
       .then((res) => {
         console.log(res.data.data);
-        setTaskEmployees(res.data.data);
+        setTeam(res.data.data);
       })
       .catch(() => {});
   };
+  // const getTaskEmployees = () => {
+  //   api
+  //     .post('/projectTask/getTaskEmployees',{task_id:contactDatas.project_task_id})
+  //     .then((res) => {
+  //       console.log(res.data.data);
+  //       setTaskEmployees(res.data.data);
+  //     })
+  //     .catch(() => {});
+  // };
   // Api call for getting project name dropdown
   const getMilestoneTask = () => {
     api
@@ -98,6 +101,7 @@ const ProjectTaskEdit = ({
         .then(() => {
           message('Record editted successfully', 'success');
           getTaskById();
+          setEditTaskEditModal(false);
           // setTimeout(() => {
           //   setEditTaskEditModal(false);
           // }, 300);
@@ -111,34 +115,34 @@ const ProjectTaskEdit = ({
   };
   
 
-  const [addNoteData, setAddNoteData] = useState({
-    comments: '',
-    record_id: id,
-    creation_date: moment().format('DD-MM-YYYY'),
-  });
+  // const [addNoteData, setAddNoteData] = useState({
+  //   comments: '',
+  //   record_id: id,
+  //   creation_date: moment().format('DD-MM-YYYY'),
+  // });
 
-  const handleData = (e) => {  
-    setAddNoteData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value,
-      project_task_id: taskProject?.project_task_id,
-      room_name:taskProject?.title,
-      subject:taskProject?.task_title
-    }));
-    };
+  // const handleData = (e) => {  
+  //   setAddNoteData((prevData) => ({
+  //     ...prevData,
+  //     [e.target.name]: e.target.value,
+  //     project_task_id: taskProject?.project_task_id,
+  //     room_name:taskProject?.title,
+  //     subject:taskProject?.task_title
+  //   }));
+  //   };
 
 
-    const SubmitNote = () => {
-      if (addNoteData.comments !== '') {
-        api.post('/note/addNote', addNoteData).then(() => {
-          message('Add Note Successfully', 'success');
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 400);
-        });
-      }
-      return null;
-    };
+    // const SubmitNote = () => {
+    //   if (addNoteData.comments !== '') {
+    //     api.post('/note/addNote', addNoteData).then(() => {
+    //       message('Add Note Successfully', 'success');
+    //       // setTimeout(() => {
+    //       //   window.location.reload();
+    //       // }, 400);
+    //     });
+    //   }
+    //   return null;
+    // };
         
     
     const edittaskcompletiondate = () => {
@@ -175,8 +179,8 @@ const ProjectTaskEdit = ({
 
 
   useEffect(() => {
-    getTaskEmployees();
-    editJobByIds();
+    //getTaskEmployees();
+    editJobById();
     setTaskProject(contactDatas);
   }, [contactDatas]);
 
@@ -237,25 +241,23 @@ const ProjectTaskEdit = ({
                       </Col>
                       <Col md="4">
                         <FormGroup>
-                          <Label>Staff</Label>
+                          <Label>Team Title</Label>
                           <Input
-                            type="select"
-                            name="employee_id"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.employee_id}
-                          >
-                            <option value="selected">Please Select</option>
-                            {employees &&
-                              employees.map((ele) => {
-                                return (
-                                  ele.e_count === 0 && (
-                                    <option key={ele.employee_id} value={ele.employee_id}>
-                                      {ele.first_name}
+                                type="select"
+                                name="project_team_id"
+                                onChange={ handleInputs
+                                  // const selectedEmployeeId = e.target.value;
+                                  // fetchEmployeeDetails(selectedEmployeeId);
+                                }
+                              >
+                                <option value="">Please Select</option>
+                                {Team &&
+                                  Team.map((ele) => (
+                                    <option key={ele.project_team_id} value={ele.project_team_id}>
+                                      {ele.team_title}
                                     </option>
-                                  )
-                                );
-                              })}
-                          </Input>
+                                  ))}
+                              </Input>
                         </FormGroup>
                       </Col>
                       <Col md="4">
@@ -266,6 +268,7 @@ const ProjectTaskEdit = ({
                             onChange={handleInputs}
                             value={taskProject && taskProject.head_count}
                             name="head_count"
+                            disabled
                           />
                         </FormGroup>
                       </Col>
@@ -360,13 +363,24 @@ const ProjectTaskEdit = ({
                             <option value="" selected="selected">
                               Please Select
                             </option>
-                            <option value="Development">Development</option>
-                            <option value="ChangeRequest">ChangeRequest</option>
-                            <option value="Issues">Issues</option>
+                            <option value="Erection">Erection</option>
+                            <option value="Dismantel">Dismantel</option>
+                           
                           </Input>
                         </FormGroup>
                       </Col>
                       <Col md="4">
+                        <FormGroup>
+                          <Label>Description</Label>
+                          <Input
+                            type="textarea"
+                            name="description"
+                            onChange={handleInputs}
+                            value={taskProject && taskProject.description}
+                          />
+                        </FormGroup>
+                      </Col>
+                      {/* <Col md="4">
                         <FormGroup>
                           <Label>Priority</Label>
                           <Input
@@ -415,11 +429,11 @@ const ProjectTaskEdit = ({
                           <Label>Add Note</Label>
                           <textarea id="note" name="comments" rows="4" cols="77" onChange={handleData} />
                         </FormGroup>
-                      </Col>
+                      </Col> */}
                     </Row>
                   </Form>
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
             <Label>Apply To All</Label>
               <Input
               type="checkbox"
@@ -427,7 +441,7 @@ const ProjectTaskEdit = ({
                onChange={handleInputs}
                checked={taskProject && taskProject.task_input === 1} // Set the checked state based on the value in taskProject
   />
-</FormGroup>
+</FormGroup> */}
           </Form>
         </ModalBody>
         <ModalFooter>
@@ -439,7 +453,7 @@ const ProjectTaskEdit = ({
                   editTaskProject();
                   //editmilestonecompletiondate();
                   edittaskcompletiondate();
-                  SubmitNote();
+                  //SubmitNote();
                   //handleSubmit();
                 }}
               >

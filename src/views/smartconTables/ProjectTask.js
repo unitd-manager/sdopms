@@ -23,7 +23,7 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
-import ViewNote from '../../components/Tender/ViewNote';
+//import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
 import TaskEmployeesModal from '../../components/TaskEmployeesModal';
@@ -388,7 +388,7 @@ export default function ProjectTask({
       cell: () => <Icon.Edit2 />,
     },
     {
-      name: 'Logs',
+      name: 'View ',
       selector: 'logs',
       cell: () => <Icon.Lock />,
     },
@@ -439,9 +439,9 @@ export default function ProjectTask({
     // },
     
     
-    {
-      name: 'Priority',
-    },
+    // {
+    //   name: 'Priority',
+    // },
     {
       name: 'Employees',
     },
@@ -663,7 +663,7 @@ export default function ProjectTask({
                               <Label>Head Counts</Label>
                               <Input
                                 type="text"
-                                name="had_count"
+                                name="head_count"
                                 onChange={handleInputsTask}
                                 value={insertTask && insertTask.head_count || empCount}
                               />
@@ -738,7 +738,7 @@ export default function ProjectTask({
                               </Input>
                             </FormGroup>
                           </Col>
-                          <Col md="4">
+                          {/* <Col md="4">
                             <FormGroup>
                               <Label>Priority</Label>
                               <Input
@@ -758,7 +758,7 @@ export default function ProjectTask({
                                 <option value="5">5</option>
                               </Input>
                             </FormGroup>
-                          </Col>
+                          </Col> */}
                           <Col md="4">
                             <FormGroup>
                               <Label>Description</Label>
@@ -775,8 +775,8 @@ export default function ProjectTask({
                     </CardBody>
                   </Card>
                 </Col>
-                <p>Selected Employees</p>
-                {selectedNames.filter(val => val.checked).map(val => (<p>{val.employeeId}</p>))}
+                {/* <p>Selected Employees</p>
+                {selectedNames.filter(val => val.checked).map(val => (<p>{val.employeeId}</p>))} */}
                 <div>
                  
                       
@@ -847,7 +847,7 @@ export default function ProjectTask({
                               setEditTaskEditModal(true);
                             }}
                           color='primary'>
-                            <Icon.Eye />
+                            <Icon.Edit2 />
                           </span>
                         </td>
                         <td rowSpan="2">
@@ -870,8 +870,8 @@ export default function ProjectTask({
                             <Icon.Book />
                           </span>
                         </td>
-                        <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td>
-                        
+                        {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td> */}
+                        <td>{element.task_title}</td>
                         <td>{element.task_type}</td>
                         <td>{element.head_count}</td>
                         <td>{element.status}</td>
@@ -927,13 +927,13 @@ export default function ProjectTask({
                         <td>{element.completion}</td>
                         
                        */}
-                        <td>{element.priority}</td>
+                        {/* <td>{element.priority}</td> */}
                         <td>
-                        <Button
+                        <u
                 className="shadow-none"
                 color="primary" onClick={()=>{setTaskIdForEmployee(element.project_task_id);setTaskEmployeesModal(true)}}>
-                            View Employees
-                          </Button>
+                            View 
+                          </u>
                         </td>
                         {/* <td>
                           {element.created_by} {element.creation_date}
@@ -944,13 +944,13 @@ export default function ProjectTask({
                       </tr>
                       <tr>
 
-                        <td colSpan="14" style={{ borderRight: 1, borderWidth: 1 }}>
+                        {/* <td colSpan="14" style={{ borderRight: 1, borderWidth: 1 }}>
                           <ViewNote
                             recordId={id}
                             roomName={element?.title}
                             projectTaskId={element?.project_task_id}
                           />
-                        </td>
+                        </td> */}
                       </tr>
                     </>
                   );

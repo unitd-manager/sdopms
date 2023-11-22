@@ -60,7 +60,7 @@ console.log(employees)
     <>
       <Modal size="lg" isOpen={taskhistoryEmployeemodal}>
         <ModalHeader>
-          Employees Details
+          Name of the Employees 
           <Button
             color="secondary"
             onClick={() => {

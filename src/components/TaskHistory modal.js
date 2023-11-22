@@ -121,7 +121,7 @@ console.log('contactDatas',contactDatas)
     if (isSubmitting) {
       return; // Prevent multiple submissions
     }
-    if (insertTask.date !== '' && insertTask.title !== '') {
+    // if (insertTask.date !== '' && insertTask.title !== '') {
       setIsSubmitting(true); // Set submission in progress
     
       insertTask.pipe_value = insertTask.pipe * parseFloat(0.60);
@@ -213,9 +213,9 @@ console.log('work',work)
             setIsSubmitting(false); // Reset submission status
           });
       
-    } else {
-      message('Please fill all required fields', 'warning');
-    }
+    // } else {
+    //   message('Please fill all required fields', 'warning');
+    // }
   };
   
   const fetchEmployeeDetails = (projectTeamId) => {
@@ -290,7 +290,7 @@ console.log('work',work)
                       <Form>
                         <Row>
                          
-                          <Col md="4">
+                          {/* <Col md="4">
                             <FormGroup>
                               <Label>
                                 Title <span className="required">*</span>
@@ -302,7 +302,7 @@ console.log('work',work)
                                 value={insertTask && insertTask.title}
                               />
                             </FormGroup>
-                          </Col>
+                          </Col> */}
                           <Col md="4">
                             <FormGroup>
                               <Label>Team Title</Label>
