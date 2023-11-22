@@ -137,17 +137,19 @@ export default function ProjectTask({
     }
     setSelectAll(checked);
   }
-  const handleCheckboxChange = (event, employeeId) => {
+  const handleCheckboxChange = (event, employeeId,teamId) => {
     const { checked } = event.target;
     const arr = selectedNames.slice();
-    const index = arr.findIndex(value => {return value.employeeId === employeeId});
+    const index = arr.findIndex(value => {return value.employeeId === employeeId });
     if (checked) {
       // If the checkbox is checked, add the employeeId to the selectedNames array
       arr[index].checked = true;
+      arr[index].project_team_id = teamId;
       setSelectedNames(arr);
     }else {
       // If the checkbox is unchecked, remove the employeeId from the selectedNames array
       arr[index].checked = false;
+      arr[index].project_team_id = teamId;
       setSelectedNames(arr);
     }
     // if (event.target.checked === true ? 1 : 0) {
@@ -160,6 +162,7 @@ export default function ProjectTask({
 
   const employeesInTask=selectedNames.filter(val => val.checked)
   const empCount=selectedNames.filter(val => val.checked).length
+  console.log('employeesInTask', employeesInTask);
   //get staff details
   const { loggedInuser } = useContext(AppContext);
   const insertTaskData = () => {
@@ -182,7 +185,8 @@ export default function ProjectTask({
             console.log(insertedDataId);
             employeesInTask.forEach((el)=>{
               el.project_task_id=insertedDataId;
-              el.project_id=id
+              el.project_id=id;
+              
               console.log('el',el)
 
               api
@@ -320,11 +324,14 @@ export default function ProjectTask({
         setSelectedNames(arr);
         setEmployees(res.data.data);
         setTeamID(projectTeamId);
+        console.log('employees',res.data.data)
       })
       .catch(() => {});
   };
 
   console.log('selected names',selectedNames)
+  
+  console.log('employees',employees)
   //attachments
 
   //Milestone data in milestoneDetails
@@ -634,7 +641,7 @@ export default function ProjectTask({
                                             type="checkbox"
                                             name="employee_id_checkbox"
                                             onChange={(e) =>
-                                              handleCheckboxChange(e, element.employee_id)
+                                              handleCheckboxChange(e, element.employee_id,element.project_team_id)
                                             }
                                             // checked= {selectedNames.includes(element.employee_id) === 'true' }// Always checked by default
                                             defaultChecked={isChecked}
