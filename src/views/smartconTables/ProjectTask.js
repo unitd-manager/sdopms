@@ -21,8 +21,6 @@ import moment from 'moment';
 import ReactPaginate from 'react-paginate';
 import message from '../../components/Message';
 import api from '../../constants/api';
-import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
-import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
 //import ViewNote from '../../components/Tender/ViewNote';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
@@ -76,21 +74,14 @@ export default function ProjectTask({
   const [companyName, setCompanyName] = useState('');
   const [categoryName, setCategoryName] = useState('');
 
-  const [attachmentData, setDataForAttachment] = useState({
-    modelType: '',
-  });
-  const [attachmentModal, setAttachmentModal] = useState(false);
-
   const [employee, setEmployee] = useState();
   const [employees, setEmployees] = useState();
   const [Team, setTeam] = useState();
   const [selectAll, setSelectAll] = useState(true);
   const [TeamID, setTeamID] = useState();
-  const [roomName, setRoomName] = useState('');
-  const [fileTypes, setFileTypes] = useState();
-  const [moduleId, setModuleId] = useState('');
+  
   const [filteredData, setFilteredData] = useState([]);
-  const [updateFile, setUpdateFile] = useState(true);
+
   // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
 
@@ -342,12 +333,6 @@ export default function ProjectTask({
   
   console.log('employees',employees)
   //attachments
-  const dataForAttachment = () => {
-    setDataForAttachment({
-      modelType: 'attachment',
-    });
-    console.log('inside DataForAttachment');
-  };
 
   //Milestone data in milestoneDetails
   const handleInputsTask = (e) => {
@@ -358,7 +343,7 @@ export default function ProjectTask({
 
     getStaffName();
     editJobById();
-    dataForAttachment();
+    //dataForAttachment();
     getMilestoneTitle();
   }, [id]);
 
@@ -396,12 +381,12 @@ export default function ProjectTask({
     },
     {
       name: 'View ',
-      selector: 'logs',
+      selector: 'New',
       cell: () => <Icon.Lock />,
     },
     {
       name: 'Histories',
-      selector: 'logs',
+      selector: 'View',
       cell: () => <Icon.Lock />,
     },
     {
@@ -418,9 +403,7 @@ export default function ProjectTask({
       name: 'Status',
       sortable: true,
     },
-    {
-      name: 'File',
-    },
+    
     // {
     //   name: 'Staff',
     // },
@@ -514,6 +497,7 @@ export default function ProjectTask({
                   Go
                 </Button>
               </Col>
+              <Col md="1" className="mt-3">
               <span
                 onClick={() => {
                   // Clear the filter criteria for both Select Staff and Select Category
@@ -529,14 +513,15 @@ export default function ProjectTask({
                   textDecoration: 'underline',
                 }}
               >
-                Back to List
+                Reset
               </span>
-            </Row>
+              </Col>
+            {/* </Row>
           </CardBody>
         </Card>
         <Form>
-          <Row>
-            <Col md="3">
+          <Row> */}
+            <Col md="3" >
               <FormGroup>
                 <Button
                   color="primary"
@@ -557,7 +542,11 @@ export default function ProjectTask({
                 />
               </FormGroup>
             </Col>
-          </Row>
+            </Row>
+            </CardBody>
+            </Card>
+            
+          
           
           <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
             <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
@@ -867,7 +856,7 @@ export default function ProjectTask({
                             <Icon.PlusSquare />
                           </span>
                         </td>
-                        <td rowSpan="2">
+                        <td >
                           <span
                             onClick={() => {
                               setContactData(element);
@@ -882,39 +871,9 @@ export default function ProjectTask({
                         <td>{element.task_type}</td>
                         <td>{element.head_count}</td>
                         <td>{element.status}</td>
-                        <td>
-                          <span
-                            onClick={() => {
-                              setRoomName('Task');
-                              setFileTypes(['JPG', 'PNG', 'GIF', 'PDF']);
-                              dataForAttachment();
-                              setAttachmentModal(true);
-                              setModuleId(element.project_task_id);
-                            }}
-                          >
-                            <Icon.Plus />
-                          </span>
-                          <AttachmentModalV2
-                            moduleId={moduleId}
-                            attachmentModal={attachmentModal}
-                            setAttachmentModal={setAttachmentModal}
-                            roomName={roomName}
-                            fileTypes={fileTypes}
-                            altTagData="TaskRelated Data"
-                            desc="TaskRelated Data"
-                            recordType="RelatedPicture"
-                            mediaType={attachmentData.modelType}
-                            updateFile={updateFile}
-                            setUpdateFile={setUpdateFile}
-                          />
-                          <ViewFileComponentV2
-                            moduleId={element.project_task_id}
-                            roomName="Task"
-                            recordType="RelatedPicture"
-                            updateFile={updateFile}
-                            setUpdateFile={setUpdateFile}
-                          />
-                        </td>
+                        
+                          
+                         
                         {/* <td>
                           {element.start_date
                             ? moment(element.start_date).format('DD-MM-YYYY')
@@ -975,7 +934,7 @@ export default function ProjectTask({
             disabledClassName="navigationDisabled"
             activeClassName="navigationActive"
           />
-        </Form>
+       
         {taskEmployeesModal&&<TaskEmployeesModal
       taskEmployeesModal={taskEmployeesModal}
       setTaskEmployeesModal={setTaskEmployeesModal}
