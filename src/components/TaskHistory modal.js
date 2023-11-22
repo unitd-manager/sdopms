@@ -134,7 +134,8 @@ console.log('contactDatas',contactDatas)
       const total=insertTask.total_amount;
   const dates=insertTask.date;
   insertTask.task_id=contactDatas.project_task_id;
-  const shares=parseFloat(total)/parseFloat(empCount)
+  const shares=parseFloat(total)/parseFloat(empCount);
+  insertTask.share_per_head=shares;
       api
           .post('/projecttask/insertTaskHistory', insertTask)
           .then((res) => {
