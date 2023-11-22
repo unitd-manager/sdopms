@@ -34,10 +34,10 @@ const TaskHistoriesModal = ({
       name: 'ID',
     },
   
-    {
-      name: 'Team',
-      sortable: true,
-    },
+    // {
+    //   name: 'Team',
+    //   sortable: true,
+    // },
     {
       name: 'Date',
       sortable: true,
@@ -205,7 +205,7 @@ console.log(employees)
                       <tr key={element.task_history_id}>
                         <td >{index + 1}</td>
                      
-                        <td >{element.team_title}</td>
+                        {/* <td >{element.team_title}</td> */}
                         <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                         <td>{element.head_count}</td>
                         <td>{element.pipe}</td>

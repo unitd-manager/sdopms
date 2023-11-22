@@ -282,7 +282,7 @@ console.log('work',work)
   return (
     <>
         <Modal size="lg" isOpen={taskhistorymodal} >
-            <ModalHeader >New Task Log</ModalHeader>
+            <ModalHeader >New Worksheet</ModalHeader>
             <ModalBody>
               <Row>
                 <Col md="12">

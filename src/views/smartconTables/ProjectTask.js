@@ -380,12 +380,12 @@ export default function ProjectTask({
       cell: () => <Icon.Edit2 />,
     },
     {
-      name: 'View ',
+      name: 'New ',
       selector: 'New',
       cell: () => <Icon.Lock />,
     },
     {
-      name: 'Histories',
+      name: 'View',
       selector: 'View',
       cell: () => <Icon.Lock />,
     },
@@ -503,21 +503,19 @@ export default function ProjectTask({
         </Card>
         <Form>
           <Row> */}
-     
-            <Col md="2"  className="mt-3">
-              {/* <FormGroup>
-              */}
+            
+            <Col md="2" >
+              
                 <Input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchInputChange}
                 />
-              {/* </FormGroup> */}
+              
             </Col>
-            <Col md="3"  className="mt-3">
-              {/* <FormGroup>
-               */}
+            <Col md="2" >
+             
                 <Button
                   color="primary"
                   className="shadow-none"
@@ -525,7 +523,7 @@ export default function ProjectTask({
                 >
                   Add New Task{' '}
                 </Button>
-              {/* </FormGroup> */}
+             
             </Col>
             <Col md="1" className="mt-3">
               <span
@@ -596,7 +594,7 @@ export default function ProjectTask({
                           </Col>
                           <Col md="4">
                             <FormGroup>
-                              <Label>Team Title</Label>
+                              <Label>Team </Label>
                               <Input
                                 type="select"
                                 name="project_team_id"
