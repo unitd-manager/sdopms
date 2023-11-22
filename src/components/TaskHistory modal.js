@@ -70,7 +70,7 @@ const TaskHistoryModal = ({
 
   const getStaffName = () => {
     api
-      .post('/projectteam/getEmployeeByID', { project_team_id: id })
+      .post('/projectteam/getEmployeeByTaskID', { project_team_id: id,task_id:contactDatas.project_task_id})
       .then((res) => {
         setEmployees(res.data.data);
       })
@@ -220,7 +220,7 @@ console.log('work',work)
   
   const fetchEmployeeDetails = (projectTeamId) => {
     api
-      .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
+      .post('/projectteam/getEmployeeByTaskID', { project_team_id: projectTeamId,task_id:contactDatas.project_task_id })
       .then((res) => {
         const arr = selectedNames.slice();
         res.data.data.forEach(val => {
@@ -305,7 +305,7 @@ console.log('work',work)
                           </Col>
                           <Col md="4">
                             <FormGroup>
-                              <Label>Team Title</Label>
+                              <Label>Team</Label>
                               <Input
                                 type="select"
                                 name="project_team_id"
@@ -339,7 +339,7 @@ console.log('work',work)
                                       checked={selectAll}
                                     />
                                   </th>
-                                  <th>Employee Name</th>
+                                  <th>Check All</th>
                                 </tr>
                               </thead>
                               <tbody>
