@@ -6,7 +6,7 @@ import {
   Modal,
   ModalHeader,
   ModalFooter,
-  
+  Table
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import '../views/form-editor/editor.scss';
@@ -45,6 +45,16 @@ const TaskEmployeesModal = ({
 console.log(employees)
  
   
+const column = [
+  
+  {
+    name: 'Employee Name',
+    sortable: true,
+  },
+  {
+    name: 'Team',
+    sortable: true,
+  }]
 
 
   useEffect(() => {
@@ -71,12 +81,33 @@ console.log(employees)
 
         <ModalBody>
           {/* task Details */}
-         {employees&&employees.map((el)=>{
-            return<li>
-                {el.first_name}(team)
-            </li>
+          <Table
+            id="example"
+            className="display border border-secondary rounded"
+            title="projectTask List"
+          >
+            <thead>
+              <tr>
+                {column.map((cell) => {
+                  return (
+                    <th key={cell.name} >
+                      {cell.name}
+                      
+                    </th>
+                  );
+                  // return <td key={cell.name}>{cell.name}</td>;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+            {employees&&employees.map((el)=>{
+            return<tr >
+                <td>{el.first_name}</td>
+                <td>{el.team_title}</td> 
+            </tr>
          })}
-          
+            </tbody>
+          </Table>
         </ModalBody>
         <ModalFooter>
           <Row>
