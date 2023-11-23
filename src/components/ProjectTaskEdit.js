@@ -10,7 +10,7 @@ import {
   Modal,
   ModalHeader,
   ModalFooter,
-  Form,
+  Form
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import '../views/form-editor/editor.scss';
@@ -40,11 +40,22 @@ const ProjectTaskEdit = ({
   const [taskProject, setTaskProject] = useState();
   //const [employees, setEmployees] = useState();
   const [Team, setTeam] = useState();
+  const [employee, setEmployee] = useState();
+  //const [taskEmployee, setTaskEmployee] = useState([]);
   const [milestonesTaskEdit, setMilestonesTaskEdit] = useState([]);
       //get staff details
       const { loggedInuser } = useContext(AppContext);
       //const [taskEmployees, setTaskEmployees] = useState([]);
   // Gettind data from Job By Id
+  // Gettind data from Job By Id
+ // const [employees, setEmployees] = useState();
+  
+  //const [selectAll, setSelectAll] = useState(true);
+  //const [TeamID, setTeamID] = useState();
+  
+  // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
+ ///////////// const [selectedNames, setSelectedNames] = useState([]); 
+
   // Gettind data from Job By Id
   const editJobById = () => {
     api
@@ -55,16 +66,73 @@ const ProjectTaskEdit = ({
       })
       .catch(() => {});
   };
-  // const getTaskEmployees = () => {
+  const getStaffName = () => {
+    api
+      .post('/projectteam/getEmployeeByID', { project_team_id: id })
+      .then((res) => {
+        setEmployee(res.data.data);
+      })
+      .catch(() => {});
+  };
+console.log(Team);
+console.log(employee);
+  // const gettaskStaffName = () => {
   //   api
-  //     .post('/projectTask/getTaskEmployees',{task_id:contactDatas.project_task_id})
+  //     .post('/projectteam/getEmployeeByTaskID', { task_id: contactDatas.task_id })
   //     .then((res) => {
-  //       console.log(res.data.data);
-  //       setTaskEmployees(res.data.data);
+  //       setTaskEmployee(res.data.data);
   //     })
   //     .catch(() => {});
   // };
-  // Api call for getting project name dropdown
+
+  // const checkAll = (e) => {
+  //   const {checked} = e.target;
+  //   const arr = selectedNames.slice();
+  //   arr.forEach(val => {
+  //     if (val.project_team_id === TeamID) {
+  //       val.checked = checked;
+  //     }
+  //   });
+  //   setSelectedNames(arr);
+  //   const checkboxes = document.getElementsByName('employee_id_checkbox');
+  //   for(let x = 0; x<checkboxes.length; x++){
+  //     checkboxes[x].checked = checked;
+  //   }
+  //   setSelectAll(checked);
+  // }
+  // const handleCheckboxChange = (event, employeeId,teamId) => {
+  //   const { checked } = event.target;
+  //   const arr = selectedNames.slice();
+  //   const index = arr.findIndex(value => {return value.employeeId === employeeId });
+  //   if (checked) {
+  //     // If the checkbox is checked, add the employeeId to the selectedNames array
+  //     arr[index].checked = true;
+  //     arr[index].project_team_id = teamId;
+  //     setSelectedNames(arr);
+  //   }else {
+  //     // If the checkbox is unchecked, remove the employeeId from the selectedNames array
+  //     arr[index].checked = false;
+  //     arr[index].project_team_id = teamId;
+  //     setSelectedNames(arr);
+  //   }
+  //   // if (event.target.checked === true ? 1 : 0) {
+  //   //   setSelectedNames([...selectedNames, employeeId]);
+  //   // } else {
+  //   //   setSelectedNames(selectedNames.includes(employeeId));
+  //   // }
+  //   console.log('Employee ID:', employeeId);
+  // };
+  // console.log('Employee:', employee);
+  // // const getTaskEmployees = () => {
+  // //   api
+  // //     .post('/projectTask/getTaskEmployees',{task_id:contactDatas.project_task_id})
+  // //     .then((res) => {
+  // //       console.log(res.data.data);
+  // //       setTaskEmployees(res.data.data);
+  // //     })
+  // //     .catch(() => {});
+  // // };
+  // // Api call for getting project name dropdown
   const getMilestoneTask = () => {
     api
       .post('/projecttimesheet/getMilestoneTitle', { project_id: id })
@@ -75,7 +143,24 @@ const ProjectTaskEdit = ({
         message('Milestone not found', 'info');
       });
   };
-
+  // const fetchEmployeeDetails = (projectTeamId) => {
+  //   api
+  //     .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
+  //     .then((res) => {
+  //       const arr = selectedNames.slice();
+  //       res.data.data.forEach(val => {
+  //         if (arr.findIndex(value => value.employeeId === val.employee_id) < 0) {
+  //           arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id})
+  //         }
+  //       });
+        
+  //       setSelectedNames(arr);
+  //       setEmployees(res.data.data);
+  //       setTeamID(projectTeamId);
+  //       console.log('employees',res.data.data)
+  //     })
+  //     .catch(() => {});
+  // };
   const handleInputs = (e) => {
     if (e.target.type === 'checkbox') {
       // If the event target is a checkbox, update task_input based on its checked state
@@ -176,16 +261,30 @@ const ProjectTaskEdit = ({
       }
     };
     
+    // useEffect(() => {
+    //   setSelectAll(true);
+    //   selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
+    //     let check = true;
+    //     if (!val.checked) {
+    //       setSelectAll(false);
+    //       check = false;
+    //     }
+    //     return check;
+    //   });
+    // }, [selectedNames, TeamID]);
+  
 
 
   useEffect(() => {
     //getTaskEmployees();
+    //gettaskStaffName();
     editJobById();
     setTaskProject(contactDatas);
   }, [contactDatas]);
 
   useEffect(() => {
     getMilestoneTask();
+    getStaffName();
   }, [id]);
 
   return (
@@ -239,16 +338,16 @@ const ProjectTaskEdit = ({
                           />
                         </FormGroup>
                       </Col>
-                      <Col md="4">
-                        <FormGroup>
-                          <Label>Team Title</Label>
-                          <Input
+                      {/* <Col md="4">
+                            <FormGroup>
+                              <Label>Team </Label>
+                              <Input
                                 type="select"
                                 name="project_team_id"
-                                onChange={ handleInputs
-                                  // const selectedEmployeeId = e.target.value;
-                                  // fetchEmployeeDetails(selectedEmployeeId);
-                                }
+                                onChange={(e) => {
+                                  const selectedEmployeeId = e.target.value;
+                                  fetchEmployeeDetails(selectedEmployeeId);
+                                }}
                               >
                                 <option value="">Please Select</option>
                                 {Team &&
@@ -258,8 +357,52 @@ const ProjectTaskEdit = ({
                                     </option>
                                   ))}
                               </Input>
-                        </FormGroup>
-                      </Col>
+                            </FormGroup>
+                          </Col>
+                          <Row>
+                            <Table className="no-wrap mt-3 align-middle" responsive borderless>
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <input
+                                      type="checkbox"
+                                      name="checkAll"
+                                      id="checkAll"
+                                      onChange={(e) =>
+                                        checkAll(e)
+                                      }
+                                      checked={selectAll}
+                                    />
+                                  </th>
+                                  <th>Employee Name</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {employees &&
+                                  employees.filter(val => parseFloat(val.project_team_id) === parseFloat(TeamID)).map((element) => {
+                                    const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
+                                    const indexes =taskEmployee.forEach((el)=>{ selectedNames.findIndex(value => value.employeeId === el.employee_id);})
+                                    const isChecked =indexes>0?selectedNames[index].checked: index >=0 ? selectedNames[index].checked : false;
+                                    return (
+                                      <tr key={element.project_team_id}>
+                                        <td>
+                                          <input
+                                            type="checkbox"
+                                            name="employee_id_checkbox"
+                                            onChange={(e) =>
+                                              handleCheckboxChange(e, element.employee_id,element.project_team_id)
+                                            }
+                                            // checked= {selectedNames.includes(element.employee_id) === 'true' }// Always checked by default
+                                            defaultChecked={isChecked}
+                                          />
+                                        </td>
+                                        <td>{element.first_name}</td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </Table>
+                          </Row> */}
                       <Col md="4">
                         <FormGroup>
                           <Label>Head Count</Label>
@@ -298,11 +441,11 @@ const ProjectTaskEdit = ({
                       </Col>
                       <Col md="4">
                         <FormGroup>
-                          <Label>Actual Hours</Label>
+                          <Label>Estimated Hours</Label>
                           <br />
                           <Input
                             type="text"
-                            value={taskProject && taskProject.actual_hours}
+                            value={taskProject && taskProject.estimated_hours}
                             name="actual_hours"
                             disabled
                           />

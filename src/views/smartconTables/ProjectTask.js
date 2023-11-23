@@ -74,7 +74,7 @@ export default function ProjectTask({
   const [companyName, setCompanyName] = useState('');
   const [categoryName, setCategoryName] = useState('');
 
-  const [employee, setEmployee] = useState();
+  // const [employee, setEmployee] = useState();
   const [employees, setEmployees] = useState();
   const [Team, setTeam] = useState();
   const [selectAll, setSelectAll] = useState(true);
@@ -117,8 +117,8 @@ export default function ProjectTask({
   const getStaffName = () => {
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: id })
-      .then((res) => {
-        setEmployee(res.data.data);
+      .then(() => {
+        //setEmployees(res.data.data);
       })
       .catch(() => {});
   };
@@ -126,7 +126,7 @@ export default function ProjectTask({
     const {checked} = e.target;
     const arr = selectedNames.slice();
     arr.forEach(val => {
-      if (val.project_team_id === TeamID) {
+      if (parseFloat(val.project_team_id) === parseFloat(TeamID)) {
         val.checked = checked;
       }
     });
@@ -177,6 +177,7 @@ export default function ProjectTask({
       newContactWithCompanyId.project_id = id;
       newContactWithCompanyId.project_team_id = employees;
       newContactWithCompanyId.head_count = empCount;
+      newContactWithCompanyId.status="Pending";
         api
           .post('/projecttask/insertTask', newContactWithCompanyId)
           .then((res) => {
@@ -228,7 +229,7 @@ export default function ProjectTask({
   console.log(filteredData);
   const handleSearch = () => {
     const newData = taskById
-      .filter((y) => y.first_name === (companyName === '' ? y.first_name : companyName))
+      .filter((y) => y.task_type === (companyName === '' ? y.task_type : companyName))
       .filter((x) => x.status === (categoryName === '' ? x.status : categoryName));
     setUserSearchData(newData);
     // Store the filtered data in the state variable
@@ -324,11 +325,12 @@ export default function ProjectTask({
         setSelectedNames(arr);
         setEmployees(res.data.data);
         setTeamID(projectTeamId);
+        console.log('arr',arr)
         console.log('employees',res.data.data)
       })
       .catch(() => {});
   };
-
+  console.log('teamid',TeamID)
   console.log('selected names',selectedNames)
   
   console.log('employees',employees)
@@ -453,30 +455,22 @@ export default function ProjectTask({
             <Row>
               <Col md="2">
                 <FormGroup>
-                  <Label>Select Staff </Label>
+                  <Label>Select Type </Label>
                   <Input
                     type="select"
-                    name="employee_id"
+                    name="task_type"
                     onChange={(e) => setCompanyName(e.target.value)} // Update companyName state
                     value={companyName}
                   >
                     <option value="">Please Select</option>
-                    {employee &&
-                      employee.map((ele) => {
-                        return (
-                          // ele.e_count === 0 && (
-                          <option key={ele.employee_id} value={ele.first_name}>
-                            {ele.first_name}
-                          </option>
-                        );
-                        // );
-                      })}
+                    <option value="Erection">Erection</option>
+                    <option value="Dismantel">Dismantel</option>
                   </Input>
                 </FormGroup>
               </Col>
               <Col md="2">
                 <FormGroup>
-                  <Label>Select Category</Label>
+                  <Label>Select Status</Label>
                   <Input
                     type="select"
                     name="status"
@@ -484,7 +478,7 @@ export default function ProjectTask({
                     value={categoryName}
                   >
                     {' '}
-                    <option value="">Select Category</option>
+                    <option value="">Select Status</option>
                     <option value="Pending">Pending</option>
                     <option value="InProgress">InProgress</option>
                     <option value="Completed">Completed</option>
@@ -628,12 +622,12 @@ export default function ProjectTask({
                                       checked={selectAll}
                                     />
                                   </th>
-                                  <th>Employee Name</th>
+                                  <th>Check All</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {employees &&
-                                  employees.filter(val => val.project_team_id === TeamID).map((element) => {
+                                  employees.filter(val => parseFloat(val.project_team_id) === parseFloat(TeamID)).map((element) => {
                                     const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
                                     const isChecked = index >=0 ? selectedNames[index].checked : false;
                                     return (

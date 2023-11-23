@@ -156,38 +156,114 @@ export default function ProjectTimeSheet({
   }, [insertTimeSheet.project_task_id]);
 
   //Structure of timeSheetById list view
-  const Projecttimesheetcolumn = [
+  // const Projecttimesheetcolumn = [
+  //   {
+  //     name: '#',
+  //   },
+  //   {
+  //     name: 'Edit',
+  //     selector: 'edit',
+  //     cell: () => <Icon.Edit2 />,
+  //   },
+  //   {
+  //     name: 'Title',
+  //   },
+  //   {
+  //     name: 'Staff',
+  //   },
+  //   {
+  //     name: 'Date',
+  //   },
+  //   {
+  //     name: 'Hours',
+  //   },
+  //   {
+  //     name: 'Status',
+  //   },
+  //   {
+  //     name: 'Description',
+  //   },
+  //   {
+  //     name: 'Creation ',
+  //   },
+  //   {
+  //     name: 'Modification',
+  //   },
+  // ];
+  
+  const columns = [
     {
       name: '#',
+      selector: 'attendance_id',
+      grow: 0,
+      wrap: true,
+      width: '4%',
     },
     {
       name: 'Edit',
       selector: 'edit',
       cell: () => <Icon.Edit2 />,
+      grow: 0,
+      width: 'auto',
+      button: true,
+      sortable: false,
     },
+   
     {
-      name: 'Title',
-    },
-    {
-      name: 'Staff',
+      name: 'Employee Name',
+      selector: 'first_name',
+      sortable: true,
+      grow: 0,
+      wrap: true,
     },
     {
       name: 'Date',
+      selector: 'entry_date',
+      sortable: true,
+      grow: 2,
+      wrap: true,
     },
     {
-      name: 'Hours',
+      name: 'Time In',
+      selector: 'time_in',
+      sortable: true,
+      grow: 0,
     },
     {
-      name: 'Status',
+      name: 'Time Out',
+      selector: 'time_out',
+      sortable: true,
+      width: 'auto',
+      grow: 3,
+    },
+      
+    {
+      name: 'Normal Hours',
+      selector: 'normal_hours',
+      sortable: true,
+      grow: 0,
+      wrap: true,
     },
     {
-      name: 'Description',
+      name: 'OT Hours',
+      selector: 'employee_ot_hours',
+      sortable: true,
+      grow: 2,
+      wrap: true,
     },
     {
-      name: 'Creation ',
+      name: 'Ph Hours',
+      selector: 'employee_ph_hours',
+      sortable: true,
+      grow: 0,
     },
+    
     {
-      name: 'Modification',
+      name: 'On Leave',
+      selector: 'on_leave',
+      sortable: true,
+      grow: 2,
+      width: 'auto',
     },
   ];
   return (
@@ -370,7 +446,7 @@ export default function ProjectTimeSheet({
       <Table id="example" className="display border border-secondary rounded">
         <thead>
           <tr>
-            {Projecttimesheetcolumn.map((cell) => {
+            {columns &&columns.map((cell) => {
               return <td key={cell.name}>{cell.name}</td>;
             })}
           </tr>
