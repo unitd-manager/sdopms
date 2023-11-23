@@ -159,6 +159,7 @@ console.log('contactDatas',contactDatas)
                 work.team_id=el.project_team_id;
                 work.total_amount=total;
                 work.share_per_head=shares;  
+                work.task_history_id=insertedDataId;
 if(contactDatas.task_type === 'Dismantel'){
   work.pipe_dismantel=insertTask.pipe
   work.tb_dismantel=insertTask.tb
@@ -188,10 +189,10 @@ console.log('work',work)
 
               })
           })
-            message('Task inserted successfully.', 'success');
+            message('Worksheet created successfully.', 'success');
             getTaskById();
             getStaffName();
-           
+            setTaskhistorymodal(false)
             // Clear the form fields by resetting the state
             setInsertTask({
               task_title: '',

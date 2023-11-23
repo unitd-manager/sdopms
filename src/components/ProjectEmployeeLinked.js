@@ -52,7 +52,7 @@ const ProjectEmployeeLinked = ({
   const getLinkedEmployee = () => {
     
     // eslint-disable-next-line
-    api.post('/projectteam/getTaskStaffById', { project_team_id: parseInt(id) })
+    api.post('/projectteam/getTeamEmployeeById', { project_team_id: parseInt(id) })
       .then((res) => {
         
         const resData = res.data.data
@@ -62,7 +62,7 @@ const ProjectEmployeeLinked = ({
             "id": random.int(1, 99),
             "employee_name": element.first_name,
             "employee_id": element.employee_id,
-            "task_staff_id": element.task_staff_id
+            "team_employee_id": element.team_employee_id
           })
         });
         
@@ -79,14 +79,14 @@ const ProjectEmployeeLinked = ({
         const items = res.data.data
         const finaldat = []
         items.forEach(item => {
-          finaldat.push({ value: item.employee_id, label: item.first_name })
+          finaldat.push({ value: item.employee_id, label: item.first_name || item.employee_name })
         })
         setEmployeeLinked(finaldat)
       })
   }
   //edit data in link employee 
   const insertTrainingStaff = ( staffObj) => {
-    api.post('/projectteam/insertTaskStaff', {
+    api.post('/projectteam/insertTeamEmployee', {
     
       employee_id: staffObj.employee_id
       ,project_team_id:projectId
@@ -134,7 +134,7 @@ const ProjectEmployeeLinked = ({
 
 //Delete Training staff data by training staff id
   const deleteTrainingStaffData = (staffId) => {
-    api.post('/projectteam/deleteTaskStaff', { task_staff_id: staffId })
+    api.post('/projectteam/deleteTeamEmployee', { team_employee_id: staffId })
       .then(() => {
         message('Record deleted successfully', 'success')
         setTimeout(() => {
@@ -228,7 +228,7 @@ const ProjectEmployeeLinked = ({
                     </td>
                     {/* delete button from training staff*/}
                     <td><Button color="danger" className='shadow-none'
-                    onClick={() => {{deleteTrainingStaffData(item.task_staff_id);}  }}>Delete</Button></td>
+                    onClick={() => {{deleteTrainingStaffData(item.team_employee_id);}  }}>Delete</Button></td>
                   </tr>
                 );
               })}
