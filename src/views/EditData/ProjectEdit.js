@@ -568,7 +568,137 @@ const ProjectEdit = () => {
                     defaultValue={projectDetail && projectDetail.project_manager_id}
                     onChange={handleInputs}
                   >
-                    <option defaultValue="selected">Please Select</option>
+                   
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Pipe Erection</Label>
+                  <Input
+                    type="text"
+                    name="pipe_erection_amount"
+                    defaultValue={projectDetail && projectDetail.pipe_erection_amount}
+                    onChange={handleInputs}
+                  >
+                    
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Plank Erection</Label>
+                  <Input
+                    type="text"
+                    name="plank_erection_aount"
+                    defaultValue={projectDetail && projectDetail.plank_erection_aount}
+                    onChange={handleInputs}
+                  >
+                    
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Volume Erection</Label>
+                  <Input
+                    type="text"
+                    name="volume_erection_amount"
+                    defaultValue={projectDetail && projectDetail.volume_erection_amount}
+                    onChange={handleInputs}
+                  >
+                   
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>TB Erection</Label>
+                  <Input
+                    type="text"
+                    name="tb_erection_amount"
+                    defaultValue={projectDetail && projectDetail.tb_erection_amount}
+                    onChange={handleInputs}
+                  >
+                  
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Others Erection</Label>
+                  <Input
+                    type="text"
+                    name="others_erection_amount"
+                    defaultValue={projectDetail && projectDetail.others_erection_amount}
+                    onChange={handleInputs}
+                  >
+                    
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Pipe Dismantel</Label>
+                  <Input
+                    type="text"
+                    name="pipe_dismantel_amount"
+                    defaultValue={projectDetail && projectDetail.pipe_dismantel_amount}
+                    onChange={handleInputs}
+                  >
+                    
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Plank Dismantel</Label>
+                  <Input
+                    type="text"
+                    name="plank_dismantel_amount"
+                    defaultValue={projectDetail && projectDetail.plank_dismantel_amount}
+                    onChange={handleInputs}
+                  >
+                   
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Volume Dismantel</Label>
+                  <Input
+                    type="text"
+                    name="volume_dismantel_amount"
+                    defaultValue={projectDetail && projectDetail.volume_dismantel_amount}
+                    onChange={handleInputs}
+                  >
+                   
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>TB Dismantel</Label>
+                  <Input
+                    type="text"
+                    name="tb_dismantel_amount"
+                    defaultValue={projectDetail && projectDetail.tb_dismantel_amount}
+                    onChange={handleInputs}
+                  >
+                    
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Others Dismantel</Label>
+                  <Input
+                    type="text"
+                    name="others_dismantel_amount"
+                    defaultValue={projectDetail && projectDetail.others_dismantel_amount}
+                    onChange={handleInputs}
+                  >
+                    
                   </Input>
                 </FormGroup>
               </Col>
@@ -690,6 +820,7 @@ const ProjectEdit = () => {
             ></ProjectTaskEdit>}
               {taskhistorymodal&&<TaskHistoryModal
               getTaskById={getTaskById}
+             
               id={id}
               contactDatas={contactDatas}
               taskhistorymodal={taskhistorymodal}

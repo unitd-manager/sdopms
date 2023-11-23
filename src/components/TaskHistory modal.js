@@ -28,6 +28,7 @@ const TaskHistoryModal = ({
   contactDatas,
   getTaskById,
   id,
+  //projectId,
 }) => {
   TaskHistoryModal.propTypes = {
     taskhistorymodal: PropTypes.bool,
@@ -35,6 +36,7 @@ const TaskHistoryModal = ({
     contactDatas: PropTypes.object,
     getTaskById: PropTypes.any,
     id: PropTypes.any,
+    //projectId:PropTypes.any,
   };
 
   const [insertTask, setInsertTask] = useState({
@@ -123,7 +125,7 @@ console.log('contactDatas',contactDatas)
     }
     // if (insertTask.date !== '' && insertTask.title !== '') {
       setIsSubmitting(true); // Set submission in progress
-    
+      
       insertTask.pipe_value = insertTask.pipe * parseFloat(0.60);
       insertTask.tb_value = insertTask.tb * parseFloat(0.60);
       insertTask.plank_value = insertTask.plank * parseFloat(0.50);
@@ -136,6 +138,7 @@ console.log('contactDatas',contactDatas)
   insertTask.task_id=contactDatas.project_task_id;
   const shares=parseFloat(total)/parseFloat(empCount);
   insertTask.share_per_head=shares;
+  insertTask.project_id = id;
       api
           .post('/projecttask/insertTaskHistory', insertTask)
           .then((res) => {
@@ -189,6 +192,7 @@ console.log('work',work)
               })
           })
             message('Task inserted successfully.', 'success');
+            setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
            
