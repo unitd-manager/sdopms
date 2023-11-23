@@ -197,7 +197,7 @@ console.log('work',work)
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
-            setTaskhistorymodal(false)
+           
             // Clear the form fields by resetting the state
             setInsertTask({
               task_title: '',
