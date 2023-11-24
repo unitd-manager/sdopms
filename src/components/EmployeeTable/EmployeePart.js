@@ -293,6 +293,31 @@ console.log('all countries',allCountries)
                 />
               </FormGroup>
             </Col>
+            <Col md="3">
+              <FormGroup>
+                <Label>Team Leader</Label>
+                <br></br>
+                <Label>Yes</Label>
+                &nbsp;
+                <Input
+                  name="team_leader"
+                  value="1"
+                  type="radio"
+                  defaultChecked={employeeDetails && employeeDetails.team_leader === 1 && true}
+                  onChange={handleInputChange}
+                />
+                &nbsp; &nbsp;
+                <Label>No</Label>
+                &nbsp;
+                <Input
+                  name="team_leader"
+                  value="0"
+                  type="radio"
+                  defaultChecked={employeeDetails && employeeDetails.team_leader === 0 && true}
+                  onChange={handleInputChange}
+                />
+              </FormGroup>
+            </Col>
           </Row>
         </ComponentCard>
       </FormGroup>
