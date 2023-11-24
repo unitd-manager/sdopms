@@ -116,7 +116,8 @@ const TaskHistoryModal = ({
 console.log('contactDatas',contactDatas)
   const employeesInTask=selectedNames.filter(val => val.checked)
   const empCount=selectedNames.filter(val => val.checked).length
-  
+  const employeelead=selectedNames?.filter(val => val.checked && val.team_leader)
+  console.log('leader',employeelead)
   //get staff details
  // const { loggedInuser } = useContext(AppContext);
   const insertTaskData = () => {
@@ -139,6 +140,10 @@ console.log('contactDatas',contactDatas)
   const shares=parseFloat(total)/parseFloat(empCount);
   insertTask.share_per_head=shares;
   insertTask.project_id = id;
+  if(employeelead.length ===0){
+    message('Please Select Team leader', 'warning');
+  }else{
+  insertTask.employee_id=employeelead[0].employeeId;
       api
           .post('/projecttask/insertTaskHistory', insertTask)
           .then((res) => {
@@ -218,7 +223,7 @@ console.log('work',work)
           })
           .finally(() => {
             setIsSubmitting(false); // Reset submission status
-          });
+          });}
       
     // } else {
     //   message('Please fill all required fields', 'warning');
@@ -232,7 +237,7 @@ console.log('work',work)
         const arr = selectedNames.slice();
         res.data.data.forEach(val => {
           if (arr.findIndex(value => value.employeeId === val.employee_id) < 0) {
-            arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id})
+            arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id,team_leader:val.team_leader})
           }
         });
         

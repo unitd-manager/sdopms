@@ -124,6 +124,7 @@ export default function ProjectTask({
   };
   const checkAll = (e) => {
     const {checked} = e.target;
+    console.log('checked', checked);
     const arr = selectedNames.slice();
     arr.forEach(val => {
       if (parseFloat(val.project_team_id) === parseFloat(TeamID)) {
@@ -350,15 +351,18 @@ export default function ProjectTask({
   }, [id]);
 
   useEffect(() => {
-    setSelectAll(true);
-    selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
-      let check = true;
+    // setSelectAll(true);
+    console.log('selectedNames', selectAll)
+    console.log('selectedNamesTeamID', TeamID)
+    let check = true;
+    selectedNames.filter(val => Number(val.project_team_id) === Number(TeamID)).forEach(val => {
       if (!val.checked) {
-        setSelectAll(false);
         check = false;
       }
-      return check;
     });
+    setSelectAll(check);
+    // if (selectAll) {
+    // }
   }, [selectedNames, TeamID]);
 
   useEffect(() => {
