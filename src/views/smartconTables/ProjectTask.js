@@ -163,6 +163,8 @@ export default function ProjectTask({
 
   const employeesInTask=selectedNames.filter(val => val.checked)
   const empCount=selectedNames.filter(val => val.checked).length
+  const employeelead=selectedNames?.filter(val => val.checked && val.team_leader)
+  console.log('leader',employeelead)
   console.log('employeesInTask', employeesInTask);
   //get staff details
   const { loggedInuser } = useContext(AppContext);
@@ -170,7 +172,9 @@ export default function ProjectTask({
     if (isSubmitting) {
       return; // Prevent multiple submissions
     }
-    if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
+    if(employeelead.length ===0){
+      message('Please Select Team leader', 'warning');
+    }else if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
       setIsSubmitting(true); // Set submission in progress
       const newContactWithCompanyId = insertTask;
       newContactWithCompanyId.creation_date = creationdatetime;
@@ -226,6 +230,7 @@ export default function ProjectTask({
     } else {
       message('Please fill all required fields', 'warning');
     }
+  
   };
   console.log(filteredData);
   const handleSearch = () => {
