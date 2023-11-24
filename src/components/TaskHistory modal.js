@@ -28,12 +28,14 @@ const TaskHistoryModal = ({
   contactDatas,
   getTaskById,
   id,
+  projectDetail
   //projectId,
 }) => {
   TaskHistoryModal.propTypes = {
     taskhistorymodal: PropTypes.bool,
     setTaskhistorymodal: PropTypes.func,
     contactDatas: PropTypes.object,
+    projectDetail: PropTypes.object,
     getTaskById: PropTypes.any,
     id: PropTypes.any,
     //projectId:PropTypes.any,
@@ -118,6 +120,7 @@ console.log('contactDatas',contactDatas)
   const empCount=selectedNames.filter(val => val.checked).length
   const employeelead=selectedNames?.filter(val => val.checked && val.team_leader)
   console.log('leader',employeelead)
+  console.log('projectdetail',projectDetail)
   //get staff details
  // const { loggedInuser } = useContext(AppContext);
   const insertTaskData = () => {
@@ -126,13 +129,22 @@ console.log('contactDatas',contactDatas)
     }
     // if (insertTask.date !== '' && insertTask.title !== '') {
       setIsSubmitting(true); // Set submission in progress
-      
-      insertTask.pipe_value = insertTask.pipe * parseFloat(0.60);
-      insertTask.tb_value = insertTask.tb * parseFloat(0.60);
-      insertTask.plank_value = insertTask.plank * parseFloat(0.50);
-      insertTask.volume_value =insertTask.volume * parseFloat(0.60);
-      insertTask.others_value = insertTask.others * parseFloat(0.25);
+      if(contactDatas.task_type === 'Dismantel'){
+      insertTask.pipe_value = insertTask.pipe * parseFloat(projectDetail.pipe_dismantel_amount);
+      insertTask.tb_value = insertTask.tb * parseFloat(projectDetail.tb_dismantel_amount);
+      insertTask.plank_value = insertTask.plank * parseFloat(projectDetail.plank_dismantel_amount);
+      insertTask.volume_value =insertTask.volume * parseFloat(projectDetail.volume_dismantel_amount);
+      insertTask.others_value = insertTask.others * parseFloat(projectDetail.others_dismantel_amount);
       insertTask.total_amount = parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
+      }
+      if(contactDatas.task_type === 'Erection'){
+        insertTask.pipe_value = insertTask.pipe * parseFloat(projectDetail.pipe_erection_amount);
+        insertTask.tb_value = insertTask.tb * parseFloat(projectDetail.tb_erection_amount);
+        insertTask.plank_value = insertTask.plank * parseFloat(projectDetail.plank_erection_amount);
+        insertTask.volume_value =insertTask.volume * parseFloat(projectDetail.volume_erection_amount);
+        insertTask.others_value = insertTask.others * parseFloat(projectDetail.others_erection_amount);
+        insertTask.total_amount = parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
+        }
       insertTask.head_count=empCount; 
       const total=insertTask.total_amount;
   const dates=insertTask.date;
@@ -337,7 +349,7 @@ console.log('work',work)
                             </FormGroup>
                           </Col>
                           <Row>
-                            <Table className="no-wrap mt-3 align-middle" responsive borderless>
+                            {employees&&<Table className="no-wrap mt-3 align-middle" responsive borderless>
                               <thead>
                                 <tr>
                                   <th>
@@ -377,7 +389,7 @@ console.log('work',work)
                                     );
                                   })}
                               </tbody>
-                            </Table>
+                            </Table>}
                           </Row>
                           <Col md="4">
                             <FormGroup>

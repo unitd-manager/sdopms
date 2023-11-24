@@ -590,8 +590,8 @@ const ProjectEdit = () => {
                   <Label>Plank Erection</Label>
                   <Input
                     type="text"
-                    name="plank_erection_aount"
-                    defaultValue={projectDetail && projectDetail.plank_erection_aount}
+                    name="plank_erection_amount"
+                    defaultValue={projectDetail && projectDetail.plank_erection_amount}
                     onChange={handleInputs}
                   >
                     
@@ -798,6 +798,7 @@ const ProjectEdit = () => {
           {/* Tab 5 */}
           <TabPane tabId="5">
             <ProjectTask
+            projectDetail={projectDetail}
               userSearchData={userSearchData}
               setUserSearchData={setUserSearchData}
               setContactData={setContactData}
@@ -820,7 +821,7 @@ const ProjectEdit = () => {
             ></ProjectTaskEdit>}
               {taskhistorymodal&&<TaskHistoryModal
               getTaskById={getTaskById}
-             
+              projectDetail={projectDetail}
               id={id}
               contactDatas={contactDatas}
               taskhistorymodal={taskhistorymodal}
