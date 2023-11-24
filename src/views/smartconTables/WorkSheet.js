@@ -157,6 +157,36 @@ getLineItem();
       sortable: true,
       grow: 0,
     },
+    {
+      name: 'Pipe Value ',
+      selector: 'pipe',
+      sortable: true,
+      grow: 0,
+    },
+    {
+      name: 'Plank Value ',
+      selector: 'pipe',
+      sortable: true,
+      grow: 0,
+    },
+    {
+      name: 'Volume Value ',
+      selector: 'pipe',
+      sortable: true,
+      grow: 0,
+    },
+    {
+      name: 'TB value ',
+      selector: 'pipe',
+      sortable: true,
+      grow: 0,
+    },
+    {
+      name: 'Others value ',
+      selector: 'pipe',
+      sortable: true,
+      grow: 0,
+    },
 
     // {
     //   name: 'Volume Erection ',
@@ -277,6 +307,11 @@ getLineItem();
                     <td style={{ textAlign: 'right' }}>{element.volume}</td>
                     <td style={{ textAlign: 'right' }}>{element.tb}</td>
                     <td style={{ textAlign: 'right' }}>{element.others}</td>
+                    <td style={{ textAlign: 'right' }}>{element.pipe_value}</td>
+                    <td style={{ textAlign: 'right' }}>{element.plank_value}</td>
+                    <td style={{ textAlign: 'right' }}>{element.volume_value}</td>
+                    <td style={{ textAlign: 'right' }}>{element.tb_value}</td>
+                    <td style={{ textAlign: 'right' }}>{element.others_value}</td>
                     {/* <td>{element.pipe_dismantle}</td>
                     <td>{element.plank_dismantle}</td>
                     <td>{element.volume_dismantle}</td>
