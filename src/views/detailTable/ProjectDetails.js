@@ -23,8 +23,9 @@ const ProjectDetails = () => {
    //get staff details
    const { loggedInuser } = useContext(AppContext);
 //Insert Setting
-  const insertProject = () => {
+  const insertProject = (code) => {
     if (projectDetails.title !== ''){
+      projectDetails.project_code = code;
       projectDetails.creation_date = creationdatetime;
       projectDetails.created_by = loggedInuser.first_name;
     api.post('/project/insertProject', projectDetails)
@@ -42,6 +43,17 @@ const ProjectDetails = () => {
     }else {
         message('Please fill all required fields.', 'error');
       }
+  };
+  //QUTO GENERATED CODE
+  const generateCode = () => {
+    api
+      .post('/tender/getCodeValue', { type: 'project' })
+      .then((res) => {
+        insertProject(res.data.data);
+      })
+      .catch(() => {
+        insertProject('');
+      });
   };
   useEffect(() => {}, []);
   return (
@@ -70,7 +82,7 @@ const ProjectDetails = () => {
           <div className="pt-3 mt-3 d-flex align-items-center gap-2">
             <Button color="primary"
               onClick={() => {
-                insertProject();
+                generateCode();
               }}
               type="button"
               className="btn mr-2 shadow-none"

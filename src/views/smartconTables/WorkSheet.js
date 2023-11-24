@@ -10,7 +10,8 @@ import 'datatables.net-buttons/js/buttons.flash';
 import 'datatables.net-buttons/js/buttons.html5';
 import 'datatables.net-buttons/js/buttons.print';
 import 'react-data-table-component-extensions/dist/index.css';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
@@ -78,7 +79,13 @@ getLineItem();
     //   button: true,
     //   sortable: false,
     // },
-  
+    {
+      name: 'Project Code',
+      selector: 'project_code',
+      sortable: true,
+      grow: 2,
+      wrap: true,
+    },
     {
       name: 'Name',
       selector: 'first_name',
@@ -86,6 +93,7 @@ getLineItem();
       grow: 0,
       wrap: true,
     },
+    
     {
       name: 'Date',
       selector: 'date',
@@ -108,6 +116,12 @@ getLineItem();
     {
       name: 'Total to Share Per Amount',
       selector: 'share_per_head',
+      sortable: true,
+      grow: 0,
+    },
+     {
+      name: 'Task Type',
+      selector: 'task_type',
       sortable: true,
       grow: 0,
     },
@@ -228,6 +242,12 @@ getLineItem();
                 return (
                   <tr key={element.task_history_id}>
                   <td>{index + 1}</td>
+                  <td>
+                    {' '}
+                    <Link to={`/ProjectEdit/${element && element.project_id}?tab=5`}>
+                      {element.project_code}
+                    </Link>
+                  </td>
                   <td>{element.first_name}</td>
                     {/* <td>
                       <Link to={`/WorkSheetEdit/${element.task_history_id}`}>
@@ -242,59 +262,21 @@ getLineItem();
                           getLineItem(element.task_history_id);
                           setViewLineModal(true)}}
                           >
-                          {element.date}
+                          {/* {element.date} */}
+                          {element.date?moment(element.date).format('DD-MM-YYYY'):''}
                         </u>
                       </Label>
                     </Col>
-                  </td>
-
-              {/* <Modal size="xl" isOpen={viewLineModal} toggle={viewLineToggle.bind(null)}>
-                <ModalHeader toggle={viewLineToggle.bind(null)}>Line Items</ModalHeader>
-                <ModalBody>
-                  <FormGroup>
-                    <table className="lineitem border border-secondary rounded">
-                      <thead>
-                        <tr>
-                          <th scope="col">Title </th>
-                          <th scope="col">Description </th>
-                          <th scope="col">Qty </th>
-                          <th scope="col">Unit Price </th>
-                          <th scope="col">Amount</th>
-                          <th scope="col">Updated By </th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {lineItem &&
-                          lineItem.map((e) => {
-                            return (
-                              <tr>
-                                <td data-label="Title">{e.title}</td>
-                                <td data-label="Description">{e.description}</td>
-                                <td data-label="Quantity">{e.quantity}</td>
-                                <td data-label="Unit Price">{e.unit_price}</td>
-                                <td data-label="Amount">{e.amount}</td>
-                                <td data-label="Updated By"></td>
-                              
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </FormGroup>
-                </ModalBody>
-              </Modal> */}
-            {/* </Col>
-                    </td> */}
-                                       
-                    <td>{element.head_count}</td>
-                    <td>{element.total_amount}</td>
-                    <td>{element.share_per_head}</td>
-                    <td>{element.pipe}</td>
-                    <td>{element.plank}</td>
-                    <td>{element.volume}</td>
-                    <td>{element.tb}</td>
-                    <td>{element.others}</td>
+                  </td>                                      
+                    <td style={{ textAlign: 'right' }}>{element.head_count}</td>
+                    <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
+                    <td style={{ textAlign: 'right' }}>{element.share_per_head}</td>
+                    <td >{element.task_type}</td>
+                    <td style={{ textAlign: 'right' }}>{element.pipe}</td>
+                    <td style={{ textAlign: 'right' }}>{element.plank}</td>
+                    <td style={{ textAlign: 'right' }}>{element.volume}</td>
+                    <td style={{ textAlign: 'right' }}>{element.tb}</td>
+                    <td style={{ textAlign: 'right' }}>{element.others}</td>
                     {/* <td>{element.pipe_dismantle}</td>
                     <td>{element.plank_dismantle}</td>
                     <td>{element.volume_dismantle}</td>

@@ -20,7 +20,7 @@ import ProjectTimeSheetEdit from '../../components/ProjectTImeSheetEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
 import Tab from '../../components/ProjectTabs/Tab';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import CalendarApp from '../apps/calendar/CalendarApp';
 import ApiButton from '../../components/ApiButton';
 import creationdatetime from '../../constants/creationdatetime';
@@ -406,7 +406,7 @@ const ProjectEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+          {/* <ComponentCardV2> */}
             <ApiButton
               editData={UpdateData}
               navigate={navigate}
@@ -415,13 +415,25 @@ const ProjectEdit = () => {
               //deleteData={DeleteSection}
               module="Project"
             ></ApiButton>
-          </ComponentCardV2>
+          {/* </ComponentCardV2> */}
         </FormGroup>
       </Form>
       <Form>
         <FormGroup>
           <ComponentCard title="Project Details" creationModificationDate={projectDetail}>
             <Row>
+            <Col md="3">
+                <FormGroup>
+                  <Label>Code</Label>
+                  <Input
+                    type="text"
+                    name="project_code"
+                    defaultValue={projectDetail && projectDetail.project_code}
+                    onChange={handleInputs}
+                    disabled
+                  />
+                </FormGroup>
+              </Col>
               <Col md="3">
                 <FormGroup>
                   <Label>
@@ -499,9 +511,7 @@ const ProjectEdit = () => {
                   </Input>
                 </FormGroup>
               </Col>
-            </Row>
-
-            <Row>
+           
               <Col md="3">
                 <FormGroup>
                   <Label>Contact</Label>
@@ -546,17 +556,7 @@ const ProjectEdit = () => {
                   />
                 </FormGroup>
               </Col>
-              <Col md="3">
-                <FormGroup>
-                  <Label>Description</Label>
-                  <Input
-                    type="text"
-                    name="description"
-                    defaultValue={projectDetail && projectDetail.description}
-                    onChange={handleInputs}
-                  />
-                </FormGroup>
-              </Col>
+              
             </Row>
             <Row>
               <Col md="3">
@@ -590,8 +590,8 @@ const ProjectEdit = () => {
                   <Label>Plank Erection</Label>
                   <Input
                     type="text"
-                    name="plank_erection_aount"
-                    defaultValue={projectDetail && projectDetail.plank_erection_aount}
+                    name="plank_erection_amount"
+                    defaultValue={projectDetail && projectDetail.plank_erection_amount}
                     onChange={handleInputs}
                   >
                     
@@ -700,6 +700,17 @@ const ProjectEdit = () => {
                   >
                     
                   </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Description</Label>
+                  <Input
+                    type="textarea"
+                    name="description"
+                    defaultValue={projectDetail && projectDetail.description}
+                    onChange={handleInputs}
+                  />
                 </FormGroup>
               </Col>
             </Row>

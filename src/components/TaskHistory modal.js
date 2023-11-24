@@ -56,7 +56,7 @@ const TaskHistoryModal = ({
    others_value:'',
    total_amount:'',
     description: '',
-    
+    task_type: contactDatas.task_type, // Add task type to insertTask state
   });
   
 
@@ -144,6 +144,7 @@ console.log('contactDatas',contactDatas)
     message('Please Select Team leader', 'warning');
   }else{
   insertTask.employee_id=employeelead[0].employeeId;
+  insertTask.task_type = contactDatas.task_type; 
       api
           .post('/projecttask/insertTaskHistory', insertTask)
           .then((res) => {
@@ -263,6 +264,9 @@ console.log('work',work)
   const handleInputsTask = (e) => {
     setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
   };
+  // const handleTaskTypeChange = (newTaskType) => {
+  //   setInsertTask({ ...insertTask, task_type: newTaskType });
+  // };
 
   useEffect(() => {
 
