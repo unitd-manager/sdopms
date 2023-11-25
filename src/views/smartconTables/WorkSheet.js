@@ -114,7 +114,7 @@ getLineItem();
       grow: 0,
     },
     {
-      name: 'Total to Share Per Amount',
+      name: 'Share Amount Per Head',
       selector: 'share_per_head',
       sortable: true,
       grow: 0,
