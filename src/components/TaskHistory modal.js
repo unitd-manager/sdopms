@@ -388,7 +388,7 @@ console.log('work',work)
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        <td>{element.first_name}</td>
+                                        <td>{element.first_name} || {element.employee_name}</td>
                                       </tr>
                                     );
                                   })}
