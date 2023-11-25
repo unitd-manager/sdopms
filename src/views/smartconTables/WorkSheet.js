@@ -300,7 +300,7 @@ getLineItem();
                   </td>                                      
                     <td style={{ textAlign: 'right' }}>{element.head_count}</td>
                     <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
-                    <td style={{ textAlign: 'right' }}>{element.share_per_head}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.share_per_head).toFixed(2)}</td>
                     <td >{element.task_type}</td>
                     <td style={{ textAlign: 'right' }}>{element.pipe}</td>
                     <td style={{ textAlign: 'right' }}>{element.plank}</td>
