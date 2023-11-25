@@ -346,7 +346,7 @@ getLineItem();
                             return (
                               <tr>
                                 <td data-label="SN.No">{index+1}</td>
-                                <td data-label="Employee Name">{e.first_name}</td>
+                                <td data-label="Employee Name">{e.first_name} ||{e.employee_name} </td>
                                
                                 <td data-label="Date">{e.date}</td>
                                 <td data-label="Share Per Head">{e.share_per_head}</td>
