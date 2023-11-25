@@ -399,22 +399,36 @@ const Payrollmanagement = () => {
               obj.cpf_employee = cpfmployee;
               obj.cpf_employer = cpfmployer;
               obj.total_cpf_contribution = totalcontribution;
+              obj.ot_hours=parseFloat(obj.total_ot_hours)*(parseFloat(1.5)) +parseFloat(obj.total_ph_hours)*(parseFloat(2));
+              obj.ot_amount= parseFloat(obj.ot_hours)*parseFloat(obj.overtime_pay_rate);
+              
+              
+              if(parseFloat(obj.ot_hours) > 72 ){
+                obj.ot_hours=72;
+                obj.ot_amount= parseFloat(obj.ot_hours)*parseFloat(obj.overtime_pay_rate);
+                }
+                const actualAmount=parseFloat(obj.ot_amount)+parseFloat(obj.basic_pay)
+              if(obj.total_share > actualAmount ){
+                                obj.allowance1=parseFloat(obj.allowance1)+parseFloat(obj.total_share)-parseFloat(actualAmount)
+                                              }
+              console.log('objectishere',obj)
+              console.log('actualamount',actualAmount)
 
-              api
-                .post('/payrollmanagement/insertpayroll_management', obj)
-                .then(() => {
-                  // generatecpfcalculator();
+              // api
+              //   .post('/payrollmanagement/insertpayroll_management', obj)
+              //   .then(() => {
+              //     // generatecpfcalculator();
                   
-                 // message('Payrolls created successfully.', 'success');
-                  // setLoading(false);
-                })
-                .catch(() => {
-                  message('Unable to create record', 'info');
-                });
+              //    // message('Payrolls created successfully.', 'success');
+              //     // setLoading(false);
+              //   })
+              //   .catch(() => {
+              //     message('Unable to create record', 'info');
+              //   });
             });
         });
     });
-    getAllPayrollManagements();
+  //  getAllPayrollManagements();
   };
 
   // generate payslip
@@ -429,7 +443,7 @@ const Payrollmanagement = () => {
   const generatePayslips = () => {
     navigate(`/PayrollManagement?month=${filterPeriod.month}&year=${filterPeriod.year}`);
     // setLoading(true);
-    api.get('/payrollmanagement/getJobInformationPayroll').then((res) => {
+    api.get('/projecttask/timesheettopayroll').then((res) => {
       setJobInformationRecords(res.data.data);
       console.log('jobinformationrecords', res.data.data);
       console.log('jobinformationrecords', jobInformationRecords);

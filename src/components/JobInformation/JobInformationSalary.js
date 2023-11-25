@@ -155,8 +155,14 @@ export default function JobProbation({
           <Col md="4">
             <FormGroup>
               <Label>Overtime Pay Rate/ Hour</Label>
-              <br />
-              <span>{job && job.overtime_pay_rate?job.overtime_pay_rate:''}</span>
+              {/* <br />
+              <span>{job && job.overtime_pay_rate?job.overtime_pay_rate:''}</span> */}
+              <Input
+                type="numbers"
+                onChange={handleInputsJobInformation}
+                value={job && job.overtime_pay_rate}
+                name="overtime_pay_rate"
+              />
             </FormGroup>
           </Col>
 

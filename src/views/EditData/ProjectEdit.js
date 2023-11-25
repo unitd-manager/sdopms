@@ -809,6 +809,7 @@ const ProjectEdit = () => {
           {/* Tab 5 */}
           <TabPane tabId="5">
             <ProjectTask
+            projectDetail={projectDetail}
               userSearchData={userSearchData}
               setUserSearchData={setUserSearchData}
               setContactData={setContactData}
@@ -831,7 +832,7 @@ const ProjectEdit = () => {
             ></ProjectTaskEdit>}
               {taskhistorymodal&&<TaskHistoryModal
               getTaskById={getTaskById}
-             
+              projectDetail={projectDetail}
               id={id}
               contactDatas={contactDatas}
               taskhistorymodal={taskhistorymodal}

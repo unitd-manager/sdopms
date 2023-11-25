@@ -618,7 +618,7 @@ export default function ProjectTask({
                             </FormGroup>
                           </Col>
                           <Row>
-                            <Table className="no-wrap mt-3 align-middle" responsive borderless>
+                            {employees&&<Table className="no-wrap mt-3 align-middle" responsive borderless>
                               <thead>
                                 <tr>
                                   <th>
@@ -658,7 +658,7 @@ export default function ProjectTask({
                                     );
                                   })}
                               </tbody>
-                            </Table>
+                            </Table>}
                           </Row>
                           <Col md="4">
                             <FormGroup>
