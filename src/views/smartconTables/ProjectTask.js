@@ -163,7 +163,7 @@ export default function ProjectTask({
 
   const employeesInTask=selectedNames.filter(val => val.checked)
   const empCount=selectedNames.filter(val => val.checked).length
-  const employeelead=selectedNames?.filter(val => val.checked && val.team_leader)
+  const employeelead=selectedNames?.filter(val => val.checked && parseFloat(val.team_leader)===1)
   console.log('leader',employeelead)
   console.log('employeesInTask', employeesInTask);
   //get staff details
@@ -325,7 +325,7 @@ export default function ProjectTask({
         const arr = selectedNames.slice();
         res.data.data.forEach(val => {
           if (arr.findIndex(value => value.employeeId === val.employee_id) < 0) {
-            arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id})
+            arr.push({checked: false, employeeId: val.employee_id, project_team_id: val.project_team_id,team_leader:val.team_leader})
           }
         });
         
