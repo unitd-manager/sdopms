@@ -296,7 +296,7 @@ export default function ProjectTask({
 
       // Check if task.first_name exists and perform a case-insensitive search
       const firstNameMatches =
-        task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase());
+        task.first_name && task.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         task.employee_name && task.employee_name.toLowerCase().includes(searchQuery.toLowerCase());
 
       // Include the task in newData if either title or first_name matches
