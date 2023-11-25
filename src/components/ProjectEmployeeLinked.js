@@ -60,7 +60,7 @@ const ProjectEmployeeLinked = ({
         resData.forEach(element => {
           empArray.push({
             "id": random.int(1, 99),
-            "employee_name": element.first_name,
+            "employee_name": element.first_name || element.employee_name,
             "employee_id": element.employee_id,
             "team_employee_id": element.team_employee_id
           })

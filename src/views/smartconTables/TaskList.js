@@ -304,7 +304,7 @@ const ProjectTask = () => {
                         <td>{element.priority}</td>
                         <td>{element.actual_hours}</td>
                         <td>{element.estimated_hours}</td>
-                        <td>{element.first_name}</td>
+                        <td>{element.first_name || element.employee_name}</td>
                         <td>{element.description}</td>
                       </tr>
                     );
