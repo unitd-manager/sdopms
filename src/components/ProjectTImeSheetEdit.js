@@ -237,7 +237,7 @@ const ProjectTimeSheetEdit = ({
                               employeeTime.map((e) => {
                                 return (
                                   <option key={e.employee_id} value={e.employee_id}>
-                                    {e.first_name}
+                                    {e.first_name} || {e.employee_name}
                                   </option>
                                 );
                               })}
