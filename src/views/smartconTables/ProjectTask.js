@@ -653,7 +653,7 @@ export default function ProjectTask({
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        <td>{element.first_name || element.employee_name}</td>
+                                        <td>{element.employee_name || element.first_name}</td>
                                       </tr>
                                     );
                                   })}
