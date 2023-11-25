@@ -198,7 +198,7 @@ const JobInformation = () => {
                         </Link>
                       </td>
                       <td>{element.emp_code}</td>
-                      <td>{element.employee_name}</td>
+                      <td>{element.employee_name ||element.first_name}</td>
                       {/* <td>{element.department}</td> */}
                       <td>{element.passport}</td>
                       <td>{element.fin_no}</td>
