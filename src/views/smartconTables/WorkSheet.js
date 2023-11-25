@@ -278,7 +278,7 @@ getLineItem();
                       {element.project_code}
                     </Link>
                   </td>
-                  <td>{element.first_name} || {element.employee_name}</td>
+                  <td>{element.first_name || element.employee_name}</td>
                     {/* <td>
                       <Link to={`/WorkSheetEdit/${element.task_history_id}`}>
                         <Icon.Edit2 />
