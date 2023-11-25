@@ -414,21 +414,21 @@ const Payrollmanagement = () => {
               console.log('objectishere',obj)
               console.log('actualamount',actualAmount)
 
-              // api
-              //   .post('/payrollmanagement/insertpayroll_management', obj)
-              //   .then(() => {
-              //     // generatecpfcalculator();
+              api
+                .post('/payrollmanagement/insertpayroll_management', obj)
+                .then(() => {
+                  // generatecpfcalculator();
                   
-              //    // message('Payrolls created successfully.', 'success');
-              //     // setLoading(false);
-              //   })
-              //   .catch(() => {
-              //     message('Unable to create record', 'info');
-              //   });
+                 // message('Payrolls created successfully.', 'success');
+                  // setLoading(false);
+                })
+                .catch(() => {
+                  message('Unable to create record', 'info');
+                });
             });
         });
     });
-  //  getAllPayrollManagements();
+  getAllPayrollManagements();
   };
 
   // generate payslip
