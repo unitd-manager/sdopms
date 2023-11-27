@@ -173,7 +173,7 @@ if(totalSeconds1>totalSeconds2){
                   <Input
                     type="text"
                     name="employee_name"
-                    value={timesheetDetails && timesheetDetails.first_name}
+                    value={timesheetDetails && timesheetDetails.employee_name}
                     onChange={handleInputs}
                     disabled
                   ></Input>
@@ -230,7 +230,7 @@ if(totalSeconds1>totalSeconds2){
                   />
                 </FormGroup>
               </Col>
-                        <Col md="3">
+              {timesheetDetails && timesheetDetails.on_leave === 1 && <Col md="3">
                 <FormGroup>
                   <Label>Type Of Leave</Label>
                   <Input
@@ -245,7 +245,7 @@ if(totalSeconds1>totalSeconds2){
                     <option value="loss of pay">Loss of Pay</option>
                   </Input>
                 </FormGroup>
-              </Col>
+              </Col>}
               {/* <Col md="3">
                 <FormGroup>
                   <Label>Normal Hours</Label>
@@ -344,7 +344,7 @@ if(totalSeconds1>totalSeconds2){
               </Row>
             </FormGroup> */}
 
-              <Col md="3">
+              {/* <Col md="3">
                 <FormGroup>
                   <Label>Description</Label>
                   <Input
@@ -354,7 +354,7 @@ if(totalSeconds1>totalSeconds2){
                     name="description"
                   />
                 </FormGroup>
-              </Col>
+              </Col> */}
               <Col md="3">
                 <FormGroup>
                   <Label>Normal Hours</Label>

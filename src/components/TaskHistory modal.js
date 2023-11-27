@@ -309,7 +309,14 @@ console.log('work',work)
   return (
     <>
         <Modal size="lg" isOpen={taskhistorymodal} >
-            <ModalHeader >New Worksheet</ModalHeader>
+            <ModalHeader >New Worksheet<Button
+            color="secondary"
+            onClick={() => {
+              setTaskhistorymodal(false);
+            }}
+          >
+            X
+          </Button></ModalHeader>
             <ModalBody>
               <Row>
                 <Col md="12">

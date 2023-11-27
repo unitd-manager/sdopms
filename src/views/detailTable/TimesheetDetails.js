@@ -59,7 +59,7 @@ const totalSeconds1 = parseFloat(str1[0] * 3600 + str1[1] * 60);
 const totalSeconds2 = parseFloat(str2[0] * 3600 + str2[1] * 60 )
 console.log('sec1',totalSeconds1)
 console.log('sec2',totalSeconds2)
-employeeData.date=new Date(employeeData.entry_date);
+employeeData.date=employeeData.entry_date?new Date(employeeData.entry_date): new Date();
 employeeData.day=employeeData.date.getDay();
 
 console.log('day',employeeData.day)
@@ -129,22 +129,23 @@ if(totalSeconds1>totalSeconds2){
         employeeData.ph_hours=8;
       }
        }
+       employeeData.on_leave=0;
        console.log('empdata',employeeData)
 // api
 //       .post('/attendance/insertAttendance1', employeeData)
 //       .then((res) => {
-//         const insertedDataId = res.data.data.insertId;
+      //  const insertedDataId = res.data.data.insertId;
 //        employeeData.attendance_id=insertedDataId
         api
       .post('/projecttask/insertTimesheet', employeeData)
-      .then(() => {
+      .then((res) => {
+        const insertedDataId = res.data.data.insertId;
+        message('Timesheet has been created successfully.', 'success');
         
-        message('Employee inserted successfully.', 'success');
-        
-        // setTimeout(() => {
+        setTimeout(() => {
           
-        //   navigate(`/TimesheetEdit/${insertedDataId}`);
-        // }, 300);
+          navigate(`/TimesheetEdit/${insertedDataId}`);
+        }, 700);
       })
       .catch(() => {
         message('Unable to create employee.', 'error');
