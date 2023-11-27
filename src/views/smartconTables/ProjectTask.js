@@ -201,7 +201,7 @@ export default function ProjectTask({
 
               })
           })
-            message('Task inserted successfully.', 'success');
+            message('New Task has been created successfully.', 'success');
             getTaskById();
             getStaffName();
             addContactToggle(false);

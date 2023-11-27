@@ -428,7 +428,11 @@ const Payrollmanagement = () => {
             });
         });
     });
-  getAllPayrollManagements();
+    setTimeout(()=>{
+      window.location.reload();
+    },2000)
+ 
+  
   };
 
   // generate payslip

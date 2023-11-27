@@ -59,7 +59,7 @@ const totalSeconds1 = parseFloat(str1[0] * 3600 + str1[1] * 60);
 const totalSeconds2 = parseFloat(str2[0] * 3600 + str2[1] * 60 )
 console.log('sec1',totalSeconds1)
 console.log('sec2',totalSeconds2)
-employeeData.date=new Date();
+employeeData.date=new Date(employeeData.entry_date);
 employeeData.day=employeeData.date.getDay();
 
 console.log('day',employeeData.day)
@@ -233,6 +233,21 @@ console.log(formattedTime);
                   </FormGroup>
                 </Col>
               </Row>
+            </FormGroup>
+            <FormGroup>
+              <Row>
+            <Col md="10">
+                    <FormGroup>
+                      <Label>Date</Label>
+                      <Input
+                        type="date"
+                        onChange={handleInputs}
+                        value={moment(employeeData && employeeData.entry_date).format('YYYY-MM-DD')}
+                        name="entry_date"
+                      />
+                    </FormGroup>
+                  </Col>
+                  </Row>
             </FormGroup>
             <FormGroup>
               <Row>

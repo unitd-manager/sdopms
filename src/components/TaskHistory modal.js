@@ -210,8 +210,8 @@ console.log('work',work)
 
               })
           })
-            message('Worksheet created successfully.', 'success');
-            message('Task inserted successfully.', 'success');
+            message('Worksheet has been created successfully.', 'success');
+        
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
