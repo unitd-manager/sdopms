@@ -59,7 +59,7 @@ const TaskHistoriesModal = ({
       name: 'Volume',
     },
     {
-      name: 'Total Amount',
+      name: 'Total Amount($)',
       sortable: true,
     },
     {
@@ -163,8 +163,8 @@ console.log(employees)
 
   return (
     <>
-      <Modal size="lg" isOpen={taskhistoriesmodal}>
-        <ModalHeader>
+      <Modal size="xl" isOpen={taskhistoriesmodal}>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Task Details
           <Button
             color="secondary"
@@ -276,7 +276,7 @@ console.log(employees)
                     setTaskhistoriesmodal(false);
                 }}
               >
-                Cancel
+                Close
               </Button>
             </div>
           </Row>

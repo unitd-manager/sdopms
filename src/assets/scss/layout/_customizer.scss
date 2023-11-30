@@ -62,7 +62,7 @@ body{
   color: #484b51;
 }
 .text-secondary-d1 {
-  color: #728299!important;
+  color: blue!important;
 }
 .page-header {
   margin: 0 0 1rem;
@@ -209,6 +209,14 @@ hr {
   border: 1px solid #ddd;
   padding: .35em;
 }
+.lineitem1 tr {
+  background-color: #0096FF;
+  //background-color: #0066CC;
+  color: white;
+  border: 1px solid #ddd;
+  padding: .35em;
+}
+
 
 .lineitem th,
 .lineitem td {

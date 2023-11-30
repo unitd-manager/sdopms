@@ -290,7 +290,7 @@ console.log(employee);
   return (
     <>
       <Modal size="lg" isOpen={editTaskEditModal}>
-        <ModalHeader>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Task Details
           <Button
             color="secondary"
@@ -451,7 +451,7 @@ console.log(employee);
                           />
                         </FormGroup>
                       </Col>
-                      <Col md="4">
+                      {/* <Col md="4">
                         <FormGroup>
                           <Label>Est Hours</Label>
                           <Input
@@ -461,7 +461,7 @@ console.log(employee);
                             value={taskProject && taskProject.estimated_hours}
                           />
                         </FormGroup>
-                      </Col>
+                      </Col> */}
                       <Col md="4">
                         <FormGroup>
                           <Label>Completion</Label>
@@ -608,7 +608,7 @@ console.log(employee);
                   setEditTaskEditModal(false);
                 }}
               >
-                Cancel
+                close
               </Button>
             </div>
           </Row>

@@ -260,6 +260,7 @@ console.log('work',work)
       })
       .catch(() => {});
   };
+  
   const editJobById = () => {
     api
       .get('/projectteam/getProjectTeam')
@@ -309,7 +310,7 @@ console.log('work',work)
   return (
     <>
         <Modal size="lg" isOpen={taskhistorymodal} >
-            <ModalHeader >New Worksheet</ModalHeader>
+            <ModalHeader  style={{ backgroundColor: ' #0096FF', color: 'white' }} >New Worksheet</ModalHeader>
             <ModalBody>
               <Row>
                 <Col md="12">
@@ -375,6 +376,7 @@ console.log('work',work)
                                   employees.filter(val => val.project_team_id === TeamID).map((element) => {
                                     const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
                                     const isChecked = index >=0 ? selectedNames[index].checked : false;
+                                    const isTeamLeader = element.team_leader === 1; // Assuming team_leader field is a boolean or a flag indicating the team leader
                                     return (
                                       <tr key={element.project_team_id}>
                                         <td>
@@ -388,7 +390,8 @@ console.log('work',work)
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        <td>{element.first_name|| element.employee_name}</td>
+                                        {element.first_name || element.employee_name}
+              {isTeamLeader && ` (Team Leader)`}
                                       </tr>
                                     );
                                   })}
@@ -523,7 +526,7 @@ console.log('work',work)
                 className="shadow-none"
                 onClick={()=>setTaskhistorymodal(false)}
               >
-                Cancel
+                Close
               </Button>
             </ModalFooter>
           </Modal>

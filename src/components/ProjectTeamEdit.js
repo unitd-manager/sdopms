@@ -52,7 +52,7 @@ const ProjectTeamEdit = ({
   return (
     <>
       <Modal size="lg" isOpen={editTeamModal}>
-        <ModalHeader>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Team Details
           <Button
             color="secondary"
@@ -116,7 +116,7 @@ const ProjectTeamEdit = ({
                   setEditTeamEditModal(false);
                 }}
               >
-                Cancel
+                Close
               </Button>
             </div>
           </Row>

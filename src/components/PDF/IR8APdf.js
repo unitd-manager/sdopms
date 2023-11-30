@@ -80,7 +80,7 @@ const IR8Pdf = ({ payrollsYear }) => {
               },
 
               {
-                text: `: ${payroll.employee_name ? payroll.employee_name : ''}`,
+                text: `:     ${payroll.employee_name ? payroll.employee_name : ''}`,
                 style: 'header1',
                 fontSize: 9,
                 alignment: 'right',

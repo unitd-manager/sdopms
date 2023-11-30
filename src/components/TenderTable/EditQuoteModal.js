@@ -276,6 +276,7 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
                     color="primary"
                     className="btn shadow-none mr-2"
                     onClick={() => {
+                      GetEditQuote();
                       insertquote();
                       GetEditQuote();
                       setQuoteData();

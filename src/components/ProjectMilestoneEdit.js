@@ -62,7 +62,7 @@ const ProjectMilestoneEdit = ({
   return (
     <>
       <Modal size="lg" isOpen={editTaskEditModals}>
-        <ModalHeader>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Milestone Details
           <Button
             color="secondary"
@@ -187,7 +187,7 @@ const ProjectMilestoneEdit = ({
                   setEditTaskEditModals(false);
                 }}
               >
-                Cancel
+                close
               </Button>
             </div>
           </Row>

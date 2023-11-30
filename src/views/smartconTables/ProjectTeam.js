@@ -115,7 +115,7 @@ useEffect(() => {
               isOpen={addContactModalTeam}
               toggle={addContactToggleTeam.bind(null)}
             >
-              <ModalHeader toggle={addContactToggleTeam.bind(null)}>
+              <ModalHeader  style={{ backgroundColor: ' #0096FF', color: 'white' }} toggle={addContactToggleTeam.bind(null)}>
                 New Team Member
               </ModalHeader>
               <ModalBody>
@@ -184,6 +184,7 @@ useEffect(() => {
           <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Team</th>
           </tr>
         </thead>
         <tbody>
