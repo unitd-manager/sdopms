@@ -114,7 +114,7 @@ export default function ProjectMilestones({
               Add New{' '}
             </Button>
             <Modal size="lg" isOpen={addContactModals} toggle={addContactToggles.bind(null)}>
-              <ModalHeader toggle={addContactToggles.bind(null)}>New Task</ModalHeader>
+              <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }} toggle={addContactToggles.bind(null)}>New Milestone</ModalHeader>
               <ModalBody>
                 <Row>
                   <Col md="12">
@@ -135,7 +135,7 @@ export default function ProjectMilestones({
                           <FormGroup>
                             <Label>Description</Label>
                             <Input
-                              type="text"
+                              type="textarea"
                               name="description"
                               onChange={handleInputsmilestone}
                               value={insertMilestones && insertMilestones.description}
@@ -187,6 +187,7 @@ export default function ProjectMilestones({
                               <option value="InProgress">InProgress</option>
                               <option value="Completed">Completed</option>
                               <option value="OnHold">OnHold</option>
+                              <option value="NotStarted">NotStarted</option>
                             </Input>
                           </FormGroup>
                         </Col>
@@ -210,7 +211,7 @@ export default function ProjectMilestones({
                   className="shadow-none"
                   onClick={addContactToggles.bind(null)}
                 >
-                  Cancel
+                  close
                 </Button>
               </ModalFooter>
             </Modal>

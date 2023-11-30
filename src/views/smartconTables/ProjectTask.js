@@ -182,7 +182,7 @@ export default function ProjectTask({
       newContactWithCompanyId.project_id = id;
       newContactWithCompanyId.project_team_id = employees;
       newContactWithCompanyId.head_count = empCount;
-      newContactWithCompanyId.status="Pending";
+      newContactWithCompanyId.status="NotStarted";
         api
           .post('/projecttask/insertTask', newContactWithCompanyId)
           .then((res) => {
@@ -385,14 +385,16 @@ export default function ProjectTask({
   const Projecttaskcolumn = [
     {
       name: 'ID',
+      style:{ backgroundColor: ' #0096FF', color: 'white' }
     },
     {
       name: 'Edit',
       selector: 'edit',
       cell: () => <Icon.Edit2 />,
+      style:{ backgroundColor: ' #0096FF', color: 'white' }
     },
     {
-      name: 'New ',
+      name: 'New',
       selector: 'New',
       cell: () => <Icon.Lock />,
     },
@@ -462,22 +464,22 @@ export default function ProjectTask({
         <br />
         <Card>
           <CardBody>
-            <Row>
-              <Col md="2">
-                <FormGroup>
-                  <Label>Select Type </Label>
-                  <Input
-                    type="select"
-                    name="task_type"
-                    onChange={(e) => setCompanyName(e.target.value)} // Update companyName state
-                    value={companyName}
-                  >
-                    <option value="">Please Select</option>
-                    <option value="Erection">Erection</option>
-                    <option value="Dismantel">Dismantel</option>
-                  </Input>
-                </FormGroup>
-              </Col>
+          <Row className="align-items-center">
+      <Col md="2">
+        <FormGroup>
+          <Label>Select Type</Label>
+          <Input
+            type="select"
+            name="task_type"
+            onChange={(e) => setCompanyName(e.target.value)}
+            value={companyName}
+          >
+            <option value="">Please Select</option>
+            <option value="Erection">Erection</option>
+            <option value="Dismantel">Dismantel</option>
+          </Input>
+        </FormGroup>
+      </Col>
               <Col md="2">
                 <FormGroup>
                   <Label>Select Status</Label>
@@ -490,6 +492,7 @@ export default function ProjectTask({
                     {' '}
                     <option value="">Select Status</option>
                     <option value="Pending">Pending</option>
+                    <option value="NotStarted">NotStarted</option>
                     <option value="InProgress">InProgress</option>
                     <option value="Completed">Completed</option>
                     <option value="OnHold">OnHold</option>
@@ -501,25 +504,20 @@ export default function ProjectTask({
                   Go
                 </Button>
               </Col>
-              
-            {/* </Row>
-          </CardBody>
-        </Card>
-        <Form>
-          <Row> */}
+              <Col md="2" >
+            <FormGroup>
+            <Label></Label>
             
-            <Col md="2" >
-              
                 <Input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchInputChange}
                 />
-              
+              </FormGroup>
             </Col>
-            <Col md="2" >
-             
+             <Col md="2">
+             <Label></Label>
                 <Button
                   color="primary"
                   className="shadow-none"
@@ -527,9 +525,23 @@ export default function ProjectTask({
                 >
                   Add New Task{' '}
                 </Button>
-             
+
             </Col>
+            {/* <Col md="2" >
+            <FormGroup>
+            <Label></Label>
+            
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                />
+              </FormGroup>
+            </Col> */}
+           
             <Col md="1" className="mt-3">
+            <Label></Label>
               <span
                 onClick={() => {
                   // Clear the filter criteria for both Select Staff and Select Category
@@ -555,7 +567,7 @@ export default function ProjectTask({
           
           
           <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
-            <ModalHeader toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
+          <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }} toggle={addContactToggle.bind(null)}>New Task</ModalHeader>
             <ModalBody>
               <Row>
                 <Col md="12">
@@ -640,6 +652,7 @@ export default function ProjectTask({
                                   employees.filter(val => parseFloat(val.project_team_id) === parseFloat(TeamID)).map((element) => {
                                     const index = selectedNames.findIndex(value => value.employeeId === element.employee_id);
                                     const isChecked = index >=0 ? selectedNames[index].checked : false;
+                                    const isTeamLeader = element.team_leader === 1; 
                                     return (
                                       <tr key={element.project_team_id}>
                                         <td>
@@ -653,7 +666,8 @@ export default function ProjectTask({
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        <td>{element.employee_name || element.first_name}</td>
+                                        <td>{element.employee_name || element.first_name}
+                                        {isTeamLeader && ` (Team Leader)`}</td>
                                       </tr>
                                     );
                                   })}
@@ -800,7 +814,7 @@ export default function ProjectTask({
                 className="shadow-none"
                 onClick={addContactToggle.bind(null)}
               >
-                Cancel
+                Close
               </Button>
             </ModalFooter>
           </Modal>
@@ -809,13 +823,18 @@ export default function ProjectTask({
             id="example"
             className="display border border-secondary rounded"
             title="projectTask List"
+            //className="lineitem border border-secondary rounded"
           >
-            <thead>
+            <thead className="lineitem1 border border-secondary rounded">
               <tr>
                 {Projecttaskcolumn.map((cell) => {
                   return (
+                    
                     <th key={cell.name} onClick={() => cell.sortable && handleSort(cell.name)}>
-                      {cell.name}
+                      {/* {cell.name} */}
+                      {/* <span style={{ color: ['ID', 'Edit', 'New','View','Title','Task Type','Head Count','Status','Employees'].includes(cell.name) ? 'blue' : 'inherit' }}> */}
+        {cell.name}
+      {/* </span> */}
                       {cell.sortable && ( // Render sorting indicator if the column is sortable
                         <span className="sort-indicator">
                           {sortColumn === cell.name ? (
@@ -928,6 +947,7 @@ export default function ProjectTask({
                   );
                 })}
             </tbody>
+            
           </Table>
           <ReactPaginate
             previousLabel="Previous"

@@ -67,7 +67,7 @@ const column = [
   return (
     <>
       <Modal size="lg" isOpen={taskEmployeesModal}>
-        <ModalHeader>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Employees Details
           <Button
             color="secondary"
@@ -119,7 +119,7 @@ const column = [
                     setTaskEmployeesModal(false);
                 }}
               >
-                Cancel
+                Close
               </Button>
             </div>
           </Row>

@@ -70,7 +70,7 @@ const column = [
   return (
     <>
       <Modal size="lg" isOpen={taskhistoryEmployeemodal}>
-        <ModalHeader>
+        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
           Name of the Employees 
           <Button
             color="secondary"
@@ -127,7 +127,7 @@ const column = [
                     setTaskhistoryEmployeeModal(false);
                 }}
               >
-                Cancel
+                Close
               </Button>
             </div>
           </Row>

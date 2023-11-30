@@ -341,7 +341,19 @@ const PdfPaySlip = () => {
                 { text: ``, alignment: 'center', colSpan: 2 },
                 {},
                 { text: 'Other Additional Payments (Performance Allowance)', alignment: 'left',style: 'tableHeader2',margin: [0, 8, 0, 0], },
-                { text: '', alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
+                { text: `${
+                  payroll.reimbursement
+                    ? payroll.reimbursement.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }  \n ${
+                  payroll.director_fee
+                    ? payroll.director_fee.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }`, alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
                 { text: '[F]', alignment: 'center' ,style: 'tableHeader2',fillColor:'#FFE5CC',margin: [0, 10, 0, 0],},
               ],
               [

@@ -30,10 +30,10 @@ function PrintIR8AModal({ printIR8AModal, setPrintIR8AModal, payrollManagementsd
   };
   // Calculate the previous year and current year
   const currentYear = new Date().getFullYear();
-  const previousYear = currentYear - 1;
+  // const previousYear = currentYear - 1;
 
 // Generate options for the "Year" dropdown
-const yearOptions = [currentYear, previousYear].map((year) => (
+const yearOptions = [currentYear].map((year) => (
     <option key={year} value={year}>
       {year}
     </option>

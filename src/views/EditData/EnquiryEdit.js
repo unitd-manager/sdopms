@@ -200,7 +200,7 @@ const OpportunityEdit = () => {
         .then(() => {
           getContact(newDataWithCompanyId.company_id);
           message('Contact Inserted Successfully', 'success');
-          //window.location.reload();
+          window.location.reload();
         })
         .catch(() => {
           message('Unable to add Contact! try again later', 'error');
@@ -263,7 +263,7 @@ const OpportunityEdit = () => {
     newDataWithCompanyId.project_code = code;
     api.post('/project/insertProject', newDataWithCompanyId).then(() => {
       message('Project Converted Successfully', 'success');
-      //window.location.reload();
+      window.location.reload();
     });
   };
   //Project GENERATED CODE

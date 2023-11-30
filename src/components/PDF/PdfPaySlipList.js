@@ -113,18 +113,18 @@ const PdfPaySlipList = ({payroll}) => {
               // [
               //     { type: 'line', margin: [0, 50, -150, 0], x1: 0, y1: 0, x2: 150, y2: 0, lineWidth: 1 },
               //   ],
-                { text: `For the Period: \n \n ${
-                  moment(payroll.payslip_start_date).format('DD-MM-YYYY')
-                    ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
-                    : ''
-                }   -   ${
-                  moment(payroll.payslip_end_date).format('DD-MM-YYYY')
-                    ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
-                    : ''
-                }`,  colSpan: 3, style: 'tableHeader2' 
-              },
-                {},
-                { text: '', alignment: 'center', colSpan: 2 },
+              { text: `For the Period: \n \n ${
+                moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                  ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
+                  : ''
+              }   -   ${
+                moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                  ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
+                  : ''
+              }`,  colSpan: 3, style: 'tableHeader2' 
+            },
+              {},
+              { text: '', alignment: 'center', colSpan: 2 },
               ],
               [
                 {
@@ -227,7 +227,7 @@ const PdfPaySlipList = ({payroll}) => {
                   text: `${payroll.basic_pay.toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                   })}`,
-                  alignment: 'center',
+                  alignment: 'right',
                   colSpan: 1,
                   margin: [0, 6, 0, 0],
                   style: 'tableHeader2',
@@ -267,14 +267,14 @@ const PdfPaySlipList = ({payroll}) => {
                   style: 'tableHeader2',
                   margin: [0, 6, 0, 0],
                 },
-                { text: '', alignment: 'center', colSpan: 1 ,style: 'tableHeader2',},
+                { text: '', alignment: 'right', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${
                   payroll.total_allowance
                     ? payroll.total_allowance.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
-                }`, alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2' },
+                }`, alignment: 'right', margin: [0, 6, 0, 0], style: 'tableHeader2' },
                 { text: '[B]', alignment: 'center', margin: [0, 6, 0, 0], style: 'tableHeader2',fillColor:'#FFE5CC' },
                 {
                   text: 'Overtime Hours Worked',
@@ -314,10 +314,10 @@ const PdfPaySlipList = ({payroll}) => {
               ],
               [
                 { text: 'Gross(A+B)', alignment: 'center', colSpan: 2, style: 'tableHeader2' },
-                { text: '430.00', alignment: 'right', colSpan: 1 ,style: 'tableHeader2',},
+                { text: '', alignment: 'right', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${payroll.total_basic_pay_for_month.toLocaleString('en-IN', {
                   minimumFractionDigits: 2,
-                })}`, alignment: 'center',style: 'tableHeader2', },
+                })}`, alignment: 'right',style: 'tableHeader2', },
                 { text: '[C]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
                 { text: 'Item', alignment: 'center', colSpan: 1 ,style: 'tableHeader1'},
                 { text: 'Amount', alignment: 'center', colSpan: 2,style: 'tableHeader1' },
@@ -329,7 +329,19 @@ const PdfPaySlipList = ({payroll}) => {
                 { text: '', alignment: 'center', colSpan: 2 },
                 {},
                 { text: 'Other Additional Payments (Performance Allowance)', alignment: 'left',style: 'tableHeader2',margin: [0, 8, 0, 0], },
-                { text: '32.00', alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
+                { text: `${
+                  payroll.reimbursement
+                    ? payroll.reimbursement.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                }  \n ${
+                  payroll.director_fee
+                    ? payroll.director_fee.toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                      })
+                    : 0.0
+                } `, alignment: 'center' ,style: 'tableHeader2',margin: [0, 10, 0, 0],},
                 { text: '[F]', alignment: 'center' ,style: 'tableHeader2',fillColor:'#FFE5CC',margin: [0, 10, 0, 0],},
               ],
               [
@@ -341,7 +353,7 @@ const PdfPaySlipList = ({payroll}) => {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
-                } `, alignment: 'center' ,style: 'tableHeader2',},
+                } `, alignment: 'right' ,style: 'tableHeader2',},
                 { text: '[D]', alignment: 'center',style: 'tableHeader2',fillColor:'#FFE5CC' },
                 { text: 'Annual Bonus', alignment: 'left', style: 'tableHeader2',margin: [0, 2, 0, 0],  },
                 { text: '', alignment: 'center', colSpan: 2 , style: 'tableHeader2' },
@@ -357,7 +369,7 @@ const PdfPaySlipList = ({payroll}) => {
                   style: 'tableHeader2',
                 },
                 { text: '', alignment: 'center', colSpan: 1 },
-                { text: `20.00 \n   ${payroll.cpf_employee
+                { text: `0.00 \n   ${payroll.cpf_employee
                     ? payroll.cpf_employee.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                       })
@@ -368,7 +380,7 @@ const PdfPaySlipList = ({payroll}) => {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
-                } `, alignment: 'center', colSpan: 1, rowSpan: 2 , style: 'tableHeader2',margin: [0, 10, 0, 0], },
+                } `, alignment: 'right', colSpan: 1, rowSpan: 2 , style: 'tableHeader2',margin: [0, 10, 0, 0], },
                 { text: '', rowSpan: 2, alignment: 'center' },
                 { text: 'Net Pay[C-D+E+F] ', alignment: 'center', margin: [0, 6, 0, 0],style: 'tableHeader2', },
                 {  text: ` ${

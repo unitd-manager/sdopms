@@ -11,12 +11,12 @@ import DuctingCostModal from '../../components/ProjectModal/DuctingCostModal';
 import message from '../../components/Message';
 import api from '../../constants/api';
 import ProjectTask from '../smartconTables/ProjectTask';
-import ProjectTimeSheet from '../smartconTables/ProjectTimesheet';
+// import ProjectTimeSheet from '../smartconTables/ProjectTimesheet';
 import ProjectTeam from '../smartconTables/ProjectTeam';
 import ProjectMilestones from '../../components/ProjectMilestones';
 import ProjectMilestoneEdit from '../../components/ProjectMilestoneEdit';
 import ProjectTaskEdit from '../../components/ProjectTaskEdit';
-import ProjectTimeSheetEdit from '../../components/ProjectTImeSheetEdit';
+// import ProjectTimeSheetEdit from '../../components/ProjectTImeSheetEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
 import Tab from '../../components/ProjectTabs/Tab';
@@ -68,14 +68,14 @@ const ProjectEdit = () => {
   const [contactDatas, setContactData] = useState();
   const [editTaskEditModal, setEditTaskEditModal] = useState(false);
   const [addContactModal, setAddContactModal] = useState(false);
-  const [timeSheetById, setTimeSheetById] = useState();
-  const [contactDatass, setContactDatass] = useState();
+  // const [timeSheetById, setTimeSheetById] = useState();
+  // const [contactDatass, setContactDatass] = useState();
   const [addLineItemModal, setAddLineItemModal] = useState(false);
   const [quotation, setQuotation] = useState({});
   const [lineItem, setLineItem] = useState([]);
   const [quotationsModal, setquotationsModal] = useState(false);
-  const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
-  const [addContactModalss, setAddContactModalss] = useState(false);
+  // const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
+  // const [addContactModalss, setAddContactModalss] = useState(false);
   const [teamById, setTeamById] = useState();
   const [contactDataTeam, setContactDataTeam] = useState();
   const [editTeamModal, setEditTeamEditModal] = useState(false);
@@ -104,12 +104,12 @@ const ProjectEdit = () => {
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
-    { id: '6', name: 'Timesheet' },
-    { id: '7', name: 'Calender' },
-    { id: '8', name: 'Material Purchase Order' },
-    { id: '9', name: 'Material Used' },
-    { id: '10',name: 'Material Transferred' },
-    { id: '11',name: 'Finance' },
+    // { id: '6', name: 'Timesheet' },
+    { id: '6', name: 'Calender' },
+    { id: '7', name: 'Material Purchase Order' },
+    { id: '8', name: 'Material Used' },
+    { id: '9',name: 'Material Transferred' },
+    { id: '10',name: 'Finance' },
    
   ];
   const toggle = (tab) => {
@@ -128,9 +128,9 @@ const ProjectEdit = () => {
   const addContactToggle = () => {
     setAddContactModal(!addContactModal);
   };
-  const addContactToggless = () => {
-    setAddContactModalss(!addContactModalss);
-  };
+  // const addContactToggless = () => {
+  //   setAddContactModalss(!addContactModalss);
+  // };
   const addContactToggleTeam = () => {
     setAddContactModalTeam(!addContactModalTeam);
   };
@@ -212,14 +212,14 @@ const ProjectEdit = () => {
       .catch(() => {});
   };
   //Getting data from milestone
-  const getTimeSheetById = () => {
-    api
-      .post('/projecttimesheet/getTimeSheetProjectById', { project_id: id })
-      .then((res) => {
-        setTimeSheetById(res.data.data);
-      })
-      .catch(() => {});
-  };
+  // const getTimeSheetById = () => {
+  //   api
+  //     .post('/projecttimesheet/getTimeSheetProjectById', { project_id: id })
+  //     .then((res) => {
+  //       setTimeSheetById(res.data.data);
+  //     })
+  //     .catch(() => {});
+  // };
   // Tab PurchaseOrder LineItem Table
   const TabPurchaseOrderLineItemTable = () => {
     api.post('/purchaseorder/testAPIendpoint', { project_id: id }).then((res) => {
@@ -384,7 +384,7 @@ const ProjectEdit = () => {
     getProjectById();
     getMilestoneById();
     getTaskById();
-    getTimeSheetById();
+    //getTimeSheetById();
     getTeamById();
     TabPurchaseOrderLineItemTable();
     getCompany();
@@ -574,6 +574,22 @@ const ProjectEdit = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
+                  <Label>Description</Label>
+                  <Input
+                    type="textarea"
+                    name="description"
+                    defaultValue={projectDetail && projectDetail.description}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+            
+              </Row>
+              </ComponentCard>
+              <ComponentCard title="Plank Details">
+                <Row>
+              <Col md="3">
+                <FormGroup>
                   <Label>Pipe Erection</Label>
                   <Input
                     type="text"
@@ -702,18 +718,7 @@ const ProjectEdit = () => {
                   </Input>
                 </FormGroup>
               </Col>
-              <Col md="3">
-                <FormGroup>
-                  <Label>Description</Label>
-                  <Input
-                    type="textarea"
-                    name="description"
-                    defaultValue={projectDetail && projectDetail.description}
-                    onChange={handleInputs}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
+              </Row>
           </ComponentCard>
         </FormGroup>
       </Form>
@@ -847,7 +852,7 @@ const ProjectEdit = () => {
             ></TaskHistoriesModal>}
           </TabPane>
           {/* Start Tab Content 6  Delivery Order */}
-          <TabPane tabId="6">
+          {/* <TabPane tabId="6">
             <ProjectTimeSheet
               setContactDatass={setContactDatass}
               id={id}
@@ -864,14 +869,14 @@ const ProjectEdit = () => {
               setEditTimeSheetEditModal={setEditTimeSheetEditModal}
               getTimeSheetById={getTimeSheetById}
             ></ProjectTimeSheetEdit>
-          </TabPane>
-          <TabPane tabId="7">
+          </TabPane> */}
+          <TabPane tabId="6">
             <br />
             <CalendarApp projectDetail={projectDetail} id={id}></CalendarApp>
           </TabPane>
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
-          <TabPane tabId="8" eventkey="materialPurchased">
+          <TabPane tabId="7" eventkey="materialPurchased">
             <AddPurchaseOrderModal
               projectId={id}
               addPurchaseOrderModal={addPurchaseOrderModal}
@@ -916,17 +921,17 @@ const ProjectEdit = () => {
           </TabPane>
 
           {/* Tab 9*/}
-          <TabPane tabId="9" eventkey="materialsusedTab">
+          <TabPane tabId="8" eventkey="materialsusedTab">
             <MaterialsusedTab projectId={id} />
           </TabPane>
 
           {/* Tab 10 */}
-          <TabPane tabId="10" eventkey="materialsTransferred">
+          <TabPane tabId="9" eventkey="materialsTransferred">
             <MaterialsTransferred projectId={id} />
           </TabPane>
 
            {/* Tab 11 */}
-           <TabPane tabId="11" eventkey="financeTab">
+           <TabPane tabId="10" eventkey="financeTab">
             <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
           </TabPane>
         </TabContent>
