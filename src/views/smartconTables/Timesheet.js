@@ -65,7 +65,7 @@ function Timesheet() {
    
     {
       name: 'Employee Name',
-      selector: 'first_name',
+      selector: 'employee_name',
       sortable: true,
       grow: 0,
       wrap: true,
@@ -154,7 +154,7 @@ function Timesheet() {
                         <Icon.Edit2 />
                       </Link>
                     </td>
-                    <td>{element.first_name}</td>
+                    <td>{element.employee_name}</td>
                     <td>{element.entry_date? moment(element.entry_date).format('YYYY-MM-DD'):''}</td>
                     <td>{element.time_in}</td>
                     <td>{element.time_out}</td>

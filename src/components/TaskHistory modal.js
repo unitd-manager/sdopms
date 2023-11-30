@@ -210,8 +210,8 @@ console.log('work',work)
 
               })
           })
-            message('Worksheet created successfully.', 'success');
-            message('Task inserted successfully.', 'success');
+            message('Worksheet has been created successfully.', 'success');
+        
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
@@ -310,7 +310,14 @@ console.log('work',work)
   return (
     <>
         <Modal size="lg" isOpen={taskhistorymodal} >
-            <ModalHeader  style={{ backgroundColor: ' #0096FF', color: 'white' }} >New Worksheet</ModalHeader>
+            <ModalHeader  style={{ backgroundColor: ' #0096FF', color: 'white' }} >New Worksheet<Button
+            color="secondary"
+            onClick={() => {
+              setTaskhistorymodal(false);
+            }}
+          >
+            X
+          </Button></ModalHeader>
             <ModalBody>
               <Row>
                 <Col md="12">
@@ -390,8 +397,10 @@ console.log('work',work)
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        {element.first_name || element.employee_name}
-              {isTeamLeader && ` (Team Leader)`}
+                                        {/* {element.first_name || element.employee_name}
+              {isTeamLeader && ` (Team Leader)`} */}
+                                        <td>{element.employee_name|| element.first_name}
+                                        {isTeamLeader && ` (Team Leader)`}</td>
                                       </tr>
                                     );
                                   })}

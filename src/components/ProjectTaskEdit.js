@@ -184,7 +184,7 @@ console.log(employee);
       api
         .post('/projecttask/editTask', taskProject)
         .then(() => {
-          message('Record editted successfully', 'success');
+          message('Task Detail has been editted successfully', 'success');
           getTaskById();
           setEditTaskEditModal(false);
           // setTimeout(() => {
@@ -252,7 +252,7 @@ console.log(employee);
                   message('Unable to update milestone actual_completed_date.', 'error');
                 });
             } else {
-              message('Task completed successfully', 'success');
+              message('Task has been completed successfully', 'success');
             }
           })
           .catch(() => {

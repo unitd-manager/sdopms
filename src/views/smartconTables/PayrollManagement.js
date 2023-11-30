@@ -249,7 +249,7 @@ const Payrollmanagement = () => {
           const { age } = res1.data.data[0];
 
           console.log('age', age);
-          // Call generatecpfcalculator with empId
+          // Call // with empId
           const selectedEmployeeId = obj.employee_id;
           const payrollyear = obj.payroll_year;
           const basicpays = obj.basic_pay;
@@ -417,7 +417,7 @@ const Payrollmanagement = () => {
               api
                 .post('/payrollmanagement/insertpayroll_management', obj)
                 .then(() => {
-                  // generatecpfcalculator();
+                  //generatecpfcalculator();
                   
                  // message('Payrolls created successfully.', 'success');
                   // setLoading(false);
@@ -428,7 +428,11 @@ const Payrollmanagement = () => {
             });
         });
     });
-  getAllPayrollManagements();
+    setTimeout(()=>{
+      window.location.reload();
+    },2000)
+ 
+  
   };
 
   // generate payslip

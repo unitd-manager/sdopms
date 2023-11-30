@@ -201,7 +201,7 @@ export default function ProjectTask({
 
               })
           })
-            message('Task inserted successfully.', 'success');
+            message('New Task has been created successfully.', 'success');
             getTaskById();
             getStaffName();
             addContactToggle(false);
@@ -666,7 +666,7 @@ export default function ProjectTask({
                                             defaultChecked={isChecked}
                                           />
                                         </td>
-                                        <td>{element.first_name || element.employee_name}
+                                        <td>{element.employee_name || element.first_name}
                                         {isTeamLeader && ` (Team Leader)`}</td>
                                       </tr>
                                     );

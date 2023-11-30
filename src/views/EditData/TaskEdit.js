@@ -33,7 +33,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
 import api from '../../constants/api';
 //import DeleteButton from '../../components/DeleteButton';
@@ -44,7 +44,7 @@ import ApiButton from '../../components/ApiButton';
 const TaskEdit = () => {
   //All state variable
   const [projectTask, setProjectTask] = useState();
-  const [employeeProject, setEmployeeProject] = useState();
+  
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
   const [timeSheet, setTimesheet] = useState(null);
@@ -134,7 +134,7 @@ const TaskEdit = () => {
       .get('/jobinformation/getEmployee')
       .then((res) => {
         console.log(res.data.data);
-        setEmployeeProject(res.data.data);
+       
       })
       .catch(() => {});
   };
@@ -161,6 +161,7 @@ const TaskEdit = () => {
 
   //Update task
   const editTask = () => {
+    console.log('task',projectTask)
     api
       .post('/projecttask/editTask', projectTask)
       .then(() => {
@@ -287,7 +288,7 @@ const TaskEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+         
             <ApiButton
               editData={editTask}
               navigate={navigate}
@@ -295,7 +296,7 @@ const TaskEdit = () => {
               backToList={backToList}
               module="ProjectTask"
             ></ApiButton>
-          </ComponentCardV2>
+        
         </FormGroup>
       </Form>
       {/* projectTask Details */}
@@ -386,7 +387,7 @@ const TaskEdit = () => {
                       />
                     </FormGroup>
                   </Col>
-                  <Col md="3">
+                  {/* <Col md="3">
                     <FormGroup>
                       <Label>Actual Comp Date</Label>
                       <Input
@@ -400,27 +401,7 @@ const TaskEdit = () => {
                       />
                     </FormGroup>
                   </Col>
-                  <Col md="3">
-                    <FormGroup>
-                      <Label>Name</Label>
-                      <Input
-                        type="select"
-                        name="employee_id"
-                        onChange={handleInputs}
-                        value={projectTask && projectTask.employee_id}
-                      >
-                        <option value="" defaultValue="selected"></option>
-                        {employeeProject &&
-                          employeeProject.map((ele) => {
-                            return (
-                              <option key={ele.employee_id} value={ele.employee_id}>
-                                {ele.first_name}
-                              </option>
-                            );
-                          })}
-                      </Input>
-                    </FormGroup>
-                  </Col>
+                */}
                   <Col md="3">
                     <FormGroup>
                       <Label>Status</Label>
@@ -467,9 +448,8 @@ const TaskEdit = () => {
                         <option value="" selected="selected">
                           Please Select
                         </option>
-                        <option value="Development">Development</option>
-                        <option value="ChangeRequest">ChangeRequest</option>
-                        <option value="Issues">Issues</option>
+                        <option value="Dismantel">Dismantel</option>
+                        <option value="Erection">Erection</option>
                       </Input>
                     </FormGroup>
                   </Col>
@@ -505,13 +485,13 @@ const TaskEdit = () => {
                       />
                     </FormGroup>
                   </Col>
-                  <Col md="3">
+                  {/* <Col md="3">
                     <FormGroup>
                       <Label>Actual Hours</Label>
                       <br />
                       <span>{projectTask && projectTask.actual_hours}</span>
                     </FormGroup>
-                  </Col>
+                  </Col> */}
                   <Col md="3">
                     <FormGroup>
                       <Label>Estimated Hours</Label>
@@ -519,7 +499,7 @@ const TaskEdit = () => {
                         type="number"
                         onChange={handleInputs}
                         value={projectTask && projectTask.estimated_hours}
-                        name="hours"
+                        name="estimated_hours"
                       />
                     </FormGroup>
                   </Col>

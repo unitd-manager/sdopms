@@ -29,7 +29,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
+//import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
 import ProjectEmployeeLinked from '../../components/ProjectEmployeeLinked';
 import api from '../../constants/api';
@@ -327,7 +327,7 @@ const TaskJobEdit = () => {
         <FormGroup>
           <BreadCrumbs />
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+        
             <ApiButton
               editData={editTaskJob}
               navigate={navigate}
@@ -335,7 +335,7 @@ const TaskJobEdit = () => {
               backToList={backToList}
               module="Team"
             ></ApiButton>
-          </ComponentCardV2>
+       
         </FormGroup>
       </Form>
       {/* projectTeam Details */}
