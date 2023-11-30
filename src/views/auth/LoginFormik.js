@@ -89,7 +89,8 @@ const LoginFormik = ({ setToken }) => {
       <Container fluid className="h-100">
         <Row className="justify-content-center align-items-center h-100">
           <Col lg="12" className="loginContainer">
-            <AuthLogo />
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'white'}}><AuthLogo /></div>
+            
             <Card>
               <CardBody className="p-4 m-1">
                 {/* <h5 className="mb-0">Login</h5>
