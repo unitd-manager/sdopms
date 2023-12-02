@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Row,
   Button,
@@ -33,7 +33,7 @@ const TaskHistoriesModal = ({
     {
       name: 'ID',
     },
-  
+
     // {
     //   name: 'Team',
     //   sortable: true,
@@ -87,16 +87,16 @@ const TaskHistoriesModal = ({
     // {
     //   name: 'Est Hours',
     // },
-   
+
     // {
     //   name: 'Completion',
     // },
-    
-    
+
+
     // {
     //   name: 'Priority',
     // },
-    
+
     // {
     //   name: 'Creation ',
     // },
@@ -111,10 +111,10 @@ const TaskHistoriesModal = ({
   // const [fileTypes, setFileTypes] = useState();
   // const [moduleId, setModuleId] = useState('');
   // const [roomName, setRoomName] = useState('');
-      //get staff details
-    const [taskhistoryIdForEmployee,setTaskhistoryIdForEmployee]=useState(null);
-    const [taskhistoryEmployeeModal,setTaskhistoryEmployeeModal]=useState(false);
-      const [taskhistories, setTaskhistories] = useState([]);
+  //get staff details
+  const [taskhistoryIdForEmployee, setTaskhistoryIdForEmployee] = useState(null);
+  const [taskhistoryEmployeeModal, setTaskhistoryEmployeeModal] = useState(false);
+  const [taskhistories, setTaskhistories] = useState([]);
 
   // const [attachmentData, setDataForAttachment] = useState({
   //   modelType: '',
@@ -128,21 +128,21 @@ const TaskHistoriesModal = ({
       .then((res) => {
         setEmployees(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const getTaskEmployees = () => {
     api
-      .post('/projectTask/getTaskHistoriesByTaskId',{task_id:contactDatas.project_task_id})
+      .post('/projectTask/getTaskHistoriesByTaskId', { task_id: contactDatas.project_task_id })
       .then((res) => {
         console.log(res.data.data);
         setTaskhistories(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
-  
-console.log(employees)
- 
-  
+
+  console.log(employees)
+
+
   //attachments
   // const dataForAttachment = () => {
   //   setDataForAttachment({
@@ -151,25 +151,25 @@ console.log(employees)
   //   console.log('inside DataForAttachment');
   // };
 
-  
+
 
   useEffect(() => {
     getTaskEmployees();
     editJobByIds();
-    
+
   }, [contactDatas]);
 
-  
+
 
   return (
     <>
       <Modal size="xl" isOpen={taskhistoriesmodal}>
-        <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }}>
+        <ModalHeader >
           Task Details
           <Button
             color="secondary"
             onClick={() => {
-                setTaskhistoriesmodal(false);
+              setTaskhistoriesmodal(false);
             }}
           >
             X
@@ -178,19 +178,19 @@ console.log(employees)
 
         <ModalBody>
           {/* task Details */}
-         
+          <br />
           <Table
             id="example"
             className="display border border-secondary rounded"
             title="projectTask List"
           >
-            <thead>
+            <thead className="lineitem1 border border-secondary rounded">
               <tr>
                 {column.map((cell) => {
                   return (
                     <th key={cell.name} >
                       {cell.name}
-                      
+
                     </th>
                   );
                   // return <td key={cell.name}>{cell.name}</td>;
@@ -204,7 +204,7 @@ console.log(employees)
                     <>
                       <tr key={element.task_history_id}>
                         <td >{index + 1}</td>
-                     
+
                         {/* <td >{element.team_title}</td> */}
                         <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                         <td>{element.head_count}</td>
@@ -213,17 +213,18 @@ console.log(employees)
                         <td>{element.plank}</td>
                         <td>{element.volume}</td>
                         <td>{element.total_amount}</td>
-                        <td>{element.share_per_head}</td>
+                        {/* <td>{element.share_per_head}</td> */}
+                        <td>{parseFloat(element.share_per_head).toFixed(3)}</td>
                         <td>
-                        <u
-                className="shadow-none"
-                color="primary" onClick={()=>{setTaskhistoryIdForEmployee(element.task_history_id);setTaskhistoryEmployeeModal(true)}}>
-                            View 
+                          <u
+                            className="shadow-none"
+                            color="primary" onClick={() => { setTaskhistoryIdForEmployee(element.task_history_id); setTaskhistoryEmployeeModal(true) }}>
+                            View
                           </u>
                         </td>
-                        
-                        </tr>
-                        {/* <td>
+
+                      </tr>
+                      {/* <td>
                           {element.start_date
                             ? moment(element.start_date).format('DD-MM-YYYY')
                             : ''}
@@ -242,15 +243,15 @@ console.log(employees)
                         <td>{element.completion}</td>
                         
                        */}
-                       
-                        
-                        {/* <td>
+
+
+                      {/* <td>
                           {element.created_by} {element.creation_date}
                         </td>
                         <td>
                           {element.modified_by} {element.modification_date}
                         </td> */}
-                    
+
                       {/* <tr>
                         <td colSpan="14" style={{ borderRight: 1, borderWidth: 1 }}>
                           <ViewNote
@@ -269,11 +270,11 @@ console.log(employees)
         <ModalFooter>
           <Row>
             <div className="pt-3 mt-3 d-flex align-items-center gap-2">
-            
+
               <Button
                 color="secondary"
                 onClick={() => {
-                    setTaskhistoriesmodal(false);
+                  setTaskhistoriesmodal(false);
                 }}
               >
                 Close
@@ -282,12 +283,12 @@ console.log(employees)
           </Row>
         </ModalFooter>
       </Modal>
-      {taskhistoryEmployeeModal&&<TaskHistoryEmployeeModal
-      taskHistoryId={taskhistoryIdForEmployee}
-      taskhistoryEmployeemodal={taskhistoryEmployeeModal}
-      setTaskhistoryEmployeeModal={setTaskhistoryEmployeeModal}
+      {taskhistoryEmployeeModal && <TaskHistoryEmployeeModal
+        taskHistoryId={taskhistoryIdForEmployee}
+        taskhistoryEmployeemodal={taskhistoryEmployeeModal}
+        setTaskhistoryEmployeeModal={setTaskhistoryEmployeeModal}
       >
-        </TaskHistoryEmployeeModal>}
+      </TaskHistoryEmployeeModal>}
     </>
   );
 };

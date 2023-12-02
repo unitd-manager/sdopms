@@ -205,7 +205,7 @@ export default function QuotationMoreDetails({
                               <th scope="col">Title </th>
                               <th scope="col">Description </th>
                               <th scope="col">Qty </th>
-                              <th scope="col">Unit Price </th>
+                              {/* <th scope="col">Unit Price </th> */}
                               <th scope="col">Amount</th>
                               <th scope="col">Updated By </th>
                               <th scope="col">Action</th>
@@ -219,7 +219,7 @@ export default function QuotationMoreDetails({
                                     <td data-label="Title">{e.title}</td>
                                     <td data-label="Description">{e.description}</td>
                                     <td data-label="Quantity">{e.quantity}</td>
-                                    <td data-label="Unit Price">{e.unit_price}</td>
+                                    {/* <td data-label="Unit Price">{e.unit_price}</td> */}
                                     <td data-label="Amount">{e.amount}</td>
                                     <td data-label="Updated By"></td>
                                     <td data-label="Action">

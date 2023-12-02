@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane,Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Swal from 'sweetalert2';
@@ -43,6 +43,7 @@ import TransferModal from '../../components/ProjectModal/TransferModal';
 import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDetails';
 import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
+import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -95,6 +96,10 @@ const ProjectEdit = () => {
   const [viewLineModal, setViewLineModal] = useState(false);
   const [taskhistorymodal, setTaskhistorymodal] = useState(false);
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
+  const [quoteForm, setQuoteForm] = useState({
+    quote_date: '',
+    quote_code: '',
+  });
   console.log('contactdatas',contactDatas)
 
   // Start for tab refresh navigation
@@ -104,12 +109,12 @@ const ProjectEdit = () => {
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
-    // { id: '6', name: 'Timesheet' },
-    { id: '6', name: 'Calender' },
-    { id: '7', name: 'Material Purchase Order' },
-    { id: '8', name: 'Material Used' },
-    { id: '9',name: 'Material Transferred' },
-    { id: '10',name: 'Finance' },
+    { id: '6', name: 'Worksheet' },
+    { id: '7', name: 'Calender' },
+    { id: '8', name: 'Material Purchase Order' },
+    { id: '9', name: 'Material Used' },
+    { id: '10',name: 'Material Transferred' },
+    { id: '11',name: 'Finance' },
    
   ];
   const toggle = (tab) => {
@@ -191,6 +196,30 @@ const ProjectEdit = () => {
         getProjectById();
       })
       .catch(() => {});
+  };
+  const insertQuote = (code) => {
+    const newQuoteId = quoteForm;
+    newQuoteId.project_id = id;
+    newQuoteId.quote_code = code;
+     
+        api.post('/project/insertquote', newQuoteId).then(() => {
+          message('Quote inserted successfully.', 'success');
+          getQuotations();
+        });
+      };
+  const handleQuoteForms = (ele) => {
+    setQuoteForm({ ...quoteForm, [ele.target.name]: ele.target.value });
+  };
+  //QUTO GENERATED CODE
+  const generateCode = () => {
+    api
+      .post('/tender/getCodeValue', { type: 'quote' })
+      .then((res) => {
+        insertQuote(res.data.data);
+      })
+      .catch(() => {
+        insertQuote('');
+      });
   };
   //Getting data from milestone
   const getMilestoneById = () => {
@@ -758,6 +787,29 @@ const ProjectEdit = () => {
           </TabPane>
           {/* Tab 2 */}
           <TabPane tabId="2" eventkey="quotationMoreDetails">
+            <br/>
+          <Row className="mb-4">
+              {Object.keys(quotation).length === 0 && (
+                <Col md="2">
+                  <Button
+                    color="primary"
+                    className="shadow-none"
+                    onClick={(ele) => {
+                      if (
+                        window.confirm(
+                          'Do you Like to Add Quote ?',
+                        )
+                      ) {
+                      handleQuoteForms(ele);
+                      generateCode(ele);
+                    }}
+                  }
+                  >
+                    Add Quote
+                  </Button>
+                </Col>
+              )}
+            </Row>
             <QuotationMoreDetails
               id={id}
               addLineItemModal={addLineItemModal}
@@ -870,13 +922,17 @@ const ProjectEdit = () => {
               getTimeSheetById={getTimeSheetById}
             ></ProjectTimeSheetEdit>
           </TabPane> */}
-          <TabPane tabId="6">
+           <TabPane tabId="6">
+            <br/>
+<ProjectWorksheet></ProjectWorksheet>
+           </TabPane>
+          <TabPane tabId="7">
             <br />
             <CalendarApp projectDetail={projectDetail} id={id}></CalendarApp>
           </TabPane>
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
-          <TabPane tabId="7" eventkey="materialPurchased">
+          <TabPane tabId="8" eventkey="materialPurchased">
             <AddPurchaseOrderModal
               projectId={id}
               addPurchaseOrderModal={addPurchaseOrderModal}
@@ -921,17 +977,17 @@ const ProjectEdit = () => {
           </TabPane>
 
           {/* Tab 9*/}
-          <TabPane tabId="8" eventkey="materialsusedTab">
+          <TabPane tabId="9" eventkey="materialsusedTab">
             <MaterialsusedTab projectId={id} />
           </TabPane>
 
           {/* Tab 10 */}
-          <TabPane tabId="9" eventkey="materialsTransferred">
+          <TabPane tabId="10" eventkey="materialsTransferred">
             <MaterialsTransferred projectId={id} />
           </TabPane>
 
            {/* Tab 11 */}
-           <TabPane tabId="10" eventkey="financeTab">
+           <TabPane tabId="11" eventkey="financeTab">
             <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
           </TabPane>
         </TabContent>
