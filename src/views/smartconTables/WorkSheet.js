@@ -287,6 +287,7 @@ function WorkSheetTask() {
                         {element.project_code}
                       </Link>
                     </td>
+                    <td>{element.employee_name || element.first_name}</td>
                     {/* <td>
                       <Link to={`/WorkSheetEdit/${element.task_history_id}`}>
                         <Icon.Edit2 />

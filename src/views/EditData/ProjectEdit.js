@@ -615,7 +615,7 @@ const ProjectEdit = () => {
             
               </Row>
               </ComponentCard>
-              <ComponentCard title="Plank Details">
+              <ComponentCard title="Project Amount Details">
                 <Row>
               <Col md="3">
                 <FormGroup>

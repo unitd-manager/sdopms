@@ -213,7 +213,6 @@ const TaskHistoriesModal = ({
                         <td>{element.plank}</td>
                         <td>{element.volume}</td>
                         <td>{element.total_amount}</td>
-                        {/* <td>{element.share_per_head}</td> */}
                         <td>{parseFloat(element.share_per_head).toFixed(3)}</td>
                         <td>
                           <u

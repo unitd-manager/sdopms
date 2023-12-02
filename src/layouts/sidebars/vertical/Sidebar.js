@@ -33,14 +33,21 @@ const Sidebar = () => {
     <div className={`sidebarBox shadow bg-${activeBg} ${isFixed ? 'fixedSidebar' : ''}`}>
       <SimpleBar style={{ height: '100%' }}>
         {/********Logo*******/}
-        <div className="d-flex p-3 align-items-center">
-          <Logo />
+        <div className="d-flex p-3 align-items-center" style={{display:'flex'}}>
+        <div style={{display:'flex',flex:0.1}}>
+        </div>
+        <div style={{display:'flex',flex:0.6}}>
+          <Logo /></div>
+          <div style={{flex:0.2}}></div>
+          <div style={{flex:0.1}}>
           <Button
             close
             size="sm"
             className="ms-auto d-sm-block d-lg-none"
+            style={{display:'flex', flex:0.2}}
             onClick={() => dispatch(ToggleMobileSidebar())}
           />
+          </div>
         </div>
         {/********Sidebar Content*******/}
         <div className="p-3 pt-1 mt-2">
