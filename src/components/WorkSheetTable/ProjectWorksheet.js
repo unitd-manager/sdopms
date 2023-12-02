@@ -253,7 +253,7 @@ function ProjectWorksheet() {
                           >
                             {/* {element.date} */}
                             
-                            {element.employee_name || element.first_name}
+                            {element.employee_name || element.first_name} 
                           </u>
                         </Label>
                       </Col>
@@ -264,7 +264,7 @@ function ProjectWorksheet() {
                     <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
                     <td style={{ textAlign: 'right' }}>{parseFloat(element.share_per_head).toFixed(2)}</td>
                     <td >{element.task_type}</td>
-                    <td style={{ textAlign: 'right' }}>{element.pipe}</td>
+                    <td style={{ textAlign: 'right' }}>{element.pipe} </td>
                     <td style={{ textAlign: 'right' }}>{element.plank}</td>
                     <td style={{ textAlign: 'right' }}>{element.volume}</td>
                     <td style={{ textAlign: 'right' }}>{element.tb}</td>

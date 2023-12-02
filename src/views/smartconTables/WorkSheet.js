@@ -359,7 +359,7 @@ function WorkSheetTask() {
                         return (
                           <tr>
                             <td data-label="SN.No">{index + 1}</td>
-                            <td data-label="Employee Name">{e.employee_name || e.first_name} </td>
+                            <td data-label="Employee Name">{e.employee_name || e.first_name}</td>
                             <td data-label="Date">{e.date ? moment(e.date).format('DD-MM-YYYY') : ''}</td>
                                                    {/* <td data-label="Date">{e.date}</td> */}
                             <td data-label="Share Per Head">{parseFloat(e.share_per_head).toFixed(3)}</td>
