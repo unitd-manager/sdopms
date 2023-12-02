@@ -106,7 +106,7 @@ const column = [
             <tbody>
             {employees&&employees.map((el)=>{
             return<tr >
-                <td>{el.first_name || el.employee_name}</td>
+                <td>{el.employee_name || el.first_name}</td>
                 <td>{el.team_title}</td> 
             </tr>
          })}

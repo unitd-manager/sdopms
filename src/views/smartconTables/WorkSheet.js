@@ -287,7 +287,7 @@ function WorkSheetTask() {
                         {element.project_code}
                       </Link>
                     </td>
-                    <td>{element.employee_name || element.first_name}</td>
+                    {/* <td>{element.employee_name || element.first_name}</td> */}
                     {/* <td>
                       <Link to={`/WorkSheetEdit/${element.task_history_id}`}>
                         <Icon.Edit2 />
@@ -305,7 +305,7 @@ function WorkSheetTask() {
                           >
                             {/* {element.date} */}
                             
-                            {element.first_name || element.employee_name}
+                            {element.employee_name || element.first_name}
                           </u>
                         </Label>
                       </Col>
@@ -359,7 +359,7 @@ function WorkSheetTask() {
                         return (
                           <tr>
                             <td data-label="SN.No">{index + 1}</td>
-                            <td data-label="Employee Name">{e.first_name || e.employee_name} </td>
+                            <td data-label="Employee Name">{e.employee_name || e.first_name} </td>
                             <td data-label="Date">{e.date ? moment(e.date).format('DD-MM-YYYY') : ''}</td>
                                                    {/* <td data-label="Date">{e.date}</td> */}
                             <td data-label="Share Per Head">{parseFloat(e.share_per_head).toFixed(3)}</td>

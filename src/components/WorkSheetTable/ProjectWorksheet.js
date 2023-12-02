@@ -253,7 +253,7 @@ function ProjectWorksheet() {
                           >
                             {/* {element.date} */}
                             
-                            {element.first_name || element.employee_name}
+                            {element.employee_name || element.first_name}
                           </u>
                         </Label>
                       </Col>
@@ -308,7 +308,7 @@ function ProjectWorksheet() {
                         return (
                           <tr>
                             <td data-label="SN.No">{index + 1}</td>
-                            <td data-label="Employee Name">{e.first_name || e.employee_name} </td>
+                            <td data-label="Employee Name">{e.employee_name || e.first_name} </td>
                             <td data-label="Date">{e.date ? moment(e.date).format('DD-MM-YYYY') : ''}</td>
                                                    {/* <td data-label="Date">{e.date}</td> */}
                             {/* <td data-label="Share Per Head">{e.share_per_head}</td> */}
