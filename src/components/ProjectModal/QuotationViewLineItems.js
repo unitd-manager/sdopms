@@ -73,7 +73,7 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
                 <th scope="col">Description </th>
                 <th scope="col">Qty</th>
                 <th scope="col">UOM</th>
-                <th scope="col">Unit Price</th>
+                {/* <th scope="col">Unit Price</th> */}
                 <th scope="col">Amount</th>
                 <th scope="col">Updated By</th>
                 <th scope="col">Action</th>
@@ -89,7 +89,7 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
                       <td>{e.description}</td>
                       <td>{e.quantity}</td>
                       <td>{e.unit}</td>
-                      <td>{e.unit_price}</td>
+                      {/* <td>{e.unit_price}</td> */}
                       <td>{e.amount} </td>
                       <td></td>
                       

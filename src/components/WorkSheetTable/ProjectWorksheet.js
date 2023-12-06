@@ -1,48 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Modal, ModalBody, FormGroup, ModalHeader, Label } from 'reactstrap';
+import { Col, Modal, ModalBody, FormGroup, ModalHeader, Label,Table } from 'reactstrap';
 // import * as Icon from 'react-feather';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-import $ from 'jquery';
+
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
 // import 'datatables.net-buttons/js/buttons.html5';
 // import 'datatables.net-buttons/js/buttons.print';
 import 'react-data-table-component-extensions/dist/index.css';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import api from '../../constants/api';
-import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import CommonTable from '../../components/CommonTable';
+// import CommonTable from '../CommonTable';
 
 
-function WorkSheetTask() {
-  //const { id } = useParams();
+function ProjectWorksheet() {
+  const { id } = useParams();
   const [WorkSheet, setWorkSheet] = useState(null);
   const [lineItem, setLineItem] = useState([]);
   // const [selectedItemId, setSelectedItemId] = useState(null); // State to store the selected item ID
   const [viewLineModal, setViewLineModal] = useState(false);
-  const getTimeSheet = () => {
-    api.get('/projecttask/gettaskhistory').then((res) => {
-      setWorkSheet(res.data.data);
-      console.log(res.data.data);
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        //   buttons: [ {
-        //     extend: 'print',
-        //     text: "Print",
-        //     className:"shadow-none btn btn-primary",
-        // }],
-      });
-      //   setLoading(false)
-      // }).catch(()=>{
-      //   setLoading(false)
-    });
+  
+   //Getting data from milestone
+   const getworksheetbyId = () => {
+    api
+      .post('/projecttask/getprojecttaskhistory', { project_id: id })
+      .then((res) => {
+        setWorkSheet(res.data.data);
+      })
+      .catch(() => {});
   };
+  // const getTimeSheet = () => {
+  //   api.get('/projecttask/gettaskhistory').then((res) => {
+  //     setWorkSheet(res.data.data);
+  //     console.log(res.data.data);
+  //     $('#example').DataTable({
+  //       pagingType: 'full_numbers',
+  //       pageLength: 20,
+  //       processing: true,
+  //       dom: 'Bfrtip',
+  //       //   buttons: [ {
+  //       //     extend: 'print',
+  //       //     text: "Print",
+  //       //     className:"shadow-none btn btn-primary",
+  //       // }],
+  //     });
+  //     //   setLoading(false)
+  //     // }).catch(()=>{
+  //     //   setLoading(false)
+  //   });
+  // };
   const getLineItem = (taskId) => {
     api.post('/projecttask/getWorksheettaskById', { task_history_id: taskId }).then((res) => {
       setLineItem(res.data.data);
@@ -59,7 +68,8 @@ function WorkSheetTask() {
   // };
   useEffect(() => {
     getLineItem();
-    getTimeSheet();
+    //getTimeSheet();
+    getworksheetbyId();
   }, []);
   // const handleDateClick = (date) => {
   //   // This function will handle the click event for the date link
@@ -84,13 +94,7 @@ function WorkSheetTask() {
     //   button: true,
     //   sortable: false,
     // },
-    {
-      name: 'Project Code',
-      selector: 'project_code',
-      sortable: true,
-      grow: 2,
-      wrap: true,
-    },
+
     {
       name: 'Name',
       selector: 'first_name',
@@ -131,13 +135,20 @@ function WorkSheetTask() {
       grow: 0,
     },
   
+    // {
+    //   name:  `Pipe (${WorkSheet && WorkSheet[0] ? WorkSheet[0].pipe_erection_amount : ''})`, // Assuming WorkSheet[0] has the pipe value `,
+    //   selector: 'pipe',
+    //   sortable: true,
+    //   grow: 0,
+    //   //cell: (row) => `${row.pipe} (${row.pipe})`
+    // },
     {
-      name:  `Pipe`, // Assuming WorkSheet[0] has the pipe value `,
-      selector: 'pipe',
-      sortable: true,
-      grow: 0,
-      //cell: (row) => `${row.pipe} (${row.pipe})`
-    },
+        name:  'Pipe', // Assuming WorkSheet[0] has the pipe value `,
+        selector: 'pipe',
+        sortable: true,
+        grow: 0,
+        //cell: (row) => `${row.pipe} (${row.pipe})`
+      },
     {
       name: `Plank`,
       selector: 'pipe',
@@ -153,13 +164,13 @@ function WorkSheetTask() {
     },
 
     {
-      name: `TB `,
+      name: `TB`,
       selector: 'pipe',
       sortable: true,
       grow: 0,
     },
     {
-      name: `Others  `,
+      name: 'Others',
       selector: 'pipe',
       sortable: true,
       grow: 0,
@@ -196,78 +207,16 @@ function WorkSheetTask() {
       sortable: true,
       grow: 0,
     },
-
-    // {
-    //   name: 'Volume Erection ',
-    //   selector: 'volume_erection',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Plank Erection ',
-    //   selector: 'plank_erection',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'TB Erection ',
-    //   selector: 'tb_erection',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Pipe Dismantle ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Plank Dismantle ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Volume Dismantle ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'TB Dismantle ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Others Dismantle ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Total Dismantle Amount ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
-    // {
-    //   name: 'Total Erection Amount ',
-    //   selector: 'share_per_head',
-    //   sortable: true,
-    //   grow: 0,
-    // },
+   
 
   ];
 
   return (
-    <div className="MainDiv">
-      <div className=" pt-xs-25">
-        <BreadCrumbs />
+    // <div className="MainDiv">
+    //   <div className=" pt-xs-25">
+       
 
-        <CommonTable
-          title="WorkSheet List"
-        >
+        <Table id="example" className="display border border-secondary rounded">
           <thead>
             <tr>
               {columns.map((cell) => {
@@ -281,13 +230,12 @@ function WorkSheetTask() {
                 return (
                   <tr key={element.task_history_id}>
                     <td>{index + 1}</td>
-                    <td>
+                    {/* <td>
                       {' '}
                       <Link to={`/ProjectEdit/${element && element.project_id}?tab=5`}>
                         {element.project_code}
                       </Link>
-                    </td>
-                    {/* <td>{element.employee_name || element.first_name}</td> */}
+                    </td> */}
                     {/* <td>
                       <Link to={`/WorkSheetEdit/${element.task_history_id}`}>
                         <Icon.Edit2 />
@@ -305,7 +253,7 @@ function WorkSheetTask() {
                           >
                             {/* {element.date} */}
                             
-                            {element.employee_name || element.first_name}
+                            {element.employee_name || element.first_name} 
                           </u>
                         </Label>
                       </Col>
@@ -316,7 +264,7 @@ function WorkSheetTask() {
                     <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
                     <td style={{ textAlign: 'right' }}>{parseFloat(element.share_per_head).toFixed(2)}</td>
                     <td >{element.task_type}</td>
-                    <td style={{ textAlign: 'right' }}>{element.pipe}</td>
+                    <td style={{ textAlign: 'right' }}>{element.pipe} </td>
                     <td style={{ textAlign: 'right' }}>{element.plank}</td>
                     <td style={{ textAlign: 'right' }}>{element.volume}</td>
                     <td style={{ textAlign: 'right' }}>{element.tb}</td>
@@ -348,6 +296,7 @@ function WorkSheetTask() {
                     <tr>
                       <th scope="col">SN.No </th>
                       <th scope="col">Employee Name </th>
+
                       <th scope="col">Date </th>
                       <th scope="col">Share Amount($)</th>
 
@@ -359,10 +308,12 @@ function WorkSheetTask() {
                         return (
                           <tr>
                             <td data-label="SN.No">{index + 1}</td>
-                            <td data-label="Employee Name">{e.employee_name || e.first_name}</td>
+                            <td data-label="Employee Name">{e.employee_name || e.first_name} </td>
                             <td data-label="Date">{e.date ? moment(e.date).format('DD-MM-YYYY') : ''}</td>
                                                    {/* <td data-label="Date">{e.date}</td> */}
+                            {/* <td data-label="Share Per Head">{e.share_per_head}</td> */}
                             <td data-label="Share Per Head">{parseFloat(e.share_per_head).toFixed(3)}</td>
+
 
 
                           </tr>
@@ -373,10 +324,10 @@ function WorkSheetTask() {
               </FormGroup>
             </ModalBody>
           </Modal>
-        </CommonTable>
-      </div>
-    </div>
+        </Table>
+    //   </div>
+    // </div>
   );
 }
 
-export default WorkSheetTask;
+export default ProjectWorksheet;

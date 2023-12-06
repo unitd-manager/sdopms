@@ -25,23 +25,28 @@ const QuoteViewEditItem = ({ editLineModal, setEditLineModal, FetchLineItemData 
   };
 const {id}=useParams();
   const [lineItemData, setLineItemData] = useState(null);
-  const [totalAmount, setTotalAmount] = useState();
+  // const [totalAmount, setTotalAmount] = useState();
 
   const handleData = (e) => {
     setLineItemData({ ...lineItemData, [e.target.name]: e.target.value });
   };
-  const handleCalc = (Qty, UnitPrice, TotalPrice) => {
-    if (!Qty) Qty = 0;
-    if (!UnitPrice) UnitPrice = 0;
-    if (!TotalPrice) TotalPrice = 0;
+  // const handleCalc = (Qty, UnitPrice, TotalPrice) => {
+  //   if (!Qty) Qty = 0;
+  //   if (!UnitPrice) UnitPrice = 0;
+  //   if (!TotalPrice) TotalPrice = 0;
 
-    setTotalAmount(parseFloat(Qty) * parseFloat(UnitPrice));
+  //   setTotalAmount(parseFloat(Qty) * parseFloat(UnitPrice));
+  // };
+  const [unitdetails, setUnitDetails] = useState();
+  const getUnit = () => {
+    api.get('/product/getUnitFromValueList', unitdetails).then((res) => {
+          setUnitDetails(res.data.data);
+    });
   };
-
   const UpdateData = () => {
     lineItemData.quote_id=id;
     //lineItemData.amount=totalAmount;
-    lineItemData.amount = parseFloat(lineItemData.quantity) * parseFloat(lineItemData.unit_price) 
+    //lineItemData.amount = parseFloat(lineItemData.quantity) * parseFloat(lineItemData.unit_price) 
     api
       .post('/tender/edit-TabQuoteLine', lineItemData)
       .then((res) => {
@@ -55,6 +60,7 @@ const {id}=useParams();
   };
 
   React.useEffect(() => {
+    getUnit();
     setLineItemData(FetchLineItemData);
   }, [FetchLineItemData]);
 
@@ -97,9 +103,10 @@ const {id}=useParams();
                   type="text"
                   name="quantity"
                   defaultValue={lineItemData && lineItemData.quantity}
-                  onChange={(e)=>{handleData(e);
-                    handleCalc(e.target.value, lineItemData.unit_price,lineItemData.amount
-                      )}}
+                  // onChange={(e)=>{handleData(e);
+                  //   handleCalc(e.target.value, lineItemData.unit_price,lineItemData.amount
+                  //     )}}
+                  onChange={handleData}
                 />
               </Col>
             </Row>
@@ -108,16 +115,32 @@ const {id}=useParams();
             <Row>
               <Label sm="2">UOM</Label>
               <Col sm="10">
-                <Input
+                {/* <Input
                   type="textarea"
                   name="unit"
                   defaultValue={lineItemData && lineItemData.unit}
                   onChange={handleData}
-                />
+                /> */}
+                <Input
+                  type="select"
+                  name="unit"
+                  onChange={handleData}
+                  value={lineItemData && lineItemData.unit}
+                >
+                  <option defaultValue="selected">Please Select</option>
+                  {unitdetails &&
+                    unitdetails.map((ele) => {
+                      return (
+                        <option key={ele.value} value={ele.value}>
+                          {ele.value}
+                        </option>
+                      );
+                    })}
+                </Input>
               </Col>
             </Row>
           </FormGroup>
-          <FormGroup>
+          {/* <FormGroup>
             <Row>
               <Label sm="2">Unit Price</Label>
               <Col sm="10">
@@ -131,7 +154,7 @@ const {id}=useParams();
                 />
               </Col>
             </Row>
-          </FormGroup>
+          </FormGroup> */}
           <FormGroup>
             <Row>
               <Label sm="2">Total Price</Label>
@@ -139,11 +162,12 @@ const {id}=useParams();
                 <Input
                   type="text"
                   name="amount"
-                  value={totalAmount || lineItemData && lineItemData.amount}
-                  onChange={(e)=>{handleData(e);
-                    handleCalc(lineItemData.quantity,lineItemData.unit_price,e.target.value)
-                  }}
-                  disabled
+                  value={lineItemData && lineItemData.amount}
+                  // onChange={(e)=>{handleData(e);
+                  //   handleCalc(lineItemData.quantity,lineItemData.unit_price,e.target.value)
+                  // }}
+                  onChange={handleData}
+                  // disabled
                 />
               </Col>
             </Row>

@@ -85,7 +85,7 @@ const InvoiceModal = ({ editInvoiceModal, editModal, setEditModal,invoiceDatas }
     api
       .post('/invoice/getInvoiceItemsById', { invoice_id: editInvoiceModal.invoice_id })
       .then((res) => {
-        setAddLineItem(res.data.data);
+        setAddLineItem(res.data.data[0]);
       });
   };
   //Edit invoice

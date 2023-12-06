@@ -7,8 +7,8 @@ import moment from 'moment';
 //import Converter from 'number-to-words';
 import api from '../../constants/api';
 import message from '../Message';
-import PdfFooter from './PdfFooter';
-import PdfHeader from './PdfHeader';
+// import PdfFooter from './PdfFooter';
+// import PdfHeader from './PdfHeader';
 //import PdfHeader2 from './PdfHeader2';
 
 const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
@@ -71,7 +71,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
         });
 
         setGtotal(grandTotal);
-         })
+      })
       .catch(() => {
         message('Invoice Data Not Found', 'info');
       });
@@ -87,6 +87,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
         {
           text: 'S/NO',
           style: 'tableHead',
+          alignment: 'center',
         },
         {
           text: ' Job Description',
@@ -115,35 +116,32 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
         {
           text: `${index + 1}`,
           style: 'tableBody',
-          border: [false, false, false, true],
+          alignment: 'center',
         },
         {
           text: `${element.item_title ? element.item_title : ''}`,
-          border: [false, false, false, true],
           style: 'tableBody',
           alignment: 'center',
         },
-        {
-          text: `${element.unit ? element.unit : ''}`,
-          border: [false, false, false, true],
-          style: 'tableBody',
-          alignment: 'center',
-        },
+        // {
+        //   text: `${element.unit ? element.unit : ''}`,
+        //   style: 'tableBody',
+        //   alignment: 'center',
+        // },
         {
           text: `${element.qty ? element.qty : ''}`,
-          border: [false, false, false, true],
           style: 'tableBody',
           alignment: 'center',
         },
         {
           text: `${element.unit_price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
-          border: [false, false, false, true],
           margin: [0, 5, 0, 5],
           style: 'tableBody1',
+          alignment: 'right',
+
         },
         {
           text: `${element.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
-          border: [false, false, false, true],
           margin: [0, 5, 0, 5],
           style: 'tableBody1',
         },
@@ -152,60 +150,49 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
 
     const dd = {
       pageSize: 'A4',
-      header: PdfHeader({ findCompany }),
-      pageMargins: [40, 150, 40, 80],
-      footer: PdfFooter,
+      // header: PdfHeader({ findCompany }),
+      pageMargins: [40, 40, 30, 0],
+
+      // footer: PdfFooter,
       content: [
         {
-          layout: {
-            defaultBorder: false,
-            hLineWidth: () => {
-              return 1;
+          columns: [
+            {
+              image: `${findCompany("cp.companyLogo")}`,
+              style: 'logo', width: 80, alignment: 'left', margin: [0, -20, 0, 0]
             },
-            vLineWidth: () => {
-              return 1;
-            },
-            hLineColor: (i) => {
-              if (i === 1 || i === 0) {
-                return '#bfdde8';
-              }
-              return '#eaeaea';
-            },
-            vLineColor: () => {
-              return '#eaeaea';
-            },
-            hLineStyle: () => {
-              return null;
-            },
-            paddingLeft: () => {
-              return 10;
-            },
-            paddingRight: () => {
-              return 10;
-            },
-            paddingTop: () => {
-              return 2;
-            },
-            paddingBottom: () => {
-              return 2;
-            },
-            fillColor: () => {
-              return '#fff';
-            },
-          },
-          table: {
-            headerRows: 1,
-            widths: ['101%'],
-            body: [
-              [
-                {
-                  text: `TAX INVOICE`,
-                  alignment: 'center',
-                  style: 'tableHead',
-                },
-              ],
-            ],
-          },
+
+            { text: `${findCompany("cp.companyName")}`, alignment: 'center', bold: true, fontSize: 17, color: 'green', margin: [0, -20, 80, 0] },
+          ],
+        },
+
+
+        {
+          text: `${findCompany("cp.companyAddress1")}, ${findCompany("cp.companyAddress2")}, ${findCompany("cp.companyAddress3")}`,
+          alignment: 'center', fontSize: 11, color: 'blue', margin: [55, 0, 50, 10],
+        },
+        {
+          text: `Tel No:${findCompany("cp.companyPhone")}, Fax:${findCompany("cp.companyEmail")}, Email:${findCompany("cp.companyEmail")}`,
+          style: 'textSize',
+          margin: [45, -8, 50, 10],
+          color: 'blue',
+          alignment: 'center', fontSize: 11
+        },
+        {
+          text: `Registration No:${findCompany("cp.companyUEN")}, ${findCompany("cp.gstNumber")}`,
+          style: 'textSize',
+          margin: [45, -8, 50, 10],
+          color: 'blue',
+          alignment: 'center', fontSize: 11
+        },
+
+        '\n',
+        {
+          text: `TAX INVOICE`,
+          alignment: 'center',
+          fontSize: 12,
+          decoration: 'underline', // Underline added here
+          style: 'tableHead',
         },
         '\n',
 
@@ -214,13 +201,10 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
             {
               stack: [
                 {
-                  text: `To :${createInvoice.company_name ? createInvoice.company_name : ''}\n${
-                    createInvoice.cust_address1 ? createInvoice.cust_address1 : ''
-                  }\n ${createInvoice.cust_address2 ? createInvoice.cust_address2 : ''}\n${
-                    createInvoice.cust_address_country ? createInvoice.cust_address_country : ''
-                  }\n${
-                    createInvoice.cust_address_po_code ? createInvoice.cust_address_po_code : ''
-                  }`,
+                  text: `To :${createInvoice.company_name ? createInvoice.company_name : ''}\n${createInvoice.cust_address1 ? createInvoice.cust_address1 : ''
+                    }\n ${createInvoice.cust_address2 ? createInvoice.cust_address2 : ''}\n${createInvoice.cust_address_country ? createInvoice.cust_address_country : ''
+                    }\n${createInvoice.cust_address_po_code ? createInvoice.cust_address_po_code : ''
+                    }`,
                   style: ['textSize'],
                   margin: [0, 0, 0, 0],
                 },
@@ -229,7 +213,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
             },
             {
               stack: [
-                
+
                 {
                   text: ` Date :${moment(
                     createInvoice.invoice_date ? createInvoice.invoice_date : '',
@@ -238,24 +222,28 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
                   margin: [100, 0, 0, 0],
                 },
                 {
-                  text: ` Invoice No:${
-                    createInvoice.invoice_code ? createInvoice.invoice_code : ''
-                  } `,
+                  text: ` Invoice No:${createInvoice.invoice_code ? createInvoice.invoice_code : ''
+                    } `,
                   style: ['textSize'],
                   margin: [100, 0, 0, 0],
                 },
                 {
-                  text: `Code :${createInvoice.code ? createInvoice.code : ''} `,
+                  text: `WO NO/REV :${createInvoice.code ? createInvoice.code : ''} `,
                   style: ['textSize'],
                   margin: [100, 0, 0, 0],
                 },
                 {
-                  text: `SO Ref Number :${createInvoice.so_ref_no ? createInvoice.so_ref_no : ''} `,
+                  text: `JOB/DEPT NO :${createInvoice.so_ref_no ? createInvoice.so_ref_no : ''} `,
                   style: ['textSize'],
                   margin: [100, 0, 0, 0],
                 },
                 {
-                  text: ` PO Number :${createInvoice.po_number ? createInvoice.po_number : ''} `,
+                  text: ` JOB DEPT NAME:${createInvoice.po_number ? createInvoice.po_number : ''} `,
+                  style: ['textSize'],
+                  margin: [100, 0, 0, 0],
+                },
+                {
+                  text: `DEPT NO:${createInvoice.po_number ? createInvoice.po_number : ''} `,
                   style: ['textSize'],
                   margin: [100, 0, 0, 0],
                 },
@@ -269,17 +257,12 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
         {
           columns: [
             {
-              text: `ATTN :\n Dear Sir,\n Site Name : ${
-                createInvoice.title ? createInvoice.title : ''
-              } \n Site Code : ${
-                createInvoice.site_code ? createInvoice.site_code : ''
-              }\n Reference :  ${
-                createInvoice.reference ? createInvoice.reference : ''
-              }\n Project Reference :${
-                createInvoice.project_reference ? createInvoice.project_reference : ''
-              } \n Project Location :${
-                createInvoice.project_location ? createInvoice.project_location : ''
-              } `,
+              text: `ATTN :\n Dear Sir,\n Site Name : ${createInvoice.title ? createInvoice.title : ''
+                } \n Site Code : ${createInvoice.site_code ? createInvoice.site_code : ''
+                }\n Reference :  ${createInvoice.reference ? createInvoice.reference : ''
+                }\n Project Reference :${createInvoice.project_reference ? createInvoice.project_reference : ''
+                } \n Project Location :${createInvoice.project_location ? createInvoice.project_location : ''
+                } `,
               style: 'textSize',
               bold: true,
             },
@@ -289,7 +272,7 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
 
         {
           layout: {
-            defaultBorder: false,
+            defaultBorder: true,
             hLineWidth: () => {
               return 1;
             },
@@ -298,16 +281,22 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
             },
             hLineColor: (i) => {
               if (i === 1 || i === 0) {
-                return '#bfdde8';
+                return 'black';
               }
-              return '#eaeaea';
+              return 'black';
             },
-            vLineColor: () => {
-              return '#eaeaea';
+            vLineColor: (i) => {
+              if (i === 1 || i === 0) {
+                return 'black';
+              }
+              return 'black';
             },
             hLineStyle: () => {
+              // if (i === 0 || i === node.table.body.length) {
               return null;
+              //}
             },
+            // vLineStyle: function () { return {dash: { length: 10, space: 4 }}; },
             paddingLeft: () => {
               return 10;
             },
@@ -321,14 +310,14 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
               return 2;
             },
             fillColor: () => {
-              return '#fff';
+              return 'white';
             },
           },
           table: {
             headerRows: 1,
-            widths: [20, 90, '*', '*', 50, 70],
+            widths: ['10%', '30%', '20%', '24%', '20%', '20%'],
 
-            body: productItems,
+            body: productItems
           },
         },
         '\n\n',
@@ -346,7 +335,9 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
                     minimumFractionDigits: 2,
                   })}`,
                   style: ['textSize'],
-                  margin: [145, 0, 0, 0],
+                  margin: [20, 0, 0, 0],
+                  alignment:'right',
+                  bold:true
                 },
                 '\n',
                 // {
@@ -354,17 +345,21 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
                 //   style: ['textSize'],
                 //   margin: [145, 0, 0, 0],
                 // },
-                '\n',
+             
                 {
                   text: `GST 8% :  ${createInvoice.gst_value ? createInvoice.gst_value : ''}`,
                   style: ['textSize'],
-                  margin: [145, 0, 0, 0],
+                  alignment:'right',
+                  margin: [20, 0, 0, 0],
+                  bold:true
                 },
                 '\n',
                 {
-                  text: `GRAND TOTAL $ : ${calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+                  text: `GRAND TOTAL ($) : ${calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
                   style: ['textSize'],
-                  margin: [145, 0, 0, 0],
+                  margin: [20, 0, 0, 0],
+                  alignment:'right',
+                  bold:true
                 },
               ],
             },
