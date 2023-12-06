@@ -37,7 +37,12 @@ const {id}=useParams();
 
   //   setTotalAmount(parseFloat(Qty) * parseFloat(UnitPrice));
   // };
-
+  const [unitdetails, setUnitDetails] = useState();
+  const getUnit = () => {
+    api.get('/product/getUnitFromValueList', unitdetails).then((res) => {
+          setUnitDetails(res.data.data);
+    });
+  };
   const UpdateData = () => {
     lineItemData.quote_id=id;
     //lineItemData.amount=totalAmount;
@@ -55,6 +60,7 @@ const {id}=useParams();
   };
 
   React.useEffect(() => {
+    getUnit();
     setLineItemData(FetchLineItemData);
   }, [FetchLineItemData]);
 
@@ -109,12 +115,28 @@ const {id}=useParams();
             <Row>
               <Label sm="2">UOM</Label>
               <Col sm="10">
-                <Input
+                {/* <Input
                   type="textarea"
                   name="unit"
                   defaultValue={lineItemData && lineItemData.unit}
                   onChange={handleData}
-                />
+                /> */}
+                <Input
+                  type="select"
+                  name="unit"
+                  onChange={handleData}
+                  value={lineItemData && lineItemData.unit}
+                >
+                  <option defaultValue="selected">Please Select</option>
+                  {unitdetails &&
+                    unitdetails.map((ele) => {
+                      return (
+                        <option key={ele.value} value={ele.value}>
+                          {ele.value}
+                        </option>
+                      );
+                    })}
+                </Input>
               </Col>
             </Row>
           </FormGroup>
