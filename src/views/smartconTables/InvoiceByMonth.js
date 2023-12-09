@@ -23,7 +23,7 @@ const InvoiceMonthReports = () => {
   //Get data from Reports table
   const getInvoiceMonth = () => {
     api
-      .get('/reports/getInvoiveByMonth')
+      .get('/reports/getInvoiveByMonth1')
       .then((res) => {
         setReport(res.data.data);
         setUserSearchData(res.data.data);
@@ -40,10 +40,19 @@ const InvoiceMonthReports = () => {
       });
   };
 
+  // const handleSearch = () => {
+  //   const newData = report
+  //     .filter((y) => y.record_type === (companyName === '' ? y.record_type : companyName))
+  //       setUserSearchData(newData);
+  // };
   const handleSearch = () => {
-    const newData = report
-      .filter((y) => y.record_type === (companyName === '' ? y.record_type : companyName))
-        setUserSearchData(newData);
+    const newData = report.filter((item) => {
+      if (companyName === '') {
+        return true;
+      }
+      return item.record_type === companyName;
+    });
+    setUserSearchData(newData);
   };
   useEffect(() => {
   
@@ -102,10 +111,11 @@ const InvoiceMonthReports = () => {
                   name="record_type"
                   onChange={(e) => setCompanyName(e.target.value)}
                 > <option value="">Select Category</option>
-                  <option value="project">Project</option>
-                  <option value="tenancy project">Tenancy Project</option>
-                  <option value="tenancy work">Tenancy Work</option>
-                  <option value="maintenance">Maintenance</option>
+                  <option value="New">New</option>
+                  <option value="Project">Project</option>
+                  <option value="Tenancy Project">Tenancy Project</option>
+                  <option value="Tenancy Work">Tenancy Work</option>
+                  <option value="Maintenance">Maintenance</option>
                 </Input>
               </FormGroup>
             </Col>

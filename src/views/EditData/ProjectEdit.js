@@ -621,7 +621,7 @@ const ProjectEdit = () => {
                 <FormGroup>
                   <Label>Pipe Erection</Label>
                   <Input
-                    type="text"
+                    type="number"
                     name="pipe_erection_amount"
                     defaultValue={projectDetail && projectDetail.pipe_erection_amount}
                     onChange={handleInputs}

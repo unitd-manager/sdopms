@@ -53,7 +53,7 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId, p
       .post('/finance/insertInvoiceReceiptHistory', createReceiptHistory)
       .then(() => {
         message('data inserted successfully.');
-        window.location.reload()
+        //window.location.reload()
       })
       .catch(() => {
         message('Network connection error.');
@@ -151,7 +151,7 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt,orderId, p
       .then((res) => {
         message('data inserted successfully.');
           finalCalculation(res.data.data.insertId)
-          window.location.reload()
+          //window.location.reload()
       })
       .catch(() => {
         message('Network connection error.');

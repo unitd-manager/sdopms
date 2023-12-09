@@ -106,7 +106,7 @@ const AgingReports = () => {
                 return (
                   <tr key={element.invoice_id}>
                     <td>{index + 1}</td>
-                    <td>{element.company_name}</td>
+                    <td>{element.cust_company_name}</td>
                     <td>{element.status==='Paid'?0:element.firstdays}</td>
                     <td>{element.status==='Paid'?0:element.seconddays}</td>
                     <td>{element.status==='Paid'?0:element.thirddays}</td>
