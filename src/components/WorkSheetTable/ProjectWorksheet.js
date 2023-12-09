@@ -216,8 +216,13 @@ function ProjectWorksheet() {
     //   <div className=" pt-xs-25">
        
 
-        <Table id="example" className="display border border-secondary rounded">
-          <thead>
+    <Table
+    id="example"
+    className="display border border-secondary rounded"
+    title="Worksheet"
+    //className="lineitem border border-secondary rounded"
+  >
+        <thead className="lineitem1 border border-secondary rounded">
             <tr>
               {columns.map((cell) => {
                 return <td key={cell.name}>{cell.name}</td>;

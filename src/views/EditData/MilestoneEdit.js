@@ -33,7 +33,6 @@ import '../form-editor/editor.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
-import ComponentCardV2 from '../../components/ComponentCardV2';
 import message from '../../components/Message';
 import api from '../../constants/api';
 //import DeleteButton from '../../components/DeleteButton';
@@ -314,7 +313,7 @@ const MilestoneEdit = () => {
       <Form>
         <FormGroup>
           <ToastContainer></ToastContainer>
-          <ComponentCardV2>
+          
             <ApiButton
               editData={editMilestone}
               navigate={navigate}
@@ -323,7 +322,7 @@ const MilestoneEdit = () => {
               //deleteData={DeleteSection}
               module="Milestone"
             ></ApiButton>
-          </ComponentCardV2>
+        
         </FormGroup>
       </Form>
       {/* milestone Details */}

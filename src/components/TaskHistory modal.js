@@ -295,7 +295,7 @@ console.log('work',work)
   // };
   useEffect(() => {
     const result = Team?.filter(ad => 
-      taskEmployees?.every(fd => parseFloat(fd.project_team_id) === parseFloat(ad.project_team_id)));
+      taskEmployees?.some(fd => parseFloat(fd.project_team_id) === parseFloat(ad.project_team_id)));
  setEmployeesforRecord(result);
  console.log('result',result)
   }, [taskEmployees,Team]);
