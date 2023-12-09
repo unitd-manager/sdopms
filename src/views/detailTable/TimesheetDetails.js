@@ -226,7 +226,7 @@ console.log(formattedTime);
                         employee.map((ele) => {
                           return (
                             <option key={ele.employee_id} value={ele.employee_id}>
-                              {ele.first_name}
+                              {ele.employee_name || ele.first_name}
                             </option>
                           );
                         })}
