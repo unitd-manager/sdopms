@@ -303,7 +303,7 @@ const PurchaseOrderEdit = () => {
               navigate={navigate}
               applyChanges={editPurchaseData}
               backToList={backToList}
-              module="PurchaseOrder"
+              module="Purchase Order"
             ></ApiButton>
                       <ComponentCardV2>
             <Row>

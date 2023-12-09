@@ -71,7 +71,20 @@ const TaskHistoryModal = ({
   // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
 
+  const [taskEmployees, setTaskEmployees] = useState([]);
+  
+  const[teams,setEmployeesforRecord]=useState([])
 
+  const getTaskEmployees = () => {
+    api
+      .post('/projectTask/getTaskEmployees',{task_id:contactDatas.project_task_id})
+      .then((res) => {
+        console.log(res.data.data);
+        setTaskEmployees(res.data.data);
+      })
+      .catch(() => {});
+  };
+  
   const getStaffName = () => {
     api
       .post('/projectteam/getEmployeeByTaskID', { project_team_id: id,task_id:contactDatas.project_task_id})
@@ -272,7 +285,7 @@ console.log('work',work)
   };
   console.log('selected names',selectedNames)
   //attachments
-  
+  console.log('taskemps',taskEmployees)
   //Milestone data in milestoneDetails
   const handleInputsTask = (e) => {
     setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
@@ -280,14 +293,21 @@ console.log('work',work)
   // const handleTaskTypeChange = (newTaskType) => {
   //   setInsertTask({ ...insertTask, task_type: newTaskType });
   // };
-
   useEffect(() => {
-
+    const result = Team?.filter(ad => 
+      taskEmployees?.some(fd => parseFloat(fd.project_team_id) === parseFloat(ad.project_team_id)));
+ setEmployeesforRecord(result);
+ console.log('result',result)
+  }, [taskEmployees,Team]);
+  console.log('Team',Team)
+ console.log('teams',teams)
+  useEffect(() => {
+    getTaskEmployees();
     getStaffName();
     editJobById();
  
   }, [id]);
-
+  
   useEffect(() => {
     setSelectAll(true);
     selectedNames.filter(val => val.project_team_id === TeamID).forEach(val => {
@@ -351,8 +371,8 @@ console.log('work',work)
                                 }}
                               >
                                 <option value="">Please Select</option>
-                                {Team &&
-                                  Team.map((ele) => (
+                                {teams &&
+                                  teams.map((ele) => (
                                     <option key={ele.project_team_id} value={ele.project_team_id}>
                                       {ele.team_title}
                                     </option>
@@ -361,7 +381,7 @@ console.log('work',work)
                             </FormGroup>
                           </Col>
                           <Row>
-                            {employees&&<Table className="no-wrap mt-3 align-middle" responsive borderless>
+                            {selectedNames &&selectedNames.length>0 && <Table className="no-wrap mt-3 align-middle" responsive borderless>
                               <thead>
                                 <tr>
                                   <th>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane,Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
@@ -44,6 +45,7 @@ import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDet
 import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
 import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
+import { HasAccess ,usePermify} from '@permify/react-role';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -54,7 +56,18 @@ const ProjectEdit = () => {
   };
 
   console.log('project_id', id);
+  const { isAuthorized, isLoading } = usePermify();
 
+  
+  const fetchData = async (type) => {
+    // Pass roles and permissions accordingly
+    // You can send empty array or null for first param to check permissions only
+    if (await isAuthorized(null, `${module}-${type}`)) {
+       return true
+    }else{
+      return false
+    }
+};
   const [projectDetail, setProjectDetail] = useState();
   const [company, setCompany] = useState();
   const [contact, setContact] = useState();
@@ -104,17 +117,18 @@ const ProjectEdit = () => {
 
   // Start for tab refresh navigation
   const tabs = [
-    { id: '1', name: 'Analytics' },
-    { id: '2', name: 'Quotation' },
+    
+    // { id: '1', name: 'Analytics' },
+    // { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
     { id: '6', name: 'Worksheet' },
-    { id: '7', name: 'Calender' },
-    { id: '8', name: 'Material Purchase Order' },
-    { id: '9', name: 'Material Used' },
-    { id: '10',name: 'Material Transferred' },
-    { id: '11',name: 'Finance' },
+    // { id: '7', name: 'Calender' },
+    // { id: '8', name: 'Material Purchase Order' },
+    // { id: '9', name: 'Material Used' },
+    // { id: '10',name: 'Material Transferred' },
+    // { id: '11',name: 'Finance' },
    
   ];
   const toggle = (tab) => {
@@ -761,6 +775,11 @@ const ProjectEdit = () => {
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
           <Tab toggle={toggle} tabs={tabs} />
+          <HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           <TabPane tabId="1">
             <br />
             <Row>
@@ -785,7 +804,13 @@ const ProjectEdit = () => {
             <br />
             <PriorityStatsProject id={id}></PriorityStatsProject>
           </TabPane>
+          </HasAccess>
           {/* Tab 2 */}
+          <HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           <TabPane tabId="2" eventkey="quotationMoreDetails">
             <br/>
           <Row className="mb-4">
@@ -825,7 +850,9 @@ const ProjectEdit = () => {
             ></QuotationMoreDetails>
           </TabPane>
           <TabPane tabId="2"></TabPane>
+          </HasAccess>
           {/* Tab 3 Milestone */}
+          
           <TabPane tabId="3">
             <br />
             <ProjectMilestones
@@ -844,6 +871,7 @@ const ProjectEdit = () => {
               setEditTaskEditModals={setEditTaskEditModals}
             ></ProjectMilestoneEdit>
           </TabPane>
+         
           {/* Tab 4 */}
           <TabPane tabId="4">
             <br />
@@ -926,12 +954,23 @@ const ProjectEdit = () => {
             <br/>
 <ProjectWorksheet></ProjectWorksheet>
            </TabPane>
+           <HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           <TabPane tabId="7">
             <br />
             <CalendarApp projectDetail={projectDetail} id={id}></CalendarApp>
           </TabPane>
+          </HasAccess>
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
+          <HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           <TabPane tabId="8" eventkey="materialPurchased">
             <AddPurchaseOrderModal
               projectId={id}
@@ -975,21 +1014,37 @@ const ProjectEdit = () => {
               />
             )}
           </TabPane>
-
+</HasAccess>
+<HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           {/* Tab 9*/}
           <TabPane tabId="9" eventkey="materialsusedTab">
             <MaterialsusedTab projectId={id} />
           </TabPane>
-
+</HasAccess>
+<HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
           {/* Tab 10 */}
           <TabPane tabId="10" eventkey="materialsTransferred">
             <MaterialsTransferred projectId={id} />
           </TabPane>
-
+</HasAccess>
+<HasAccess
+                roles={null}
+                permissions={`client-edit`}
+                renderAuthFailed={<p></p>}
+        >
            {/* Tab 11 */}
            <TabPane tabId="11" eventkey="financeTab">
             <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
           </TabPane>
+          </HasAccess>
         </TabContent>
       </ComponentCard>
     </>
