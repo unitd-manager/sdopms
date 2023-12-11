@@ -60,7 +60,23 @@ export default function JobProbation({
               />
             </FormGroup>
           </Col>
-
+{job&&job.payment_type ==="hourly"&& <Col md="4">
+            <FormGroup>
+              <Label>
+                {' '}
+                Hourly Pay <span className="required"> *</span>{' '}
+              </Label>
+              <Input
+                type="numbers"
+                onChange={(e) => {
+                  handleInputsJobInformation(e);
+                  handleRadioGst(job.over_time_rate, e.target.value, job.overtime);
+                }}
+                value={job && job.hourly_pay}
+                name="hourly_pay"
+              />
+            </FormGroup>
+          </Col> }
           <Col md="4">
             <FormGroup>
               <Label>

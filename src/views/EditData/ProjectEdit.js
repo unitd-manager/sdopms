@@ -109,6 +109,7 @@ const ProjectEdit = () => {
   const [viewLineModal, setViewLineModal] = useState(false);
   const [taskhistorymodal, setTaskhistorymodal] = useState(false);
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
+  const [projectAmount, setProjectAmount] = useState(null);
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
     quote_code: '',
@@ -244,6 +245,16 @@ const ProjectEdit = () => {
       })
       .catch(() => {});
   };
+//Getting data from setting
+const getProjectAmountsValue = () => {
+  api
+    .get('/setting/getProjectAmountValue')
+    .then((res) => {
+      setProjectAmount(res.data.data);
+    })
+    .catch(() => {});
+};
+  
   //Getting data from milestone
   const getTaskById = () => {
     api
@@ -427,6 +438,7 @@ const ProjectEdit = () => {
     getProjectById();
     getMilestoneById();
     getTaskById();
+    getProjectAmountsValue();
     //getTimeSheetById();
     getTeamById();
     TabPurchaseOrderLineItemTable();
@@ -637,7 +649,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="pipe_erection_amount"
-                    defaultValue={projectDetail && projectDetail.pipe_erection_amount}
+                    defaultValue={projectDetail && projectDetail.project_pipe_erection_amount}
                     onChange={handleInputs}
                   >
                     
@@ -650,7 +662,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="plank_erection_amount"
-                    defaultValue={projectDetail && projectDetail.plank_erection_amount}
+                    defaultValue={projectAmount && projectAmount.project_plank_erection_amount}
                     onChange={handleInputs}
                   >
                     
@@ -663,7 +675,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="volume_erection_amount"
-                    defaultValue={projectDetail && projectDetail.volume_erection_amount}
+                    defaultValue={projectAmount && projectAmount.project_volume_erection_amount}
                     onChange={handleInputs}
                   >
                    
@@ -676,7 +688,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="tb_erection_amount"
-                    defaultValue={projectDetail && projectDetail.tb_erection_amount}
+                    defaultValue={projectAmount && projectAmount.project_tb_erection_amount}
                     onChange={handleInputs}
                   >
                   
@@ -689,7 +701,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="others_erection_amount"
-                    defaultValue={projectDetail && projectDetail.others_erection_amount}
+                    defaultValue={projectAmount && projectAmount.project_others_erection_amount}
                     onChange={handleInputs}
                   >
                     
@@ -702,7 +714,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="pipe_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.pipe_dismantel_amount}
+                    defaultValue={projectAmount && projectAmount.project_pipe_dismantel_amount}
                     onChange={handleInputs}
                   >
                     
@@ -715,7 +727,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="plank_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.plank_dismantel_amount}
+                    defaultValue={projectAmount && projectAmount.project_plank_dismantel_amount}
                     onChange={handleInputs}
                   >
                    
@@ -728,7 +740,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="volume_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.volume_dismantel_amount}
+                    defaultValue={projectAmount && projectAmount.project_volume_dismantel_amount}
                     onChange={handleInputs}
                   >
                    
@@ -741,7 +753,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="tb_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.tb_dismantel_amount}
+                    defaultValue={projectAmount && projectAmount.project_tb_dismantel_amount}
                     onChange={handleInputs}
                   >
                     
@@ -754,7 +766,7 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="others_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.others_dismantel_amount}
+                    defaultValue={projectAmount && projectAmount.project_others_dismantel_amount}
                     onChange={handleInputs}
                   >
                     
