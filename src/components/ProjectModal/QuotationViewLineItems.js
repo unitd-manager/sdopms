@@ -30,7 +30,7 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
         console.log('SubConWorkOrderPortal', res.data.data);
       })
       .catch(() => {
-        message(' LineItem Data not found', 'info');
+        //message(' LineItem Data not found', 'info');
       });
   };
   const QuotationDeleteItem = () => {

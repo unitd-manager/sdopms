@@ -5,7 +5,6 @@ import {
   Form,
   Input,
   Button,
-  FormGroup,
   Modal,
   ModalHeader,
   ModalBody,
@@ -33,7 +32,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [gstValue, setGstValue] = useState();
-  const [checkbox, setCheckbox] = useState();
+  // const [checkbox, setCheckbox] = useState();
   const [paymentTerms, setPaymentTerms] = useState('');
   const gstPercentageValue = parseInt(gstValue?.value, 10) || 0; 
   const [createInvoice, setCreateInvoice] = useState({
@@ -73,17 +72,17 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
       });
   };
   console.log('ordr',orderId)
-  const getCheckBox = async () => {
-    try {
-      const response = await api.post('/invoice/getCheckboxReceiptById', { order_id: orderId });
-      setCheckbox(response.data.data);
-    } catch (error) {
-      console.error('Error fetching checkbox data:', error);
-    }
-  };
+  // const getCheckBox = async () => {
+  //   try {
+  //     const response = await api.post('/invoice/getCheckboxReceiptById', { order_id: orderId });
+  //     setCheckbox(response.data.data);
+  //   } catch (error) {
+  //     console.error('Error fetching checkbox data:', error);
+  //   }
+  // };
   useEffect(() => {
     getGstValue();
-    getCheckBox();
+    //getCheckBox();
   }, [orderId]);
 
   //setting data in createinvoice
@@ -257,7 +256,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
       setTotalAmount(finalTotal);
     }
   };
-  console.log('checkbox',checkbox)
+  //console.log('checkbox',checkbox)
   return (
     <>
       <Modal size="xl" isOpen={editInvoiceData}>
@@ -306,7 +305,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
                       />
                     </ComponentCard>
                   </Row>
-                  {checkbox &&
+                  {/* {checkbox &&
                       checkbox.map((singleInvoiceObj) => {
                         console.log('singleInvoiceObj',singleInvoiceObj)
                         return (
@@ -329,7 +328,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
                           </Row>
                         );
                       })}
-                    <br></br>
+                    <br></br> */}
                   {/* Invoice Item */}
                   <Row>
                     <Col>

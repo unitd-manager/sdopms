@@ -105,10 +105,10 @@ const InvoiceBYYear = () => {
                   name="record_type"
                   onChange={(e) => setCompanyName(e.target.value)}
                 > <option value="">Select Category</option>
-                  <option value="project">Project</option>
-                  <option value="tenancy project">Tenancy Project</option>
-                  <option value="tenancy work">Tenancy Work</option>
-                  <option value="maintenance">Maintenance</option>
+                  <option value="Project">Project</option>
+                  <option value="Tenancy Project">Tenancy Project</option>
+                  <option value="Tenancy work">Tenancy Work</option>
+                  <option value="Maintenance">Maintenance</option>
                 </Input>
               </FormGroup>
             </Col>

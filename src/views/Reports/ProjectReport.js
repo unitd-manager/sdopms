@@ -130,14 +130,15 @@ const ProjectReport = () => {
                 <Input
                   type="date"
                   name="start_date"
-                  onChange={(e) => setStartDate(e.target.value)}
+                   onChange={(e) => setStartDate(e.target.value)}
                 />
               </FormGroup>
             </Col>
             <Col>
               <FormGroup>
                 <Label>End Date</Label>
-                <Input type="date" name="actual_finish_date" onChange={(e) => setEndDate(e.target.value)} />
+                <Input type="date" 
+                name="actual_finish_date" onChange={(e) => setEndDate(e.target.value)} />
               </FormGroup>
             </Col>
               <Col>
@@ -227,8 +228,8 @@ const ProjectReport = () => {
                     <td>{element.project_code}</td>
                     <td>{element.Project_name}</td>
                     <td>{element.category}</td>
-                    <td>{moment(element.start_date).format('YYYY-MM-DD')}</td>
-                    <td>{moment(element.actual_finish_date).format('YYYY-MM-DD')}</td>
+                    <td>{element.start_date ? moment(element.start_date).format('DD-MM-YYYY') : ''}</td>
+                    <td>{element.estimated_finish_date ? moment(element.estimated_finish_date).format('DD-MM-YYYY') : ''}</td>
                     <td>{element.company_name}</td>
                     <td>{element.contact_name}</td>
                     <td>{element.status}</td>

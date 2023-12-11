@@ -34,6 +34,10 @@ const CreateFinance = ({ financeModal, setFinanceModal, projectId,getOrdersById 
       .post('/project/getCompanyProjectById', { project_id: projectId })
       .then((res) => {
         setCreateOrder(res.data.data);
+        // Extract company_id from fetched data and store it
+        const companyId = res.data.data?.company_id; // Adjust the key based on the API response
+        setCreateOrder((prevDetails) => ({ ...prevDetails, company_id: companyId }));
+        // setCreateOrder(res.data.data);
       })
       .catch(() => {
        // message('Costing Summary not found', 'info');
@@ -41,9 +45,10 @@ const CreateFinance = ({ financeModal, setFinanceModal, projectId,getOrdersById 
   };
   //Insert order for finance module
   const insertOrder = () => {
-    projectDetails.project_id = projectId;
+    const orderData = { ...projectDetails, project_id: projectId };
+    orderData.project_id = projectId;
     api
-      .post('/finance/insertOrder', projectDetails)
+      .post('/finance/insertOrder', orderData)
       .then(() => {
       
         //setCreateOrder(res.data.data);
@@ -143,10 +148,10 @@ const CreateFinance = ({ financeModal, setFinanceModal, projectId,getOrdersById 
                         value={projectDetails && projectDetails.record_type}
                       >
                         <option value="">Select</option>
-                        <option value="New">Project</option>
-                        <option value="Quoted">Tenancy Project</option>
-                        <option value="Awarded">Tenancy Work</option>
-                        <option value="Awarded">Maintenance</option>
+                        <option value="Project">Project</option>
+                        <option value="Tenancy Project">Tenancy Project</option>
+                        <option value="Tenancy Work">Tenancy Work</option>
+                        <option value="Maintenance">Maintenance</option>
                       </Input>
                     </FormGroup>
                   </Col>

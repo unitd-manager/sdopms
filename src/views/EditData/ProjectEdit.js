@@ -82,6 +82,8 @@ const ProjectEdit = () => {
   const [contactDatas, setContactData] = useState();
   const [editTaskEditModal, setEditTaskEditModal] = useState(false);
   const [addContactModal, setAddContactModal] = useState(false);
+  const [incharge, setIncharge] = useState();
+  const [supervisor, setSupervisor] = useState();
   // const [timeSheetById, setTimeSheetById] = useState();
   // const [contactDatass, setContactDatass] = useState();
   const [addLineItemModal, setAddLineItemModal] = useState(false);
@@ -194,7 +196,14 @@ const ProjectEdit = () => {
       //setViewLineModal(true);
     });
   };
-
+  // const getIncharge = () => {
+  //   api
+  //     .get('/tender/projectIncharge')
+  //     .then((res) => {
+  //       setIncharge(res.data.data);
+  //     })
+  //     .catch(() => {});
+  // };
   // Edit Project
 
   const handleInputs = (e) => {
@@ -224,6 +233,22 @@ const ProjectEdit = () => {
       };
   const handleQuoteForms = (ele) => {
     setQuoteForm({ ...quoteForm, [ele.target.name]: ele.target.value });
+  };
+  const getProjectManager = () => {
+    api
+      .get('/project/getProjectManager')
+      .then((res) => {
+        setIncharge(res.data.data);
+      })
+      .catch(() => {});
+  };
+  const getSupervisor = () => {
+    api
+      .get('/project/getProjectSupervisor')
+      .then((res) => {
+        setSupervisor(res.data.data);
+      })
+      .catch(() => {});
   };
   //QUTO GENERATED CODE
   const generateCode = () => {
@@ -440,6 +465,8 @@ const getProjectAmountsValue = () => {
     getTaskById();
     getProjectAmountsValue();
     //getTimeSheetById();
+    getSupervisor();
+    getProjectManager();
     getTeamById();
     TabPurchaseOrderLineItemTable();
     getCompany();
@@ -545,6 +572,28 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
+                  <Label>Job No</Label>
+                  <Input
+                    type="text"
+                    name="job_no"
+                    defaultValue={projectDetail && projectDetail.job_no}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Work Order no</Label>
+                  <Input
+                    type="text"
+                    name="work_order_no"
+                    defaultValue={projectDetail && projectDetail.work_order_no}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
                   <Label>Company</Label>
                   <Input
                     type="select"
@@ -602,6 +651,17 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
+                  <Label>End Date</Label>
+                  <Input
+                    type="date"
+                    name="end_date"
+                    defaultValue={projectDetail && projectDetail.end_date}
+                    onChange={handleInputs}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
                   <Label>Estimated Finish Date</Label>
                   <Input
                     type="date"
@@ -611,19 +671,46 @@ const getProjectAmountsValue = () => {
                   />
                 </FormGroup>
               </Col>
-              
-            </Row>
-            <Row>
+             
               <Col md="3">
                 <FormGroup>
                   <Label>Project Manager</Label>
                   <Input
-                    type="text"
+                    type="select"
                     name="project_manager_id"
-                    defaultValue={projectDetail && projectDetail.project_manager_id}
                     onChange={handleInputs}
+                    value={projectDetail && projectDetail.project_manager_id}
                   >
-                   
+                    <option value="selected">Please Select</option>
+                    {incharge &&
+                      incharge.map((ele) => {
+                        return (
+                          <option value={ele.employee_id} key={ele.employee_id}>
+                          {ele.employee_name}
+                        </option>
+                        );
+                      })}
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="3">
+                <FormGroup>
+                  <Label>Project Supervisor</Label>
+                  <Input
+                    type="select"
+                    name="project_supervisor_id"
+                    onChange={handleInputs}
+                    value={projectDetail && projectDetail.project_supervisor_id}
+                  >
+                    <option value="selected">Please Select</option>
+                    {supervisor &&
+                      supervisor.map((ele) => {
+                        return (
+                          <option value={ele.employee_id} key={ele.employee_id}>
+                          {ele.employee_name}
+                        </option>
+                        );
+                      })}
                   </Input>
                 </FormGroup>
               </Col>
@@ -645,9 +732,9 @@ const getProjectAmountsValue = () => {
                 <Row>
               <Col md="3">
                 <FormGroup>
-                  <Label>Pipe Erection</Label>
+                  <Label>Pipe Erection Amount($)</Label>
                   <Input
-                    type="text"
+                    type="number"
                     name="pipe_erection_amount"
                     defaultValue={projectDetail && projectDetail.project_pipe_erection_amount}
                     onChange={handleInputs}
@@ -658,7 +745,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Plank Erection</Label>
+                  <Label>Plank Erection Amount($)</Label>
                   <Input
                     type="text"
                     name="plank_erection_amount"
@@ -671,7 +758,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Volume Erection</Label>
+                  <Label>Volume Erection Amount($)</Label>
                   <Input
                     type="text"
                     name="volume_erection_amount"
@@ -684,7 +771,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>TB Erection</Label>
+                  <Label>TB Erection Amount($)</Label>
                   <Input
                     type="text"
                     name="tb_erection_amount"
@@ -697,7 +784,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Others Erection</Label>
+                  <Label>Others Erection Amount($)</Label>
                   <Input
                     type="text"
                     name="others_erection_amount"
@@ -710,7 +797,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Pipe Dismantel</Label>
+                  <Label>Pipe Dismantel Amount($)</Label>
                   <Input
                     type="text"
                     name="pipe_dismantel_amount"
@@ -723,7 +810,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Plank Dismantel</Label>
+                  <Label>Plank Dismantel Amount($)</Label>
                   <Input
                     type="text"
                     name="plank_dismantel_amount"
@@ -736,7 +823,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Volume Dismantel</Label>
+                  <Label>Volume Dismantel Amount($)</Label>
                   <Input
                     type="text"
                     name="volume_dismantel_amount"
@@ -749,7 +836,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>TB Dismantel</Label>
+                  <Label>TB Dismantel Amount($)</Label>
                   <Input
                     type="text"
                     name="tb_dismantel_amount"
@@ -762,7 +849,7 @@ const getProjectAmountsValue = () => {
               </Col>
               <Col md="3">
                 <FormGroup>
-                  <Label>Others Dismantel</Label>
+                  <Label>Others Dismantel Amount($)</Label>
                   <Input
                     type="text"
                     name="others_dismantel_amount"

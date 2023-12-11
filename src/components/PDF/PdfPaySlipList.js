@@ -117,7 +117,7 @@ const PdfPaySlipList = ({payroll}) => {
                 moment(payroll.payslip_start_date).format('DD-MM-YYYY')
                   ? moment(payroll.payslip_start_date).format('DD-MM-YYYY')
                   : ''
-              }   -   ${
+              }    -   ${
                 moment(payroll.payslip_end_date).format('DD-MM-YYYY')
                   ? moment(payroll.payslip_end_date).format('DD-MM-YYYY')
                   : ''
@@ -304,8 +304,8 @@ const PdfPaySlipList = ({payroll}) => {
                 },
                 { text: '', alignment: 'right', colSpan: 1 ,style: 'tableHeader2',},
                 { text: `${
-                  payroll.total_allowance
-                    ? payroll.total_allowance.toLocaleString('en-IN', {
+                  payroll.total_alowance
+                    ? payroll.total_alowance.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                       })
                     : 0.0
