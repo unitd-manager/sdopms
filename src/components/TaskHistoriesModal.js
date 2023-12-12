@@ -59,6 +59,9 @@ const TaskHistoriesModal = ({
       name: 'Volume',
     },
     {
+      name: 'Others',
+    },
+    {
       name: 'Total Amount($)',
       sortable: true,
     },
@@ -212,6 +215,7 @@ const TaskHistoriesModal = ({
                         <td>{element.tb}</td>
                         <td>{element.plank}</td>
                         <td>{element.volume}</td>
+                        <td>{element.others}</td>
                         <td>{element.total_amount}</td>
                         <td>{parseFloat(element.share_per_head).toFixed(3)}</td>
                         <td>

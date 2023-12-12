@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import ComponentCard from '../ComponentCard';
 
-function EmployeePart({ employeeDetails, handleInputChange, allCountries, companies }) {
+function EmployeePart({ employeeDetails, handleInputChange, allCountries, companies,team }) {
   EmployeePart.propTypes = {
     employeeDetails: PropTypes.object,
     handleInputChange: PropTypes.func,
     allCountries: PropTypes.array,
     companies: PropTypes.array,
+    team: PropTypes.array,
   };
 console.log('all countries',allCountries)
   return (
@@ -230,7 +231,7 @@ console.log('all countries',allCountries)
                 </Input>
               </FormGroup>
             </Col>
-            {/* <Col md="3">
+            <Col md="3">
               <FormGroup>
                 <Label>Team</Label>
                 <Input
@@ -240,13 +241,15 @@ console.log('all countries',allCountries)
                   type="select"
                 >
                   <option defaultValue="selected">Please Select</option>
-                  <option value="Team A">Team A</option>
-                  <option value="Team B">Team B</option>
-                  <option value="Team C">Team C</option>
-                  <option value="Team D">Team D</option>
+                  {team &&
+                                  team.map((ele) => (
+                                    <option key={ele.project_team_id} value={ele.project_team_id}>
+                                      {ele.team_title}
+                                    </option>
+                                  ))}
                 </Input>
               </FormGroup>
-            </Col> */}
+            </Col>
             <Col md="3">
               <FormGroup>
                 <Label>Company</Label>

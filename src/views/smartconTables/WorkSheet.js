@@ -165,33 +165,33 @@ function WorkSheetTask() {
       grow: 0,
     },
     {
-      name: 'Pipe Value ',
+      name: 'Pipe Value($) ',
       selector: 'pipe',
       sortable: true,
       grow: 0,
     },
     {
-      name: 'Plank Value ',
+      name: 'Plank Value ($)',
       selector: 'pipe',
       sortable: true,
       grow: 0,
       cell: (row) => row.pipe, // Display 'Pipe' data
     },
     {
-      name: 'Volume Value ',
+      name: 'Volume Value ($) ',
       selector: 'pipe',
       sortable: true,
       grow: 0,
     },
     
     {
-      name: 'TB value ',
+      name: 'TB value ($)',
       selector: 'pipe',
       sortable: true,
       grow: 0,
     },
     {
-      name: 'Others value ',
+      name: 'Others value ($)',
       selector: 'pipe',
       sortable: true,
       grow: 0,

@@ -111,12 +111,14 @@ const ProjectEdit = () => {
   const [viewLineModal, setViewLineModal] = useState(false);
   const [taskhistorymodal, setTaskhistorymodal] = useState(false);
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
-  const [projectAmount, setProjectAmount] = useState(null);
+ 
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
     quote_code: '',
   });
   console.log('contactdatas',contactDatas)
+
+
 
   // Start for tab refresh navigation
   const tabs = [
@@ -213,6 +215,7 @@ const ProjectEdit = () => {
   const UpdateData = () => {
     projectDetail.modification_date = creationdatetime;
     projectDetail.modified_by = loggedInuser.first_name;
+    console.log('projectdetail',projectDetail)
     api
       .post('/project/edit-Project', projectDetail)
       .then(() => {
@@ -270,15 +273,7 @@ const ProjectEdit = () => {
       })
       .catch(() => {});
   };
-//Getting data from setting
-const getProjectAmountsValue = () => {
-  api
-    .get('/setting/getProjectAmountValue')
-    .then((res) => {
-      setProjectAmount(res.data.data);
-    })
-    .catch(() => {});
-};
+
   
   //Getting data from milestone
   const getTaskById = () => {
@@ -463,7 +458,6 @@ const getProjectAmountsValue = () => {
     getProjectById();
     getMilestoneById();
     getTaskById();
-    getProjectAmountsValue();
     //getTimeSheetById();
     getSupervisor();
     getProjectManager();
@@ -734,10 +728,11 @@ const getProjectAmountsValue = () => {
                 <FormGroup>
                   <Label>Pipe Erection Amount($)</Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="pipe_erection_amount"
-                    defaultValue={projectDetail && projectDetail.project_pipe_erection_amount}
+                    defaultValue={projectDetail && projectDetail.pipe_erection_amount }
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>
@@ -749,8 +744,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="plank_erection_amount"
-                    defaultValue={projectAmount && projectAmount.project_plank_erection_amount}
+                    defaultValue={projectDetail && projectDetail.plank_erection_amount }
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>
@@ -762,8 +758,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="volume_erection_amount"
-                    defaultValue={projectAmount && projectAmount.project_volume_erection_amount}
+                    defaultValue={projectDetail && projectDetail.volume_erection_amount }
                     onChange={handleInputs}
+                    
                   >
                    
                   </Input>
@@ -775,8 +772,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="tb_erection_amount"
-                    defaultValue={projectAmount && projectAmount.project_tb_erection_amount}
+                    defaultValue={projectDetail && projectDetail.tb_erection_amount }
                     onChange={handleInputs}
+                    
                   >
                   
                   </Input>
@@ -788,8 +786,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="others_erection_amount"
-                    defaultValue={projectAmount && projectAmount.project_others_erection_amount}
+                    defaultValue={projectDetail && projectDetail.others_erection_amount }
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>
@@ -801,8 +800,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="pipe_dismantel_amount"
-                    defaultValue={projectAmount && projectAmount.project_pipe_dismantel_amount}
+                    defaultValue={projectDetail && projectDetail.pipe_dismantel_amount }
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>
@@ -814,8 +814,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="plank_dismantel_amount"
-                    defaultValue={projectAmount && projectAmount.project_plank_dismantel_amount}
+                    defaultValue={projectDetail && projectDetail.plank_dismantel_amount }
                     onChange={handleInputs}
+                    
                   >
                    
                   </Input>
@@ -827,8 +828,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="volume_dismantel_amount"
-                    defaultValue={projectAmount && projectAmount.project_volume_dismantel_amount}
+                    defaultValue={projectDetail && projectDetail.volume_dismantel_amount}
                     onChange={handleInputs}
+                    
                   >
                    
                   </Input>
@@ -840,8 +842,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="tb_dismantel_amount"
-                    defaultValue={projectAmount && projectAmount.project_tb_dismantel_amount}
+                    defaultValue={projectDetail && projectDetail.tb_dismantel_amount }
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>
@@ -853,8 +856,9 @@ const getProjectAmountsValue = () => {
                   <Input
                     type="text"
                     name="others_dismantel_amount"
-                    defaultValue={projectAmount && projectAmount.project_others_dismantel_amount}
+                    defaultValue={projectDetail && projectDetail.others_dismantel_amount}
                     onChange={handleInputs}
+                    
                   >
                     
                   </Input>

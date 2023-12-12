@@ -15,6 +15,64 @@ const ProjectDetails = () => {
   const [projectDetails, setProjectDetails] = useState({
     title: '',
   });
+
+  
+  const [projectAmounts, setProjectAmounts] = useState({});
+
+  //Getting data from setting
+const getProjectAmountsValue = () => {
+  api
+    .get('/setting/getProjectAmountValue')
+    .then((res) => {
+      console.log('amounts',res.data.data)
+      const pipeErectionAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_pipe_erection_amount"
+      })[0].value
+      const plankErectionAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_plank_erection_amount"
+      })[0].value
+      const tbErectionAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_tb_erection_amount"
+      })[0].value
+      const volumeErectionAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_volume_erection_amount"
+      })[0].value
+      const othersErectionAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_others_erection_amount"
+      })[0].value
+      const pipeDismantelAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_pipe_dismantel_amount"
+      })[0].value
+      const plankDismantelAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_plank_dismantel_amount"
+      })[0].value
+      const tbDismantelAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_tb_dismantel_amount"
+      })[0].value
+      const volumeDismantelAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_volume_dismantel_amount"
+      })[0].value
+      const othersDismantelAmount=res.data.data.filter((el)=>{
+        return el.key_text==="project_others_dismantel_amount"
+      })[0].value
+      console.log('pipeerectionamount',pipeErectionAmount);
+      
+      const projectsAmounts={
+        pipe_erection_amount:pipeErectionAmount,
+        plank_erection_amount:plankErectionAmount,
+        tb_erection_amount:tbErectionAmount,
+        volume_erection_amount:volumeErectionAmount,
+        others_erection_amount:othersErectionAmount,
+        pipe_dismantel_amount:pipeDismantelAmount,
+        plank_dismantel_amount:plankDismantelAmount,
+        tb_dismantel_amount:tbDismantelAmount,
+        volume_dismantel_amount:volumeDismantelAmount,
+        others_dismantel_amount:othersDismantelAmount,
+      }
+      setProjectAmounts(projectsAmounts)
+    })
+    .catch(() => {});
+};
 //Navigation and Parameters
   const navigate = useNavigate();
 //Setting data in projectDetails
@@ -29,6 +87,16 @@ const ProjectDetails = () => {
       projectDetails.project_code = code;
       projectDetails.creation_date = creationdatetime;
       projectDetails.created_by = loggedInuser.first_name;
+      projectDetails.pipe_erection_amount= projectAmounts.pipe_erection_amount;
+      projectDetails.plank_erection_amount=projectAmounts.plank_erection_amount;
+      projectDetails.tb_erection_amount=projectAmounts.tb_erection_amount;
+      projectDetails.volume_erection_amount=projectAmounts.volume_erection_amount;
+      projectDetails.others_erection_amount=projectAmounts.others_erection_amount;
+      projectDetails.pipe_dismantel_amount=projectAmounts.pipe_dismantel_amount;
+      projectDetails.plank_dismantel_amount=projectAmounts.plank_dismantel_amount;
+      projectDetails.tb_dismantel_amount=projectAmounts.tb_dismantel_amount;
+      projectDetails.volume_dismantel_amount=projectAmounts.volume_dismantel_amount;
+      projectDetails.others_dismantel_amount=projectAmounts.others_dismantel_amount;
     api.post('/project/insertProject', projectDetails)
       .then((res) => {
         const insertedDataId = res.data.data.insertId;
@@ -56,7 +124,9 @@ const ProjectDetails = () => {
         insertProject('');
       });
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getProjectAmountsValue();
+  }, []);
   return (
     <div>
       <BreadCrumbs />

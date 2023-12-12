@@ -83,6 +83,7 @@ const EmployeeEdit = () => {
   const [pictureData, setDataForPicture] = useState({
     modelType: '',
   });
+  const [Team, setTeam] = useState();
 
   //params and routing
   const { id } = useParams();
@@ -155,6 +156,18 @@ const EmployeeEdit = () => {
       .catch(() => {
         //message('contact info Data Not Found', 'info');
       });
+  };
+
+  
+  // Gettind data from Job By Id
+  const getTeams = () => {
+    api
+      .get('/projectteam/getProjectTeam')
+      .then((res) => {
+        console.log(res.data.data);
+        setTeam(res.data.data);
+      })
+      .catch(() => {});
   };
   //get EmergencyContact data
   const getEmergencyContactById = () => {
@@ -394,6 +407,7 @@ const EmployeeEdit = () => {
       await getAllCountries();
       await getQualifications();
       await getAllCompanies();
+      await getTeams();
     };
     getAlldata();
   }, [id]);
@@ -425,6 +439,7 @@ const EmployeeEdit = () => {
       </Form>
       <Row>
         <EmployeePart
+        team={Team}
           employeeDetails={employeeDetails}
           handleInputChange={handleInputChange}
           allCountries={allCountries}
