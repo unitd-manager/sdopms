@@ -97,6 +97,8 @@ const getProjectAmountsValue = () => {
       projectDetails.tb_dismantel_amount=projectAmounts.tb_dismantel_amount;
       projectDetails.volume_dismantel_amount=projectAmounts.volume_dismantel_amount;
       projectDetails.others_dismantel_amount=projectAmounts.others_dismantel_amount;
+console.log('projectdetails',projectDetails)
+
     api.post('/project/insertProject', projectDetails)
       .then((res) => {
         const insertedDataId = res.data.data.insertId;

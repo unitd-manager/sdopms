@@ -252,6 +252,24 @@ console.log('all countries',allCountries)
             </Col>
             <Col md="3">
               <FormGroup>
+                <Label>Pay</Label>
+                <Input
+                  name="pay"
+                  value={employeeDetails && employeeDetails.pay}
+                  onChange={handleInputChange}
+                  type="select"
+                >
+                  <option>Please Select</option>
+                  <option defaultValue="selected" value="GroupPay">
+                    Group Pay
+                  </option>
+                  <option value="HourlyPay">Hourly Pay</option>
+                  
+                </Input>
+              </FormGroup>
+            </Col>
+            <Col md="3">
+              <FormGroup>
                 <Label>Company</Label>
                 <Input
                   name="company_id"

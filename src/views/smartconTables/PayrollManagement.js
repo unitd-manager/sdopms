@@ -401,8 +401,10 @@ const Payrollmanagement = () => {
               obj.total_cpf_contribution = totalcontribution;
               obj.ot_hours=parseFloat(obj.total_ot_hours)*(parseFloat(1.5)) +parseFloat(obj.total_ph_hours)*(parseFloat(2));
               obj.ot_amount= parseFloat(obj.ot_hours)*parseFloat(obj.overtime_pay_rate);
-              
-              
+              const normalHoursPay=parseFloat(obj.total_normal_hours)*parseFloat(obj.hourly_pay);
+              const realAmount=parseFloat(normalHoursPay)+parseFloat(obj.ot_amount);
+
+              if(obj.pay ==='GroupPay'){
               if(parseFloat(obj.ot_hours) > 72 ){
                 obj.ot_hours=72;
                 obj.ot_amount= parseFloat(obj.ot_hours)*parseFloat(obj.overtime_pay_rate);
@@ -413,7 +415,20 @@ const Payrollmanagement = () => {
                                               }
               console.log('objectishere',obj)
               console.log('actualamount',actualAmount)
-
+              }
+              if(obj.pay ==='HourlyPay'){
+              
+                if(parseFloat(obj.ot_hours) > 72 ){
+                  obj.ot_hours=72;
+                  obj.ot_amount= parseFloat(obj.ot_hours)*parseFloat(obj.overtime_pay_rate);
+                  }
+                 
+                  const actualAmount=parseFloat(obj.ot_amount)+parseFloat(obj.basic_pay)
+                  if(realAmount > actualAmount ){
+                                    obj.allowance1=parseFloat(obj.allowance1)+parseFloat(realAmount)-parseFloat(actualAmount)
+                                                  }
+               
+              }
               api
                 .post('/payrollmanagement/insertpayroll_management', obj)
                 .then(() => {
@@ -428,9 +443,9 @@ const Payrollmanagement = () => {
             });
         });
     });
-    setTimeout(()=>{
-      window.location.reload();
-    },2000)
+    // setTimeout(()=>{
+    //   window.location.reload();
+    // },2000)
  
   
   };
