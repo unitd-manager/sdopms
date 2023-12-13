@@ -27,6 +27,7 @@ import * as Icon from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -320,7 +321,24 @@ const TaskJobEdit = () => {
   //     editJob(selectedTask);
   //   }
   // }, [projectTeam && projectTeam.project_task_id]);
-
+  const deleteData = () => {
+    Swal.fire({
+      title: `Are you sure?`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/projectteam/deleteTeam', { project_team_id: id }).then(() => {
+          Swal.fire('Deleted!', 'Your employee has been deleted.', 'success');
+          backToList();
+        });
+      }
+    });
+  };
   return (
     <>
       <Form>
@@ -333,6 +351,7 @@ const TaskJobEdit = () => {
               navigate={navigate}
               applyChanges={editTaskJob}
               backToList={backToList}
+              deleteData={deleteData}
               module="Team"
             ></ApiButton>
        
