@@ -22,7 +22,8 @@ import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
 import Tab from '../../components/ProjectTabs/Tab';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
-import CalendarApp from '../apps/calendar/CalendarApp';
+//import CalendarApp from '../apps/calendar/CalendarApp';
+import ProjectYard from '../smartconTables/ProjectYard';
 import ApiButton from '../../components/ApiButton';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
@@ -31,12 +32,6 @@ import EditPOLineItemsModal from '../../components/ProjectModal/EditPOLineItemsM
 import AddPurchaseOrderModal from '../../components/ProjectModal/AddPurchaseOrderModal';
 // import ActualHour from '../../components/dashboard/ActualHour';
 // import AverageIssues from '../../components/dashboard/AverageIssues';
-import StatsPmsProjectId from '../../components/dashboard/ProjectStats/StatsPmsProjectId';
-import MilestoneStatsProject from '../../components/dashboard/ProjectStats/MilestoneStatsProject';
-import ActualHourStatsProject from '../../components/dashboard/ProjectStats/ActualHourStatsProject';
-import PriorityStatsProject from '../../components/dashboard/ProjectStats/PriorityStatsProject';
-import AverageStatsProject from '../../components/dashboard/ProjectStats/AverageStatsProject';
-import DueStatsProject from '../../components/dashboard/ProjectStats/DueStatsProject';
 import MaterialsTransferred from '../../components/ProjectModal/MaterialsTransferred';
 import MaterialPurchased from '../../components/ProjectModal/MaterialPurchased';
 import MaterialsusedTab from '../../components/ProjectModal/MaterialsusedTab';
@@ -46,6 +41,7 @@ import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
 import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 import { HasAccess ,usePermify} from '@permify/react-role';
+import CostingSummary from '../../components/dashboard/ProjectStats/Costing';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -82,6 +78,7 @@ const ProjectEdit = () => {
   const [contactDatas, setContactData] = useState();
   const [editTaskEditModal, setEditTaskEditModal] = useState(false);
   const [addContactModal, setAddContactModal] = useState(false);
+  const [yardModals, setYardModals] = useState(false);
   const [incharge, setIncharge] = useState();
   const [supervisor, setSupervisor] = useState();
   // const [timeSheetById, setTimeSheetById] = useState();
@@ -123,13 +120,13 @@ const ProjectEdit = () => {
   // Start for tab refresh navigation
   const tabs = [
     
-    // { id: '1', name: 'Analytics' },
+    { id: '1', name: 'Costing Summary' },
     // { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
     { id: '6', name: 'Worksheet' },
-    // { id: '7', name: 'Calender' },
+    { id: '7', name: 'Yard' },
     // { id: '8', name: 'Material Purchase Order' },
     // { id: '9', name: 'Material Used' },
     // { id: '10',name: 'Material Transferred' },
@@ -144,6 +141,9 @@ const ProjectEdit = () => {
 
   const addContactToggles = () => {
     setAddContactModals(!addContactModals);
+  };
+  const addYardToggles = () => {
+    setYardModals(!yardModals);
   };
   const viewLineToggle = () => {
     setViewLineModal(!viewLineModal);
@@ -884,6 +884,8 @@ const ProjectEdit = () => {
               </Col>
               </Row>
           </ComponentCard>
+
+         
         </FormGroup>
       </Form>
       <ComponentCard title="More Details">
@@ -896,36 +898,12 @@ const ProjectEdit = () => {
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
           <Tab toggle={toggle} tabs={tabs} />
-          <HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
+         
           <TabPane tabId="1">
             <br />
-            <Row>
-              <Col>
-                <StatsPmsProjectId id={id}></StatsPmsProjectId>
-              </Col>
-              <Col>
-                <DueStatsProject id={id}></DueStatsProject>
-              </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col sm="4" lg="10" xl="6" xxl="6">
-                <MilestoneStatsProject id={id}></MilestoneStatsProject>
-              </Col>
-              <Col sm="4" lg="10" xl="6" xxl="6">
-                <AverageStatsProject id={id}></AverageStatsProject>
-              </Col>
-            </Row>
-            <br />
-            <ActualHourStatsProject id={id}></ActualHourStatsProject>
-            <br />
-            <PriorityStatsProject id={id}></PriorityStatsProject>
+            <CostingSummary/>
           </TabPane>
-          </HasAccess>
+          
           {/* Tab 2 */}
           <HasAccess
                 roles={null}
@@ -1075,16 +1053,26 @@ const ProjectEdit = () => {
             <br/>
 <ProjectWorksheet></ProjectWorksheet>
            </TabPane>
-           <HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
+           
           <TabPane tabId="7">
             <br />
-            <CalendarApp projectDetail={projectDetail} id={id}></CalendarApp>
+          <ProjectYard
+           projectDetail={projectDetail}
+           userSearchData={userSearchData}
+           setUserSearchData={setUserSearchData}
+           setContactData={setContactData}
+           id={id}
+           getTaskById={getTaskById}
+           taskById={taskById}
+           setTaskById={setTaskById}
+           addContactToggle={addYardToggles}
+           addContactModal={yardModals}
+           setEditTaskEditModal={setEditTaskEditModal}
+           setTaskhistorymodal={setTaskhistorymodal}
+           setTaskhistoriesmodal={setTaskhistoriesmodal}
+          />
           </TabPane>
-          </HasAccess>
+         
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
           <HasAccess

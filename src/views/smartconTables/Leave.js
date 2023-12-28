@@ -152,7 +152,7 @@ const Leaves = () => {
                   <tr key={element.leave_id}>
                     <td>{i + 1}</td>
                     <td>
-                      <Link to={`/LeavesEdit/${element.leave_id}?tab=1`}>
+                      <Link className='editlink' to={`/LeavesEdit/${element.leave_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
