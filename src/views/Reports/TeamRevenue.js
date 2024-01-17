@@ -85,52 +85,38 @@ const OverAllReport = () => {
       name: 'SN',
 
     },
-
+    {
+      name: 'Date',
+      selector: 'date',
+    },
     {
       name: 'Team',
       selector: 'team_title',
     },
-     {
-      name: 'Pipe qty',
-      selector: 'pipe',
-    },
-    {
-      name: 'Plank qty',
-      selector: 'plank',
-    },
+    //  {
+    //   name: 'Pipe Value',
+    //   selector: 'pipe_value',
+    // },
+    // {
+    //   name: 'Plank Value',
+    //   selector: 'plank_value',
+    // },
 
+    // {
+    //   name: 'Volume Value',
+    //   selector: 'volume_value',
+    // },
+    // {
+    //   name: 'TB Value',
+    //   selector: 'tb_value',
+    // },
+    // {
+    //   name: 'Others Value',
+    //   selector: 'others_value',
+    // },
     {
-      name: 'Volume qty',
-      selector: 'volume',
-    },
-    {
-      name: 'TB qty',
-      selector: 'tb',
-    },
-    {
-      name: 'Others qty',
-      selector: 'others',
-    },
-    {
-      name: 'Pipe Value',
-      selector: 'pipe_value',
-    },
-    {
-      name: 'Plank Value',
-      selector: 'plank_value',
-    },
-
-    {
-      name: 'Volume Value',
-      selector: 'volume_value',
-    },
-    {
-      name: 'TB Value',
-      selector: 'tb_value',
-    },
-    {
-      name: 'Others Value',
-      selector: 'others_value',
+      name: 'Total',
+      selector: 'totals',
     },
   ];
   return (
@@ -220,17 +206,14 @@ const OverAllReport = () => {
                   return (
                     <tr key={element.task_history_id}>
                       <td>{index + 1}</td>
+                      <td>{element.date}</td>
                       <td>{element.team_title}</td>
-                      <td>{element.pipe}</td>
-                      <td>{element.plank}</td>
-                      <td>{element.volume}</td>
-                      <td>{element.tb}</td>
-                      <td>{element.others}</td>
-                      <td>{element.pipe_value}</td>
+                     {/* <td>{element.pipe_value}</td>
                       <td>{element.plank_value}</td>
                       <td>{element.volume_valuee}</td>
                       <td>{element.tb_value}</td>
-                      <td>{element.others_value}</td>
+                      <td>{element.others_value}</td> */}
+                      <td>{element.totals}</td>
                     </tr>
                   );
                 })}
