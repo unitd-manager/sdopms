@@ -1030,25 +1030,7 @@ const ProjectEdit = () => {
               setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></TaskHistoriesModal>}
           </TabPane>
-          {/* Start Tab Content 6  Delivery Order */}
-          {/* <TabPane tabId="6">
-            <ProjectTimeSheet
-              setContactDatass={setContactDatass}
-              id={id}
-              timeSheetById={timeSheetById}
-              addContactToggless={addContactToggless}
-              addContactModalss={addContactModalss}
-              setEditTimeSheetEditModal={setEditTimeSheetEditModal}
-              getTimeSheetById={getTimeSheetById}
-            />
-            <ProjectTimeSheetEdit
-              contactDatass={contactDatass}
-              id={id}
-              editTimeSheetModal={editTimeSheetModal}
-              setEditTimeSheetEditModal={setEditTimeSheetEditModal}
-              getTimeSheetById={getTimeSheetById}
-            ></ProjectTimeSheetEdit>
-          </TabPane> */}
+        
            <TabPane tabId="6">
             <br/>
 <ProjectWorksheet></ProjectWorksheet>
