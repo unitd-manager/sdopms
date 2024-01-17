@@ -39,9 +39,10 @@ import TransferModal from '../../components/ProjectModal/TransferModal';
 import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDetails';
 import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
-import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
+// import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 import { HasAccess ,usePermify} from '@permify/react-role';
 import CostingSummary from '../../components/dashboard/ProjectStats/Costing';
+import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -108,6 +109,8 @@ const ProjectEdit = () => {
   const [viewLineModal, setViewLineModal] = useState(false);
   const [taskhistorymodal, setTaskhistorymodal] = useState(false);
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
+  const [WorkSheet, setWorkSheet] = useState(null);
+
  
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
@@ -189,6 +192,17 @@ const ProjectEdit = () => {
       setQuotation(res.data.data);
     });
   };
+
+ //Getting data from milestone
+ const getworksheetbyId = () => {
+  api
+    .post('/projecttask/getprojecttaskhistory', { project_id: id })
+    .then((res) => {
+      setWorkSheet(res.data.data);
+    })
+    .catch(() => {});
+};
+
     // Get Line Item
   const getLineItem = (quotationId) => {
     api.post('/project/getQuoteLineItemsById', { quote_id: quotationId }).then((res) => {
@@ -1021,6 +1035,7 @@ const ProjectEdit = () => {
               contactDatas={contactDatas}
               taskhistorymodal={taskhistorymodal}
               setTaskhistorymodal={setTaskhistorymodal}
+              getworksheetbyId={getworksheetbyId}
             ></TaskHistoryModal>}
             {taskhistoriesmodal&&<TaskHistoriesModal
               getTaskById={getTaskById}
@@ -1030,28 +1045,14 @@ const ProjectEdit = () => {
               setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></TaskHistoriesModal>}
           </TabPane>
-          {/* Start Tab Content 6  Delivery Order */}
-          {/* <TabPane tabId="6">
-            <ProjectTimeSheet
-              setContactDatass={setContactDatass}
-              id={id}
-              timeSheetById={timeSheetById}
-              addContactToggless={addContactToggless}
-              addContactModalss={addContactModalss}
-              setEditTimeSheetEditModal={setEditTimeSheetEditModal}
-              getTimeSheetById={getTimeSheetById}
-            />
-            <ProjectTimeSheetEdit
-              contactDatass={contactDatass}
-              id={id}
-              editTimeSheetModal={editTimeSheetModal}
-              setEditTimeSheetEditModal={setEditTimeSheetEditModal}
-              getTimeSheetById={getTimeSheetById}
-            ></ProjectTimeSheetEdit>
-          </TabPane> */}
+       
            <TabPane tabId="6">
             <br/>
-<ProjectWorksheet></ProjectWorksheet>
+<ProjectWorksheet
+WorkSheet={WorkSheet}
+getworksheetbyId={getworksheetbyId}
+></ProjectWorksheet>
+{/* <ProjectTimeSheet></ProjectTimeSheet> */}
            </TabPane>
            
           <TabPane tabId="7">

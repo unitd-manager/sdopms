@@ -1,57 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Modal, ModalBody, FormGroup, ModalHeader, Label,Table } from 'reactstrap';
 // import * as Icon from 'react-feather';
+import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
 // import 'datatables.net-buttons/js/buttons.html5';
 // import 'datatables.net-buttons/js/buttons.print';
 import 'react-data-table-component-extensions/dist/index.css';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import api from '../../constants/api';
 // import CommonTable from '../CommonTable';
 
-
-function ProjectWorksheet() {
-  const { id } = useParams();
-  const [WorkSheet, setWorkSheet] = useState(null);
+const ProjectWorksheet = ({
+ WorkSheet,
+}) => {
+  ProjectWorksheet.propTypes = {
+    WorkSheet: PropTypes.object,
+  };
+  // const { id } = useParams();
+  // const [WorkSheet, setWorkSheet] = useState(null);
   const [lineItem, setLineItem] = useState([]);
   // const [selectedItemId, setSelectedItemId] = useState(null); // State to store the selected item ID
   const [viewLineModal, setViewLineModal] = useState(false);
   
-   //Getting data from milestone
-   const getworksheetbyId = () => {
-    api
-      .post('/projecttask/getprojecttaskhistory', { project_id: id })
-      .then((res) => {
-        setWorkSheet(res.data.data);
-      })
-      .catch(() => {});
-  };
-  // const getTimeSheet = () => {
-  //   api.get('/projecttask/gettaskhistory').then((res) => {
-  //     setWorkSheet(res.data.data);
-  //     console.log(res.data.data);
-  //     $('#example').DataTable({
-  //       pagingType: 'full_numbers',
-  //       pageLength: 20,
-  //       processing: true,
-  //       dom: 'Bfrtip',
-  //       //   buttons: [ {
-  //       //     extend: 'print',
-  //       //     text: "Print",
-  //       //     className:"shadow-none btn btn-primary",
-  //       // }],
-  //     });
-  //     //   setLoading(false)
-  //     // }).catch(()=>{
-  //     //   setLoading(false)
-  //   });
-  // };
+   
+ 
   const getLineItem = (taskId) => {
     api.post('/projecttask/getWorksheettaskById', { task_history_id: taskId }).then((res) => {
       setLineItem(res.data.data);
@@ -69,14 +46,9 @@ function ProjectWorksheet() {
   useEffect(() => {
     getLineItem();
     //getTimeSheet();
-    getworksheetbyId();
+    // getworksheetbyId();
   }, []);
-  // const handleDateClick = (date) => {
-  //   // This function will handle the click event for the date link
-  //   // You can define the desired behavior when a date is clicked
-  //   console.log(`Date ${moment(date).format('DD-MM-YYYY')} clicked!`);
-  //   // Perform any other actions here
-  // };
+ 
   const columns = [
     {
       name: '#',

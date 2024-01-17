@@ -417,45 +417,11 @@ export default function ProjectTask({
       name: 'Status',
       sortable: true,
     },
-    
-    // {
-    //   name: 'Staff',
-    // },
-    // {
-    //   name: 'startdate',
-    //   sortable: true,
-    // },
-    // {
-    //   name: 'End Date',
-    // },
-    // {
-    //   name: 'Actual completed Date',
-    // },
-    // {
-    //   name: 'Actual Hours',
-    // },
-    // {
-    //   name: 'Est Hours',
-    // },
-   
-    // {
-    //   name: 'Completion',
-    // },
-    
-    
-    // {
-    //   name: 'Priority',
-    // },
     {
       name: 'Employees',
     },
     
-    // {
-    //   name: 'Creation ',
-    // },
-    // {
-    //   name: 'Modification ',
-    // },
+
   ];
 
   return (
