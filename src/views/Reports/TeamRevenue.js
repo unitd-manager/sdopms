@@ -116,7 +116,7 @@ const OverAllReport = () => {
     // },
     {
       name: 'Total',
-      selector: 'totals',
+      selector: 'total',
     },
   ];
   return (
@@ -213,7 +213,7 @@ const OverAllReport = () => {
                       <td>{element.volume_valuee}</td>
                       <td>{element.tb_value}</td>
                       <td>{element.others_value}</td> */}
-                      <td>{element.totals}</td>
+                      <td>{element.total}</td>
                     </tr>
                   );
                 })}
