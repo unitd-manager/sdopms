@@ -84,6 +84,7 @@ export default function ProjectTask({
 
   // const [selectedTeam, setSelectedTeam] = useState(''); // Store the selected team_title here
   const [selectedNames, setSelectedNames] = useState([]); // Store selected first_name values here
+  //const [selectedProjectTeamId, setSelectedProjectTeamId] = useState(''); // Set the initial value as per your requirement
 
   const [taskIdForEmployee,setTaskIdForEmployee]=useState(null);
   const [taskEmployeesModal,setTaskEmployeesModal]=useState(false);
@@ -122,6 +123,8 @@ export default function ProjectTask({
       })
       .catch(() => {});
   };
+  console.log("TeamId",TeamID)
+  //console.log("setSelectedProjectTeamId",setSelectedProjectTeamId)
   const checkAll = (e) => {
     const {checked} = e.target;
     console.log('checked', checked);
@@ -176,13 +179,23 @@ export default function ProjectTask({
       message('Please Select Team leader', 'warning');
     }else if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
       setIsSubmitting(true); // Set submission in progress
-      const newContactWithCompanyId = insertTask;
-      newContactWithCompanyId.creation_date = creationdatetime;
-      newContactWithCompanyId.created_by = loggedInuser.first_name;
-      newContactWithCompanyId.project_id = id;
-      newContactWithCompanyId.project_team_id = employees;
-      newContactWithCompanyId.head_count = empCount;
-      newContactWithCompanyId.status="NotStarted";
+      //  const newContactWithCompanyId = insertTask;
+      //  newContactWithCompanyId.creation_date = creationdatetime;
+      //  newContactWithCompanyId.created_by = loggedInuser.first_name;
+      //  newContactWithCompanyId.project_id = id;
+      //  newContactWithCompanyId.project_team_id = selectedProjectTeamId;
+      //  newContactWithCompanyId.project_team_id = employees;
+      //  newContactWithCompanyId.head_count = empCount;
+      //  newContactWithCompanyId.status="NotStarted";
+      const newContactWithCompanyId = {
+        ...insertTask,
+        creation_date: creationdatetime,
+        created_by: loggedInuser.first_name,
+        project_id: id,
+        project_team_id: TeamID, // Assuming project_team_id is part of insertTask
+        head_count: empCount,
+        status: "NotStarted",
+      };
         api
           .post('/projecttask/insertTask', newContactWithCompanyId)
           .then((res) => {
