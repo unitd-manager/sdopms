@@ -28,7 +28,8 @@ const TaskHistoryModal = ({
   contactDatas,
   getTaskById,
   id,
-  projectDetail
+  projectDetail,
+  getworksheetbyId
   //projectId,
 }) => {
   TaskHistoryModal.propTypes = {
@@ -38,6 +39,7 @@ const TaskHistoryModal = ({
     projectDetail: PropTypes.object,
     getTaskById: PropTypes.any,
     id: PropTypes.any,
+    getworksheetbyId:PropTypes.any,
     //projectId:PropTypes.any,
   };
 
@@ -228,6 +230,7 @@ console.log('work',work)
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
+            getworksheetbyId();
            
             // Clear the form fields by resetting the state
             setInsertTask({
@@ -345,20 +348,6 @@ console.log('work',work)
                     <CardBody>
                       <Form>
                         <Row>
-                         
-                          {/* <Col md="4">
-                            <FormGroup>
-                              <Label>
-                                Title <span className="required">*</span>
-                              </Label>
-                              <Input
-                                type="text"
-                                name="title"
-                                onChange={handleInputsTask}
-                                value={insertTask && insertTask.title}
-                              />
-                            </FormGroup>
-                          </Col> */}
                           <Col md="4">
                             <FormGroup>
                               <Label>Team</Label>
