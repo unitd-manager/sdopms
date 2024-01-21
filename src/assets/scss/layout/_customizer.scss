@@ -16,6 +16,11 @@ span.required {
 span.addline {
   color: blue;
 }
+/* Add this CSS in your styles or CSS file */
+.numeric-column {
+  text-align: right;
+
+}
 .customizerSidebar {
   width: $sidebarWidth;
   background-color: $white;

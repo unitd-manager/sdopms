@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect, useContext } from 'react';
-import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane,Button } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, TabContent, TabPane, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Swal from 'sweetalert2';
@@ -19,6 +19,7 @@ import ProjectMilestoneEdit from '../../components/ProjectMilestoneEdit';
 import ProjectTaskEdit from '../../components/ProjectTaskEdit';
 // import ProjectTimeSheetEdit from '../../components/ProjectTImeSheetEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
+import ProjectWorkOrder from '../../components/ProjectWorkOrder';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
 import Tab from '../../components/ProjectTabs/Tab';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -40,7 +41,7 @@ import QuotationMoreDetails from '../../components/ProjectModal/QuotationMoreDet
 import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
 // import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
-import { HasAccess ,usePermify} from '@permify/react-role';
+import { HasAccess, usePermify } from '@permify/react-role';
 import CostingSummary from '../../components/dashboard/ProjectStats/Costing';
 import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 
@@ -55,16 +56,16 @@ const ProjectEdit = () => {
   console.log('project_id', id);
   const { isAuthorized, isLoading } = usePermify();
 
-  
+
   const fetchData = async (type) => {
     // Pass roles and permissions accordingly
     // You can send empty array or null for first param to check permissions only
     if (await isAuthorized(null, `${module}-${type}`)) {
-       return true
-    }else{
+      return true
+    } else {
       return false
     }
-};
+  };
   const [projectDetail, setProjectDetail] = useState();
   const [company, setCompany] = useState();
   const [contact, setContact] = useState();
@@ -91,9 +92,11 @@ const ProjectEdit = () => {
   // const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
   // const [addContactModalss, setAddContactModalss] = useState(false);
   const [teamById, setTeamById] = useState();
+  const [workorderbyId, setWorkOrderById] = useState();
   const [contactDataTeam, setContactDataTeam] = useState();
   const [editTeamModal, setEditTeamEditModal] = useState(false);
   const [addContactModalTeam, setAddContactModalTeam] = useState(false);
+  const [addModalWorkOrder, setAddModalWorkOrder] = useState(false);
   //get staff details
   const { loggedInuser } = useContext(AppContext);
   const [selectedPoProducts, setSelectedPoProducts] = useState([]);
@@ -111,18 +114,18 @@ const ProjectEdit = () => {
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
   const [WorkSheet, setWorkSheet] = useState(null);
 
- 
+
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
     quote_code: '',
   });
-  console.log('contactdatas',contactDatas)
+  console.log('contactdatas', contactDatas)
 
 
 
   // Start for tab refresh navigation
   const tabs = [
-    
+
     { id: '1', name: 'Costing Summary' },
     // { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
@@ -130,11 +133,12 @@ const ProjectEdit = () => {
     { id: '5', name: 'Task' },
     { id: '6', name: 'Worksheet' },
     { id: '7', name: 'Yard' },
+    { id: '8', name: 'Work Order' },
     // { id: '8', name: 'Material Purchase Order' },
     // { id: '9', name: 'Material Used' },
     // { id: '10',name: 'Material Transferred' },
     // { id: '11',name: 'Finance' },
-   
+
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -161,12 +165,15 @@ const ProjectEdit = () => {
   const addContactToggleTeam = () => {
     setAddContactModalTeam(!addContactModalTeam);
   };
+  const addToggleWorkOrder = () => {
+    setAddModalWorkOrder(!addModalWorkOrder);
+  };
   useEffect(() => {
     api
       .post('/purchaseorder/testAPIendpoint', { project_id: id })
       .then((res) => {
         setTestJsonData(res?.data?.data);
-        console.log("test",res.data.data)
+        console.log("test", res.data.data)
       })
       .catch((err) => {
         console.log(err);
@@ -193,17 +200,17 @@ const ProjectEdit = () => {
     });
   };
 
- //Getting data from milestone
- const getworksheetbyId = () => {
-  api
-    .post('/projecttask/getprojecttaskhistory', { project_id: id })
-    .then((res) => {
-      setWorkSheet(res.data.data);
-    })
-    .catch(() => {});
-};
+  //Getting data from milestone
+  const getworksheetbyId = () => {
+    api
+      .post('/projecttask/getprojecttaskhistory', { project_id: id })
+      .then((res) => {
+        setWorkSheet(res.data.data);
+      })
+      .catch(() => { });
+  };
 
-    // Get Line Item
+  // Get Line Item
   const getLineItem = (quotationId) => {
     api.post('/project/getQuoteLineItemsById', { quote_id: quotationId }).then((res) => {
       setLineItem(res.data.data);
@@ -229,25 +236,25 @@ const ProjectEdit = () => {
   const UpdateData = () => {
     projectDetail.modification_date = creationdatetime;
     projectDetail.modified_by = loggedInuser.first_name;
-    console.log('projectdetail',projectDetail)
+    console.log('projectdetail', projectDetail)
     api
       .post('/project/edit-Project', projectDetail)
       .then(() => {
         message('Record editted successfully', 'success');
         getProjectById();
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const insertQuote = (code) => {
     const newQuoteId = quoteForm;
     newQuoteId.project_id = id;
     newQuoteId.quote_code = code;
-     
-        api.post('/project/insertquote', newQuoteId).then(() => {
-          message('Quote inserted successfully.', 'success');
-          getQuotations();
-        });
-      };
+
+    api.post('/project/insertquote', newQuoteId).then(() => {
+      message('Quote inserted successfully.', 'success');
+      getQuotations();
+    });
+  };
   const handleQuoteForms = (ele) => {
     setQuoteForm({ ...quoteForm, [ele.target.name]: ele.target.value });
   };
@@ -257,7 +264,7 @@ const ProjectEdit = () => {
       .then((res) => {
         setIncharge(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const getSupervisor = () => {
     api
@@ -265,7 +272,7 @@ const ProjectEdit = () => {
       .then((res) => {
         setSupervisor(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   //QUTO GENERATED CODE
   const generateCode = () => {
@@ -285,10 +292,10 @@ const ProjectEdit = () => {
       .then((res) => {
         setMilestone(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
-  
+
   //Getting data from milestone
   const getTaskById = () => {
     api
@@ -297,7 +304,7 @@ const ProjectEdit = () => {
         setTaskById(res.data.data);
         setUserSearchData(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   //Getting data from milestone
   // const getTimeSheetById = () => {
@@ -329,7 +336,17 @@ const ProjectEdit = () => {
       .then((res) => {
         setTeamById(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
+  };
+
+  //Getting data from milestone
+  const getWorkOrderById = () => {
+    api
+      .post('/projecttask/getworkorderById', { project_id: id })
+      .then((res) => {
+        setWorkOrderById(res.data.data);
+      })
+      .catch(() => { });
   };
 
   //Getting data from Company
@@ -339,7 +356,7 @@ const ProjectEdit = () => {
       .then((res) => {
         setCompany(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   }; //Getting data from contact
   const getContact = (companyId) => {
     api
@@ -347,7 +364,7 @@ const ProjectEdit = () => {
       .then((res) => {
         setContact(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   // handleCheck
   const handleCheck = (e, item) => {
@@ -494,6 +511,7 @@ const ProjectEdit = () => {
     getSupervisor();
     getProjectManager();
     getTeamById();
+    getWorkOrderById();
     TabPurchaseOrderLineItemTable();
     getCompany();
     getQuotations();
@@ -515,14 +533,14 @@ const ProjectEdit = () => {
         <FormGroup>
           <ToastContainer></ToastContainer>
           {/* <ComponentCardV2> */}
-            <ApiButton
-              editData={UpdateData}
-              navigate={navigate}
-              //applyChanges={editMilestone}
-              backToList={backToList}
-              deleteData={deleteData}
-              module="Project"
-            ></ApiButton>
+          <ApiButton
+            editData={UpdateData}
+            navigate={navigate}
+            //applyChanges={editMilestone}
+            backToList={backToList}
+            deleteData={deleteData}
+            module="Project"
+          ></ApiButton>
           {/* </ComponentCardV2> */}
         </FormGroup>
       </Form>
@@ -530,7 +548,7 @@ const ProjectEdit = () => {
         <FormGroup>
           <ComponentCard title="Project Details" creationModificationDate={projectDetail}>
             <Row>
-            <Col md="3">
+              <Col md="3">
                 <FormGroup>
                   <Label>Code</Label>
                   <Input
@@ -607,7 +625,7 @@ const ProjectEdit = () => {
                   />
                 </FormGroup>
               </Col>
-              <Col md="3">
+              {/* <Col md="3">
                 <FormGroup>
                   <Label>Work Order no</Label>
                   <Input
@@ -617,7 +635,7 @@ const ProjectEdit = () => {
                     onChange={handleInputs}
                   />
                 </FormGroup>
-              </Col>
+              </Col> */}
               <Col md="3">
                 <FormGroup>
                   <Label>Company</Label>
@@ -641,7 +659,7 @@ const ProjectEdit = () => {
                   </Input>
                 </FormGroup>
               </Col>
-           
+
               <Col md="3">
                 <FormGroup>
                   <Label>Contact</Label>
@@ -697,7 +715,7 @@ const ProjectEdit = () => {
                   />
                 </FormGroup>
               </Col>
-             
+
               <Col md="3">
                 <FormGroup>
                   <Label>Project Manager</Label>
@@ -712,8 +730,8 @@ const ProjectEdit = () => {
                       incharge.map((ele) => {
                         return (
                           <option value={ele.employee_id} key={ele.employee_id}>
-                          {ele.employee_name}
-                        </option>
+                            {ele.employee_name}
+                          </option>
                         );
                       })}
                   </Input>
@@ -733,8 +751,8 @@ const ProjectEdit = () => {
                       supervisor.map((ele) => {
                         return (
                           <option value={ele.employee_id} key={ele.employee_id}>
-                          {ele.employee_name}
-                        </option>
+                            {ele.employee_name}
+                          </option>
                         );
                       })}
                   </Input>
@@ -751,22 +769,22 @@ const ProjectEdit = () => {
                   />
                 </FormGroup>
               </Col>
-            
-              </Row>
-              </ComponentCard>
-              <ComponentCard title="Project Amount Details">
-                <Row>
+
+            </Row>
+          </ComponentCard>
+          <ComponentCard title="Project Amount Details">
+            <Row>
               <Col md="3">
                 <FormGroup>
                   <Label>Pipe Erection Amount($)</Label>
                   <Input
                     type="text"
                     name="pipe_erection_amount"
-                    defaultValue={projectDetail && projectDetail.pipe_erection_amount }
+                    defaultValue={projectDetail && projectDetail.pipe_erection_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -776,11 +794,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="plank_erection_amount"
-                    defaultValue={projectDetail && projectDetail.plank_erection_amount }
+                    defaultValue={projectDetail && projectDetail.plank_erection_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -790,11 +808,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="volume_erection_amount"
-                    defaultValue={projectDetail && projectDetail.volume_erection_amount }
+                    defaultValue={projectDetail && projectDetail.volume_erection_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                   
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -804,11 +822,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="tb_erection_amount"
-                    defaultValue={projectDetail && projectDetail.tb_erection_amount }
+                    defaultValue={projectDetail && projectDetail.tb_erection_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                  
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -818,11 +836,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="others_erection_amount"
-                    defaultValue={projectDetail && projectDetail.others_erection_amount }
+                    defaultValue={projectDetail && projectDetail.others_erection_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -832,11 +850,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="pipe_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.pipe_dismantel_amount }
+                    defaultValue={projectDetail && projectDetail.pipe_dismantel_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -846,11 +864,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="plank_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.plank_dismantel_amount }
+                    defaultValue={projectDetail && projectDetail.plank_dismantel_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                   
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -862,9 +880,9 @@ const ProjectEdit = () => {
                     name="volume_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.volume_dismantel_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                   
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -874,11 +892,11 @@ const ProjectEdit = () => {
                   <Input
                     type="text"
                     name="tb_dismantel_amount"
-                    defaultValue={projectDetail && projectDetail.tb_dismantel_amount }
+                    defaultValue={projectDetail && projectDetail.tb_dismantel_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
@@ -890,16 +908,16 @@ const ProjectEdit = () => {
                     name="others_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.others_dismantel_amount}
                     onChange={handleInputs}
-                    
+
                   >
-                    
+
                   </Input>
                 </FormGroup>
               </Col>
-              </Row>
+            </Row>
           </ComponentCard>
 
-         
+
         </FormGroup>
       </Form>
       <ComponentCard title="More Details">
@@ -912,60 +930,61 @@ const ProjectEdit = () => {
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
           <Tab toggle={toggle} tabs={tabs} />
-         
+
           <TabPane tabId="1">
             <br />
-            <CostingSummary/>
+            <CostingSummary />
           </TabPane>
-          
+
           {/* Tab 2 */}
           <HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
-          <TabPane tabId="2" eventkey="quotationMoreDetails">
-            <br/>
-          <Row className="mb-4">
-              {Object.keys(quotation).length === 0 && (
-                <Col md="2">
-                  <Button
-                    color="primary"
-                    className="shadow-none"
-                    onClick={(ele) => {
-                      if (
-                        window.confirm(
-                          'Do you Like to Add Quote ?',
-                        )
-                      ) {
-                      handleQuoteForms(ele);
-                      generateCode(ele);
-                    }}
-                  }
-                  >
-                    Add Quote
-                  </Button>
-                </Col>
-              )}
-            </Row>
-            <QuotationMoreDetails
-              id={id}
-              addLineItemModal={addLineItemModal}
-              setAddLineItemModal={setAddLineItemModal}
-              viewLineModal={viewLineModal}
-              viewLineToggle={viewLineToggle}
-              lineItem={lineItem}
-              getLineItem={getLineItem}
-              quotationsModal={quotationsModal}
-              setquotationsModal={setquotationsModal}
-              quotation={quotation}
-              setViewLineModal={setViewLineModal}
-            ></QuotationMoreDetails>
-          </TabPane>
-          <TabPane tabId="2"></TabPane>
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            <TabPane tabId="2" eventkey="quotationMoreDetails">
+              <br />
+              <Row className="mb-4">
+                {Object.keys(quotation).length === 0 && (
+                  <Col md="2">
+                    <Button
+                      color="primary"
+                      className="shadow-none"
+                      onClick={(ele) => {
+                        if (
+                          window.confirm(
+                            'Do you Like to Add Quote ?',
+                          )
+                        ) {
+                          handleQuoteForms(ele);
+                          generateCode(ele);
+                        }
+                      }
+                      }
+                    >
+                      Add Quote
+                    </Button>
+                  </Col>
+                )}
+              </Row>
+              <QuotationMoreDetails
+                id={id}
+                addLineItemModal={addLineItemModal}
+                setAddLineItemModal={setAddLineItemModal}
+                viewLineModal={viewLineModal}
+                viewLineToggle={viewLineToggle}
+                lineItem={lineItem}
+                getLineItem={getLineItem}
+                quotationsModal={quotationsModal}
+                setquotationsModal={setquotationsModal}
+                quotation={quotation}
+                setViewLineModal={setViewLineModal}
+              ></QuotationMoreDetails>
+            </TabPane>
+            <TabPane tabId="2"></TabPane>
           </HasAccess>
           {/* Tab 3 Milestone */}
-          
+
           <TabPane tabId="3">
             <br />
             <ProjectMilestones
@@ -984,7 +1003,7 @@ const ProjectEdit = () => {
               setEditTaskEditModals={setEditTaskEditModals}
             ></ProjectMilestoneEdit>
           </TabPane>
-         
+
           {/* Tab 4 */}
           <TabPane tabId="4">
             <br />
@@ -1007,7 +1026,7 @@ const ProjectEdit = () => {
           {/* Tab 5 */}
           <TabPane tabId="5">
             <ProjectTask
-            projectDetail={projectDetail}
+              projectDetail={projectDetail}
               userSearchData={userSearchData}
               setUserSearchData={setUserSearchData}
               setContactData={setContactData}
@@ -1021,14 +1040,14 @@ const ProjectEdit = () => {
               setTaskhistorymodal={setTaskhistorymodal}
               setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></ProjectTask>
-            {editTaskEditModal&&<ProjectTaskEdit
+            {editTaskEditModal && <ProjectTaskEdit
               getTaskById={getTaskById}
               id={id}
               contactDatas={contactDatas}
               editTaskEditModal={editTaskEditModal}
               setEditTaskEditModal={setEditTaskEditModal}
             ></ProjectTaskEdit>}
-              {taskhistorymodal&&<TaskHistoryModal
+            {taskhistorymodal && <TaskHistoryModal
               getTaskById={getTaskById}
               projectDetail={projectDetail}
               id={id}
@@ -1037,7 +1056,7 @@ const ProjectEdit = () => {
               setTaskhistorymodal={setTaskhistorymodal}
               getworksheetbyId={getworksheetbyId}
             ></TaskHistoryModal>}
-            {taskhistoriesmodal&&<TaskHistoriesModal
+            {taskhistoriesmodal && <TaskHistoriesModal
               getTaskById={getTaskById}
               id={id}
               contactDatas={contactDatas}
@@ -1045,115 +1064,123 @@ const ProjectEdit = () => {
               setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></TaskHistoriesModal>}
           </TabPane>
-       
-           <TabPane tabId="6">
-            <br/>
-<ProjectWorksheet
-WorkSheet={WorkSheet}
-getworksheetbyId={getworksheetbyId}
-></ProjectWorksheet>
-{/* <ProjectTimeSheet></ProjectTimeSheet> */}
-           </TabPane>
-           
+
+          <TabPane tabId="6">
+            <br />
+            <ProjectWorksheet
+              WorkSheet={WorkSheet}
+              getworksheetbyId={getworksheetbyId}
+            ></ProjectWorksheet>
+            {/* <ProjectTimeSheet></ProjectTimeSheet> */}
+          </TabPane>
+
           <TabPane tabId="7">
             <br />
-          <ProjectYard
-           projectDetail={projectDetail}
-           userSearchData={userSearchData}
-           setUserSearchData={setUserSearchData}
-           setContactData={setContactData}
-           id={id}
-           getTaskById={getTaskById}
-           taskById={taskById}
-           setTaskById={setTaskById}
-           addContactToggle={addYardToggles}
-           addContactModal={yardModals}
-           setEditTaskEditModal={setEditTaskEditModal}
-           setTaskhistorymodal={setTaskhistorymodal}
-           setTaskhistoriesmodal={setTaskhistoriesmodal}
-          />
+            <ProjectYard
+              projectDetail={projectDetail}
+              userSearchData={userSearchData}
+              setUserSearchData={setUserSearchData}
+              setContactData={setContactData}
+              id={id}
+              getTaskById={getTaskById}
+              taskById={taskById}
+              setTaskById={setTaskById}
+              addContactToggle={addYardToggles}
+              addContactModal={yardModals}
+              setEditTaskEditModal={setEditTaskEditModal}
+              setTaskhistorymodal={setTaskhistorymodal}
+              setTaskhistoriesmodal={setTaskhistoriesmodal}
+            />
           </TabPane>
-         
+          <TabPane tabId="8">
+            <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
+              addModalWorkOrder={addModalWorkOrder}
+              setAddModalWorkOrder={setAddModalWorkOrder}
+              workorderbyId={workorderbyId}
+              id={id}>
+            </ProjectWorkOrder>
+          </TabPane>
+
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
           <HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
-          <TabPane tabId="8" eventkey="materialPurchased">
-            <AddPurchaseOrderModal
-              projectId={id}
-              addPurchaseOrderModal={addPurchaseOrderModal}
-              setAddPurchaseOrderModal={setAddPurchaseOrderModal}
-            />
-
-            {editPo && <EditPoModal editPo={editPo} setEditPo={setEditPo} data={POId} />}
-            {editPOLineItemsModal && (
-              <EditPOLineItemsModal
-                editPOLineItemsModal={editPOLineItemsModal}
-                setEditPOLineItemsModal={setEditPOLineItemsModal}
-                data={POId}
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            <TabPane tabId="8" eventkey="materialPurchased">
+              <AddPurchaseOrderModal
                 projectId={id}
+                addPurchaseOrderModal={addPurchaseOrderModal}
+                setAddPurchaseOrderModal={setAddPurchaseOrderModal}
               />
-            )}
-            <MaterialPurchased
-              addPurchaseOrderModal={addPurchaseOrderModal}
-              setAddPurchaseOrderModal={setAddPurchaseOrderModal}
-              insertDelivery={insertDelivery}
-              addQtytoStocks={addQtytoStocks}
-              tabPurchaseOrderLineItemTable={tabPurchaseOrderLineItemTable}
-              setTabPurchaseOrderLineItemTable={setTabPurchaseOrderLineItemTable}
-              testJsonData={testJsonData}
-              setEditPo={setEditPo}
-              setPOId={setPOId}
-              setEditPOLineItemsModal={setEditPOLineItemsModal}
-              getTotalOfPurchase={getTotalOfPurchase}
-              handleCheck={handleCheck}
-              setTransferModal={setTransferModal}
-              setTransferItem={setTransferItem}
-              projectId={id}
-              // getCheckedPoProducts={getCheckedPoProducts}
-              setViewLineModal={setViewLineModal}
-            />
-            {transferModal && (
-              <TransferModal
-                transferModal={transferModal}
+
+              {editPo && <EditPoModal editPo={editPo} setEditPo={setEditPo} data={POId} />}
+              {editPOLineItemsModal && (
+                <EditPOLineItemsModal
+                  editPOLineItemsModal={editPOLineItemsModal}
+                  setEditPOLineItemsModal={setEditPOLineItemsModal}
+                  data={POId}
+                  projectId={id}
+                />
+              )}
+              <MaterialPurchased
+                addPurchaseOrderModal={addPurchaseOrderModal}
+                setAddPurchaseOrderModal={setAddPurchaseOrderModal}
+                insertDelivery={insertDelivery}
+                addQtytoStocks={addQtytoStocks}
+                tabPurchaseOrderLineItemTable={tabPurchaseOrderLineItemTable}
+                setTabPurchaseOrderLineItemTable={setTabPurchaseOrderLineItemTable}
+                testJsonData={testJsonData}
+                setEditPo={setEditPo}
+                setPOId={setPOId}
+                setEditPOLineItemsModal={setEditPOLineItemsModal}
+                getTotalOfPurchase={getTotalOfPurchase}
+                handleCheck={handleCheck}
                 setTransferModal={setTransferModal}
-                transferItem={transferItem}
+                setTransferItem={setTransferItem}
+                projectId={id}
+                // getCheckedPoProducts={getCheckedPoProducts}
+                setViewLineModal={setViewLineModal}
               />
-            )}
-          </TabPane>
-</HasAccess>
-<HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
-          {/* Tab 9*/}
-          <TabPane tabId="9" eventkey="materialsusedTab">
-            <MaterialsusedTab projectId={id} />
-          </TabPane>
-</HasAccess>
-<HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
-          {/* Tab 10 */}
-          <TabPane tabId="10" eventkey="materialsTransferred">
-            <MaterialsTransferred projectId={id} />
-          </TabPane>
-</HasAccess>
-<HasAccess
-                roles={null}
-                permissions={`client-edit`}
-                renderAuthFailed={<p></p>}
-        >
-           {/* Tab 11 */}
-           <TabPane tabId="11" eventkey="financeTab">
-            <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
-          </TabPane>
+              {transferModal && (
+                <TransferModal
+                  transferModal={transferModal}
+                  setTransferModal={setTransferModal}
+                  transferItem={transferItem}
+                />
+              )}
+            </TabPane>
+          </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            {/* Tab 9*/}
+            <TabPane tabId="9" eventkey="materialsusedTab">
+              <MaterialsusedTab projectId={id} />
+            </TabPane>
+          </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            {/* Tab 10 */}
+            <TabPane tabId="10" eventkey="materialsTransferred">
+              <MaterialsTransferred projectId={id} />
+            </TabPane>
+          </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            {/* Tab 11 */}
+            <TabPane tabId="11" eventkey="financeTab">
+              <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
+            </TabPane>
           </HasAccess>
         </TabContent>
       </ComponentCard>
