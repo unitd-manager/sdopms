@@ -514,6 +514,52 @@ console.log(employee);
                       </Col>
                       <Col md="4">
                         <FormGroup>
+                          <Label>Pipe Code</Label>
+                          <Input
+                            type="text"
+                            name="pipe_code"
+                            onChange={handleInputs}
+                            value={taskProject && taskProject.pipe_code}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Plank Code</Label>
+                          <Input
+                            type="text"
+                            name="plank_code"
+                            onChange={handleInputs}
+                            value={taskProject && taskProject.plank_code}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Volume Code</Label>
+                          <Input
+                            type="text"
+                            name="volume_code"
+                            onChange={handleInputs}
+                            value={taskProject && taskProject.volume_code}
+                          />
+                        </FormGroup>
+                      </Col>
+                      
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>TB Code</Label>
+                          <Input
+                            type="text"
+                            name="tb_code"
+                            onChange={handleInputs}
+                            value={taskProject && taskProject.tb_code}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col md="4">
+                        <FormGroup>
                           <Label>Description</Label>
                           <Input
                             type="textarea"

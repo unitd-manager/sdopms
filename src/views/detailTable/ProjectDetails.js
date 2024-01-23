@@ -2,22 +2,105 @@ import React, { useState, useEffect,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
 import api from '../../constants/api';
 import message from '../../components/Message';
+import ProjectCompanyDetails from '../../components/ProjectModal/ProjectCompanyDetails';
 
 const ProjectDetails = () => {
   //All state variables
   const [projectDetails, setProjectDetails] = useState({
     title: '',
+    company_id: '',
   });
+  const [companys, setCompanys] = useState();
+  const [allCountries, setallCountries] = useState();
+  const [projectAmounts, setProjectAmounts] = useState({});
+  const [modal, setModal] = useState(false);
+  const { id } = useParams();
+  const toggle = () => {
+    setModal(!modal);
+  };
+  const { loggedInuser } = useContext(AppContext);
 
   
-  const [projectAmounts, setProjectAmounts] = useState({});
+  const getCompany = () => {
+    api.get('/company/getCompany').then((res) => {
+      setCompanys(res.data.data);
+    });
+  };
+
+
+  //Logic for adding company in db
+  const [companyInsertData, setCompanyInsertData] = useState({
+    company_name: '',
+    address_street: '',
+    address_town: '',
+    address_country: '',
+    address_po_code: '',
+    phone: '',
+    fax: '',
+    website: '',
+    supplier_type: '',
+    industry: '',
+    company_size: '',
+    source: '',
+  });
+
+  const handleInputProject = (e) => {
+    setCompanyInsertData({ ...companyInsertData, [e.target.name]: e.target.value });
+    // Update projectDetails as well
+    setProjectDetails({ ...projectDetails, company_id: e.target.value });
+  };
+
+  const insertCompanyProject = () => {
+    if (
+      companyInsertData.company_name !== '' &&
+      companyInsertData.address_street !== '' &&
+      companyInsertData.address_po_code !== '' &&
+      companyInsertData.address_country !== ''
+    ) {
+      companyInsertData.creation_date = creationdatetime;
+      companyInsertData.created_by= loggedInuser.first_name; 
+      api
+        .post('/company/insertCompany', companyInsertData)
+        .then(() => {
+          message('Company inserted successfully.', 'success');
+          getCompany();
+          window.location.reload();
+        })
+        .catch(() => {
+          message('Network connection error.', 'error');
+        });
+    } else {
+      message('Please fill all required fields.', 'warning');
+    }
+  };
+
+   //Api for getting all countries
+   const getAllCountriesProject = () => {
+    api
+      .get('/clients/getCountry')
+      .then((res) => {
+        setallCountries(res.data.data);
+      })
+      .catch(() => {
+        message('Country Data Not Found', 'info');
+      });
+  };
+  const getTendersById = () => {
+    api
+      .post('/project/getProjectsByIDs', { project_id: id })
+      .then((res) => {
+        setProjectDetails(res.data.data);
+        // getContact(res.data.data.company_id);
+      })
+      .catch(() => {});
+  };
 
   //Getting data from setting
 const getProjectAmountsValue = () => {
@@ -79,8 +162,6 @@ const getProjectAmountsValue = () => {
   const handleInputs = (e) => {
     setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
   };
-   //get staff details
-   const { loggedInuser } = useContext(AppContext);
 //Insert Setting
   const insertProject = (code) => {
     if (projectDetails.title !== ''){
@@ -102,6 +183,7 @@ console.log('projectdetails',projectDetails)
     api.post('/project/insertProject', projectDetails)
       .then((res) => {
         const insertedDataId = res.data.data.insertId;
+        getTendersById();
         console.log(insertedDataId);
         message('Project inserted successfully.', 'success');
         setTimeout(() => {
@@ -129,6 +211,11 @@ console.log('projectdetails',projectDetails)
   useEffect(() => {
     getProjectAmountsValue();
   }, []);
+
+  useEffect(() => {
+    getCompany();
+    getAllCountriesProject();
+  }, [id]);
   return (
     <div>
       <BreadCrumbs />
@@ -150,6 +237,46 @@ console.log('projectdetails',projectDetails)
                     </Col>
                 </Row>
               </FormGroup>
+              <FormGroup>
+                <Row>
+                  <Col md="9">
+                    <Label>
+                      Company Name <span className="required"> *</span>{' '}
+                    </Label>
+                    <Input
+                      type="select"
+                      name="company_id"
+                      //value={tenderForms && tenderForms.company_id}
+                      onChange={handleInputProject}
+                    >
+                      <option>Please Select</option>
+                      {companys &&
+                        companys.map((ele) => {
+                          return (
+                            <option key={ele.company_id} value={ele.company_id}>
+                              {ele.company_name}
+                            </option>
+                          );
+                        })}
+                    </Input>
+                  </Col>
+                  <Col md="3" className="addNew">
+                    <Label>Add New Name</Label>
+                    <Button color="primary" className="shadow-none" onClick={toggle.bind(null)}>
+                      Add New
+                    </Button>
+                  </Col>
+                </Row>
+               
+              </FormGroup>
+              <ProjectCompanyDetails
+                allCountries={allCountries}
+                insertCompanyProject={insertCompanyProject}
+                handleInputProject={handleInputProject}
+                toggle={toggle}
+                modal={modal}
+                setModal={setModal}
+                ></ProjectCompanyDetails>
               <FormGroup>
                 <Row>
           <div className="pt-3 mt-3 d-flex align-items-center gap-2">
