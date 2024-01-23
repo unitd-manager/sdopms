@@ -151,7 +151,7 @@ console.log('contactDatas',contactDatas)
       insertTask.volume_value =insertTask.volume * parseFloat(projectDetail.volume_dismantel_amount);
       insertTask.others_value = insertTask.others * parseFloat(projectDetail.others_dismantel_amount);
       insertTask.total_amount = parseFloat(insertTask.pipe_value)+parseFloat(insertTask.tb_value)+parseFloat(insertTask.plank_value)+parseFloat(insertTask.volume_value)+parseFloat(insertTask.others_value);
-      }
+          }
       if(contactDatas.task_type === 'Erection'){
         insertTask.pipe_value = insertTask.pipe * parseFloat(projectDetail.pipe_erection_amount);
         insertTask.tb_value = insertTask.tb * parseFloat(projectDetail.tb_erection_amount);
@@ -441,7 +441,7 @@ console.log('work',work)
                             </FormGroup>
                           </Col>
                          
-                          <Col md="4">
+                           <Col md="4">
                             <FormGroup>
                               <Label>Actual Hours</Label>
                               <Input
@@ -509,7 +509,51 @@ console.log('work',work)
                             </FormGroup>
                           </Col>
 
-                         
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Pipe Code</Label>
+                              <Input
+                                type="text"
+                                name="pipe_code"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.pipe_code}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Plank Code</Label>
+                              <Input
+                                type="text"
+                                name="plank_code"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.plank_code}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Volume Code</Label>
+                              <Input
+                                type="text"
+                                name="volume_code"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.volume_code}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>TB Code</Label>
+                              <Input
+                                type="text"
+                                name="tb_code"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.tb_code}
+                              />
+                            </FormGroup>
+                          </Col>
+                        
                           <Col md="4">
                             <FormGroup>
                               <Label>Description</Label>
