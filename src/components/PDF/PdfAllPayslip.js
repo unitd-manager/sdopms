@@ -402,7 +402,7 @@ const PdfPaySlip = ({ payrollsYear, payrollsMonth }) => {
         {
           width: '100%',
           alignment: 'center',
-          text: 'PAYSLIP CREATED',
+          text: '',
           bold: true,
           margin: [0, 90, 0, 10],
           fontSize: 12,
