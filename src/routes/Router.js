@@ -299,6 +299,7 @@ const OverallSalesReportTable = Loadable(
 );
 const InvoiceByYearTable = Loadable(lazy(() => import('../views/Reports/InvoiceByYear')));
 const TeamRevenue = Loadable(lazy(() => import('../views/Reports/TeamRevenue')));
+const ErectionDismantelReport = Loadable(lazy(() => import('../views/Reports/ErectionDismantelReport')));
 // const TaskEdit= Loadable(lazy(() => import ('..')))
 
 const SupportNewTable = Loadable(lazy(() => import('../views/smartconTables/SupportNew')));
@@ -504,6 +505,7 @@ const Routernew = () => {
           ></Route>
           <Route path="/InvoiceByYear" name="reports" element={<InvoiceByYearTable />}></Route>
           <Route path="/TeamRevenue" name="reports" element={<TeamRevenue />}></Route>
+          <Route path="/ErectionDismantelReport" name="reports" element={<ErectionDismantelReport />}></Route>
           {/* Tender */}
         
           <Route path="/Task" name="taskdata" element={<TaskTable />}></Route>
