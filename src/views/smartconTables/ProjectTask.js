@@ -38,6 +38,7 @@ export default function ProjectTask({
   userSearchData,
   setTaskhistorymodal,
   setTaskhistoriesmodal,
+  workorderbyId,
 
 }) {
   ProjectTask.propTypes = {
@@ -52,6 +53,7 @@ export default function ProjectTask({
     getTaskById: PropTypes.func,
     setUserSearchData: PropTypes.func,
     userSearchData: PropTypes.func,
+    workorderbyId:PropTypes.func,
   };
 
   console.log("check id's", taskById);
@@ -73,7 +75,7 @@ export default function ProjectTask({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [categoryName, setCategoryName] = useState('');
-  const [workorder,setWorkOrder]=useState('');
+  //const [workorder,setWorkOrder]=useState('');
 
   // const [employee, setEmployee] = useState();
   const [employees, setEmployees] = useState();
@@ -205,6 +207,7 @@ export default function ProjectTask({
           message('New Task has been created successfully.', 'success');
           getTaskById();
           getStaffName();
+        
           addContactToggle(false);
           // Clear the form fields by resetting the state
           setInsertTask({
@@ -348,18 +351,18 @@ export default function ProjectTask({
   const handleInputsTask = (e) => {
     setInsertTask({ ...insertTask, [e.target.name]: e.target.value });
   };
-   //Getting data from milestone
-   const getWorkOrder = () => {
-    api
-    .post('/projecttask/getworkorderById', { project_id: id })
-      .then((res) => {
-        setWorkOrder(res.data.data);
-      })
-      .catch(() => { });
-  };
+  //  //Getting data from milestone
+  //  const getWorkOrder = () => {
+  //   api
+  //   .post('/projecttask/getworkorderById', { project_id: id })
+  //     .then((res) => {
+  //       setWorkOrder(res.data.data);
+  //     })
+  //     .catch(() => { });
+  // };
 
   useEffect(() => {
-    getWorkOrder();
+    //getWorkOrder();
     getStaffName();
     editJobById();
     //dataForAttachment();
@@ -706,8 +709,8 @@ export default function ProjectTask({
                             >
 
                             <option value="">Please Select</option>
-                            {workorder &&
-                              workorder.map((ele) => (
+                            {workorderbyId &&
+                              workorderbyId.map((ele) => (
                                 <option key={ele.work_order_id} value={ele.work_order_no}>
                                   {ele.work_order_no}
                                 </option>

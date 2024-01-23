@@ -1039,6 +1039,7 @@ const ProjectEdit = () => {
               setEditTaskEditModal={setEditTaskEditModal}
               setTaskhistorymodal={setTaskhistorymodal}
               setTaskhistoriesmodal={setTaskhistoriesmodal}
+              workorderbyId={workorderbyId}
             ></ProjectTask>
             {editTaskEditModal && <ProjectTaskEdit
               getTaskById={getTaskById}
