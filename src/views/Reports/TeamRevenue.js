@@ -32,7 +32,7 @@ const OverAllReport = () => {
   //Get data from Training table
   const getProject = () => {
     api
-      .get('/reports/getheadcount')
+      .get('/reports/getTeamRevenue')
       .then((res) => {
         setSalesReport(res.data.data);
         setUserSearchData(res.data.data);
@@ -130,6 +130,7 @@ const OverAllReport = () => {
   const columns = [
     {
       name: 'SN',
+      selector: 's_no',
 
     },
     {
@@ -147,7 +148,7 @@ const OverAllReport = () => {
     },
     {
       name: 'Revenue Per Head',
-      selector: '',
+      selector: 'SharePerHead',
       sortable: true,
       grow: 0,
       wrap: true,
