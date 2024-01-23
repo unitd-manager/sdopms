@@ -1039,6 +1039,7 @@ const ProjectEdit = () => {
               setEditTaskEditModal={setEditTaskEditModal}
               setTaskhistorymodal={setTaskhistorymodal}
               setTaskhistoriesmodal={setTaskhistoriesmodal}
+              workorderbyId={workorderbyId}
             ></ProjectTask>
             {editTaskEditModal && <ProjectTaskEdit
               getTaskById={getTaskById}
@@ -1094,6 +1095,7 @@ const ProjectEdit = () => {
           </TabPane>
           <TabPane tabId="8">
             <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
+            getWorkOrderById={getWorkOrderById}
               addModalWorkOrder={addModalWorkOrder}
               setAddModalWorkOrder={setAddModalWorkOrder}
               workorderbyId={workorderbyId}
