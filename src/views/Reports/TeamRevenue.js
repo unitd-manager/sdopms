@@ -9,6 +9,7 @@ import 'datatables.net-buttons/js/buttons.print';
 import { ToastContainer } from 'react-toastify';
 import { Button, Card, CardBody, Col, FormGroup, Input, Label, Row, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import ReactPaginate from 'react-paginate';
+import moment from 'moment';
 import CommonTable from '../../components/CommonTable';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -152,6 +153,7 @@ const OverAllReport = () => {
       sortable: true,
       grow: 0,
       wrap: true,
+      cell: row => parseFloat(row.SharePerHead).toFixed(3),
 
       // visible: showRevenuePerHead, // Set visibility based on state
       //visible: showRevenuePerHead,
@@ -180,6 +182,7 @@ const OverAllReport = () => {
     {
       name: 'Total',
       selector: 'total',
+      cell: row => parseFloat(row.total).toFixed(3),
     },
   ];
   return (
@@ -269,7 +272,7 @@ const OverAllReport = () => {
                   return (
                     <tr key={element.task_history_id}>
                       <td>{index + 1}</td>
-                      <td>{element.date}</td>
+                      <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                       <td>{element.team_title}</td>
 
                       <td>

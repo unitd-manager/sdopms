@@ -351,7 +351,7 @@ export default function ProjectTask({
    //Getting data from milestone
    const getWorkOrder = () => {
     api
-      .get('/projecttask/getworkorder', )
+    .post('/projecttask/getworkorderById', { project_id: id })
       .then((res) => {
         setWorkOrder(res.data.data);
       })

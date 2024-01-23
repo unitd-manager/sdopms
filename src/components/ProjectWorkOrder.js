@@ -26,15 +26,15 @@ export default function ProjectTeam({
   addToggleWorkOrder,
   addModalWorkOrder,
   id,
-  workorderbyId
+  workorderbyId,
+  getWorkOrderById
 }) {
   ProjectTeam.propTypes = {
     addToggleWorkOrder: PropTypes.func,
     addModalWorkOrder: PropTypes.bool,
     id: PropTypes.any,
     workorderbyId: PropTypes.any,
-
-
+    getWorkOrderById:PropTypes.any,
   };
 
   //   const [employeeTeam, setEmployeeTeam] = useState([]);
@@ -65,6 +65,8 @@ export default function ProjectTeam({
     api
       .post(`/projecttask/insertWorkOrder`, insertworkOrder)
       .then(() => {
+        getWorkOrderById();
+        addToggleWorkOrder();
         message('Work order updated successfully.', 'success');
         // Assuming this function retrieves updated team data
       })

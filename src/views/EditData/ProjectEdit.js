@@ -1094,6 +1094,7 @@ const ProjectEdit = () => {
           </TabPane>
           <TabPane tabId="8">
             <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
+            getWorkOrderById={getWorkOrderById}
               addModalWorkOrder={addModalWorkOrder}
               setAddModalWorkOrder={setAddModalWorkOrder}
               workorderbyId={workorderbyId}
