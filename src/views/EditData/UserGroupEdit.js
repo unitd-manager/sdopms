@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, FormGroup, Label, Input, Form, Table } from 'reactstrap';
-import * as $ from 'jquery';
+//import * as $ from 'jquery';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { usePermify } from '@permify/react-role';
@@ -10,8 +10,9 @@ import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import api from '../../constants/api';
 import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
-import UserGroupButtons from '../../components/userGroup/UserGroupButtons';
+//import UserGroupButtons from '../../components/userGroup/UserGroupButtons';
 import AppContext from '../../context/AppContext';
+import ApiButton from '../../components/ApiButton';
 
 const UserGroupEdit = () => {
   //state variables
@@ -25,7 +26,7 @@ const UserGroupEdit = () => {
   const navigate = useNavigate();
 
   // Route Change
-  const applyChanges = () => {};
+  //const applyChanges = () => {};
   const backToList = () => {
     navigate('/UserGroup');
   };
@@ -119,6 +120,7 @@ const UserGroupEdit = () => {
       .then(() => {
         message('Record edited successfully', 'success');
         getRoomUserGroup();
+        window.location.reload();
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -146,6 +148,7 @@ const UserGroupEdit = () => {
       .then(() => {
         //message('Record edited successfully', 'success');
         getRoomUserGroup();
+        window.location.reload();
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -174,25 +177,25 @@ const UserGroupEdit = () => {
       insertRoomUserGroup(item);
     }
   };
-  const getAllValues = () => {
-    const result = [];
-    $('#example tbody tr').each(() => {
-      const allValues = {};
-      $(this)
-        .find('input')
-        .each(() => {
-          const fieldName = $(this).attr('name');
-          allValues.user_group_id = id;
-          allValues[fieldName] = $(this).val();
-        });
+  // const getAllValues = () => {
+  //   const result = [];
+  //   $('#example tbody tr').each(() => {
+  //     const allValues = {};
+  //     $(this)
+  //       .find('input')
+  //       .each(() => {
+  //         const fieldName = $(this).attr('name');
+  //         allValues.user_group_id = id;
+  //         allValues[fieldName] = $(this).val();
+  //       });
 
-      result.push(allValues);
-    });
-    console.log(result);
-    result.forEach((obj) => {
-      editRoomUserGroup(obj);
-    });
-  };
+  //     result.push(allValues);
+  //   });
+  //   console.log(result);
+  //   result.forEach((obj) => {
+  //     editRoomUserGroup(obj);
+  //   });
+  // };
 
   const accessColumns = [
     {
@@ -245,7 +248,7 @@ const UserGroupEdit = () => {
           <ToastContainer></ToastContainer>
           <Row>
             <BreadCrumbs heading={userGroupDetails && userGroupDetails.title} />
-            <UserGroupButtons
+            {/* <UserGroupButtons
               id={id}
               applyChanges={applyChanges}
               backToList={backToList}
@@ -253,15 +256,15 @@ const UserGroupEdit = () => {
               editUserGroupData={editUserGroupData}
               editRoomUserGroup={getAllValues}
               navigate={navigate}
-            />
-            {/* <ApiButton
+            /> */}
+            <ApiButton
               editData={editUserGroupData}
               navigate={navigate}
               applyChanges={editUserGroupData}
               backToList={backToList}
               deleteData={deleteUserGroupData}
-              module="UserGroup"
-            ></ApiButton> */}
+              module="User Group"
+            ></ApiButton>
             <Form>
               <FormGroup>
                 <ComponentCard title="UserGroup Details">
