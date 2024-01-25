@@ -36,6 +36,8 @@ const ProjectTaskEdit = ({
     id: PropTypes.any,
   };
 
+
+  console.log('contactData',contactDatas)
   //All state variable
   const [taskProject, setTaskProject] = useState();
   //const [employees, setEmployees] = useState();
@@ -512,9 +514,9 @@ console.log(employee);
                           </Input>
                         </FormGroup>
                       </Col>
-                      <Col md="4">
+                    {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
                         <FormGroup>
-                          <Label>Pipe Code</Label>
+                          <Label>Log No.</Label>
                           <Input
                             type="text"
                             name="pipe_code"
@@ -523,7 +525,8 @@ console.log(employee);
                           />
                         </FormGroup>
                       </Col>
-                      <Col md="4">
+                      )}
+                      {/* {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
                         <FormGroup>
                           <Label>Plank Code</Label>
                           <Input
@@ -534,7 +537,8 @@ console.log(employee);
                           />
                         </FormGroup>
                       </Col>
-                      <Col md="4">
+                      )}
+                      {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
                         <FormGroup>
                           <Label>Volume Code</Label>
                           <Input
@@ -545,8 +549,9 @@ console.log(employee);
                           />
                         </FormGroup>
                       </Col>
+                      )}
                       
-                      <Col md="4">
+                      {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
                         <FormGroup>
                           <Label>TB Code</Label>
                           <Input
@@ -557,6 +562,7 @@ console.log(employee);
                           />
                         </FormGroup>
                       </Col>
+                      )} */}
 
                       <Col md="4">
                         <FormGroup>
