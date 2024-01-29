@@ -7,51 +7,77 @@ import 'datatables.net-buttons/js/buttons.flash';
 import 'datatables.net-buttons/js/buttons.html5';
 import 'datatables.net-buttons/js/buttons.print';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, Col, FormGroup, Input, Label, Row } from 'reactstrap';
+import { Card, CardBody, Col, FormGroup, Input, Label, Row ,Button} from 'reactstrap';
 import ReactPaginate from 'react-paginate';
+//import { useParams } from 'react-router-dom';
 import CommonTable from '../../components/CommonTable';
 import api from '../../constants/api';
 import message from '../../components/Message';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ExportReport from '../../components/Report/ExportReport';
 
+
 const ErectionDismantelReport = () => {
-  const [Report, setReport] = useState(null);
+  const [Report, setReport] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [projectName, setProjectName] = useState('');
   const [workOrderNo, setworkOrderNo] = useState('');
-  const [workorder, setWorkOrder] = useState('');
-  const [project, setProject] = useState();
-  const [userSearchData, setUserSearchData] = useState('');
 
-  //Get data from Training table
+  const [project, setProject] = useState([]);
+  const [userSearchData, setUserSearchData] = useState('');
+  const [projectWorkOrders, setProjectWorkOrders] = useState([]);
+  //const [pipeCount, setPipecount] = useState();
+
   const getProject = () => {
     api
-      .get('/reports/getTeamRevenue')
+      .get('/projecttask/getreports1')
       .then((res) => {
         setReport(res.data.data);
         setUserSearchData(res.data.data);
+        // let totalPipeCount = 0;
+
+        // res.data.data.forEach((el) => {
+        //   totalPipeCount += el.pipe;
+        // });
+
+        // setPipecount(totalPipeCount);
       })
       .catch(() => {
-        message('Over all sales Data Not Found', 'info');
+        message('Reports Data Not Found', 'info');
       });
   };
 
   const getCompany = () => {
-    api.get('/project/getProject').then((res) => {
+    api.get('/projecttask/getprojects', project).then((res) => {
       setProject(res.data.data);
+      console.log('', project);
     });
   };
 
+  // getting data from Category
+  const getWorkOrder = (sectionId) => {
+    api.post('/projecttask/getreports', { project_id: sectionId }).then((res) => {
+      setProjectWorkOrders(res.data.data);
+    });
+  };
+  useEffect(() => {
+    if (selectedProject) {
+      getWorkOrder(selectedProject);
+    }
+  }, [selectedProject]);
+
   const handleSearch = () => {
-    const newData = Report.filter(
-      (y) => y.team_title === (workOrderNo === '' ? y.team_title : workOrderNo),
-    ).filter((x) => x.date === (projectName === '' ? x.date : projectName));
+    const newData = Report
+      .filter((y) => y.title === (projectName === '' ? y.title : projectName))
+      .filter((x) => x.project_work_order === (workOrderNo === '' ? x.project_work_order : workOrderNo))
     setUserSearchData(newData);
   };
 
+  console.log(setUserSearchData);
   useEffect(() => {
-    getProject();
+    getWorkOrder();
     getCompany();
+    getProject();
   }, []);
   const [page, setPage] = useState(0);
 
@@ -66,6 +92,18 @@ const ErectionDismantelReport = () => {
     setPage(selected);
   };
 
+  const totalPipeCount = displayEmployees && displayEmployees.reduce((total, element) => total + (Number(element.pipe) || 0), 0);
+  const totalPlankCount = displayEmployees && displayEmployees.reduce((total, element) => total + (Number(element.plankCount) || 0), 0);
+  const totalTbCount = displayEmployees && displayEmployees.reduce((total, element) => total + (Number(element.tbCount) || 0), 0);
+  const totalothersCount = displayEmployees && displayEmployees.reduce((total, element) => total + (Number(element.othersCount) || 0), 0);
+  const totalVolumeCount = displayEmployees && displayEmployees.reduce((total, element) => total + (Number(element.volumeCount) || 0), 0);
+
+
+  
+
+  // Modify the calculation of pipeCount
+// Modify the calculation of pipeCount
+
   //structure of Training list view
   const columns = [
     {
@@ -73,67 +111,48 @@ const ErectionDismantelReport = () => {
       selector: 's_no',
     },
     {
-      name: 'Date',
-      selector: 'date',
+      name: 'Project Name',
+      selector: 'title',
     },
     {
-      name: 'Team',
-      selector: 'team_title',
+      name: 'Work Order No',
+      selector: 'project_work_order',
     },
     {
-      name: 'Team Size',
-      selector: 'headcount',
+      name: 'Task Type',
+      selector: 'task_type',
       //onClick: toggleRevenuePerHead, // Toggle visibility on click
     },
     {
-      name: 'Revenue Per Head',
-      selector: 'SharePerHead',
+      name: 'Pipe Count',
+      selector: 'pipe',
       sortable: true,
       grow: 0,
       wrap: true,
-
-      // visible: showRevenuePerHead, // Set visibility based on state
-      //visible: showRevenuePerHead,
     },
-    //  {
-    //   name: 'Pipe Value',
-    //   selector: 'pipe_value',
-    // },
-    // {
-    //   name: 'Plank Value',
-    //   selector: 'plank_value',
-    // },
-
-    // {
-    //   name: 'Volume Value',
-    //   selector: 'volume_value',
-    // },
-    // {
-    //   name: 'TB Value',
-    //   selector: 'tb_value',
-    // },
-    // {
-    //   name: 'Others Value',
-    //   selector: 'others_value',
-    // },
     {
-      name: 'Total',
-      selector: 'total',
+      name: 'Plank Count',
+      selector: 'plankCount',
     },
-  ];
-  //Getting data from milestone
-  const getWorkOrder = () => {
-    api
-      .get('/projecttask/getworkorder')
-      .then((res) => {
-        setWorkOrder(res.data.data);
-      })
-      .catch(() => {});
-  };
 
-  useEffect(() => {
-    getWorkOrder();
-  }, []);
+   
+    {
+      name: 'TB Count',
+      selector: 'tbCount',
+    },
+    {
+      name: 'Others Count',
+      selector: 'othersCount',
+    },
+    {
+      name: 'Volume Count',
+      selector: 'volumeCount',
+    },
+    
+    
+  ];
+ 
+
   return (
     <>
       <BreadCrumbs />
@@ -141,38 +160,41 @@ const ErectionDismantelReport = () => {
       <Card>
         <CardBody>
           <Row>
-            <Col>
+            <Col md="4">
+              <Label>Project Name</Label>
               <FormGroup>
-                <Label>Project Name</Label>
-                <Input type="select" name="title" onChange={(e) => setProjectName(e.target.value)}>
+                <Input
+                  type="select"
+                  name="project_id"
+                  onChange={(e) => {
+                    //setSelectedProject(e.target.value);
+                    setSelectedProject(e.target.value);
+                    setProjectName(e.target.options[e.target.selectedIndex].text);
+                    }}
+                >
                   <option value="">Please Select</option>
-                  {project &&
-                    project.map((ele) => {
-                      return (
-                        <option key={ele.project_id} value={ele.title}>
-                          {ele.title}
-                        </option>
-                      );
-                    })}
+                  {project.map((e) => (
+                    <option key={e.project_id} value={e.project_id}>
+                      {e.title}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
             </Col>
-
-            <Col>
+            <Col md="4">
               <FormGroup>
-                <Label>Worker Order No</Label>
-                <Input
-                  type="select"
-                  name="work_order_no"
-                  onChange={(e) => setworkOrderNo(e.target.value)}
-                >
+                <Label>Project Work Order</Label>
+                <Input type="select" name="work_order_no"
+                 onChange={(e) => 
+                
+                  setworkOrderNo(e.target.value)}
+              >
                   <option value="">Please Select</option>
-                  {workorder &&
-                    workorder.map((ele) => (
-                      <option key={ele.work_order_id} value={ele.work_order_no}>
-                        {ele.work_order_no}
-                      </option>
-                    ))}
+                  {projectWorkOrders.map((e) => (
+                    <option key={e.work_order_id} value={e.work_order_no}>
+                      {e.work_order_no}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
             </Col>
@@ -190,12 +212,12 @@ const ErectionDismantelReport = () => {
           <Row>
             <Col md="3">
               <Label>
-                <b>Team:</b> {workOrderNo}
+                <b>Project:</b> {projectName}
               </Label>
             </Col>
             <Col md="3">
               <Label>
-                <b>Date:</b> {projectName}
+                <b>Work Order No:</b> {workOrderNo}
               </Label>
             </Col>
           </Row>
@@ -226,40 +248,44 @@ const ErectionDismantelReport = () => {
                   return (
                     <tr key={element.task_history_id}>
                       <td>{index + 1}</td>
-                      <td>{element.date}</td>
-                      <td>{element.team_title}</td>
-
-                      <td>
-                        {/* {element.date} */}
-
-                        {element.headcount}
-                      </td>
-                      <td className="">
-                        {!Number.isNaN(parseFloat(element.SharePerHead))
-                          ? parseFloat(element.SharePerHead).toFixed(2)
-                          : ''}
-                      </td>
-                      <td className="">
-                        {!Number.isNaN(parseFloat(element.total))
-                          ? parseFloat(element.total).toFixed(2)
-                          : ''}
-                      </td>
+                      <td>{element.title}</td>
+                      <td>{element.project_work_order}</td>
+                      <td>{element.task_type}</td>
+                      <td>{element.pipe}</td>
+                      <td>{element.plankCount}</td>
+                      <td>{element.tbCount}</td>
+                      <td>{element.othersCount}</td>
+                      <td>{element.volumeCount}</td>
+                     
                     </tr>
                   );
                 })}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                <td>
+                  <b>Total</b>
+                </td>
+                <td>
+                  <b><b>{totalPipeCount}</b></b>
+                </td>
+                <td>
+                  <b><b>{totalPlankCount}</b></b>
+                </td>
+                <td>
+                  <b>{totalTbCount}</b>
+                </td>
+                <td>
+                  <b>{totalothersCount}</b>
+                </td>
+                <td>
+                  <b>{totalVolumeCount}</b>
+                </td>
+               
+              </tr>
+               
             </tbody>
-
-            {/* <tr>
-              <td><b>Total:</b></td>
-              <td></td>
-              <td></td>
-              <td></td>
-               <td><b>{totalinvoiceAmount}</b></td>
-               <td><b>{totalgsts}</b></td>
-               <td><b>{totaltotals}</b></td>
-               <td></td>
-               <td></td>
-              </tr> */}
           </CommonTable>
           <ReactPaginate
             previousLabel="Previous"
