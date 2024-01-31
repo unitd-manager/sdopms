@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import ComponentCard from '../ComponentCard';
 import TenderCompanyEditDetails from './TenderCompanyEditDetails';
 import TenderContactDetails from './TenderContactDetails';
+// import styled from 'styled-components';
+
+// const redText = styled.label`
+//   color: #2962ff;
+// `;
 
 export default function TenderMoreDetails({
   tenderDetails,
@@ -23,6 +28,9 @@ export default function TenderMoreDetails({
   setAddCompanyModal,
   //setAddContactModal,
   allCountries,
+  formSubmitted,
+  companyInsertData,
+  newContactData
 }) {
   TenderMoreDetails.propTypes = {
     tenderDetails: PropTypes.object,
@@ -37,11 +45,22 @@ export default function TenderMoreDetails({
     AddNewContact: PropTypes.object,
     insertCompany: PropTypes.object,
     companyhandleInputs: PropTypes.object,
-    setAddCompanyModal: PropTypes.object,
+    setAddCompanyModal: PropTypes.func,
     incharge: PropTypes.object,
     getContact: PropTypes.object,
     allCountries: PropTypes.object,
+    formSubmitted: PropTypes.any,
+    companyInsertData: PropTypes.object,
+    newContactData: PropTypes.object,
   };
+
+    useEffect(() => {
+    getContact(tenderDetails?.company_id);
+  }, [tenderDetails?.company_id]);
+  
+
+  console.log("tenderDetails",tenderDetails)
+
   return (
     <div>
       {' '}
@@ -57,10 +76,19 @@ export default function TenderMoreDetails({
                   </Label>
                   <Input
                     type="text"
+                    style={{ borderColor: 'red', color: 'green', /* other styles */ }}
                     onChange={handleInputs}
                     value={tenderDetails && tenderDetails.title}
                     name="title"
-                  />
+                    className={`form-control ${
+                      formSubmitted && tenderDetails && tenderDetails.title.trim() === '' ? 'highlight' : ''
+                    }`}
+                    />
+                {formSubmitted && tenderDetails && tenderDetails.title.trim() === '' && (
+                <div className="error-message">Please enter the title</div>
+              )}
+
+
                 </FormGroup>
               </Col>
               <Col md="3">
@@ -77,7 +105,7 @@ export default function TenderMoreDetails({
               <Col md="3">
                 <FormGroup>
                   <Label>
-                    Company Name (OR)
+                    Company (OR){' '}
                     <span
                       className="anchor"
                       onClick={() => {
@@ -85,7 +113,7 @@ export default function TenderMoreDetails({
                       }}
                     >
                       <b>
-                        <u>Add New Company</u>
+                        <u>Add New</u>
                       </b>
                     </span>
                   </Label>
@@ -117,6 +145,8 @@ export default function TenderMoreDetails({
                   insertCompany={insertCompany}
                   allCountries={allCountries}
                   companyhandleInputs={companyhandleInputs}
+                  formSubmitted={formSubmitted}
+                  companyInsertData={companyInsertData}
                 ></TenderCompanyEditDetails>
               </Col>
 
@@ -126,19 +156,17 @@ export default function TenderMoreDetails({
                     Contact (OR){' '}
                     <span className="anchor" onClick={addContactToggle.bind(null)}>
                       <b>
-                        <u>Add New Contact</u>
+                        <u>Add New</u>
                       </b>
                     </span>
                   </Label>
                   <Input
                     type="select"
                     onChange={handleInputs}
-                    value={tenderDetails && tenderDetails.contact_id}
+                    value={tenderDetails?.contact_id}
                     name="contact_id"
                   >
-                    <option value="" selected>
-                      Please Select
-                    </option>
+                    <option value="selected">Please Select</option>
                     {contact &&
                       contact.map((e) => {
                         return (
@@ -152,6 +180,8 @@ export default function TenderMoreDetails({
                       addContactToggle={addContactToggle}
                       AddNewContact={AddNewContact}
                       handleAddNewContact={handleAddNewContact}
+                      formSubmitted={formSubmitted}
+                      newContactData={newContactData}
                     ></TenderContactDetails>
                   </Input>
                 </FormGroup>
@@ -217,8 +247,8 @@ export default function TenderMoreDetails({
                     {incharge &&
                       incharge.map((e) => {
                         return (
-                          <option value={e.employee_id} key={e.first_name}>
-                            {e.first_name}
+                          <option value={e.employee_id} key={e.employee_name}>
+                            {e.employee_name}
                           </option>
                         );
                       })}
@@ -249,15 +279,14 @@ export default function TenderMoreDetails({
                     name="status"
                   >
                     <option value="">Please Select</option>
-                    <option value="In Progress">In Progress</option>
+                    <option selected="selected" value="In Progress">In Progress</option>
                     <option value="Waiting for Approval">Waiting for Approval</option>
                     <option value="Submitted">Submitted</option>
                     <option value="Follow-up">Follow-up</option>
                     <option value="Awarded">Awarded</option>
                     <option value="Not Awarded">Not Awarded</option>
-                    <option value="Enquiry">Enquiry</option>
                     <option value="Cancelled">Cancelled</option>
-                    <option selected="selected" value="Converted to Project">
+                    <option  value="Converted to Project">
                       Converted to Project
                     </option>
                   </Input>
@@ -281,9 +310,9 @@ export default function TenderMoreDetails({
                   <Label>Email</Label>
                   <Input
                     type="text"
-                    value={tenderDetails && tenderDetails.email}
+                    value={tenderDetails && tenderDetails.opp_email}
                     onChange={handleInputs}
-                    name="email"
+                    name="opp_email"
                   />
                 </FormGroup>
               </Col>

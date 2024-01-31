@@ -6,47 +6,51 @@ import PropTypes from 'prop-types';
 import api from '../../constants/api';
 import message from '../Message';
 import QuoteviewEditItem from './QuoteviewEditItem';
-//import WorkOrderEditModal from './WorkOrderEditModal';
 
-const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLineItem ,quoteId}) => {
+const QuotationViewLineItem = ({
+  projectId,
+  quote,
+  quotationViewLineItem,
+  setQuotationViewLineItem,
+}) => {
   QuotationViewLineItem.propTypes = {
     quotationViewLineItem: PropTypes.bool,
     setQuotationViewLineItem: PropTypes.func,
-    id: PropTypes.any,
-    quoteId:PropTypes.any,
+    projectId: PropTypes.any,
+    quote: PropTypes.any,
   };
 
   const [quotation, setQuotationViewLineItems] = useState();
-    const [quoteData, setQuoteData] = useState(false);
+  const [quoteData, setQuoteData] = useState(false);
   const [quoteLine, setQuoteLine] = useState();
   const QuotationViewLine = () => {
     api
-      .get('/projecttabquote/getTabQuoteLineItems', {
-        project_id: id,
-         quote_id: quoteId,
+      .post('/projecttabquote/getQuoteLineItemsById', {
+        project_id: projectId,
+        quote_id: quote,
       })
       .then((res) => {
         setQuotationViewLineItems(res.data.data);
-        console.log('SubConWorkOrderPortal', res.data.data);
       })
       .catch(() => {
-        //message(' LineItem Data not found', 'info');
+        message(' LineItem Data not found', 'info');
       });
   };
-  const QuotationDeleteItem = () => {
+
+  console.log('quotation',quotation)
+  const QuotationDeleteItem = (quoteItemsId) => {
     api
       .post('/projecttabquote/deleteQuoteItems', {
-        quote_items_id: id,
-        
+        quote_items_id: quoteItemsId,
       })
       .then(() => {
         message('Record deteled successfully', 'success');
+        QuotationViewLine();
       })
       .catch(() => {
         message(' delete Line Data not found', 'info');
       });
   };
-  //console.log('subconwork', subCon);
   useEffect(() => {
     QuotationViewLine();
   }, []);
@@ -54,17 +58,7 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
   return (
     <>
       <Modal size="xl" isOpen={quotationViewLineItem}>
-        <ModalHeader>
-          View Line Items
-          <Button
-            color="secondary"
-            onClick={() => {
-              setQuotationViewLineItem(false);
-            }}
-          >
-            X
-          </Button>
-        </ModalHeader>
+        <ModalHeader>View Line Items</ModalHeader>
         <ModalBody>
           <table className="lineitem border border-secondary rounded">
             <thead>
@@ -73,9 +67,9 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
                 <th scope="col">Description </th>
                 <th scope="col">Qty</th>
                 <th scope="col">UOM</th>
-                {/* <th scope="col">Unit Price</th> */}
+                <th scope="col">Unit Price</th>
                 <th scope="col">Amount</th>
-                <th scope="col">Updated By</th>
+                <th scope="col"></th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -89,10 +83,11 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
                       <td>{e.description}</td>
                       <td>{e.quantity}</td>
                       <td>{e.unit}</td>
-                      {/* <td>{e.unit_price}</td> */}
+                      <td>{e.unit_price}</td>
                       <td>{e.amount} </td>
-                      <td></td>
                       
+                      <td></td>
+
                       <td>
                         <Row>
                           <Col md="3">
@@ -114,9 +109,8 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
                               <Link to="">
                                 <span
                                   onClick={() => {
-                                    // setQuoteLine(e);
-                                   
-                                    QuotationDeleteItem();
+                                    setQuoteLine(e);
+                                    QuotationDeleteItem(e.quote_items_id);
                                   }}
                                 >
                                   <Icon.Delete />
@@ -133,9 +127,11 @@ const QuotationViewLineItem = ({ id, quotationViewLineItem, setQuotationViewLine
           </table>
           {quoteData && (
             <QuoteviewEditItem
-              quoteLine={quoteLine}
+            FetchLineItemData={quoteLine}
+            QuotationViewLine={QuotationViewLine}
               quoteData={quoteData}
               setQuoteData={setQuoteData}
+              quoteId={quote}
             ></QuoteviewEditItem>
           )}
         </ModalBody>

@@ -13,6 +13,8 @@ import message from '../../components/Message';
 import api from '../../constants/api';
 import ProjectTask from '../smartconTables/ProjectTask';
 // import ProjectTimeSheet from '../smartconTables/ProjectTimesheet';
+import ViewLineItemModal from '../../components/ProjectModal/ViewLineItemModal';
+import EditQuotation from '../../components/ProjectModal/EditQuotation';
 import ProjectTeam from '../smartconTables/ProjectTeam';
 import ProjectMilestones from '../../components/ProjectMilestones';
 import ProjectMilestoneEdit from '../../components/ProjectMilestoneEdit';
@@ -88,7 +90,9 @@ const ProjectEdit = () => {
   const [addLineItemModal, setAddLineItemModal] = useState(false);
   const [quotation, setQuotation] = useState({});
   const [lineItem, setLineItem] = useState([]);
+  
   const [quotationsModal, setquotationsModal] = useState(false);
+  
   // const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
   // const [addContactModalss, setAddContactModalss] = useState(false);
   const [teamById, setTeamById] = useState();
@@ -110,10 +114,12 @@ const ProjectEdit = () => {
   const [POId, setPOId] = useState('');
   const [testJsonData, setTestJsonData] = useState(null);
   const [viewLineModal, setViewLineModal] = useState(false);
+  const [viewLineModal1, setViewLineModal1] = useState(false);
+
   const [taskhistorymodal, setTaskhistorymodal] = useState(false);
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
   const [WorkSheet, setWorkSheet] = useState(null);
-
+  const [editQuoteModal, setEditQuoteModal] = useState(false);
 
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
@@ -127,7 +133,7 @@ const ProjectEdit = () => {
   const tabs = [
 
     { id: '1', name: 'Costing Summary' },
-    // { id: '2', name: 'Quotation' },
+    { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
     { id: '5', name: 'Task' },
@@ -195,7 +201,7 @@ const ProjectEdit = () => {
       });
   };
   const getQuotations = () => {
-    api.post('/project/getTabQuoteById', { project_id: id }).then((res) => {
+    api.post('/projecttabquote/getTabQuoteById', { project_id: id }).then((res) => {
       setQuotation(res.data.data);
     });
   };
@@ -210,12 +216,12 @@ const ProjectEdit = () => {
       .catch(() => { });
   };
 
-  // Get Line Item
+
+
   const getLineItem = (quotationId) => {
     api.post('/project/getQuoteLineItemsById', { quote_id: quotationId }).then((res) => {
       setLineItem(res.data.data);
-      console.log('lineItem', res.data.data);
-
+      console.log("1111",quotationId)
       //setViewLineModal(true);
     });
   };
@@ -245,15 +251,21 @@ const ProjectEdit = () => {
       })
       .catch(() => { });
   };
-  const insertQuote = (code) => {
+  const insertQuote = async (code) => {
     const newQuoteId = quoteForm;
     newQuoteId.project_id = id;
     newQuoteId.quote_code = code;
-
-    api.post('/project/insertquote', newQuoteId).then(() => {
-      message('Quote inserted successfully.', 'success');
-      getQuotations();
-    });
+    api
+      .post('/projecttabquote/insertquote', newQuoteId)
+      .then(() => {
+        message('Quote inserted successfully.', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
+      })
+      .catch(() => {
+        message('Network connection error.', 'error');
+      });
   };
   const handleQuoteForms = (ele) => {
     setQuoteForm({ ...quoteForm, [ele.target.name]: ele.target.value });
@@ -503,6 +515,17 @@ const ProjectEdit = () => {
     });
   };
 
+  const generateCodeQuote = (type) => {
+    api
+      .post('/commonApi/getCodeValue', { type })
+      .then((res) => {
+        insertQuote(res.data.data);
+      })
+      .catch(() => {
+        insertQuote('');
+      });
+  };
+
   useEffect(() => {
     getProjectById();
     getMilestoneById();
@@ -515,7 +538,7 @@ const ProjectEdit = () => {
     TabPurchaseOrderLineItemTable();
     getCompany();
     getQuotations();
-    getLineItem();
+    // getLineItem();
   }, [id]);
 
   useEffect(() => {
@@ -937,54 +960,26 @@ const ProjectEdit = () => {
           </TabPane>
 
           {/* Tab 2 */}
-          <HasAccess
-            roles={null}
-            permissions={`client-edit`}
-            renderAuthFailed={<p></p>}
-          >
+         
             <TabPane tabId="2" eventkey="quotationMoreDetails">
               <br />
-              <Row className="mb-4">
-                {Object.keys(quotation).length === 0 && (
-                  <Col md="2">
-                    <Button
-                      color="primary"
-                      className="shadow-none"
-                      onClick={(ele) => {
-                        if (
-                          window.confirm(
-                            'Do you Like to Add Quote ?',
-                          )
-                        ) {
-                          handleQuoteForms(ele);
-                          generateCode(ele);
-                        }
-                      }
-                      }
-                    >
-                      Add Quote
-                    </Button>
-                  </Col>
-                )}
-              </Row>
+         
               <QuotationMoreDetails
                 id={id}
-                addLineItemModal={addLineItemModal}
-                setAddLineItemModal={setAddLineItemModal}
-                viewLineModal={viewLineModal}
-                viewLineToggle={viewLineToggle}
+                insertQuote={insertQuote}
+                handleQuoteForms={handleQuoteForms}
+                generateCodeQuote={generateCodeQuote}
+                quotationsModal={quotationsModal}
                 lineItem={lineItem}
                 getLineItem={getLineItem}
-                quotationsModal={quotationsModal}
                 setquotationsModal={setquotationsModal}
-                quotation={quotation}
-                setViewLineModal={setViewLineModal}
               ></QuotationMoreDetails>
             </TabPane>
-            <TabPane tabId="2"></TabPane>
-          </HasAccess>
+            
+       
           {/* Tab 3 Milestone */}
-
+          <ViewLineItemModal viewLineModal={viewLineModal1} setViewLineModal={setViewLineModal1} />
+        <EditQuotation editQuoteModal={editQuoteModal} setEditQuoteModal={setEditQuoteModal} />
           <TabPane tabId="3">
             <br />
             <ProjectMilestones

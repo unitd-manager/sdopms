@@ -258,7 +258,7 @@ const Test = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get('/product/getProductsPaginations');
+        const res = await api.get('/product/getProductsPagination');
 
         if (res.status === 200) {
           setProducts(res.data.data);

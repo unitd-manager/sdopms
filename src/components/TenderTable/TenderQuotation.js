@@ -21,23 +21,19 @@ import AddLineItemModal from './AddLineItemModal';
 import EditQuoteModal from './EditQuoteModal';
 import ViewQuoteLogModal from './ViewQuoteLogModal';
 import EditLineItemModal from './EditLineItemModal';
-
-// const RedLabel = styled.label`
-//   color: #2962ff;
-// `;
+import PdfQuote from '../PDF/PdfQuote';
 
 export default function TenderQuotation({
   tenderId,
   quote,
   lineItem,
-  PdfQuote,
   quotationsModal,
   setquotationsModal,
   getLineItem,
   setAddLineItemModal,
   setEditQuoteModal,
   viewLineModal,
-  viewLineToggle,
+ // viewLineToggle,
   editQuoteModal,
   addLineItemModal,
   project,
@@ -46,14 +42,16 @@ export default function TenderQuotation({
   generateCodes,
   handleQuoteForms,
   generateCode,
+  getLine,
+  getQuote,
 }) {
   TenderQuotation.propTypes = {
     tenderId: PropTypes.object,
     lineItem: PropTypes.object,
     viewLineModal: PropTypes.object,
-    PdfQuote: PropTypes.string,
     getLineItem: PropTypes.object,
-    viewLineToggle: PropTypes.object,
+    getLine: PropTypes.object,
+   // viewLineToggle: PropTypes.object,
     setEditQuoteModal: PropTypes.object,
     setAddLineItemModal: PropTypes.object,
     editQuoteModal: PropTypes.object,
@@ -67,20 +65,25 @@ export default function TenderQuotation({
     handleQuoteForms: PropTypes.object,
     generateCode: PropTypes.object,
     generateCodes: PropTypes.object,
+    getQuote: PropTypes.any,
   };
 
   const [quoteDatas, setQuoteData] = useState();
   const [quoteLine, setQuoteLine] = useState();
   const [editLineModelItem, setEditLineModelItem] = useState(null);
   const [editLineModal, setEditLineModal] = useState(false);
-  console.log('1', quoteDatas);
 
+  console.log('quoteDatas', quoteDatas);
+  console.log('quote', quote);
+
+  
   const QuoteProject = project.find((element) => {
     return element.quote_id === quote.quote_id;
   });
+
   const deleteRecord = (deleteID) => {
     Swal.fire({
-      title: `Are you sure? ${id}`,
+      title: `Are you sure?`,
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
@@ -91,13 +94,21 @@ export default function TenderQuotation({
       if (result.isConfirmed) {
         api.post('/tender/deleteEditItem', { quote_items_id: deleteID }).then(() => {
           Swal.fire('Deleted!', 'Your Line Items has been deleted.', 'success');
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
         });
       }
     });
   };
 
   useEffect(() => {}, [tenderId]);
+  const handleEditSuccess = () => {
+    // Handle the refresh of the View Line Item Modal
+    getLineItem(quote.quote_id);
+    setViewLineModal(true);
+  };
+
   return (
     <div>
       <Row>
@@ -135,6 +146,7 @@ export default function TenderQuotation({
             <Button
               color="primary"
               className="shadow-none"
+              style={{ width: '100%' }}
               onClick={() => {
                 if (window.confirm('Do you like to Convert to Project?')) {
                   //insertProject();
@@ -144,7 +156,7 @@ export default function TenderQuotation({
             >
               Convert Opp To Project
             </Button>
-          </Col>
+          </Col> 
         )}
 
         {quote && QuoteProject !== undefined && (
@@ -166,18 +178,21 @@ export default function TenderQuotation({
         FetchLineItemData={editLineModelItem}
         getLineItem={getLineItem}
         setViewLineModal={setViewLineModal}
+        onEditSuccess={handleEditSuccess}
       >
         {' '}
       </EditLineItemModal>
 
       {/* Call View Quote Log Modal */}
-      {quotationsModal && (
+       {quotationsModal && (
         <ViewQuoteLogModal
           quotationsModal={quotationsModal}
           setquotationsModal={setquotationsModal}
+          quoteId={quote.quote_id}
           id={tenderId}
         />
       )}
+
       {Object.keys(quote).length !== 0 && (
         <Form>
           <Row>
@@ -255,13 +270,14 @@ export default function TenderQuotation({
               </FormGroup>
             </Col>
             <Col>
-              <FormGroup>
-                <Label>{quote && quote.totalamount}</Label>
-              </FormGroup>
-            </Col>
+  <FormGroup>
+    <Label>{quote && quote.totalamount - quote.discount}</Label>
+  </FormGroup>
+</Col>
+
 
             <Col md="2">
-              <Label>
+              <Label className='anchor'>
                 <u
                   onClick={() => {
                     getLineItem(quote.quote_id);
@@ -272,15 +288,15 @@ export default function TenderQuotation({
                 </u>
               </Label>
 
-              <Modal size="xl" isOpen={viewLineModal} toggle={viewLineToggle.bind(null)}>
-                <ModalHeader toggle={viewLineToggle.bind(null)}>Line Items</ModalHeader>
+              <Modal size="xl" isOpen={viewLineModal} toggle={() => setViewLineModal(false)}>
+            <ModalHeader toggle={() => setViewLineModal(false)}>Line Items</ModalHeader>
                 <ModalBody>
                   <FormGroup>
                     <table className="lineitem border border-secondary rounded">
                       <thead>
-                        <tr>
+                      <tr>
                           <th scope="col">Title </th>
-                          <th scope="col">Description </th>
+                          <th scope="col" >Description </th>
                           <th scope="col">Qty </th>
                           <th scope="col">Unit Price </th>
                           <th scope="col">Amount</th>
@@ -298,20 +314,20 @@ export default function TenderQuotation({
                                 <td data-label="Quantity">{e.quantity}</td>
                                 <td data-label="Unit Price">{e.unit_price}</td>
                                 <td data-label="Amount">{e.amount}</td>
-                                <td data-label="Updated By"></td>
+                                <td data-label="Updated By">{e.created_by} {e.creation_date}</td>
                                 {quote && QuoteProject === undefined && (
                                   <td data-label="Actions">
                                     <span
-                                      className="addline"
+                                      className="addline pointer"
                                       onClick={() => {
                                         setEditLineModelItem(e);
                                         setEditLineModal(true);
                                       }}
                                     >
-                                      <Icon.Edit2 />
+                                      <Icon.Edit2 />                                      
                                     </span>
                                     <span
-                                      className="addline"
+                                      className="addline pointer"
                                       onClick={() => {
                                         deleteRecord(e.quote_items_id);
                                       }}
@@ -337,12 +353,12 @@ export default function TenderQuotation({
                     <Col md="4">
                       <Label>
                         <span
-                          className="addline"
+                          className="addline pointer"
                           onClick={() => {
-                            setQuoteData(quote);
+                            setEditQuoteModal(true);
+                            // setQuoteData(quote);
                             setQuoteData(lineItem.quote_id);
                             getLineItem(quote.quote_id);
-                            setEditQuoteModal(true);
                           }}
                         >
                           <Icon.Edit />
@@ -351,8 +367,9 @@ export default function TenderQuotation({
                     </Col>
                   )}
                   <Col md="4">
-                    <Label>
-                      <PdfQuote id={id} quoteId={quote.quote_id}></PdfQuote>
+                    <Label className='pointer'>
+                      <PdfQuote quoteId={quote.quote_id} id={id} ></PdfQuote>
+                      {/* <PdfQuote id={id} quoteId={quote.quote_id}></PdfQuote> */}
                     </Label>
                   </Col>
 
@@ -360,7 +377,7 @@ export default function TenderQuotation({
                     <Col md="4">
                       <Label>
                         <span
-                          className="addline"
+                          className="addline pointer"
                           onClick={() => {
                             setQuoteLine(quote.quote_id);
                             setAddLineItemModal(true);
@@ -380,9 +397,11 @@ export default function TenderQuotation({
       {editQuoteModal && (
         <EditQuoteModal
           lineItem={lineItem}
+          getLine={getLine}
           editQuoteModal={editQuoteModal}
           setEditQuoteModal={setEditQuoteModal}
           quoteDatas={quote}
+          getQuoteFun={getQuote}
         ></EditQuoteModal>
       )}
       {addLineItemModal && (

@@ -21,12 +21,13 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import api from '../../constants/api';
 import message from '../Message';
 
-const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineItem }) => {
+const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineItem, getQuoteFun }) => {
   EditQuoteModal.propTypes = {
     editQuoteModal: PropTypes.bool,
     setEditQuoteModal: PropTypes.func,
     quoteDatas: PropTypes.object,
     lineItem: PropTypes.object,
+    getQuoteFun: PropTypes.any,
   };
 
   const { id } = useParams();
@@ -44,17 +45,46 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
   const getQuote = () => {
     api.post('/tender/getQuoteById', { opportunity_id: id }).then((res) => {
       setQuoteData(res.data.data[0]);
-      console.log('quote', res.data.data[0]);
     });
   };
-
+  const fetchTermsAndConditions = () => {
+    api.get('/setting/getSettingsForTerms')
+      .then((res) => {
+        const settings = res.data.data;
+        if (settings && settings.length > 0) {
+          const fetchedTermsAndCondition = settings[0].value; // Assuming 'value' holds the terms and conditions
+          console.log("1", res.data.data);
+          // Update the quote condition in quoteData
+          setQuoteData({ ...quoteData, quote_condition: fetchedTermsAndCondition });
+          // Convert fetched terms and conditions to EditorState
+          const contentBlock = htmlToDraft(fetchedTermsAndCondition);
+          if (contentBlock) {
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            const editorState = EditorState.createWithContent(contentState);
+            setConditions(editorState);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching terms and conditions:', error);
+      });
+  };
+  // Call fetchTermsAndConditions within useEffect or when required
+  useEffect(() => {
+    fetchTermsAndConditions();
+    // Other useEffect logic
+  }, []);
+  
   const insertquote = () => {
     api.post('/tender/insertLog', quoteData).then((res) => {
       message('quote inserted successfully.', 'success');
       lineItem.forEach((element) => {
         element.quote_log_id = res.data.data.insertId;
         api.post('/tender/insertLogLine', element).then(() => {
+          getQuoteFun();
+            setTimeout(() => {
           window.location.reload();
+        }, 1000);
         });
       });
     });
@@ -64,7 +94,10 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
       .post('/tender/edit-TabQuote', quoteData)
       .then(() => {
         message('Quote Edited Successfully.', 'success');
-        //window.location.reload();
+        getQuoteFun();
+          setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       })
       .catch(() => {
         message('Unable to edit quote. please fill all fields', 'error');
@@ -160,7 +193,7 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
                     <Input
                       type="text"
                       name="discount"
-                      defaultValue={quoteData && quoteData.discount}
+                      defaultValue={quoteData && quoteData.discount || 0}
                       onChange={handleData}
                     />
                   </FormGroup>
@@ -169,11 +202,11 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
               <Row>
                 <Col md="4">
                   <FormGroup>
-                    <Label>Project Location</Label>
+                    <Label>Validity</Label>
                     <Input
                       type="text"
-                      name="project_location"
-                      defaultValue={quoteData && quoteData.project_location}
+                      name="validity"
+                      defaultValue={quoteData && quoteData.validity}
                       onChange={handleData}
                     />
                   </FormGroup>
@@ -276,10 +309,9 @@ const EditQuoteModal = ({ editQuoteModal, setEditQuoteModal, quoteDatas, lineIte
                     color="primary"
                     className="btn shadow-none mr-2"
                     onClick={() => {
-                      GetEditQuote();
                       insertquote();
                       GetEditQuote();
-                      setQuoteData();
+                      // setQuoteData();
                       setEditQuoteModal(false);
                       //insertquoteLogLine();
                     }}

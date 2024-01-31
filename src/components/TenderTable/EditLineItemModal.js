@@ -17,18 +17,26 @@ import api from '../../constants/api';
 import message from '../Message';
 
 
-const EditLineItemModal = ({ editLineModal, setEditLineModal, FetchLineItemData }) => {
+const EditLineItemModal = ({ editLineModal, setEditLineModal, FetchLineItemData, onEditSuccess }) => {
   EditLineItemModal.propTypes = {
     editLineModal: PropTypes.bool,
     setEditLineModal: PropTypes.func,
     FetchLineItemData: PropTypes.object,
+    onEditSuccess: PropTypes.func,
+   
   };
 const {id}=useParams();
   const [lineItemData, setLineItemData] = useState(null);
   const [totalAmount, setTotalAmount] = useState();
+  const [quoteData, setQuoteData] = useState();
 
   const handleData = (e) => {
     setLineItemData({ ...lineItemData, [e.target.name]: e.target.value });
+  };
+  const getQuote = () => {
+    api.post('/tender/getQuoteById', { opportunity_id: id }).then((res) => {
+      setQuoteData(res.data.data[0]);
+    });
   };
   const handleCalc = (Qty, UnitPrice, TotalPrice) => {
     if (!Qty) Qty = 0;
@@ -37,17 +45,41 @@ const {id}=useParams();
 
     setTotalAmount(parseFloat(Qty) * parseFloat(UnitPrice));
   };
+  const getLineItem = () => {
+    api.post('/tender/getQuoteLineItemsById', { quote_id: quoteData.quote_id }).then(() => {
+      console.log('222222222:', quoteData.quote_id);
 
+    })
+    .catch((error) => {
+      console.error('Error fetching line items:', error);
+      message('LineItem Data not found', 'info');
+    });
+  };
   const UpdateData = () => {
     lineItemData.quote_id=id;
     //lineItemData.amount=totalAmount;
     lineItemData.amount = parseFloat(lineItemData.quantity) * parseFloat(lineItemData.unit_price) 
     api
       .post('/tender/edit-TabQuoteLine', lineItemData)
-      .then((res) => {
-        console.log('edit Line Item', res.data.data);
-        message('Edit Line Item Udated Successfully.', 'success');
-        window.location.reload()
+      .then(() => {
+        api.post('/tender/insertLog', quoteData)
+        .then(() => {
+          message('insert log Udated Successfully.', 'success');
+         
+        })
+        api
+        .post('/tender/insertLogLine', lineItemData)
+        .then((result) => {
+          console.log('edit Line Item', result.data.data);
+          message('Edit Line Item Udated Successfully.', 'success');
+         
+        })
+        .catch(() => {
+          message('Unable to edit quote. please fill all fields', 'error');
+        });
+        getLineItem();
+        onEditSuccess(); // Call the callback function
+      
       })
       .catch(() => {
         message('Unable to edit quote. please fill all fields', 'error');
@@ -55,13 +87,14 @@ const {id}=useParams();
   };
 
   React.useEffect(() => {
+    getQuote();
     setLineItemData(FetchLineItemData);
   }, [FetchLineItemData]);
 
   return (
     <>
       <Modal isOpen={editLineModal}>
-        <ModalHeader>Line Items</ModalHeader>
+        <ModalHeader>Line Item2s</ModalHeader>
         <ModalBody>
           <FormGroup>
             <Row>
