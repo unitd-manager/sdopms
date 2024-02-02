@@ -19,12 +19,12 @@ import '../../views/form-editor/editor.scss';
 
 import api from '../../constants/api';
 
-const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEditModal,getContactLinked }) => {
+const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEditModal }) => {
   ContactEditModal.propTypes = {
     contactData: PropTypes.object,
     editContactEditModal: PropTypes.bool,
     setEditContactEditModal: PropTypes.func,
-    getContactLinked:PropTypes.func,
+    //getContactLinked:PropTypes.func,
   };
 
   const [contactinsert, setContactInsert] = useState(null);
@@ -39,13 +39,13 @@ const ContactEditModal = ({ contactData, editContactEditModal, setEditContactEdi
     api
       .post('/clients/editContact', contactinsert)
       .then(() => {
-        getContactLinked();
-        setEditContactEditModal(false);
         message('Record editted successfully', 'success');
         //window.location.reload();
+        //getContactLinked();
+        setEditContactEditModal(false);
       })
       .catch(() => {
-        message('Unable to edit record.', 'error');
+       message('Unable to edit record.', 'error');
       });
   };
 

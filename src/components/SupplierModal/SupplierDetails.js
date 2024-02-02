@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import ComponentCard from '../ComponentCard';
 
@@ -8,6 +8,8 @@ export default function SupplierDetails({
   supplier,
   allCountries,
   supplierStatus,
+  
+  setEditPurchaseOrderLinked,
 }) {
   SupplierDetails.propTypes = {
     handleInputs: PropTypes.func,
@@ -15,14 +17,15 @@ export default function SupplierDetails({
     allCountries: PropTypes.object,
     supplierStatus: PropTypes.object,
     status: PropTypes.object,
+    setEditPurchaseOrderLinked: PropTypes.bool,
   };
 
   return (
     <Form>
       <FormGroup>
-        <ComponentCard title="Supplier Details">
+        <ComponentCard title="Supplier Details" creationModificationDate={supplier}>
           <Row>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>
                   Name <span className="required"> *</span>
@@ -35,7 +38,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Email</Label>
                 <Input
@@ -46,7 +49,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Fax</Label>
                 <Input
@@ -57,9 +60,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Mobile</Label>
                 <Input
@@ -70,7 +71,9 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            </Row>
+            <Row>
+            <Col md="3">
               <FormGroup>
                 <Label>Status</Label>
                 <Input
@@ -89,7 +92,7 @@ export default function SupplierDetails({
                 </Input>
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>GST NO</Label>
                 <Input
@@ -100,9 +103,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Payment Details</Label>
                 <Input
@@ -113,7 +114,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Terms</Label>
                 <Input
@@ -124,7 +125,9 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            </Row>
+            <Row>
+            <Col md="3">
               <FormGroup>
                 <Label>Contact Person</Label>
                 <Input
@@ -141,7 +144,7 @@ export default function SupplierDetails({
       <FormGroup>
         <ComponentCard title="Address">
           <Row>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Address 1</Label>
                 <Input
@@ -152,7 +155,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Address 2</Label>
                 <Input
@@ -163,7 +166,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>State/Zip</Label>
                 <Input
@@ -174,9 +177,7 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col md="4">
+            <Col md="3">
               <FormGroup>
                 <Label>Country</Label>
                 <Input
@@ -193,7 +194,9 @@ export default function SupplierDetails({
                 </Input>
               </FormGroup>
             </Col>
-            <Col md="4">
+            </Row>
+            <Row>
+            <Col md="3">
               <FormGroup>
                 <Label>Pin Code</Label>
                 <Input
@@ -204,7 +207,22 @@ export default function SupplierDetails({
                 />
               </FormGroup>
             </Col>
-          </Row>         
+          </Row>
+        
+              <Row>
+                <div className="pt-3 mt-3 d-flex align-items-center gap-2">
+                  <Button
+                    className="shadow-none"
+                    onClick={() => {
+                      setEditPurchaseOrderLinked(true);
+                    }}
+                    color="primary"
+                  >
+                    Make Supplier Payment
+                  </Button>
+                </div>
+              </Row>
+          
         </ComponentCard>
       </FormGroup>
     </Form>
