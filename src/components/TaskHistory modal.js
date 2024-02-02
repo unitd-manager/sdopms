@@ -184,9 +184,9 @@ console.log('contactDatas',contactDatas)
     if (isSubmitting) {
       return; // Prevent multiple submissions
     }
-    
+   
     // if (insertTask.date !== '' && insertTask.title !== '') {
-      setIsSubmitting(true); // Set submission in progress
+     // setIsSubmitting(true); // Set submission in progress
       if(contactDatas.task_type === 'Dismantel'){
         
           insertTask.pipe_value = insertTask.pipe * parseFloat(projectDetail.pipe_dismantel_amount);
@@ -216,7 +216,9 @@ console.log('contactDatas',contactDatas)
     message('Please Select Team leader', 'warning');
   }
    else if(((contactDatas.task_type === 'Dismantel') &&(parseFloat(insertTask.pipe)> parseFloat(parseFloat(pipeCount.pipeCount)-parseFloat(dismantelCount.pipeCount)) || parseFloat(insertTask.plank)> parseFloat(parseFloat(pipeCount.plankCount)-parseFloat(dismantelCount.plankCount)) || parseFloat(insertTask.tb)> parseFloat(parseFloat(pipeCount.tbCount)-parseFloat(dismantelCount.tbCount)) || parseFloat(insertTask.volume)> parseFloat(parseFloat(pipeCount.volumeCount)-parseFloat(dismantelCount.volumeCount)))) ){
-      message('Please check the count', 'error');
+      message('Please check the count', 'warning');
+    }else if(!insertTask.pipe_code && insertTask.pipe_code===''){
+      message('Please Fill the Log no', 'warning');
     }
   else{
   insertTask.employee_id=employeelead[0].employeeId;
@@ -534,8 +536,18 @@ console.log('work',work)
                 </FormGroup>
               </Col>
               )}
-
-                         {((contactDatas.task_type === 'Erection') ||(contactDatas.task_type === 'Dismantel' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ))&& <><Col md="4">
+{contactDatas.task_type === 'Erection' && <Col md="4">
+                            <FormGroup>
+                              <Label>Log No</Label>
+                              <Input
+                                type="text"
+                                name="pipe_code"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.pipe_code}
+                              />
+                            </FormGroup>
+                          </Col>}
+                         {((contactDatas.task_type === 'Erection' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ) ||(contactDatas.task_type === 'Dismantel' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ))&& <><Col md="4">
                             <FormGroup>
                               <Label>Pipe</Label>
                               <Input

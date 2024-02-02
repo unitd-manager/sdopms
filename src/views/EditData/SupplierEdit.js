@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import {Row,Button} from 'reactstrap';
+import React, { useState, useEffect, useContext } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
@@ -10,21 +9,21 @@ import 'datatables.net-buttons/js/buttons.html5';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../form-editor/editor.scss';
+import Swal from 'sweetalert2';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
+//import ComponentCard from '../../components/ComponentCard';
 import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
+import AppContext from '../../context/AppContext';
 import api from '../../constants/api';
 import PurchaseOrderLinked from '../../components/SupplierModal/Purchaseorderlinked';
 import SupplierTable from '../../components/SupplierModal/SupplierTable';
 import SupplierDetails from '../../components/SupplierModal/SupplierDetails';
 import ApiButton from '../../components/ApiButton';
-import ComponentCard from '../../components/ComponentCard';
-//import Tab from '../../components/ProjectTabs/Tab';
 
 const SupplierEdit = () => {
   //all state variables
   const [supplier, setSupplier] = useState();
-  //const [activeTab, setActiveTab] = useState('1');
   const [purchaseOrder, setPurchaseOrder] = useState();
   const [allCountries, setAllCountries] = useState();
   const [editPurchaseOrderLinked, setEditPurchaseOrderLinked] = useState(false);
@@ -34,10 +33,11 @@ const SupplierEdit = () => {
   //navigation and params
   const { id } = useParams();
   const navigate = useNavigate();
+  const { loggedInuser } = useContext(AppContext);
   //const applyChanges = () => {};
-  const backToList = () => {
-    navigate('/Supplier');
-  };
+const backToList=() => {
+  navigate('/Supplier');
+}
   const handleInputs = (e) => {
     setSupplier({ ...supplier, [e.target.name]: e.target.value });
   };
@@ -49,28 +49,28 @@ const SupplierEdit = () => {
         setSupplier(res.data.data[0]);
       })
       .catch(() => {
-        //message('Supplier Data Not Found', 'info');
+        message('Supplier Data Not Found', 'info');
       });
   };
-  // Start for tab refresh navigation
-  // const tabs = [{ id: '1', name: 'Make Supplier Payment' }];
-  // const toggle = (tab) => {
-  //   setActiveTab(tab);
-  // };
+
+ 
   //Logic for edit data in db
   const editSupplierData = () => {
     if (supplier.company_name !== '') {
       supplier.modification_date = creationdatetime;
-
+      supplier.modified_by = loggedInuser.first_name;
       api
         .post('/supplier/edit-Supplier', supplier)
         .then(() => {
           message('Record editted successfully', 'success');
+          setTimeout(() => {
+            window.location.reload();
+          }, 400);
         })
         .catch(() => {
           message('Unable to edit record.', 'error');
         });
-    } else {
+        }  else {
       message('Please fill all required fields.', 'error');
     }
   };
@@ -98,7 +98,7 @@ const SupplierEdit = () => {
         setAllCountries(res.data.data);
       })
       .catch(() => {
-        //message('Supplier Data Not Found', 'info');
+        message('Supplier Data Not Found', 'info');
       });
   };
   //Api call for getting Staff Type From Valuelist
@@ -109,38 +109,101 @@ const SupplierEdit = () => {
         setSupplierStatus(res.data.data);
       })
       .catch(() => {
-        //message('Status Data Not Found', 'info');
-      });
-  };
-
-  const getpurchaseOrder = () => {
-    api
-      .post('/supplier/getPurchaseOrderLinkedss', { supplier_id: id })
-      .then((res) => {
-        setPurchaseOrder(res.data.data);
-      })
-      .catch(() => {
-        //message('Supplier not found', 'info');
+        message('Status Data Not Found', 'info');
       });
   };
   useEffect(() => {
+    const getpurchaseOrder = () => {
+      api
+        .post('/supplier/getPurchaseOrderLinkedss', { supplier_id: id })
+        .then((res) => {
+          setPurchaseOrder(res.data.data);
+        })
+        .catch(() => {
+          message('Supplier not found', 'info');
+        });
+    };
     getpurchaseOrder();
     suppliereditdetails();
     getSupplierStatus();
     Status();
   }, []);
+  const deleteSupplierData = () => {
+    Swal.fire({
+      title: `Are you sure? ${id}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .post('/supplier/deleteSupplier', { supplier_id: id })
+          .then(() => {
+            Swal.fire('Deleted!', 'Your Leave has been deleted.', 'success');
+            window.location.reload();
+          });
+      }
+    });
+  };
 
   return (
     <>
       <BreadCrumbs heading={supplier && supplier.company_name} />
+     
+          <ApiButton
+              editData={editSupplierData}
+              navigate={navigate}
+              applyChanges={editSupplierData}
+              backToList={backToList}
+              deleteData={deleteSupplierData}
+              module="Supplier"
+            ></ApiButton>
+            {/* <Row>
+              <Col>
+                <Button
+                  className="shadow-none"
+                  color="primary"
+                  onClick={() => {
+                    editSupplierData();
+                    navigate('/Supplier');
+                  }}
+                >
+                  Save
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  color="primary"
+                  className="shadow-none"
+                  onClick={() => {
+                    editSupplierData();
+                    setTimeout(() => {
+                      applyChanges();
+                    }, 800);
+                  }}
+                >
+                  Apply
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  color="dark"
+                  className="shadow-none"
+                  onClick={() => {
+                    applyChanges();
+                    navigate('/Supplier');
 
-      <ApiButton
-        editData={editSupplierData}
-        navigate={navigate}
-        applyChanges={editSupplierData}
-        backToList={backToList}
-        module="Supplier"
-      ></ApiButton>
+                  }}
+                >
+                  Back to List
+                </Button>
+              </Col>
+            </Row> */}
+          
+     
 
       <SupplierDetails
         handleInputs={handleInputs}
@@ -150,35 +213,13 @@ const SupplierEdit = () => {
         status={status}
         setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
       ></SupplierDetails>
+ 
+      <PurchaseOrderLinked
+        editPurchaseOrderLinked={editPurchaseOrderLinked}
+        setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
+      ></PurchaseOrderLinked>
       <ToastContainer></ToastContainer>
-
-      <ComponentCard title="More Details">           <Row>
-                <div className="pt-1 mt-1 d-flex align-items-center gap-1">
-                  <Button
-                    className="shadow-none"
-                    onClick={() => {
-                      setEditPurchaseOrderLinked(true);
-                    }}
-                    color="primary"
-                  >
-                    Make Supplier Payment
-                  </Button>
-                </div>
-              </Row>
-              <br/>
-            <PurchaseOrderLinked
-              editPurchaseOrderLinked={editPurchaseOrderLinked}
-              setEditPurchaseOrderLinked={setEditPurchaseOrderLinked}
-              getpurchaseOrder={getpurchaseOrder}
-            ></PurchaseOrderLinked>
-
-            <SupplierTable
-              purchaseOrder={purchaseOrder}
-              getpurchaseOrder={getpurchaseOrder}
-            ></SupplierTable>
-          {/* </TabPane>
-        </TabContent> */}
-      </ComponentCard>
+      <SupplierTable purchaseOrder={purchaseOrder}></SupplierTable>
     </>
   );
 };
