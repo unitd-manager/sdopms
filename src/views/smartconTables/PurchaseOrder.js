@@ -79,12 +79,7 @@ const PurchaseOrder = () => {
       grow: 2,
       wrap: true,
     },
-    {
-      name: 'Po Value',
-      selector: 'po_value',
-      sortable: true,
-      grow: 0,
-    },
+   
     {
       name: 'Status',
       selector: 'status',
@@ -137,7 +132,7 @@ const PurchaseOrder = () => {
             </Link>
             </Col>
             <Col md="6">
-            <a href="http://43.228.126.245/pms-shimi/storage/excelsheets/PurchaseOrder.xlsx" download>
+            <a href="http://43.228.126.245/pyramidapi/storage/excelsheets/PurchaseOrder.xlsx" download>
              <Button color="primary" className="shadow-none" >
                Sample
              </Button>
@@ -166,7 +161,6 @@ const PurchaseOrder = () => {
                     </td>
                     <td>{element.po_code}</td>
                     <td>{element.title ? element.title :element.title_field}</td>
-                    <td>{element.po_value}</td>
                     <td>{element.status}</td>
                     <td>{element.purchase_order_date? moment(element.purchase_order_date).format('YYYY-MM-DD'):''}</td>
                     <td>{element.supplier_inv_code}</td>

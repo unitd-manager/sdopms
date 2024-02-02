@@ -76,7 +76,7 @@ const CreateNote = ({ editCreateNote, setEditCreateNote }) => {
   //generateCode
   const generateCode = (results, type) => {
     api
-      .post('/commonApi/getCodeValue', { type })
+      .post('/tender/getCodeValue', { type })
       .then((res) => {
         editCreditData(results, res.data.data);
       })

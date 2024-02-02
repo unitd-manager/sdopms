@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import * as Icon from 'react-feather';
 import { Row, Col, Button, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
@@ -17,7 +17,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AddPoModal from '../../components/purchaseOrder/AddPoModal';
 import AttachmentTab from '../../components/purchaseOrder/AttachmentTab';
 import PurchaseOrderlineItemEdit from '../../components/purchaseOrder/PurchaseOrderLineItem';
-//import PurchaseOrderButtons from '../../components/PurchaseOrder/PurchaseOrderButtons';
+//import PurchaseOrderButtons from '../../components/purchaseOrder/PurchaseOrderButtons';
 import ViewHistoryModal from '../../components/purchaseOrder/ViewHistoryModal';
 import DeliveryOrderEditModal from '../../components/purchaseOrder/DeliveryOrderEditModal';
 import PurchaseOrderDetailsPart from '../../components/purchaseOrder/PurchaseOrderDetailsPart';
@@ -28,6 +28,7 @@ import PdfPurchaseOrderPrice from '../../components/PDF/PdfPurchaseOrderPrice';
 import ComponentCardV2 from '../../components/ComponentCardV2';
 import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
+import AppContext from '../../context/AppContext';
 
 const PurchaseOrderEdit = () => {
   //All state variable
@@ -69,16 +70,18 @@ const PurchaseOrderEdit = () => {
   };
   //getting data from purchaseOrder by Id
   const getPurchaseOrderId = () => {
-    api.post('/purchaseorder/getPurchaseOrderById', { purchase_order_id: id }).then((res) => {
+    api.post('/Purchaseorder/getPurchaseOrderById', { purchase_order_id: id }).then((res) => {
       setPurchaseDetails(res.data.data[0]);
       setSupplierId(res.data.data[0].supplier_id);
+      console.log("created_by",res.data.data[0].creation_date)
+
     });
   };
 
   // Gettind data from Job By Id
   const getPoProduct = () => {
     api
-      .post('/purchaseorder/TabPurchaseOrderLineItemById', { purchase_order_id: id })
+      .post('/Purchaseorder/TabPurchaseOrderLineItemById', { purchase_order_id: id })
       .then((res) => {
         setProducts(res.data.data);
         //grand total
@@ -98,7 +101,7 @@ const PurchaseOrderEdit = () => {
   // Gettind data from Job By Id
   const getSupplier = () => {
     api
-      .get('/purchaseorder/getSupplier')
+      .get('/Purchaseorder/getSupplier')
       .then((res) => {
         setSupplier(res.data.data);
       })
@@ -113,25 +116,21 @@ const PurchaseOrderEdit = () => {
 
   //Add to stocks
   const addQtytoStocks = () => {
-    if (selectedPoProducts) {
+    if (selectedPoProducts && selectedPoProducts.length > 0) { 
       selectedPoProducts.forEach((elem) => {
         if (elem.status !== 'Closed') {
           elem.status = 'Closed';
           elem.qty_updated = elem.qty_delivered;
           elem.qty_in_stock += parseFloat(elem.qty_delivered);
-          api.post('/product/edit-ProductQty', elem);
+
           api
-            .post('/purchaseorder/editTabPurchaseOrderLineItem', elem)
+            .post('/inventory/editInventoryStock', elem)
             .then(() => {
-              api
-                .post('/inventory/editInventoryStock', elem)
-                .then(() => {
-                  message('Quantity updated in inventory successfully.', 'success');
-                })
-                .catch(() => {
-                  message('unable to update quantity in inventory.', 'danger');
-                });
+            
               message('Quantity added successfully.', 'success');
+               setTimeout(() => {
+          window.location.reload();
+        }, 800);
             })
             .catch(() => {
               message('unable to add quantity.', 'danger');
@@ -141,37 +140,49 @@ const PurchaseOrderEdit = () => {
         }
       });
     } else {
-      alert('Please select atleast one product');
+      Swal.fire('Please select atleast one product!');
     }
   };
 
   //Delivery order
-  const deliverOrder = () => {
-    if (selectedPoDelivers) {
-      api.post('/purchaseorder/insertDeliveryOrder', { purchase_order_id: id }).then((res) => {
+
+
+const deliverOrder = () => {
+  if (selectedPoDelivers && selectedPoDelivers.length > 0) {
+    const confirmDelivery = window.confirm("Do you want to create a delivery order?");
+    
+    if (confirmDelivery) {
+      api.post('/Purchaseorder/insertDeliveryOrder', { purchase_order_id: id }).then((res) => {
         selectedPoDelivers.forEach((elem) => {
           elem.delivery_order_id = res.data.data.insertId;
           elem.purchase_order_id = id;
 
           api
-            .post('/purchaseorder/insertDeliveryOrderHistory', elem)
+            .post('/Purchaseorder/insertDeliveryOrderHistory', elem)
             .then(() => {
               message('Inserted successfully.', 'success');
+              setTimeout(() => {
+                window.location.reload();
+              }, 300);
             })
             .catch(() => {
               message('unable to deliver.', 'danger');
             });
         });
       });
-    } else {
-      alert('Please select atleast one product');
     }
-  };
+  } else {
+    alert('Please select at least one product');
+  }
+};
+
+
+
   // get delivery orders
 
   const getDeliveryOrders = () => {
     api
-      .post('/purchaseorder/getDeliveryOrder', { purchase_order_id: id })
+      .post('/Purchaseorder/getDeliveryOrder', { purchase_order_id: id })
       .then((res) => {
         setDeliveryOrders(res.data.data);
       })
@@ -179,29 +190,42 @@ const PurchaseOrderEdit = () => {
         message('DeliveryOrder Data Not Found', 'info');
       });
   };
-
+  const { loggedInuser } = useContext(AppContext);
   //Update Setting
   const editPurchaseData = () => {
+    purchaseDetails.modified_by = loggedInuser.first_name;
     api
       .post('/purchaseorder/editTabPurchaseOrder', purchaseDetails)
       .then(() => {
         message('Record editted successfully', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
       });
   };
-
-  //Edit poproductdata
   const editPoProductData = () => {
-    api
-      .post('/purchaseorder/editTabPurchaseOrderLineItem', product)
-      .then(() => {
-        message('product edited successfully.', 'success');
-      })
-      .catch(() => {
-        message('unable to edit product.', 'danger');
-      });
+    // Check if the quantity to be added to stock is valid
+  
+    if (product.qty_delivered > 0 && product.status && product.status !== 'Please Select') {
+      // Proceed with the API call
+      api
+        .post('/Purchaseorder/editTabPurchaseOrderLineItem', product)
+        .then(() => {
+          message('Product edited successfully.', 'success');
+           setTimeout(() => {
+                window.location.reload();
+              }, 300);
+        })
+        .catch(() => {
+          message('Unable to edit product.', 'danger');
+        });
+    } else {
+      // Show an error message for invalid quantity
+      message('Please Fill All Required Field', 'danger');
+    }
   };
 
   const deletePoProduct = (poProductId) => {
@@ -287,6 +311,13 @@ const PurchaseOrderEdit = () => {
   return (
     <>
       <BreadCrumbs />
+      <ApiButton
+              editData={editPurchaseData}
+              navigate={navigate}
+              applyChanges={editPurchaseData}
+              backToList={backToList}
+              module="Purchase Order"
+            ></ApiButton>
       <ToastContainer></ToastContainer>
       {/* PurchaseorderButtons */}
       {/* <PurchaseOrderButtons
@@ -298,13 +329,7 @@ const PurchaseOrderEdit = () => {
         product={product}
         navigate={navigate}
       /> */}
-      <ApiButton
-              editData={editPurchaseData}
-              navigate={navigate}
-              applyChanges={editPurchaseData}
-              backToList={backToList}
-              module="Purchase Order"
-            ></ApiButton>
+     
                       <ComponentCardV2>
             <Row>
               <Col>
@@ -322,11 +347,13 @@ const PurchaseOrderEdit = () => {
               </Row>
               </ComponentCardV2>
       {/* PurchaseOrder Details */}
+
       <PurchaseOrderDetailsPart
         supplier={supplier}
         handleInputs={handleInputs}
         purchaseDetails={purchaseDetails}
       />
+      
       <ComponentCard title="Product Linked">
         <AddPoModal
           PurchaseOrderId={id}

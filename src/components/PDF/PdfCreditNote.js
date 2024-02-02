@@ -2,30 +2,18 @@ import React from 'react';
 import pdfMake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Button } from 'reactstrap';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import api from '../../constants/api';
 import message from '../Message';
-import PdfFooter from './PdfFooter';
-import PdfHeader from './PdfHeader';
 
 const PdfCreditNote = ({creditId}) => {
   PdfCreditNote.propTypes = {
     creditId: PropTypes.any
   }
-    const [hfdata, setHeaderFooterData] = React.useState()
-    const [note, setNote] = React.useState();
+     const [note, setNote] = React.useState();
     const [notes, setNotes] = React.useState();
-    
-  React.useEffect(() => {
-    api.get('/setting/getSettingsForCompany').then((res) => {
-        setHeaderFooterData(res.data.data);
-    });
-  }, [0]);
 
-  const findCompany = (key) => {
-      const filteredResult = hfdata.find((e) => e.key_text === key);
-      return filteredResult.value
-  }
   const getCreditNote = () => {
     api
       .post('/finance/getCreditNoteById', { credit_note_id :creditId  })
@@ -59,7 +47,7 @@ const PdfCreditNote = ({creditId}) => {
           style: 'tableHead',
         },
         {
-          text: 'Credit Note Code',
+          text: 'Credit Code',
           style: 'tableHead',
         },
         {
@@ -99,11 +87,7 @@ const PdfCreditNote = ({creditId}) => {
       ]);
     });
     const dd = {
-      pageSize: 'A4',
-      header: PdfHeader({ findCompany }),
-      pageMargins: [40, 150, 40, 80],
-      footer: PdfFooter,
-     
+      pageSize: 'A4',     
       content: [
         {columns: [
             {
@@ -112,7 +96,7 @@ const PdfCreditNote = ({creditId}) => {
               bold:true
             },
             {
-              text: `Date :${notes.from_date ? notes.from_date : ''} `,
+              text: `Date :${(notes.from_date)? moment(notes.from_date).format('DD-MM-YYYY'):''}`,
               style: 'textSize',
               margin:[110,0,0,0],
               bold:true
@@ -122,13 +106,13 @@ const PdfCreditNote = ({creditId}) => {
               
            {columns: [
             {
-              text:` Dear Sir,\n Title :${notes.item_title ? notes.item_title : ''} ,\n Description: ${notes.desription ? notes.desription : ''}`,
+              text:` Dear Sir,\n Title :${notes.item_title ? notes.item_title : ''} ,\n Description: ${notes.description ? notes.description : ''}`,
               style: 'textSize',
               bold: true
             },
             
               ],},
-              '\n',
+              '\n\n\n',
   
       
         {
@@ -173,7 +157,7 @@ const PdfCreditNote = ({creditId}) => {
               },
               table: {
                 headerRows: 1,
-                widths: ['40%','20%', '30%', '20%', '20%','20%', ],
+                widths: ['25%','30%', '35%', '20%', '20%','20%', ],
                 
     
                   body: productItems,
