@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import {
   Row,
   Col,
@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import * as $ from 'jquery';
 import random from 'random';
 import Select from 'react-select';
+import AppContext from '../../context/AppContext';
 import api from '../../constants/api';
 import message from '../Message'
 import creationdatetime from '../../constants/creationdatetime';
@@ -35,6 +36,7 @@ const AddPoModal = ({
   };
   const [addNewProductModal, setAddNewProductModal] = useState(false);
    const [getProductValue, setProductValue] = useState();
+   const { loggedInuser } = useContext(AppContext);
   const [productDetail, setProductDetail] = useState({
     category_id: null,
     sub_category_id: null,
@@ -173,9 +175,12 @@ const AddPoModal = ({
     payment: '0',
     project: '',
   });
+  const [isNewProductValid, setIsNewProductValid] = useState(false);
 
   const handleNewProductDetails = (e) => {
     setProductDetail({ ...productDetail, [e.target.name]: e.target.value });
+    const isValid = e.target.value.trim() !== '';
+    setIsNewProductValid(isValid);
   };
 
   //   Get Products
@@ -207,6 +212,7 @@ const insertProduct = (ProductCode, ItemCode) => {
     productDetail.product_code = ProductCode;
     productDetail.item_code = ItemCode;
     productDetail.creation_date = creationdatetime;
+    productDetail.created_by = loggedInuser.first_name;
     api
       .post('/purchaseorder/insertPurchaseProduct', productDetail)
       .then((res) => {
@@ -218,7 +224,7 @@ const insertProduct = (ProductCode, ItemCode) => {
             const InventoryCode = res1.data.data;
             message('inventory created successfully.', 'success');
             api
-            .post('/inventory/insertinventory', { product_id: insertedDataId, inventory_code:InventoryCode  })
+            .post('/inventory/insertinventory', { product_id: insertedDataId, inventory_code:InventoryCode, creation_date:creationdatetime,created_by:loggedInuser.first_name })
           
           .then(() => {
             message('inventory created successfully.', 'success');
@@ -233,7 +239,7 @@ const insertProduct = (ProductCode, ItemCode) => {
         message('Unable to insert product.', 'error');
       });
     } else {
-      message('Please fill the Product Name ', 'warning');
+      message('Please fill the Product Name', 'warning');
     }
   };
 
@@ -271,6 +277,7 @@ const insertProduct = (ProductCode, ItemCode) => {
       });
   };
   const poProduct = (itemObj) => {
+    console.log('supplierid',supplierId)
     api
       .post('/purchaseorder/insertPoProduct', {
         purchase_order_id: PurchaseOrderId,
@@ -286,10 +293,10 @@ const insertProduct = (ProductCode, ItemCode) => {
         status: 'In Progress',
         cost_price: itemObj.cost_price,
         selling_price: itemObj.mrp,
-        qty_updated: parseInt(itemObj.qty, 10),
+        qty_updated: 0,
         qty: parseInt(itemObj.qty, 10),
         product_id: itemObj.product_id,
-        supplier_id: insertPurchaseOrderData.supplier_id,
+        supplier_id:supplierId,
         gst: itemObj.gst,
         damage_qty: 0,
         brand: '',
@@ -299,9 +306,9 @@ const insertProduct = (ProductCode, ItemCode) => {
       })
       .then(() => {
         message('Product Added!', 'success');
-        setTimeout(() => {
-          window.location.reload();
-        }, 300);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 300);
       })
       .catch(() => {
         message('Unable to add Product!', 'error');
@@ -355,10 +362,7 @@ const insertProduct = (ProductCode, ItemCode) => {
     setMoreItem(copyDeliverOrderProducts);
   }
 
-  useEffect(() => {
-     getProduct();
-    TabMaterialsPurchased();
-  }, []);
+
   useEffect(() => {
     setMoreItem([
       {
@@ -401,7 +405,30 @@ const insertProduct = (ProductCode, ItemCode) => {
     element.product_id = str.value.toString();
     setMoreItem(addMoreItem);
   };
+  const [unitOptions, setUnitOptions] = useState([]);
 
+  // Fetch data from API for unit options
+  const getUnitOptions = () => {
+    api.get('/product/getUnitFromValueList', unitOptions).then((res) => {
+      const items = res.data.data;
+      const finaldat = [];
+      items.forEach((item) => {
+        finaldat.push({ value: item.value, label: item.value });
+      });
+      setUnitOptions(finaldat);
+    });
+  };
+  const onchangeItem1 = (selectedValue, index) => {
+    const copyAddMoreItem = [...addMoreItem];
+    copyAddMoreItem[index].unit = selectedValue.value;
+    setMoreItem(copyAddMoreItem);
+  };
+
+  useEffect(() => {
+    getProduct();
+    TabMaterialsPurchased();
+    getUnitOptions(); // Fetch unit options
+  }, []);
   // Clear row value
   const ClearValue = (ind) => {
     setMoreItem((current) =>
@@ -456,9 +483,9 @@ const insertProduct = (ProductCode, ItemCode) => {
                   </th>
                   <th scope="col">Unit</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">Cost Price (without VAT)</th>
-                  <th scope="col">Selling Price (without VAT)</th>
-                  <th scope="col">VAT</th>
+                  <th scope="col">Cost Price (without GST)</th>
+                  <th scope="col">Selling Price (without GST)</th>
+                  <th scope="col">GST</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -502,7 +529,7 @@ const insertProduct = (ProductCode, ItemCode) => {
                         <Input value={item.title} type="hidden" name="title"></Input> 
     </div> */}
                       </td>
-
+{/* 
                       <td data-label="Unit">
                         <Input
                           defaultValue={item.uom}
@@ -510,6 +537,15 @@ const insertProduct = (ProductCode, ItemCode) => {
                           name="unit"
                           onChange={(e) => updateState(index, 'unit', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.unit}
+                        /> 
+                      </td> */}
+                    
+                    <td data-label="Unit">
+                        <Select
+                          name="unit"
+                          defaultValue={{ value: item.unit, label: item.unit }}
+                          onChange={(selectedOption) => onchangeItem1(selectedOption, index)}
+                          options={unitOptions}
                         />
                       </td>
                       <td data-label="Qty">
@@ -540,15 +576,15 @@ const insertProduct = (ProductCode, ItemCode) => {
                         />
                         {item.price}
                       </td>
-                      <td data-label="VAT">
+                      <td data-label="GST">
                         <Input
                           type="number"
                           defaultValue={item.gst}
                           name="gst"
                           onChange={(e) => updateState(index, 'gst', e)}
-                          value={insertPurchaseOrderData && insertPurchaseOrderData.gst}
                         />
                       </td>
+                      
                       <td data-label="Action">
                         {' '}
                         <Input defaultValue={item.id} type="hidden" name="id"></Input>
@@ -622,16 +658,19 @@ const insertProduct = (ProductCode, ItemCode) => {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button
+        <Button
             color="primary"
             className="shadow-none"
             onClick={() => {
-              setAddNewProductModal(false);
-              generateCode();
-              getProduct();
-              setTimeout(() => {
-                window;
-              }, 300);
+              // Check if the validation passes before closing the modal
+              if (isNewProductValid) {
+                setAddNewProductModal(false);
+                generateCode();
+                getProduct();
+              } else {
+                // Show a message or handle invalid input in some way
+                alert('Please fill in the product name.');
+              }
             }}
           >
             Submit

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import api from '../../constants/api';
+import creationdatetime from '../../constants/creationdatetime';
 import message from '../../components/Message';
+import AppContext from '../../context/AppContext';
+
 
 const PurchaseOrderDetails = () => {
   //All state variables
@@ -27,17 +29,20 @@ const PurchaseOrderDetails = () => {
       .then((res) => {
         setSupplier(res.data.data);
       })
-      .catch(() => { });
+      .catch(() => {});
   };
   //PurchaseOrder data in PurchaseOrderDetails
   const handleInputs = (e) => {
     setPurchaseForms({ ...purchaseForms, [e.target.name]: e.target.value });
   };
-
-  //inserting data of Purchase Order
-  const insertPurchaseOrder = (code) => {
+  const { loggedInuser } = useContext(AppContext);
+   //inserting data of Purchase Order
+   const insertPurchaseOrder = (code) => { 
     purchaseForms.purchase_order_date = moment();
-    purchaseForms.po_code = code;
+    purchaseForms.creation_date = creationdatetime;
+    purchaseForms.created_by = loggedInuser.first_name;
+
+    purchaseForms.po_code=code;
     if (purchaseForms.supplier_id !== '') {
       api
         .post('/purchaseorder/insertPurchaseOrder', purchaseForms)
@@ -58,7 +63,7 @@ const PurchaseOrderDetails = () => {
 
   const generateCode = () => {
     api
-      .post('/commonApi/getCodeValue', { type: 'purchaseOrder' })
+      .post('/tender/getCodeValue', { type: 'purchaseOrder' })
       .then((res) => {
         insertPurchaseOrder(res.data.data);
       })
@@ -75,33 +80,31 @@ const PurchaseOrderDetails = () => {
       <BreadCrumbs />
       <Row>
         <ToastContainer></ToastContainer>
-        <Col md="6" xs="12">
+        <Col md="6">
           <ComponentCard title="Key Details">
             <Form>
               <FormGroup>
                 <Row>
-                  <Col md="12">
-                    <Label>Supplier Name <span className="required"> *</span></Label>
-                    <Input
-                      type="select"
-                      name="supplier_id"
-                      onChange={(e) => {
-                        handleInputs(e);
-                      }}
-                    >
-                      <option value="" selected>
-                        Please Select
-                      </option>
-                      {supplier &&
-                        supplier.map((ele) => {
-                          return (
-                            <option key={ele.supplier_id} value={ele.supplier_id}>
-                              {ele.company_name}
-                            </option>
-                          );
-                        })}
-                    </Input>
-                  </Col>
+                  <Label>supplier Name </Label>
+                  <Input
+                    type="select"
+                    name="supplier_id"
+                    onChange={(e) => {
+                      handleInputs(e);
+                    }}
+                  >
+                    <option value="" selected>
+                      Please Select
+                    </option>
+                    {supplier &&
+                      supplier.map((ele) => {
+                        return (
+                          <option key={ele.supplier_id} value={ele.supplier_id}>
+                            {ele.company_name}
+                          </option>
+                        );
+                      })}
+                  </Input>
                 </Row>
 
                 <FormGroup>
@@ -118,19 +121,14 @@ const PurchaseOrderDetails = () => {
                         Save & Continue
                       </Button>
                       <Button
-                        type="submit"
-                        className="btn btn-dark shadow-none"
-                        onClick={(e) => {
-                          if (window.confirm('Are you sure you want to cancel? ')) {
-                            navigate('/PurchaseOrder');
-                          } else {
-                            e.preventDefault();
-                          }
+                        onClick={() => {
+                          navigate('/PurchaseOrder');
                         }}
+                        type="button"
+                        className="btn btn-dark shadow-none"
                       >
-                        Cancel
+                       Go to List
                       </Button>
-
                     </div>
                   </Row>
                 </FormGroup>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Button, Col, Row, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -18,12 +18,12 @@ import FinanceInvoiceModal from '../../components/FinanceTable/FinanceInvoiceMod
 import CustomerFinanceReceipt from '../../components/FinanceTable/CustomerFinanceReceipt';
 import CustomerFinanceCreditNote from '../../components/FinanceTable/CustomerFinanceCreditNote';
 import FinanceSummary from '../../components/FinanceTable/FinanceSummary';
-//import FinanceButton from '../../components/Finance/FinanceButton';
-import FinanceDeliveryAddress from '../../components/FinanceTable/FinanceDeliveryAddress';
+//import FinanceDeliveryAddress from '../../components/FinanceTable/FinanceDeliveryAddress';
 import FinanceMainDetails from '../../components/FinanceTable/FinanceMainDetails';
 import creationdatetime from '../../constants/creationdatetime';
 import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
+import AppContext from '../../context/AppContext';
 
 const FinanceEdit = () => {
   // All state variables
@@ -35,7 +35,7 @@ const FinanceEdit = () => {
   const [editReceiptModal, setEditReceiptModal] = useState(false);
   const [editReceiptDataModal, setReceiptDataModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [financeDetails, setFinanceDetails] = useState();
+  const [financeDetails, setFinanceDetails] = useState(null);
   const [createInvoice, setCreateInvoice] = useState(null);
   const [cancelInvoice, setCancelInvoice] = useState(null);
   const [cancelReceipt, setCancelReceipt] = useState(null);
@@ -45,6 +45,7 @@ const FinanceEdit = () => {
   const [receiptsummary, setReceiptSummary] = useState(null);
   const [invoiceitemsummary, setInvoiceItemSummary] = useState(null);
   const [invoiceDatas, setInvoiceDatas] = useState({});
+  const { loggedInuser } = useContext(AppContext);
   // Navigation and Parameter Constants
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,8 +60,8 @@ const FinanceEdit = () => {
   };
   // Start for tab refresh navigation #Renuka 1-06-23
   const tabs = [
-    { id: '1', name: 'Delivery Address' },
-    { id: '2', name: 'Customer Details' },
+    // { id: '1', name: 'Delivery Address' },
+    { id: '1', name: 'Customer Details' },
     { id: '3', name: 'Summary' },
     { id: '4', name: 'Invoice(s)' },
     { id: '5', name: 'Receipt(s)' },
@@ -70,6 +71,7 @@ const FinanceEdit = () => {
     setActiveTab(tab);
   };
 console.log('ids',id)
+console.log('ids1',financeDetails);
   // Method for getting Invoice By Order Id
   const getInvoiceById = () => {
     api
@@ -81,14 +83,17 @@ console.log('ids',id)
         message('Cannot get Invoice Data', 'error');
       });
   };
-
   //receipt Cancel
-  const receiptCancel = (obj) => {
+  const receiptCancel = (obj,invoiceId) => {
     obj.receipt_status = 'cancelled';
+    obj.invoice_id = invoiceId;
     api
-      .post('/Finance/editTabReceiptPortalDisplay', obj)
+      .post('/finance/editTabReceiptPortalDisplay', obj)
       .then(() => {
-        message('Record editted successfully', 'success');
+        message('Receipt cancel successfully', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 600);
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -100,7 +105,9 @@ console.log('ids',id)
       .post('/Finance/editInvoicePortalDisplay', obj)
       .then(() => {
         message('Record editted successfully', 'success');
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 600);
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -123,6 +130,7 @@ console.log('ids',id)
       .post('/invoice/getReceiptCancel', { order_id: id })
       .then((res) => {
         setCancelReceipt(res.data.data);
+        
       })
       .catch(() => {
         message('Cannot get Invoice Data', 'error');
@@ -192,6 +200,7 @@ console.log('ids',id)
       .post('/Finance/getFinancesById', { order_id: id })
       .then((res) => {
         setFinanceDetails(res.data.data);
+        console.log("res",res.data.data);
       })
       .catch(() => {
         message('Fianance Data Not Found', 'info');
@@ -201,9 +210,11 @@ console.log('ids',id)
   //For editting Finace Record
   const editFinanceData = () => {
     financeDetails.modification_date = creationdatetime;
+    financeDetails.modified_by = loggedInuser.first_name;
     api
       .post('/Finance/editFinances', financeDetails)
       .then(() => {
+        getFinancesById();
         message('Record editted successfully', 'success');
       })
       .catch(() => {
@@ -250,15 +261,15 @@ console.log('ids',id)
         <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
           {/* Delivery address Form */}
-          <TabPane tabId="1">
+          {/* <TabPane tabId="1">
             <FinanceDeliveryAddress
               financeDetails={financeDetails}
               handleInputs={handleInputs}
             ></FinanceDeliveryAddress>
-          </TabPane>
+          </TabPane> */}
 
           {/* Customer Details Form */}
-          <TabPane tabId="2">
+          <TabPane tabId="1">
             <CustomerDetail financeDetails={financeDetails}></CustomerDetail>
           </TabPane>
           {/* Summary */}
@@ -277,6 +288,7 @@ console.log('ids',id)
               setEditModal={setEditModal}
               setEditInvoiceModal={setEditInvoiceModal}
               setInvoiceDatas={setInvoiceDatas}
+              financeDetails={financeDetails}
             ></FinanceInvoiceModal>
           </TabPane>
           <TabPane tabId="5">
@@ -286,6 +298,8 @@ console.log('ids',id)
               receipt={receipt}
               setEditReceiptModal={setEditReceiptModal}
               setReceiptDataModal={setReceiptDataModal}
+              financeDetails={financeDetails}
+              id={id}
             ></CustomerFinanceReceipt>
           </TabPane>
           <TabPane tabId="6">
@@ -300,13 +314,15 @@ console.log('ids',id)
             <InvoiceData
               editInvoiceData={editInvoiceData}
               setEditInvoiceData={setEditInvoiceData}
-              projectInfo={InvoiceData}
+              projectInfo={financeDetails}
               orderId={id}
             />
 
             <CreateReceipt
               editCreateReceipt={editCreateReceipt}
               setEditCreateReceipt={setEditCreateReceipt}
+              getReceiptById={getReceiptById}
+              getFinancesById={getFinancesById}
               orderId={id}
             />
 
@@ -317,7 +333,7 @@ console.log('ids',id)
               setEditModal={setEditModal}
               editInvoiceModal={editInvoiceModal}
               setInvoiceDatas={setInvoiceDatas}
-        invoiceDatas={invoiceDatas}
+              invoiceDatas={invoiceDatas}
             />
             <ReceiptModal
               editReceiptModal={editReceiptModal}
