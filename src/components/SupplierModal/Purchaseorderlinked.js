@@ -146,6 +146,7 @@ const PurchaseOrderLinked = ({ editPurchaseOrderLinked, setEditPurchaseOrderLink
   //Insert Receipt
   const insertReceipt = () => {
     createSupplier.supplier_id = id
+    createSupplier.date=new Date();
 console.log('selectedSupplier',selectedSupplier)
 let amount=0;
 selectedSupplier.forEach((el)=>{
