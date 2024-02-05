@@ -280,9 +280,8 @@ const { loggedInuser } = useContext(AppContext);
     if (checkboxVal.target.checked === true) {
       //setTotalAmount(parseFloat(totalAmount) + parseFloat(remainingAmount));
       const newTotalAmount = parseFloat(totalAmount) + parseFloat(remainingAmount);
-
       setTotalAmount(newTotalAmount);
-      const newReceiptAmount = (parseFloat(createReceipt.amount) + parseFloat(remainingAmount)).toFixed(2);
+      const newReceiptAmount = (parseFloat(createReceipt.amount) + parseFloat(remainingAmount)).toString();
     setCreateReceipt({
       ...createReceipt,
       amount: newReceiptAmount,
@@ -291,7 +290,7 @@ const { loggedInuser } = useContext(AppContext);
     const newTotalAmount = parseFloat(totalAmount) - parseFloat(remainingAmount);
     setTotalAmount(newTotalAmount >= 0 ? newTotalAmount : 0);
 
-    const newReceiptAmount = (parseFloat(createReceipt.amount) - parseFloat(remainingAmount)).toFixed(2);
+    const newReceiptAmount = (parseFloat(createReceipt.amount) - parseFloat(remainingAmount)).toString();
     setCreateReceipt({
       ...createReceipt,
       amount: newReceiptAmount >= 0 ? newReceiptAmount : '0',
@@ -307,7 +306,7 @@ const { loggedInuser } = useContext(AppContext);
     <>
       <Modal size="md=6" isOpen={editCreateReceipt}>
          <ModalHeader>
-          Create Receipt
+          Create Receips
           <Button className='shadow-none'
             color="secondary"
             onClick={() => {
@@ -349,12 +348,12 @@ const { loggedInuser } = useContext(AppContext);
                     <Row>
                       <Col md="12">
                         <FormGroup>
-                          <Label>Amount</Label>
+                          <Label>Amnt</Label>
                           <Input
                             type="text"
                             onChange={handleInputreceipt}
                             value={createReceipt && createReceipt.amount}
-                            defaultValue={totalAmount.toFixed(2)}
+                            defaultValue={totalAmount.toString()}
                             name="amount"
                           />
                         </FormGroup>
@@ -449,7 +448,7 @@ const { loggedInuser } = useContext(AppContext);
                 if (parseFloat(createReceipt.amount) > 0) {
                   if (createReceipt.mode_of_payment && createReceipt.mode_of_payment !== 'Please Select') {
                     const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + invoice.remainingAmount, 0);
-                    if (parseFloat(createReceipt.amount.toFixed(2)) <= totalInvoiceAmount) {
+                    if (parseFloat(createReceipt.amount) <= totalInvoiceAmount) {
 
                   generateCode();
                 } else {
