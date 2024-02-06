@@ -64,16 +64,19 @@ const { loggedInuser } = useContext(AppContext);
   }, [editCreateReceipt]); 
 
   const insertReceiptHistory = (createReceiptHistory) => {
+    // Round the amount to two decimal places
+    createReceiptHistory.amount = parseFloat(createReceiptHistory.amount).toFixed(2);
+    
     api
       .post('/finance/insertInvoiceReceiptHistory', createReceiptHistory)
       .then(() => {
-        message('data inserted successfully.');
-    
+        message('Data inserted successfully.');
       })
       .catch(() => {
         message('Network connection error.');
       });
   };
+  
 
   const editInvoiceStatus = (invoiceId, Status) => {
     api
@@ -104,86 +107,102 @@ const { loggedInuser } = useContext(AppContext);
 
   //Logic for deducting receipt amount
   const finalCalculation = (receipt) => {
-    let leftamount = totalAmount
-    // selectedInvoice.forEach(element => {
-    //   if(element.prev_amount < leftamount){
-    //     leftamount = parseFloat(leftamount) - element.prev_amount
-    //     element.paid = true
-    //   }
-
-    // });
-    // Insert Receipt History
-
-    for (let j = 0; j < selectedInvoice.length; j++) {
-
-      if (selectedInvoice[j].remainingAmount <= leftamount) {
-        leftamount = parseFloat(leftamount) - selectedInvoice[j].remainingAmount
-        selectedInvoice[j].paid = true;
-        editInvoiceStatus(selectedInvoice[j].invoice_id, 'Paid');
-        insertReceiptHistory({
-          invoice_id: selectedInvoice[j].invoice_id,
-          receipt_id: receipt,
-          published: '1',
-          flag: '1',
-          creation_date: '',
-          modification_date: '',
-          created_by: '',
-          modified_by: '',
-          amount: selectedInvoice[j].remainingAmount,
-          site_id: '1'
-        })
-
-      } else {
-        selectedInvoice[j].partiallyPaid = true;
-        editInvoicePartialStatus(selectedInvoice[j].invoice_id, 'Partial Payment');
-        insertReceiptHistory({
-          invoice_id: selectedInvoice[j].invoice_id,
-          receipt_id: receipt,
-          published: '1',
-          flag: '1',
-          creation_date: '',
-          modification_date: '',
-          created_by: '',
-          modified_by: '',
-          amount: leftamount,
-          site_id: '1',
-
-        })
+    let leftamount = totalAmount;
+  
+    // Calculate the total invoice amount
+    const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + parseFloat(invoice.remainingAmount), 0);
+  
+    if (leftamount < totalInvoiceAmount) {
+      // If total amount paid is less than total invoice amount, call partial payment API
+      for (let j = 0; j < selectedInvoice.length; j++) {
+        if (selectedInvoice[j].remainingAmount <= leftamount) {
+          leftamount = parseFloat(leftamount) - selectedInvoice[j].remainingAmount;
+          selectedInvoice[j].paid = true;
+          editInvoiceStatus(selectedInvoice[j].invoice_id, 'Paid');
+          insertReceiptHistory({
+            invoice_id: selectedInvoice[j].invoice_id,
+            receipt_id: receipt,
+            published: '1',
+            flag: '1',
+            creation_date: '',
+            modification_date: '',
+            created_by: '',
+            modified_by: '',
+            amount: selectedInvoice[j].remainingAmount,
+            site_id: '1'
+          });
+        } else {
+          selectedInvoice[j].partiallyPaid = true;
+          editInvoicePartialStatus(selectedInvoice[j].invoice_id, 'Partial Payment');
+          insertReceiptHistory({
+            invoice_id: selectedInvoice[j].invoice_id,
+            receipt_id: receipt,
+            published: '1',
+            flag: '1',
+            creation_date: '',
+            modification_date: '',
+            created_by: '',
+            modified_by: '',
+            amount: leftamount,
+            site_id: '1',
+          });
+        }
       }
+    } else {
+      // If total amount paid matches total invoice amount, mark invoices as fully paid
+      selectedInvoice.forEach(invoice => {
+        invoice.paid = true;
+        editInvoiceStatus(invoice.invoice_id, 'Paid');
+        insertReceiptHistory({
+          invoice_id: invoice.invoice_id,
+          receipt_id: receipt,
+          published: '1',
+          flag: '1',
+          creation_date: '',
+          modification_date: '',
+          created_by: '',
+          modified_by: '',
+          amount: invoice.remainingAmount,
+          site_id: '1'
+        });
+      });
     }
   };
-
+  
   console.log('totalAmount', totalAmount)
   //Insert Receipt
   const insertReceipt = async (code) => {
     createReceipt.receipt_code = code;
     createReceipt.creation_date = creationdatetime;
-  createReceipt.created_by = loggedInuser.first_name;
-     //createReceipt.receipt_date = moment()
-    if (createReceipt.mode_of_payment && (selectedInvoice.length > 0)) {
-      if (totalAmount >= createReceipt.amount) {
+    createReceipt.created_by = loggedInuser.first_name;
+  
+    if (createReceipt.mode_of_payment && selectedInvoice.length > 0) {
+      // Calculate total remaining amount of selected invoices
+      const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + parseFloat(invoice.remainingAmount), 0);
+      console.log("realamount",totalInvoiceAmount); // Log the real amount in the console
+      // Check if the amount entered in the receipt is less than or equal to the total invoice amount
+      if (parseFloat(createReceipt.amount).toFixed(2) <= totalInvoiceAmount) {
         api
           .post('/finance/insertreceipt', createReceipt)
           .then((res) => {
-            message('data inserted successfully.111');
-            finalCalculation(res.data.data.insertId)
+            message('Data inserted successfully.');
+            finalCalculation(res.data.data.insertId);
           })
           .catch(() => {
             message('Network connection error.');
-          }).finally(() => {
-            setSubmitting(false);// Reset the submitting state after the API call completes (success or error).
-            ;
+          })
+          .finally(() => {
+            setSubmitting(false); // Reset the submitting state after the API call completes (success or error).
           });
+      } else {
+        message('Amount should not be greater than the total invoice amount.', 'warning');
       }
-      else {
-        message('Please fill all required fields', 'warning');
-      }
-    }
-    else {
+    } else {
       message('Please fill mode of payment fields', 'warning');
       setSubmitting(false);
     }
   };
+  
   const generateCode = () => {
     api
       .post('/commonApi/getCodeValue', { type: 'receipt' })
@@ -208,37 +227,21 @@ const { loggedInuser } = useContext(AppContext);
   //   };
 
   const getInvoices = (event, invObj) => {
-    // const receiptarray=invoiceReceipt.slice();
-    // const { checked } = event.target;
-    // if (checked) {
-    //   setSelectedInvoice([...selectedInvoice, invObj]);
-    // } else {
-    //   let invoices=[];
-    //   invoices = removeObjectWithId(receiptarray,invObj.invoice_id);
-    //   console.log("inv",invoices);
-    //   setSelectedInvoice(invoices);
-
-    //}
-
-    //const arr = invoiceReceipt.slice();
-
     const { checked } = event.target;
-
-    //const index = arr.findIndex(value => {return value.invoice_id ===  invObj.invoice_id});
+  
+    // Calculate the remaining amount with 2 decimal places
+    const formattedRemainingAmount = invObj.remainingAmount.toFixed(2);
+  
     if (checked) {
-      // If the checkbox is checked, add the employeeId to the selectedNames array
-      // arr[index].checked = true;
-      // setSelectedInvoice(arr);
-      setSelectedInvoice([...selectedInvoice, invObj]);
+      // If the checkbox is checked, add the invoice object to the selectedInvoice array
+      setSelectedInvoice([...selectedInvoice, { ...invObj, remainingAmount: formattedRemainingAmount }]);
     } else {
-      const indofele = selectedInvoice.indexOf(invObj)
-      // If the checkbox is unchecked, remove the employeeId from the selectedNames array
-      selectedInvoice.splice(indofele, 1)
-
-      setSelectedInvoice(selectedInvoice);
+      // If the checkbox is unchecked, remove the invoice object from the selectedInvoice array
+      const updatedSelectedInvoice = selectedInvoice.filter(item => item.invoice_id !== invObj.invoice_id);
+      setSelectedInvoice(updatedSelectedInvoice);
     }
-    console.log("select", selectedInvoice);
   };
+  
    console.log('selectedInvoice', selectedInvoice)
 
 
@@ -267,37 +270,37 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
   const parsedCreateReceiptAmount = parseFloat(createReceipt.amount);
 
   if (checkboxVal.target.checked) {
-    const updatedTotalAmount = parsedTotalAmount + remainingAmount;
-    const updatedCreateReceiptAmount = parsedCreateReceiptAmount + remainingAmount;
+    const updatedTotalAmount = (parsedTotalAmount + remainingAmount).toFixed(2); // Round to 2 decimal places
+    const updatedCreateReceiptAmount = (parsedCreateReceiptAmount + remainingAmount).toFixed(2); // Round to 2 decimal places
 
     if (!Number.isNaN(updatedTotalAmount) && !Number.isNaN(updatedCreateReceiptAmount)) {
-      setTotalAmount(updatedTotalAmount);
+            setTotalAmount(updatedTotalAmount);
       setCreateReceipt((prevReceipt) => ({
         ...prevReceipt,
         amount: updatedCreateReceiptAmount.toString(),
       }));
     } else {
-      setTotalAmount(0);
+      setTotalAmount('0.00'); // Reset to zero if calculation results in NaN
       setCreateReceipt((prevReceipt) => ({
         ...prevReceipt,
-        amount: '0',
+        amount: '0.00',
       }));
     }
   } else {
-    const updatedTotalAmount = parsedTotalAmount - remainingAmount;
-    const updatedCreateReceiptAmount = parsedCreateReceiptAmount - remainingAmount;
+    const updatedTotalAmount = (parsedTotalAmount - remainingAmount).toFixed(2); // Round to 2 decimal places
+    const updatedCreateReceiptAmount = (parsedCreateReceiptAmount - remainingAmount).toFixed(2); // Round to 2 decimal places
 
-    if (!Number.isNaN(updatedTotalAmount) && !Number.isNaN(updatedCreateReceiptAmount)) {
-      setTotalAmount(updatedTotalAmount >= 0 ? updatedTotalAmount : 0);
+      if (!Number.isNaN(updatedTotalAmount) && !Number.isNaN(updatedCreateReceiptAmount)) {
+      setTotalAmount(updatedTotalAmount >= 0 ? updatedTotalAmount : '0.00'); // Ensure non-negative result
       setCreateReceipt((prevReceipt) => ({
         ...prevReceipt,
-        amount: updatedCreateReceiptAmount >= 0 ? updatedCreateReceiptAmount.toString() : '0',
+        amount: updatedCreateReceiptAmount >= 0 ? updatedCreateReceiptAmount.toString() : '0.00',
       }));
     } else {
-      setTotalAmount(0);
+      setTotalAmount('0.00'); // Reset to zero if calculation results in NaN
       setCreateReceipt((prevReceipt) => ({
         ...prevReceipt,
-        amount: '0',
+        amount: '0.00',
       }));
     }
   }
@@ -340,10 +343,10 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
                               name="invoice_code(prev_amount)"
                               type="checkbox"
                             />
-                            <span>
-                              {singleInvoiceObj.invoice_code}({singleInvoiceObj.invoice_amount})
-                              Paid - {singleInvoiceObj.prev_amount}
-                            </span>
+                          <span>
+  {singleInvoiceObj.invoice_code}({singleInvoiceObj.invoice_amount.toFixed(2)})
+  Paid - {singleInvoiceObj.prev_amount}
+</span>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -453,9 +456,10 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
                 //generateCode();
                 if (parseFloat(createReceipt.amount) > 0) {
                   if (createReceipt.mode_of_payment && createReceipt.mode_of_payment !== 'Please Select') {
-                    const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + invoice.remainingAmount, 0);
-                    if (parseFloat(createReceipt.amount) <= totalInvoiceAmount) {
+                    const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + invoice.remainingAmount);
+                    console.log("realamount",totalInvoiceAmount); // Log the real amount in the console
 
+      if (parseFloat(createReceipt.amount).toFixed(2) <= totalInvoiceAmount) {
                       generateCode();
                     } else {
                       // Show an error message indicating that the amount should not exceed the invoice amount
@@ -478,7 +482,7 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
             disabled={submitting}
           >
             {' '}
-            Submit{' '}
+            Sumit{' '}
           </Button>
           <Button className='shadow-none'
             color="secondary"

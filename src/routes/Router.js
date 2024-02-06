@@ -21,7 +21,7 @@ const EditQuoteModal = Loadable(lazy(() => import('../components/Tender/EditQuot
 const EditLineItemModal = Loadable(lazy(() => import('../components/Tender/EditLineItemModal')));
 const InvoiceData = Loadable(lazy(() => import('../components/FinanceTable/InvoiceData')));
 const CreateReceipt = Loadable(lazy(() => import('../components/FinanceTable/CreateReceipt')));
-const FinanceReceiptData = Loadable(lazy(() => import('../components/Finance/FinanceReceiptData')));
+// const FinanceReceiptData = Loadable(lazy(() => import('../components/Finance/FinanceReceiptData')));
 const CreateNote = Loadable(lazy(() => import('../components/FinanceTable/CreateNote')));
 const InvoiceModal = Loadable(lazy(() => import('../components/FinanceTable/InvoiceModal')));
 const ReceiptModal = Loadable(lazy(() => import('../components/FinanceTable/ReceiptModal')));
@@ -333,7 +333,7 @@ const Routernew = () => {
           <Route path="/editlineitem" name="editlineitem" element={<EditLineItemModal />}></Route>
           <Route path="/invoicedata" name="invoicedata" element={<InvoiceData />}></Route>
           <Route path="/createreceipt" name="createreceipt" element={<CreateReceipt />}></Route>
-          <Route path="/FinanceReceiptData" name="FinanceReceiptData" element={<FinanceReceiptData />}></Route>
+          {/* //<Route path="/FinanceReceiptData" name="FinanceReceiptData" element={<FinanceReceiptData />}></Route> */}
           <Route path="/createnote" name="createnote" element={<CreateNote />}></Route>
           <Route path="/invoiceModal/:id" name="invoiceModal" element={<InvoiceModal />}></Route>
           <Route path="/receiptModal/:id" name="invoiceModal" element={<ReceiptModal />}></Route>

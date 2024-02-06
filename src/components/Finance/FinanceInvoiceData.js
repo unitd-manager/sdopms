@@ -149,8 +149,8 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
   };
   //Insert Invoice
   const insertInvoice = async (results, code,) => {
-    createInvoice.invoice_amount = Math.round(totalAmount + (gstPercentageValue / 100) * totalAmount);
-    createInvoice.gst_value = Math.round((gstPercentageValue / 100) * totalAmount);
+    createInvoice.invoice_amount = totalAmount + (gstPercentageValue / 100) * totalAmount;
+    createInvoice.gst_value = (gstPercentageValue / 100) * totalAmount;
     createInvoice.gst_percentage = gstPercentageValue;
     createInvoice.project_id = projectInfo;
     createInvoice.order_id = orderId;
