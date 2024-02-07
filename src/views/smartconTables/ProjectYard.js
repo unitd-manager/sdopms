@@ -81,7 +81,7 @@ export default function ProjectYard({
             message('New Yard sheet has been created successfully.', 'success');
           
             addContactToggle(false);
-           
+            getYard()
             // Clear the selected names after insertion
           })
           .catch(() => {
@@ -441,13 +441,7 @@ export default function ProjectYard({
               </Button>
               </Col>
               <Col md="2">
-              <Button
-                color="secondary"
-                className="shadow-none"
-               
-              >
-                Close
-              </Button>
+            
                           </Col>
                         </Row>
                       </Form>

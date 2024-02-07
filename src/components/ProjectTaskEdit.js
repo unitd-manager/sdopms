@@ -514,18 +514,7 @@ console.log(employee);
                           </Input>
                         </FormGroup>
                       </Col>
-                    {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
-                        <FormGroup>
-                          <Label>Log No.</Label>
-                          <Input
-                            type="text"
-                            name="pipe_code"
-                            onChange={handleInputs}
-                            value={taskProject && taskProject.pipe_code}
-                          />
-                        </FormGroup>
-                      </Col>
-                      )}
+                  
                       {/* {taskProject && taskProject.task_type === 'Erection' && ( <Col md="4">
                         <FormGroup>
                           <Label>Plank Code</Label>
