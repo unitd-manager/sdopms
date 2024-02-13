@@ -74,6 +74,18 @@ export const columns = [
       selector: "minimum_order_level",
       sortable: true
     },
+    {
+      id:12,
+      name: "yards",
+      selector: "yard_stock",
+      sortable: true
+    },
+    {
+      id:12,
+      name: "Yard stock",
+      selector: "yard_stock",
+      sortable: true
+    },
   ];
 
   export const pocolumns = [

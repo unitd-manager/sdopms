@@ -36,6 +36,19 @@ const Test = () => {
     product_code: '',
   });
 
+  const [inventoryStock1, setInventoryStock1] = useState({
+    inventory_id: null,
+    yard_stock:null,
+  });
+  const [adjuststockDetails1, setAdjuststockDetails1] = useState({
+    inventory_id: null,
+    product_id: null,
+    //adjust_stock: 0,
+    yard_stock:0,
+    modified_by: '',
+    created_by: '',
+    //current_stock: null,
+  });
   //params and routing
   const { id } = useParams();
   const { loggedInuser } = useContext(AppContext);
@@ -105,6 +118,66 @@ const Test = () => {
         message('Unable to get productqty data.', 'error');
       });
   };
+
+
+   //Yard stock
+ const handleStockinput1 = (e) => {
+  const newYardStockValue = parseFloat(e.target.value) || 0;
+  const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
+  // Check if the new yard stock is greater than the actual stock
+  if (newYardStockValue > initialStockValue) {
+    message('Yard stock cannot be greater than the actual stock.', 'error');
+    // Optionally, reset the input value to the previous valid value or 0
+    e.target.value = initialStockValue;
+    return;
+  }
+
+  setInventoryStock1({
+    inventory_id: inventoryDetails.inventory_id,
+    yard_stock: newYardStockValue,
+    stock: initialStockValue - newYardStockValue,
+  });
+
+  setAdjuststockDetails1({
+    inventory_id: inventoryDetails.inventory_id,
+    product_id: inventoryDetails.productId,
+    yard_stock: newYardStockValue, // Calculate the change in yard_stock
+    modified_by: '',
+    created_by: '',
+    actual_stock:initialStockValue - newYardStockValue,
+    
+  });
+ };
+  
+
+  const adjuststock1 = () => {
+    api
+      .post('/inventory/insertyard_stock_log', adjuststockDetails1)
+      .then(() => {
+        message('yard Stock inserted successfully', 'success');
+        //getAllinventories();
+        //navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+  //update stock
+
+ // updateStockinInventory1 function
+ const updateStockinInventory1 = () => {
+  api
+    .post('/inventory/updateInventoryStock1', inventoryStock1)
+    .then(() => {
+      //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+      message('Yard stock updated successfully', 'success');
+      //getAllinventories();
+      //navigate('/inventory');
+    })
+    .catch(() => {
+      message('Unable to edit record.', 'error');
+    });
+};
  
   //update Inventory
   const editinventoryData = () => {
@@ -113,6 +186,8 @@ const Test = () => {
     api
       .post('/inventory/editinventoryMain', inventoryDetails)
       .then(() => {
+        adjuststock1();
+        updateStockinInventory1();
         message('Record editted successfully', 'success');
         setTimeout(() => {
           window.location.reload();
@@ -145,6 +220,7 @@ changes +=parseFloat(el.adjust_stock);
           inventoryDetails={inventoryDetails}
           handleInputs={handleInputs}
           editinventoryData={editinventoryData}
+          handleStockinput1={handleStockinput1}
         />
         <Row>
           <Form>

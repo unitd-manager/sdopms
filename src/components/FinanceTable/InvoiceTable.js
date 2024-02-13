@@ -99,6 +99,39 @@ const CreateReceipt = ({ createInvoice, handleInserts }) => {
       </Col>
       <Col md="4">
         <FormGroup>
+          <Label>WO NO</Label>
+          <Input
+            type="text"
+            onChange={handleInserts}
+            value={createInvoice && createInvoice.wo_no}
+            name="wo_no"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
+          <Label>Dept NO</Label>
+          <Input
+            type="text"
+            onChange={handleInserts}
+            value={createInvoice && createInvoice.dept_no}
+            name="dept_no"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
+          <Label>Dept Name</Label>
+          <Input
+            type="text"
+            onChange={handleInserts}
+            value={createInvoice && createInvoice.dept_name}
+            name="dept_name"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
           <Label>Site Code</Label>
           <Input
             type="text"
@@ -127,6 +160,17 @@ const CreateReceipt = ({ createInvoice, handleInserts }) => {
             onChange={handleInserts}
             value={createInvoice && createInvoice.reference}
             name="reference"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
+          <Label>Job Scope</Label>
+          <Input
+            type="textarea"
+            onChange={handleInserts}
+            value={createInvoice && createInvoice.job_scope}
+            name="job_scope"
           />
         </FormGroup>
       </Col>

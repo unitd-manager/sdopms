@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
-import 'datatables.net-buttons/js/buttons.colVis';
+//import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
 // import 'datatables.net-buttons/js/buttons.html5';
 // import 'datatables.net-buttons/js/buttons.print';
@@ -18,17 +18,27 @@ import { columns } from '../../data/Tender/InventoryData';
 import ViewAdjustStockHistoryModal from '../../components/InventoryTable/ViewAdjustStockHistoryModal';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
+import YardStockHistoryModal from '../../components/InventoryTable/YardStockHistoryModal';
 
 function Inventory() {
   //statevariables
   const [stockinputOpen, setStockinputOpen] = useState(false);
+  const [stockinputOpen1, setStockinputOpen1] = useState(false);
   const [inventories, setInventories] = useState([]);
   const [modalId, setModalId] = useState(null);
+  const [modalId1, setModalId1] = useState(null);
   const [adjustStockHistoryModal, setAdjustStockHistoryModal] = useState(false);
+  const [adjustStockHistoryModal1, setAdjustStockHistoryModal1] = useState(false);
   const [stockChangeId, setStockChangeId] = useState();
+  const [stockChangeId1, setStockChangeId1] = useState();
   const [inventoryStock, setInventoryStock] = useState({
     inventory_id: null,
     stock: null,
+    //yard_stock:null,
+  });
+  const [inventoryStock1, setInventoryStock1] = useState({
+    inventory_id: null,
+    yard_stock:null,
   });
   const [loading, setLoading] = useState(false);
 
@@ -36,9 +46,20 @@ function Inventory() {
     inventory_id: null,
     product_id: null,
     adjust_stock: 0,
+    //yard_stock:0,
     modified_by: '',
     created_by: '',
     current_stock: null,
+  });
+
+  const [adjuststockDetails1, setAdjuststockDetails1] = useState({
+    inventory_id: null,
+    product_id: null,
+    //adjust_stock: 0,
+    yard_stock:0,
+    modified_by: '',
+    created_by: '',
+    //current_stock: null,
   });
   //navigate
   const navigate = useNavigate();
@@ -60,9 +81,12 @@ function Inventory() {
     setInventoryStock({
       inventory_id: element.inventory_id,
       stock: e.target.value,
+      //yard_stock:e.target.value
     });
   
+  
     const adjustedStockValue = parseFloat(e.target.value);
+    //const yardStockValue = parseFloat(element.yard_stock) || 0;
     const currentStockValue = parseFloat(element.stock) || 0; // If element.stock is null, set it to 0
   
     const adjustStock = adjustedStockValue - currentStockValue;
@@ -74,9 +98,10 @@ function Inventory() {
       modified_by: '',
       created_by: '',
       current_stock: currentStockValue,
+      //yard_stock:yardStockValue
     });
   };
-  
+  const [validationMessage, setValidationMessage] = useState('');
   //adjust stock
   const adjuststock = () => {
     api
@@ -90,6 +115,7 @@ function Inventory() {
         message('Unable to edit record.', 'error');
       });
   };
+
   //update stock
   const updateStockinInventory = () => {
     api
@@ -98,11 +124,79 @@ function Inventory() {
         message('Stock updated successfully', 'success');
         getAllinventories();
         navigate('/inventory');
+        
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
       });
   };
+
+
+ // handleStockinput1 function
+ const handleStockinput1 = (e, element) => {
+  const newYardStockValue = parseFloat(e.target.value) || 0;
+  const initialStockValue = parseFloat(element.stock) || 0;
+
+  setInventoryStock1({
+    inventory_id: element.inventory_id,
+    yard_stock: newYardStockValue,
+    stock: initialStockValue - newYardStockValue,
+  });
+ 
+ // Check if the new yard stock is greater than the actual stock
+ if (newYardStockValue > initialStockValue) {
+  setValidationMessage('Yard stock cannot be greater than the actual stock.');
+  // Optionally, reset the input value to the previous valid value or 0
+  setInventoryStock1({
+    inventory_id: element.inventory_id,
+    yard_stock: initialStockValue, // Reset to the initial stock value
+    stock: 0,
+  });
+  return;
+}
+setValidationMessage(''); // Reset validation message if valid
+  setAdjuststockDetails1({
+    inventory_id: element.inventory_id,
+    product_id: element.productId,
+    yard_stock: newYardStockValue, // Calculate the change in yard_stock
+    modified_by: '',
+    created_by: '',
+    actual_stock:initialStockValue - newYardStockValue,
+    
+  });
+ };
+  
+
+  const adjuststock1 = () => {
+    api
+      .post('/inventory/insertyard_stock_log', adjuststockDetails1)
+      .then(() => {
+        message('yard Stock inserted successfully', 'success');
+        getAllinventories();
+        navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+  //update stock
+
+ // updateStockinInventory1 function
+ const updateStockinInventory1 = () => {
+  api
+    .post('/inventory/updateInventoryStock1', inventoryStock1)
+    .then(() => {
+      //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+      message('Yard stock updated successfully', 'success');
+      getAllinventories();
+      navigate('/inventory');
+      
+    })
+    .catch(() => {
+      message('Unable to edit record.', 'error');
+    });
+};
+
 
    // TRIGGER TO IMPORT EXCEL SHEET
    const importExcel = () => {
@@ -173,24 +267,8 @@ function Inventory() {
   };
 
 
-  useEffect(() => {
-    setTimeout(() => {
-      $('#example').DataTable({
-        pagingType: 'full_numbers',
-        pageLength: 20,
-        processing: true,
-        dom: 'Bfrtip',
-        // buttons: [
-        //   {
-        //     extend: 'print',
-        //     text: 'Print',
-        //     className: 'shadow-none btn btn-primary',
-        //   },
-        // ],
-        searching: true,
-      });
-    }, 1000);
-  }, []);
+ 
+
   useEffect(() => {
     getAllinventories();
   }, []);
@@ -301,6 +379,61 @@ function Inventory() {
                       inventoryId={modalId}
                     />}
                     <td>{element.minimum_order_level}</td>
+                    <td>{element.yard_stock}</td>
+                    {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
+                      <td>
+                        {' '}
+                        <Input
+                          type="text"
+                          defaultValue={element.yard_stock}
+                          onChange={(e) => handleStockinput1(e, element)}
+                        />
+                        <Button
+                          color="primary"
+                          className="shadow-none"
+                          onClick={() => {
+                            if (validationMessage) {
+                              message(validationMessage, 'error');
+                            } else {
+                              adjuststock1(element);
+                              updateStockinInventory1();
+                              setStockinputOpen1(false);
+                            }
+                          
+                          }}
+                        >
+                          save
+                        </Button>
+                        {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
+                      </td>
+                    ) : (
+                      <td>
+                        <span
+                          onClick={() => {
+                            setStockChangeId1(element.inventory_id);
+                            setStockinputOpen1(true);
+                          }}
+                        >
+                          <Link to="">Yard Stock</Link>
+                        </span>
+                      </td>
+                    )}
+                    <td>
+                      <span
+                        onClick={() => {
+                          setAdjustStockHistoryModal1(true);
+                          setModalId1(element.inventory_id);
+                        }}
+                      >
+                        <Link to="">view</Link>
+                      </span>
+                    </td>
+                  {adjustStockHistoryModal1 && (modalId1===element.inventory_id) && <YardStockHistoryModal
+                      adjustStockHistoryModal1={adjustStockHistoryModal1}
+                      setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
+                      inventoryId={modalId1}
+                    />}
+                    
                   </tr>
                 );
               })}

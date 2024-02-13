@@ -39,6 +39,7 @@ const ProjectTaskEdit = ({
 
   console.log('contactData',contactDatas)
   //All state variable
+  const [workorders, setWorkorders] = useState([]);
   const [taskProject, setTaskProject] = useState();
   //const [employees, setEmployees] = useState();
   const [Team, setTeam] = useState();
@@ -143,6 +144,16 @@ console.log(employee);
       })
       .catch(() => {
         message('Milestone not found', 'info');
+      });
+  };
+  const getWorkOrder = () => {
+    api
+      .post('/projecttask/getworkorderByprojectID', { project_id: id })
+      .then((res) => {
+        setWorkorders(res.data.data);
+      })
+      .catch(() => {
+        message('Milestones not found', 'info');
       });
   };
   // const fetchEmployeeDetails = (projectTeamId) => {
@@ -287,6 +298,7 @@ console.log(employee);
   useEffect(() => {
     getMilestoneTask();
     getStaffName();
+    getWorkOrder();
   }, [id]);
 
   return (
@@ -324,6 +336,25 @@ console.log(employee);
                               milestonesTaskEdit.map((e) => (
                                 <option key={e.project_id} value={e.project_milestone_id}>
                                   {e.milestone_title}
+                                </option>
+                              ))}
+                          </Input>
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Work Order</Label>
+                          <Input
+                            type="select"
+                            name="project_work_order_id"
+                            value={taskProject && taskProject.project_work_order_id}
+                            onChange={handleInputs}
+                          >
+                            <option>Select Work Order</option>
+                            {workorders &&
+                              workorders.map((e) => (
+                                <option key={e.project_id} value={e.work_order_id}>
+                                  {e.work_order_no}
                                 </option>
                               ))}
                           </Input>

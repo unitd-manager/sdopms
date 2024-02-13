@@ -14,8 +14,8 @@ import TaskSummary from '../../components/dashboard/TenderSummary';
 // import InvoiceSummary from '../../components/dashboard/InvoiceSummary';
 // import InvoiceSummaryChart from '../../components/dashboard/InvoiceSummaryChart';
 // import EmployeeSummary from '../../components/dashboard/ecommerceDashboard/EmployeeSummary';
-// import PasspotExpirySummary from '../../components/dashboard/PasspotExpirySummary';
-// import WorkpermitExpirySummary from '../../components/dashboard/WorkpermitExpirySummary';
+import PasspotExpirySummary from '../../components/dashboard/PasspotExpirySummary';
+import WorkpermitExpirySummary from '../../components/dashboard/WorkpermitExpirySummary';
 
 const Classic = () => {
   return (
@@ -48,6 +48,9 @@ const Classic = () => {
           <AverageIssues />
         </Col>
       </Row>
+      <br/>
+      <PasspotExpirySummary />
+          <WorkpermitExpirySummary/>
       <br />
       <ActualHour />
       <br />
