@@ -1,12 +1,10 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Row, Col,Table,Label,FormGroup } from 'reactstrap';
+import { Row, Col, Table, Label, FormGroup } from 'reactstrap';
 import api from '../../../constants/api';
 import ComponentCard from '../../ComponentCard';
 
-
 export default function CostingSummary() {
-  
   const [projectYard, setProjectYard] = useState({});
   const [works, setWorks] = useState({});
   const { id } = useParams();
@@ -17,7 +15,7 @@ export default function CostingSummary() {
     //   name: 'ID',
     //   style:{ backgroundColor: ' #0096FF', color: 'white' }
     // },
-    
+
     {
       name: 'Pipe Amount($)',
       sortable: true,
@@ -33,52 +31,50 @@ export default function CostingSummary() {
       sortable: true,
     },
     {
-        name: 'Others Amount($)',
-        sortable: true,
-      },
-        
-      {
-        name: 'Pipe Count',
-        sortable: true,
-      },
-      {
-        name: 'Plank Count',
-      },
-      {
-        name: 'TB Count',
-      },
-      {
-        name: 'Volume Count',
-        sortable: true,
-      },
-      {
-          name: 'Others Count',
-          sortable: true,
-        },
-   
+      name: 'Others Amount($)',
+      sortable: true,
+    },
+
+    {
+      name: 'Pipe Count',
+      sortable: true,
+    },
+    {
+      name: 'Plank Count',
+    },
+    {
+      name: 'TB Count',
+    },
+    {
+      name: 'Volume Count',
+      sortable: true,
+    },
+    {
+      name: 'Others Count',
+      sortable: true,
+    },
   ];
 
-  
   const getYard = () => {
     api
       .post('/projecttask/getYardsheetByProjectId', { project_id: id })
       .then((res) => {
         setProjectYard(res.data.data[0]);
-        console.log('rest',res.data.data)
+        console.log('rest', res.data.data);
       })
       .catch(() => {});
   };
-  
+
   const getWork = () => {
     api
       .post('/projecttask/getWorkByProjectId', { project_id: id })
       .then((res) => {
         setWorks(res.data.data[0]);
-        console.log('resting',res.data.data)
+        console.log('resting', res.data.data);
       })
       .catch(() => {});
   };
-  
+
   // useEffect(() => {
   //   projectYard.total_amount=((parseFloat(projectYard?.pipe_erection_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_erection_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_erection_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_erection_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_erection_amount)*parseFloat(projectYard?.others_count))+(parseFloat(projectYard?.pipe_dismantel_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_dismantel_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_dismantel_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_dismantel_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_dismantel_amount)*parseFloat(projectYard?.others_count)))
   // }, [projectYard]);
@@ -89,10 +85,10 @@ export default function CostingSummary() {
 
   return (
     <>
-     <Row>
-                <Col md="12">
-                <ComponentCard title="Yard Details">
-                      {/* <Form>
+      <Row>
+        <Col md="12">
+          <ComponentCard title="Yard Details">
+            {/* <Form>
                         <Row>
                         <Col md="4">
                             <FormGroup>
@@ -275,58 +271,49 @@ export default function CostingSummary() {
                          </Row>
                         </Row>
                       </Form> */}
-                      <Table
-            id="example"
-            className="display border border-secondary rounded"
-            title="projectTask List"
-            //className="lineitem border border-secondary rounded"
-          >
-            <thead className="lineitem1 border border-secondary rounded">
-              <tr>
-                {columns.map((cell) => {
-                  return (
-                    
-                    <th key={cell.name} >
-                      {/* {cell.name} */}
-                      {/* <span style={{ color: ['ID', 'Edit', 'New','View','Title','Task Type','Head Count','Status','Employees'].includes(cell.name) ? 'blue' : 'inherit' }}> */}
-                      {cell.name}
-                    </th>
-                  );
-                  // return <td key={cell.name}>{cell.name}</td>;
-                })}
-              </tr>
-            </thead>
-            <tbody>
-             
-                      <tr key={projectYard?.yard_id}>
-                        
-                       
-                        {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td> */}
-                        <td>{projectYard?.pipe_erection_amount}</td>
-                        <td>{projectYard?.plank_erection_amount}</td>
-                        <td>{projectYard?.tb_erection_amount}</td>
-                        <td>{projectYard?.volume_erection_amount}</td>
-                        <td>{projectYard?.others_erection_amount}</td>
-                        
-                        <td>{projectYard?.pipe_count}</td>
-                        <td>{projectYard?.plank_count}</td>
-                        <td>{projectYard?.tb_count}</td>
-                        <td>{projectYard?.volume_count}</td>
-                        <td>{projectYard?.others_count}</td>
-                      </tr>
-                      <tr>
+            <Table
+              id="example"
+              className="display border border-secondary rounded"
+              title="projectTask List"
+              //className="lineitem border border-secondary rounded"
+            >
+              <thead className="lineitem1 border border-secondary rounded">
+                <tr>
+                  {columns.map((cell) => {
+                    return (
+                      <th key={cell.name}>
+                        {/* {cell.name} */}
+                        {/* <span style={{ color: ['ID', 'Edit', 'New','View','Title','Task Type','Head Count','Status','Employees'].includes(cell.name) ? 'blue' : 'inherit' }}> */}
+                        {cell.name}
+                      </th>
+                    );
+                    // return <td key={cell.name}>{cell.name}</td>;
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                <tr key={projectYard?.yard_id}>
+                  {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td> */}
+                  <td>{projectYard?.pipe_erection_amount}</td>
+                  <td>{projectYard?.plank_erection_amount}</td>
+                  <td>{projectYard?.tb_erection_amount}</td>
+                  <td>{projectYard?.volume_erection_amount}</td>
+                  <td>{projectYard?.others_erection_amount}</td>
 
-                        
-                      </tr>
-                   
-            </tbody>
-            
-          </Table>
-                    </ComponentCard>
-                </Col>
-                <Col md="12">
-                  <ComponentCard title="Work Details">
-                      {/* <Form>
+                  <td>{projectYard?.pipe_count}</td>
+                  <td>{projectYard?.plank_count}</td>
+                  <td>{projectYard?.tb_count}</td>
+                  <td>{projectYard?.volume_count}</td>
+                  <td>{projectYard?.others_count}</td>
+                </tr>
+                <tr></tr>
+              </tbody>
+            </Table>
+          </ComponentCard>
+        </Col>
+        <Col md="12">
+          <ComponentCard title="Work Details">
+            {/* <Form>
                         <Row>
                         <Col md="4">
                             <FormGroup>
@@ -507,123 +494,217 @@ export default function CostingSummary() {
                           </Col>
                         </Row>
                       </Form> */}
-                        <Table
-            id="example"
-            className="display border border-secondary rounded"
-            title="projectTask List"
-            //className="lineitem border border-secondary rounded"
-          >
-            <thead className="lineitem1 border border-secondary rounded">
-              <tr>
-                {columns.map((cell) => {
-                  return (
-                    
-                    <th key={cell.name} >
-                      {/* {cell.name} */}
-                      {/* <span style={{ color: ['ID', 'Edit', 'New','View','Title','Task Type','Head Count','Status','Employees'].includes(cell.name) ? 'blue' : 'inherit' }}> */}
-                      {cell.name}
-                    </th>
-                  );
-                  // return <td key={cell.name}>{cell.name}</td>;
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              
-                      <tr key={works?.yard_id}>
-                       
-                       
-                        {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{works?.task_title}</td> */}
-                        <td>{works?.pipe_value}</td>
-                        <td>{works?.plank_value}</td>
-                        <td>{works?.tb_value}</td>
-                        <td>{works?.volume_value}</td>
-                        <td>{works?.others_value}</td>
-                        
-                        <td>{works?.pipe_count}</td>
-                        <td>{works?.plank_count}</td>
-                        <td>{works?.tb_count}</td>
-                        <td>{works?.volume_count}</td>
-                        <td>{works?.others_count}</td>
-                      </tr>
-                      <tr>
+            <Table
+              id="example"
+              className="display border border-secondary rounded"
+              title="projectTask List"
+              //className="lineitem border border-secondary rounded"
+            >
+              <thead className="lineitem1 border border-secondary rounded">
+                <tr>
+                  {columns.map((cell) => {
+                    return (
+                      <th key={cell.name}>
+                        {/* {cell.name} */}
+                        {/* <span style={{ color: ['ID', 'Edit', 'New','View','Title','Task Type','Head Count','Status','Employees'].includes(cell.name) ? 'blue' : 'inherit' }}> */}
+                        {cell.name}
+                      </th>
+                    );
+                    // return <td key={cell.name}>{cell.name}</td>;
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                <tr key={works?.yard_id}>
+                  {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{works?.task_title}</td> */}
+                  <td>{works?.pipe_value}</td>
+                  <td>{works?.plank_value}</td>
+                  <td>{works?.tb_value}</td>
+                  <td>{works?.volume_value}</td>
+                  <td>{works?.others_value}</td>
 
-                        
-                      </tr>
-                    
-            </tbody>
-            
-          </Table>
-                    </ComponentCard>
-<ComponentCard title="Summary">
-    <Row>
-    <Col md="4">
-                            <FormGroup>
-                              <Label>Total yard amount($)</Label>
-                              <br/>
-                             <span>{projectYard && ((parseFloat(projectYard?.pipe_erection_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_erection_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_erection_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_erection_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_erection_amount)*parseFloat(projectYard?.others_count))+(parseFloat(projectYard?.pipe_erection_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_erection_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_erection_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_erection_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_erection_amount)*parseFloat(projectYard?.others_count)))}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Total amount for Work($)</Label>
-                              <br/>
-                             <span>{works && works.total_amount}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Profit Amount($)</Label>
-                              <br/>
-                             <span>{(parseFloat(parseFloat(projectYard &&  ((parseFloat(projectYard?.pipe_erection_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_erection_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_erection_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_erection_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_erection_amount)*parseFloat(projectYard?.others_count))+(parseFloat(projectYard?.pipe_dismantel_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_dismantel_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_dismantel_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_dismantel_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_dismantel_amount)*parseFloat(projectYard?.others_count))))-parseFloat(works && works.total_amount)))?(parseFloat(parseFloat(projectYard &&  ((parseFloat(projectYard?.pipe_erection_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_erection_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_erection_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_erection_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_erection_amount)*parseFloat(projectYard?.others_count))+(parseFloat(projectYard?.pipe_dismantel_amount)*parseFloat(projectYard?.pipe_count))+(parseFloat(projectYard?.plank_dismantel_amount)*parseFloat(projectYard?.plank_count))+(parseFloat(projectYard?.tb_dismantel_amount)*parseFloat(projectYard?.tb_count))+(parseFloat(projectYard?.volume_dismantel_amount)*parseFloat(projectYard?.volume_count))+(parseFloat(projectYard?.others_dismantel_amount)*parseFloat(projectYard?.others_count))))-parseFloat(works && works.total_amount))) :''}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Pipes Balance</Label>
-                              <br/>
-                             <span>{parseFloat(parseFloat(projectYard && projectYard.pipe_count)-parseFloat(works && works.pipe_count))?parseFloat(parseFloat(projectYard && projectYard.pipe_count)-parseFloat(works && works.pipe_count)):''}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Planks Balance</Label>
-                              <br/>
-                             <span>{parseFloat(projectYard && projectYard.plank_count)-parseFloat(works && works.plank_count)?parseFloat(projectYard && projectYard.plank_count)-parseFloat(works && works.plank_count):''}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>TB Balance</Label>
-                              <br/>
-                             <span>{parseFloat(projectYard && projectYard.tb_count)-parseFloat(works && works.tb_count)?parseFloat(projectYard && projectYard.tb_count)-parseFloat(works && works.tb_count):''}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Volume Balance</Label>
-                              <br/>
-                             <span>{parseFloat(projectYard && projectYard.volume_count)-parseFloat(works && works.volume_count)?parseFloat(projectYard && projectYard.volume_count)-parseFloat(works && works.volume_count):''}</span>
-                            </FormGroup>
-                          </Col>
-                          <Col md="4">
-                            <FormGroup>
-                              <Label>Others Balance</Label>
-                              <br/>
-                             <span>{parseFloat(projectYard && projectYard.others_count)-parseFloat(works && works.others_count)?parseFloat(projectYard && projectYard.others_count)-parseFloat(works && works.others_count):''}</span>
-                            </FormGroup>
-                          </Col>
-                          
-    </Row>
-    </ComponentCard>
-                    
-                    </Col>
-             
-                <div>
-                 
-                      
-                </div>
-              </Row>
+                  <td>{works?.pipe_count}</td>
+                  <td>{works?.plank_count}</td>
+                  <td>{works?.tb_count}</td>
+                  <td>{works?.volume_count}</td>
+                  <td>{works?.others_count}</td>
+                </tr>
+                <tr></tr>
+              </tbody>
+            </Table>
+          </ComponentCard>
+          <ComponentCard title="Summary">
+            <Row>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Total yard amount($)</Label>
+                  <br />
+                  <span>
+                    {projectYard &&
+                      parseFloat(projectYard?.pipe_erection_amount) *
+                        parseFloat(projectYard?.pipe_count) +
+                        parseFloat(projectYard?.plank_erection_amount) *
+                          parseFloat(projectYard?.plank_count) +
+                        parseFloat(projectYard?.tb_erection_amount) *
+                          parseFloat(projectYard?.tb_count) +
+                        parseFloat(projectYard?.volume_erection_amount) *
+                          parseFloat(projectYard?.volume_count) +
+                        parseFloat(projectYard?.others_erection_amount) *
+                          parseFloat(projectYard?.others_count) +
+                        parseFloat(projectYard?.pipe_erection_amount) *
+                          parseFloat(projectYard?.pipe_count) +
+                        parseFloat(projectYard?.plank_erection_amount) *
+                          parseFloat(projectYard?.plank_count) +
+                        parseFloat(projectYard?.tb_erection_amount) *
+                          parseFloat(projectYard?.tb_count) +
+                        parseFloat(projectYard?.volume_erection_amount) *
+                          parseFloat(projectYard?.volume_count) +
+                        parseFloat(projectYard?.others_erection_amount) *
+                          parseFloat(projectYard?.others_count)}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Total amount for Work($)</Label>
+                  <br />
+                  <span>{works && works.total_amount}</span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Profit Amount($)</Label>
+                  <br />
+                  <span>
+                    {parseFloat(
+                      parseFloat(
+                        projectYard &&
+                          parseFloat(projectYard?.pipe_erection_amount) *
+                            parseFloat(projectYard?.pipe_count) +
+                            parseFloat(projectYard?.plank_erection_amount) *
+                              parseFloat(projectYard?.plank_count) +
+                            parseFloat(projectYard?.tb_erection_amount) *
+                              parseFloat(projectYard?.tb_count) +
+                            parseFloat(projectYard?.volume_erection_amount) *
+                              parseFloat(projectYard?.volume_count) +
+                            parseFloat(projectYard?.others_erection_amount) *
+                              parseFloat(projectYard?.others_count) +
+                            parseFloat(projectYard?.pipe_dismantel_amount) *
+                              parseFloat(projectYard?.pipe_count) +
+                            parseFloat(projectYard?.plank_dismantel_amount) *
+                              parseFloat(projectYard?.plank_count) +
+                            parseFloat(projectYard?.tb_dismantel_amount) *
+                              parseFloat(projectYard?.tb_count) +
+                            parseFloat(projectYard?.volume_dismantel_amount) *
+                              parseFloat(projectYard?.volume_count) +
+                            parseFloat(projectYard?.others_dismantel_amount) *
+                              parseFloat(projectYard?.others_count),
+                      ) - parseFloat(works && works.total_amount),
+                    )
+                      ? parseFloat(
+                          parseFloat(
+                            projectYard &&
+                              parseFloat(projectYard?.pipe_erection_amount) *
+                                parseFloat(projectYard?.pipe_count) +
+                                parseFloat(projectYard?.plank_erection_amount) *
+                                  parseFloat(projectYard?.plank_count) +
+                                parseFloat(projectYard?.tb_erection_amount) *
+                                  parseFloat(projectYard?.tb_count) +
+                                parseFloat(projectYard?.volume_erection_amount) *
+                                  parseFloat(projectYard?.volume_count) +
+                                parseFloat(projectYard?.others_erection_amount) *
+                                  parseFloat(projectYard?.others_count) +
+                                parseFloat(projectYard?.pipe_dismantel_amount) *
+                                  parseFloat(projectYard?.pipe_count) +
+                                parseFloat(projectYard?.plank_dismantel_amount) *
+                                  parseFloat(projectYard?.plank_count) +
+                                parseFloat(projectYard?.tb_dismantel_amount) *
+                                  parseFloat(projectYard?.tb_count) +
+                                parseFloat(projectYard?.volume_dismantel_amount) *
+                                  parseFloat(projectYard?.volume_count) +
+                                parseFloat(projectYard?.others_dismantel_amount) *
+                                  parseFloat(projectYard?.others_count),
+                          ) - parseFloat(works && works.total_amount),
+                        )
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Pipes Balance</Label>
+                  <br />
+                  <span>
+                    {parseFloat(
+                      parseFloat(projectYard && projectYard.pipe_count) -
+                        parseFloat(works && works.pipe_count),
+                    )
+                      ? parseFloat(
+                          parseFloat(projectYard && projectYard.pipe_count) -
+                            parseFloat(works && works.pipe_count),
+                        )
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Planks Balance</Label>
+                  <br />
+                  <span>
+                    {parseFloat(projectYard && projectYard.plank_count) -
+                    parseFloat(works && works.plank_count)
+                      ? parseFloat(projectYard && projectYard.plank_count) -
+                        parseFloat(works && works.plank_count)
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>TB Balance</Label>
+                  <br />
+                  <span>
+                    {parseFloat(projectYard && projectYard.tb_count) -
+                    parseFloat(works && works.tb_count)
+                      ? parseFloat(projectYard && projectYard.tb_count) -
+                        parseFloat(works && works.tb_count)
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Volume Balance</Label>
+                  <br />
+                  <span>
+                    {parseFloat(projectYard && projectYard.volume_count) -
+                    parseFloat(works && works.volume_count)
+                      ? parseFloat(projectYard && projectYard.volume_count) -
+                        parseFloat(works && works.volume_count)
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+              <Col md="4">
+                <FormGroup>
+                  <Label>Others Balance</Label>
+                  <br />
+                  <span>
+                    {parseFloat(projectYard && projectYard.others_count) -
+                    parseFloat(works && works.others_count)
+                      ? parseFloat(projectYard && projectYard.others_count) -
+                        parseFloat(works && works.others_count)
+                      : ''}
+                  </span>
+                </FormGroup>
+              </Col>
+            </Row>
+          </ComponentCard>
+        </Col>
+
+        <div></div>
+      </Row>
     </>
   );
 }

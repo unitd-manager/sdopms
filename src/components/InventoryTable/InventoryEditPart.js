@@ -8,11 +8,12 @@ import ComponentCard from '../ComponentCard';
 //import ComponentCardV2 from '../ComponentCardV2';
 import ApiButton from '../ApiButton';
 
-function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }) {
+function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,handleStockinput1 }) {
   InventoryEditPart.propTypes = {
     inventoryDetails: PropTypes.object,
     handleInputs: PropTypes.func,
     editinventoryData: PropTypes.func,
+    handleStockinput1:PropTypes.func,
   };
   //navigation
   const navigate = useNavigate();
@@ -176,6 +177,17 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData }
                       type="textarea"
                       defaultValue={inventoryDetails && inventoryDetails.notes}
                       name="notes"
+                    ></Input>
+                  </FormGroup>
+                </Col>
+                <Col md="3">
+                  <FormGroup>
+                    <Label>Yard Stock</Label>
+                    <Input
+                      onChange={handleStockinput1}
+                      type="text"
+                      defaultValue={inventoryDetails && inventoryDetails.yard_stock}
+                      name="yard_stock"
                     ></Input>
                   </FormGroup>
                 </Col>

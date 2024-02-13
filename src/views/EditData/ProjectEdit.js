@@ -44,8 +44,10 @@ import TaskHistoryModal from '../../components/TaskHistory modal';
 import TaskHistoriesModal from '../../components/TaskHistoriesModal';
 // import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 import { HasAccess, usePermify } from '@permify/react-role';
-import CostingSummary from '../../components/dashboard/ProjectStats/Costing';
+// import CostingSummary from '../../components/dashboard/ProjectStats/Costing';
+import CostingSummaryDetails from '../../components/dashboard/ProjectStats/CostingSummaryDetails';
 import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
+//import ProjectYardEdit from '../../components/ProjectYardEdit';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -81,6 +83,7 @@ const ProjectEdit = () => {
   const [userSearchData, setUserSearchData] = useState([]);
   const [contactDatas, setContactData] = useState();
   const [editTaskEditModal, setEditTaskEditModal] = useState(false);
+  const [edityardModal, setEditYardModal] = useState(false);
   const [addContactModal, setAddContactModal] = useState(false);
   const [yardModals, setYardModals] = useState(false);
   const [incharge, setIncharge] = useState();
@@ -120,6 +123,7 @@ const ProjectEdit = () => {
   const [taskhistoriesmodal, setTaskhistoriesmodal] = useState(false);
   const [WorkSheet, setWorkSheet] = useState(null);
   const [editQuoteModal, setEditQuoteModal] = useState(false);
+  const [projectYard1, setProjectYard1] = useState();
 
   const [quoteForm, setQuoteForm] = useState({
     quote_date: '',
@@ -954,9 +958,13 @@ const ProjectEdit = () => {
         <TabContent className="p-4" activeTab={activeTab}>
           <Tab toggle={toggle} tabs={tabs} />
 
-          <TabPane tabId="1">
+          {/* <TabPane tabId="1">
             <br />
             <CostingSummary />
+          </TabPane> */}
+          <TabPane tabId="1">
+            <br />
+            <CostingSummaryDetails />
           </TabPane>
 
           {/* Tab 2 */}
@@ -1074,6 +1082,7 @@ const ProjectEdit = () => {
             <br />
             <ProjectYard
               projectDetail={projectDetail}
+              workorderbyId={workorderbyId}
               userSearchData={userSearchData}
               setUserSearchData={setUserSearchData}
               setContactData={setContactData}
@@ -1081,12 +1090,21 @@ const ProjectEdit = () => {
               getTaskById={getTaskById}
               taskById={taskById}
               setTaskById={setTaskById}
+              setEditYardModal={setEditYardModal}
               addContactToggle={addYardToggles}
               addContactModal={yardModals}
               setEditTaskEditModal={setEditTaskEditModal}
               setTaskhistorymodal={setTaskhistorymodal}
               setTaskhistoriesmodal={setTaskhistoriesmodal}
+              setProjectYard1={setProjectYard1}
+              projectYard1={projectYard1}
+              edityardModal={edityardModal}
+            //setEditYardModal={setEditYardModal}
             />
+            {/* <ProjectYardEdit edityardModal={edityardModal}
+            setEditYardModal={setEditYardModal}
+            projectYard={projectYard}
+            setProjectYard1={setProjectYard1} ></ProjectYardEdit> */}
           </TabPane>
           <TabPane tabId="8">
             <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
