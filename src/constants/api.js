@@ -13,12 +13,13 @@ dotenv.config();
 
 // console.log('NODE_ENV:', process.env.NODE_ENV);
 // const api = axios.create({
-//   baseURL, // Use the baseURL variable here
+//   baseURL, // Use the baseURL variable 
+
 // });
 console.log('env variable',process.env.PRODUCTION_URL)
 console.log('env variable',process.env.TEST_URL)
 const api = axios.create({
-    baseURL: 'http://43.228.126.245:4017',
+    baseURL: 'http://43.228.126.245:5007',
     //baseURL: 'http://localhost:5007',
     
     
