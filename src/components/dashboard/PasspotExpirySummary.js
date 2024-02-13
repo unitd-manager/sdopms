@@ -46,7 +46,7 @@ setRemainderLists(remainders);
         { remainderLists&& remainderLists.map((elem)=>{
            return( 
              <tr key={elem.employee_id_duplicate}>
-                <td>{elem.first_name}</td>
+                <td>{elem.employee_name}</td>
                 <td>{moment(elem.date_of_expiry).format('DD-MM-YYYY')}</td>
               </tr>
            )
