@@ -20,8 +20,8 @@ import message from '../Message';
 import creationdatetime from '../../constants/creationdatetime';
 import AppContext from '../../context/AppContext';
 
-const CreateReceipt = ({ editCreateReceipt, setEditCreateReceipt, orderId }) => {
-  CreateReceipt.propTypes = {
+const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt, orderId }) => {
+  FinanceReceiptData.propTypes = {
     editCreateReceipt: PropTypes.bool,
     setEditCreateReceipt: PropTypes.func,
     orderId: PropTypes.any,
@@ -178,7 +178,7 @@ const { loggedInuser } = useContext(AppContext);
   
     if (createReceipt.mode_of_payment && selectedInvoice.length > 0) {
       // Calculate total remaining amount of selected invoices
-      const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + parseFloat(invoice.remainingAmount));
+      const totalInvoiceAmount = selectedInvoice.reduce((total, invoice) => total + parseFloat(invoice.remainingAmount), 0);
       console.log("realamount",totalInvoiceAmount); // Log the real amount in the console
       // Check if the amount entered in the receipt is less than or equal to the total invoice amount
       if (parseFloat(createReceipt.amount).toFixed(2) <= totalInvoiceAmount) {
@@ -482,7 +482,7 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
             disabled={submitting}
           >
             {' '}
-            Sumit111{' '}
+            Sumit{' '}
           </Button>
           <Button className='shadow-none'
             color="secondary"
@@ -498,4 +498,4 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
   );
 };
 
-export default CreateReceipt;
+export default FinanceReceiptData;

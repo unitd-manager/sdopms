@@ -38,7 +38,7 @@ export default function ProjectTask({
   userSearchData,
   setTaskhistorymodal,
   setTaskhistoriesmodal,
-  workorderbyId,
+  //workorderbyId,
 
 }) {
   ProjectTask.propTypes = {
@@ -53,7 +53,7 @@ export default function ProjectTask({
     getTaskById: PropTypes.func,
     setUserSearchData: PropTypes.func,
     userSearchData: PropTypes.func,
-    workorderbyId:PropTypes.func,
+    //workorderbyId:PropTypes.func,
   };
 
   console.log("check id's", taskById);
@@ -72,6 +72,7 @@ export default function ProjectTask({
     project_team_id: '',
   });
   const [milestoneDetail, setMilestones] = useState([]);
+  const [workorders, setWorkorders] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [categoryName, setCategoryName] = useState('');
@@ -322,6 +323,18 @@ export default function ProjectTask({
         message('Milestones not found', 'info');
       });
   };
+
+  const getWorkOrder = () => {
+    api
+      .post('/projecttask/getworkorderByprojectID', { project_id: id })
+      .then((res) => {
+        setWorkorders(res.data.data);
+      })
+      .catch(() => {
+        message('Milestones not found', 'info');
+      });
+  };
+
   const fetchEmployeeDetails = (projectTeamId) => {
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
@@ -367,6 +380,7 @@ export default function ProjectTask({
     editJobById();
     //dataForAttachment();
     getMilestoneTitle();
+    getWorkOrder();
   }, [id]);
 
   useEffect(() => {
@@ -611,6 +625,26 @@ export default function ProjectTask({
                         <Col md="4">
                           <FormGroup>
                             <Label>
+                              Work Order <span className="required">*</span>
+                            </Label>
+                            <Input
+                              type="select"
+                              name="project_work_order_id"
+                              onChange={handleInputsTask}
+                            >
+                              <option>Select Work order</option>
+                              {workorders &&
+                                workorders.map((e) => (
+                                  <option key={e.project_id} value={e.work_order_id}>
+                                    {e.work_order_no}
+                                  </option>
+                                ))}
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <Label>
                               Title <span className="required">*</span>
                             </Label>
                             <Input
@@ -698,7 +732,7 @@ export default function ProjectTask({
                             />
                           </FormGroup>
                         </Col>
-                        <Col md="4">
+                        {/* <Col md="4">
                           <FormGroup>
                             <Label>Work Order No</Label>
                             <Input
@@ -717,7 +751,7 @@ export default function ProjectTask({
                               ))}
                               </Input>
                           </FormGroup>
-                        </Col>
+                        </Col> */}
                         <Col md="4">
                           <FormGroup>
                             <Label>Start date</Label>

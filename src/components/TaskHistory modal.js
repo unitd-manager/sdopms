@@ -213,12 +213,12 @@ console.log('contactDatas',contactDatas)
   insertTask.share_per_head=shares;
   insertTask.project_id = id;
   if(employeelead.length ===0){
-    message('Please Select Team leader', 'warning');
+    message('Please Select Team leader', 'Error');
   }
-   else if(((contactDatas.task_type === 'Dismantel') &&(parseFloat(insertTask.pipe)> parseFloat(parseFloat(pipeCount.pipeCount)-parseFloat(dismantelCount.pipeCount)) || parseFloat(insertTask.plank)> parseFloat(parseFloat(pipeCount.plankCount)-parseFloat(dismantelCount.plankCount)) || parseFloat(insertTask.tb)> parseFloat(parseFloat(pipeCount.tbCount)-parseFloat(dismantelCount.tbCount)) || parseFloat(insertTask.volume)> parseFloat(parseFloat(pipeCount.volumeCount)-parseFloat(dismantelCount.volumeCount)))) ){
-      message('Please check the count', 'warning');
+   else if(((contactDatas.task_type === 'Dismantel') &&((parseFloat(parseFloat(pipeCount.pipeCount || 0)-parseFloat(dismantelCount.pipeCount || 0))<parseFloat(insertTask.pipe))  || parseFloat(insertTask.plank)> (parseFloat(parseFloat(pipeCount.plankCount || 0)-parseFloat(dismantelCount.plankCount||0))) || parseFloat(insertTask.tb)> (parseFloat(parseFloat(pipeCount.tbCount || 0)-parseFloat(dismantelCount.tbCount ||0))) || parseFloat(insertTask.volume)> (parseFloat(parseFloat(pipeCount.volumeCount ||0)-parseFloat(dismantelCount.volumeCount ||0))))) ){
+      message('Please check the count', 'Error');
     }else if(!insertTask.pipe_code && insertTask.pipe_code===''){
-      message('Please Fill the Log no', 'warning');
+      message('Please Fill the Log no', 'Error');
     }
   else{
   insertTask.employee_id=employeelead[0].employeeId;
@@ -231,7 +231,7 @@ console.log('contactDatas',contactDatas)
             console.log(insertedDataId);
             employeesInTask.forEach((el)=>{
               el.task_history_id=insertedDataId;
-              
+              el.employee_id=el.employeeId;
               console.log('el',el)
 
               api
@@ -351,6 +351,16 @@ console.log('work',work)
     getPipeCode()
   
   }, []);
+    
+  useEffect(() => {
+    const num1 = parseFloat(insertTask&&insertTask.length) || 0;
+    const num2 = parseFloat(insertTask&&insertTask.breath) || 0;
+    const num3 = parseFloat(insertTask&&insertTask.height) || 0;
+    const num4 = parseFloat(insertTask&&insertTask.volume_count) || 0;
+    const result=(parseFloat(num1) * parseFloat(num2) * parseFloat(num3) * parseFloat(num4));
+    setInsertTask({...insertTask, volume: result})
+    console.log('result')
+  },[insertTask && insertTask.length,insertTask && insertTask.breath,insertTask && insertTask.height,insertTask && insertTask.volume_count]);
 
   useEffect(() => {
     getDismantelCount();
@@ -584,12 +594,57 @@ console.log('work',work)
                           </Col>
                           <Col md="4">
                             <FormGroup>
+                              <Label>Length</Label>
+                              <Input
+                                type="text"
+                                name="length"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.length}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Breath</Label>
+                              <Input
+                                type="text"
+                                name="breath"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.breath}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>height</Label>
+                              <Input
+                                type="text"
+                                name="height"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.height}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Volume Count</Label>
+                              <Input
+                                type="text"
+                                name="volume_count"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.volume_count}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
                               <Label>Volume</Label>
                               <Input
                                 type="text"
                                 name="volume"
                                 onChange={handleInputsTask}
                                 value={insertTask && insertTask.volume}
+                                disabled
                               />
                             </FormGroup>
                           </Col>

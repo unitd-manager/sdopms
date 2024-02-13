@@ -28,8 +28,29 @@ const ExportReport = ({ data, columns, exportValue }) => {
     return filteredResult.value;
   };
 
-  function convertArrayOfObjectsToCSV(array) {
-    let result;
+  async function getTeamMembersDetails(row) {
+    try {
+      const res = await api.post('/projecttask/getteamEmployeeById2', {
+        task_history_id: row.task_history_id,
+      });
+      const teamMembers = res.data.data;
+      let details = '';
+      teamMembers.forEach((member, index) => {
+        if (index === 0) {
+          details += `${index + 1}, ${member.employee_name}, ${member.share_per_head}\n`;
+        } else {
+          details += `,,,,,,${index + 1}, ${member.employee_name}, ${member.share_per_head}\n`;
+        }
+      });
+      return details;
+    } catch (error) {
+      console.error('Error fetching employee names:', error);
+      return '';
+    }
+  }
+
+  async function convertArrayOfObjectsToCSV(array) {
+    let result = '';
 
     const columnDelimiter = ',';
     const lineDelimiter = '\n';
@@ -39,39 +60,40 @@ const ExportReport = ({ data, columns, exportValue }) => {
       keys.push(singleColumn.name);
       selectors.push(singleColumn.selector);
     });
+    keys.push('SN.No,Employee Name, Share Amount($)');
 
-    result = '';
     result += keys.join(columnDelimiter);
     result += lineDelimiter;
+    const promises = array.map((item) => getTeamMembersDetails(item));
+    const teamDetailsArray = await Promise.all(promises);
 
     array.forEach((item, index) => {
       let ctr = 0;
       selectors.forEach((key) => {
         if (ctr > 0) result += columnDelimiter;
-
         result += key === 's_no' ? index + 1 : item[key] ? item[key] : '';
-
         ctr++;
       });
+      result += columnDelimiter + teamDetailsArray[index];
       result += lineDelimiter;
     });
 
     return result;
   }
 
-  function downloadCSV() {
+  async function downloadCSV() {
     const link = document.createElement('a');
-    let csv = convertArrayOfObjectsToCSV(data);
+    let csv = await convertArrayOfObjectsToCSV(data);
     if (csv == null) return;
 
-function getCurrentDate() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${day}-${month}-${year}`;
-}
-const filename = `${exportValue}_${getCurrentDate()}.csv`;
+    function getCurrentDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${day}-${month}-${year}`;
+    }
+    const filename = `${exportValue}_${getCurrentDate()}.csv`;
     if (!csv.match(/^data:text\/csv/i)) {
       csv = `data:text/csv;charset=utf-8,${csv}`;
     }
@@ -136,9 +158,7 @@ const filename = `${exportValue}_${getCurrentDate()}.csv`;
       header: PdfHeader({ findCompany }),
       pageMargins: [40, 110, 40, 80],
       footer: PdfFooter,
-      content: [
-        table(),
-      ],
+      content: [table()],
       styles: {
         tableHead: {
           border: [false, true, false, true],

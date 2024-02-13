@@ -23,6 +23,7 @@ import ProjectTaskEdit from '../../components/ProjectTaskEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import ProjectWorkOrder from '../../components/ProjectWorkOrder';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
+import CreateFinance from '../../components/ProjectModal/CreateFinance';
 import Tab from '../../components/ProjectTabs/Tab';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
 //import CalendarApp from '../apps/calendar/CalendarApp';
@@ -93,7 +94,7 @@ const ProjectEdit = () => {
   const [addLineItemModal, setAddLineItemModal] = useState(false);
   const [quotation, setQuotation] = useState({});
   const [lineItem, setLineItem] = useState([]);
-  
+  const [financeModal, setFinanceModal] = useState(false);
   const [quotationsModal, setquotationsModal] = useState(false);
   
   // const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
@@ -147,7 +148,7 @@ const ProjectEdit = () => {
     // { id: '8', name: 'Material Purchase Order' },
     // { id: '9', name: 'Material Used' },
     // { id: '10',name: 'Material Transferred' },
-    // { id: '11',name: 'Finance' },
+     { id: '11',name: 'Finance' },
 
   ];
   const toggle = (tab) => {
@@ -953,6 +954,7 @@ const ProjectEdit = () => {
           addDuctingCostModal={addDuctingCostModal}
           setAddDuctingCostModal={setAddDuctingCostModal}
         />
+                   <CreateFinance financeModal={financeModal} setFinanceModal={setFinanceModal} />
 
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
@@ -988,6 +990,7 @@ const ProjectEdit = () => {
           {/* Tab 3 Milestone */}
           <ViewLineItemModal viewLineModal={viewLineModal1} setViewLineModal={setViewLineModal1} />
         <EditQuotation editQuoteModal={editQuoteModal} setEditQuoteModal={setEditQuoteModal} />
+
           <TabPane tabId="3">
             <br />
             <ProjectMilestones
@@ -1187,16 +1190,11 @@ const ProjectEdit = () => {
               <MaterialsTransferred projectId={id} />
             </TabPane>
           </HasAccess>
-          <HasAccess
-            roles={null}
-            permissions={`client-edit`}
-            renderAuthFailed={<p></p>}
-          >
-            {/* Tab 11 */}
+       
             <TabPane tabId="11" eventkey="financeTab">
               <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
             </TabPane>
-          </HasAccess>
+        
         </TabContent>
       </ComponentCard>
     </>

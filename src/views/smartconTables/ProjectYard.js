@@ -93,7 +93,7 @@ export default function ProjectYard({
         addContactToggle(false);
         // Reset isSubmitting on submission failure
         setIsSubmitting(false);
-
+ getYard()
         // Clear the selected names after insertion
       })
       .catch(() => {

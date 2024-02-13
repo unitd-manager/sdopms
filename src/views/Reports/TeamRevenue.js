@@ -15,6 +15,7 @@ import api from '../../constants/api';
 import message from '../../components/Message';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ExportReport from '../../components/Report/ExportReport';
+import PdfTeamRevenue from '../../components/PDF/PdfTeamRevenue';
 
 const OverAllReport = () => {
   //All state variable
@@ -26,6 +27,8 @@ const OverAllReport = () => {
   const [companyName, setCompanyName] = useState('');
   const [company, setCompany] = useState();
   const [userSearchData, setUserSearchData] = useState('');
+  const [searchData, setSearchData] = useState('');
+  const [lineItems, setLineItems] = useState([]);
   const [lineItem, setLineItem] = useState([]);
   const [viewLineModal, setViewLineModal] = useState(false);
 
@@ -53,6 +56,25 @@ const OverAllReport = () => {
         message('Over all sales Data Not Found', 'info');
       });
   };
+
+  const getProjects = () => {
+    api
+      .get('/reports/getTaskEmployeeRevenue')
+      .then((res) => {
+        setLineItems(res.data.data);
+        console.log('t',res.data.data)
+        setSearchData(res.data.data);
+      })
+      .catch(() => {
+        // message('Over all sales Data Not Found', 'info');
+      });
+  };
+  
+  
+  
+    useEffect(() => {
+      getProjects();
+    }, []);
   const getLineItem = (taskID) => {
     api.post('/projecttask/getteamEmployeeById2', { task_history_id: taskID })
       .then((res) => {
@@ -108,7 +130,15 @@ const OverAllReport = () => {
       .filter((x) => x.date === (startDate === '' ? x.date : startDate))
     setUserSearchData(newData);
   };
+  console.log('lineItems',lineItems)
+  const handleSearchData = () => {
+    const newData1 = lineItems
+      .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+      .filter((x) => x.date === (startDate === '' ? x.date : startDate))
+      setSearchData(newData1);
+  };
 
+  console.log('searchData',searchData)
   useEffect(() => {
     getLineItem();
     getProject();
@@ -224,7 +254,7 @@ const OverAllReport = () => {
               </FormGroup>
             </Col>
             <Col md="1" className="mt-3">
-              <Button color="primary" className="shadow-none" onClick={() => handleSearch()}>Go</Button>
+             <Button color="primary" className="shadow-none" onClick={() => { handleSearch(); handleSearchData(); }}>Go</Button>
             </Col>
           </Row>
         </CardBody>
@@ -251,6 +281,9 @@ const OverAllReport = () => {
       <Card>
         <CardBody>
           <Row>
+          <Col>
+            <PdfTeamRevenue  searchData ={searchData}></PdfTeamRevenue>
+           </Col>
             <Col>
               <ExportReport columns={columns} data={userSearchData} />
             </Col>
