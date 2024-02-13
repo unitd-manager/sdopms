@@ -215,7 +215,7 @@ console.log('contactDatas',contactDatas)
   if(employeelead.length ===0){
     message('Please Select Team leader', 'warning');
   }
-   else if(((contactDatas.task_type === 'Dismantel') &&(parseFloat(insertTask.pipe)> (parseFloat(parseFloat(pipeCount.pipeCount)-parseFloat(dismantelCount.pipeCount))) || parseFloat(insertTask.plank)> (parseFloat(parseFloat(pipeCount.plankCount)-parseFloat(dismantelCount.plankCount))) || parseFloat(insertTask.tb)> (parseFloat(parseFloat(pipeCount.tbCount)-parseFloat(dismantelCount.tbCount))) || parseFloat(insertTask.volume)> (parseFloat(parseFloat(pipeCount.volumeCount)-parseFloat(dismantelCount.volumeCount))))) ){
+   else if(((contactDatas.task_type === 'Dismantel') &&((parseFloat(parseFloat(pipeCount.pipeCount)-parseFloat(dismantelCount.pipeCount))<parseFloat(insertTask.pipe))  || parseFloat(insertTask.plank)> (parseFloat(parseFloat(pipeCount.plankCount)-parseFloat(dismantelCount.plankCount))) || parseFloat(insertTask.tb)> (parseFloat(parseFloat(pipeCount.tbCount)-parseFloat(dismantelCount.tbCount))) || parseFloat(insertTask.volume)> (parseFloat(parseFloat(pipeCount.volumeCount)-parseFloat(dismantelCount.volumeCount))))) ){
       message('Please check the count', 'warning');
     }else if(!insertTask.pipe_code && insertTask.pipe_code===''){
       message('Please Fill the Log no', 'warning');

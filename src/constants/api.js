@@ -1,12 +1,14 @@
+import dotenv from 'dotenv';
 import axios from 'axios';
 
+dotenv.config();
 // // Define the base URL(s) conditionally
 // let baseURL;
 
 // if (process.env.NODE_ENV === 'production') {
-//   baseURL = 'http://43.228.126.245:5007';
+//   baseURL = process.env.PRODUCTION_URL;
 // } else {
-//   baseURL = 'http://43.228.126.245:4017';
+//   baseURL = process.env.TEST_URL;
 // }
 
 // console.log('NODE_ENV:', process.env.NODE_ENV);
