@@ -12,6 +12,42 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
     companies: PropTypes.array,
     team: PropTypes.array,
   };
+
+  const calculateTotalExperience = (dateJoined) => {
+    if (!dateJoined) {
+      return ""; 
+    }
+    
+
+    const joinDateTime = new Date(dateJoined);
+    
+    const currentDate = new Date();
+    
+    const difference = currentDate - joinDateTime;
+    
+    const totalYears = difference / (1000 * 60 * 60 * 24 * 365.25);
+    
+    const totalMonths = totalYears * 12;
+    
+    const years = Math.floor(totalYears);
+    const months = Math.floor(totalMonths % 12);
+
+    
+    let experienceString = '';
+    if (years > 0) {
+      experienceString += `${years} year${years > 1 ? 's' : ''}`;
+    }
+    if (months > 0) {
+      if (experienceString) {
+        experienceString += ' ';
+      }
+      experienceString += `${months} month${months > 1 ? 's' : ''}`;
+    }
+    return experienceString;
+  };
+
+  const totalExperience = calculateTotalExperience(employeeDetails.act_join_date);
+
 console.log('all countries',allCountries)
   return (
     <div>
@@ -287,6 +323,18 @@ console.log('all countries',allCountries)
                       );
                     })}
                 </Input>
+              </FormGroup>
+            </Col>
+            <Col md="3">
+              <FormGroup>
+                <Label>Experience</Label>
+                <Input
+                  name="totalexperience"
+                  value={totalExperience}
+                  onChange={handleInputChange}
+                  type="text"
+                  disabled
+                />
               </FormGroup>
             </Col>
             <Col md="3">
