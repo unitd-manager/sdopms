@@ -10,13 +10,8 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   baseURL = process.env.REACT_APP_TEST_URL;
 }
-
 console.log('NODE_ENV:', process.env.NODE_ENV);
 const api = axios.create({
-<<<<<<< HEAD
-    baseURL: 'http://43.228.126.245:4017',
-    //baseURL: 'http://localhost:5007',
-=======
   baseURL, // Use the baseURL variable 
 
 });
@@ -25,7 +20,6 @@ const api = axios.create({
 // const api = axios.create({
 //     baseURL: 'http://43.228.126.245:5007',
 //     //baseURL: 'http://localhost:5007',
->>>>>>> 48b61003810640623b13c6e48c06777b0473aaaf
     
     
 //     });
