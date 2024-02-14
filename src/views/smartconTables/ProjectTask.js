@@ -177,7 +177,7 @@ export default function ProjectTask({
       return; // Prevent multiple submissions
     }
     if (employeelead.length === 0) {
-      message('Please Select Team leader', 'warning');
+      message('Please Select Team leader', 'error');
     } else if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
       setIsSubmitting(true); // Set submission in progress
       const newContactWithCompanyId = insertTask;

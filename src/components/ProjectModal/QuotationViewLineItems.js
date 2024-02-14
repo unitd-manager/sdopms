@@ -25,7 +25,7 @@ const QuotationViewLineItem = ({
   const [quoteLine, setQuoteLine] = useState();
   const QuotationViewLine = () => {
     api
-      .post('/projecttabquote/getQuoteLineItemsById', {
+      .post('/project/getQuoteLineItemsById', {
         project_id: projectId,
         quote_id: quote,
       })

@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Form, FormGroup, Label, Button, CardTitle } from 'reactstrap';
 import moment from 'moment';
 import * as Icon from 'react-feather';
-import api from '../../constants/api';
-//import ViewLineItemModal from './ViewLineItemModal';
+//import api from '../../constants/api';
+import ViewLineItemModal from './ViewLineItemModal';
 import ViewQuoteLogModal from './ViewQuoteLogModal';
 import EditQuotation from './EditQuotation';
-import AddLineItemModal from './AddLineItemModal';
+// import AddLineItemModal from './AddLineItemModal';
 import PdfProjectQuote from '../PDF/PdfProjectQuote';
 import QuotationViewLineItem from './QuotationViewLineItems';
 
 export default function QuotationMoreDetails({
   id,
+  quotation,
   //setViewQuotationsModal,
   // insertQuote,
   // handleQuoteForms,
@@ -24,6 +25,7 @@ export default function QuotationMoreDetails({
 }) {
   QuotationMoreDetails.propTypes = {
     id: PropTypes.string,
+    quotation:PropTypes.object,
     getLineItem: PropTypes.array,
    // setViewQuotationsModal: PropTypes.any,
     quotationsModal: PropTypes.object,
@@ -38,30 +40,32 @@ export default function QuotationMoreDetails({
 
   console.log("id",id)
 
-  const [quotation, setQuotation] = useState();
+  // [quotation, setQuotation] = useState();
   const [quoteData, setQuoteData] = useState();
+  const [quoteLine, setQuoteLine] = useState();
  // const [quotelineItem, setQuoteLineItem] = useState();
   const [editQuoteModal, setEditQuoteModal] = useState();
   const [quotationViewLineItem, setQuotationViewLineItem] = useState();
   const [addLineItemModal, setAddLineItemModal] = useState(false);
   const [quote, setQuote] = useState();
 
-  const getQuotations = () => {
-    api
-      .post('/projecttabquote/getTabQuoteById', { project_id: id })
-      .then((res) => {
-        console.log("getTabQuoteById",res.data.data)
-        setQuotation(res.data.data);
-      })
-  };
-  useEffect(() => {
-    getQuotations();
-  }, [id]);
+  // const getQuotations = () => {
+  //   api
+  //     .post('/projecttabquote/getTabQuoteById', { project_id: id })
+  //     .then((res) => {
+  //       console.log("getTabQuoteById",res.data.data)
+  //       setQuotation(res.data.data);
+  //     })
+  // };
+  // useEffect(() => {
+  //   getQuotations();
+  // }, [id]);
   
-  console.log("quotation",quotation)
+  // console.log("quotation",quotation)
 
   return (
     <>
+     {Object.keys(quotation).length !== 0 && (
       <Row>
         <Col md="2">
           <Button
@@ -89,11 +93,15 @@ export default function QuotationMoreDetails({
           </Button>
         </Col> */}
       </Row>
+     )}
+       {Object.keys(quotation).length !== 0 && (
+        
       <CardTitle tag="h4" className="border-bottom bg-secondary p-2 mb-0 text-white">
         {' '}
         Quotations{' '}
       </CardTitle>
-
+      )}
+      {Object.keys(quotation).length !== 0 && (
       <Form className="mt-4">
         <Row className="border-bottom mb-3">
           <Col>
@@ -219,8 +227,8 @@ export default function QuotationMoreDetails({
                             {' '}
                             <span
                               onClick={() => {
-                                setQuote(element.quote_id);
-                               
+                                //setQuote(element.quote_id);
+                                setQuoteLine(element.quote_id)
                                 setAddLineItemModal(true);
                               }}
                             >
@@ -248,11 +256,19 @@ export default function QuotationMoreDetails({
                     quoteId={element.quote_id}
                     projectInfo={id}
                   />
-                   <AddLineItemModal
+                   {addLineItemModal && (
+                      <ViewLineItemModal
+                        projectInfo={id}
+                        addLineItemModal={addLineItemModal}
+                        setAddLineItemModal={setAddLineItemModal}
+                        quoteLine={quoteLine}
+                      ></ViewLineItemModal>
+                    )}
+                   {/* <AddLineItemModal
                   projectInfo={quote}
                   addLineItemModal={addLineItemModal}
                   setAddLineItemModal={setAddLineItemModal}
-                ></AddLineItemModal>
+                ></AddLineItemModal> */}
                   {quotationViewLineItem && (
                     <QuotationViewLineItem
                       quotationViewLineItem={quotationViewLineItem}
@@ -268,6 +284,7 @@ export default function QuotationMoreDetails({
             );
           })}
       </Form>
+           )}
      </>
   );
 }

@@ -59,7 +59,7 @@ export default function ProjectTeam({
 const insertTeamMember = () => {
   // Check if a team title is selected
   if (!selectedTeamTitle) {
-    message('Please select a team title', 'warning');
+    message('Please select a team title', 'danger');
     return;
   }
 
@@ -73,7 +73,7 @@ const insertTeamMember = () => {
   const existingTeam = employeeTeam.find((team) => team.team_title === selectedTeamTitle);
 
   if (!existingTeam) {
-    message('Selected team title not found', 'warning');
+    message('Selected team title not found', 'danger');
     return;
   }
 

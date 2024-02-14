@@ -23,7 +23,6 @@ import ProjectTaskEdit from '../../components/ProjectTaskEdit';
 import ProjectTeamEdit from '../../components/ProjectTeamEdit';
 import ProjectWorkOrder from '../../components/ProjectWorkOrder';
 import FinanceTab from '../../components/ProjectModal/FinanceTab';
-import CreateFinance from '../../components/ProjectModal/CreateFinance';
 import Tab from '../../components/ProjectTabs/Tab';
 //import ComponentCardV2 from '../../components/ComponentCardV2';
 //import CalendarApp from '../apps/calendar/CalendarApp';
@@ -92,15 +91,15 @@ const ProjectEdit = () => {
   // const [timeSheetById, setTimeSheetById] = useState();
   // const [contactDatass, setContactDatass] = useState();
   const [addLineItemModal, setAddLineItemModal] = useState(false);
-  const [quotation, setQuotation] = useState({});
+  const [quotation, setQuotation] = useState([]);
   const [lineItem, setLineItem] = useState([]);
-  const [financeModal, setFinanceModal] = useState(false);
+  
   const [quotationsModal, setquotationsModal] = useState(false);
   
   // const [editTimeSheetModal, setEditTimeSheetEditModal] = useState(false);
   // const [addContactModalss, setAddContactModalss] = useState(false);
   const [teamById, setTeamById] = useState();
-  const [workorderbyId, setWorkOrderById] = useState();
+  const [workorderbyId, setWorkOrderById] = useState([]);
   const [contactDataTeam, setContactDataTeam] = useState();
   const [editTeamModal, setEditTeamEditModal] = useState(false);
   const [addContactModalTeam, setAddContactModalTeam] = useState(false);
@@ -148,7 +147,7 @@ const ProjectEdit = () => {
     // { id: '8', name: 'Material Purchase Order' },
     // { id: '9', name: 'Material Used' },
     // { id: '10',name: 'Material Transferred' },
-     { id: '11',name: 'Finance' },
+    // { id: '11',name: 'Finance' },
 
   ];
   const toggle = (tab) => {
@@ -193,6 +192,7 @@ const ProjectEdit = () => {
 
   // Fetch Costing Summary
 
+  const [isProjectCompleted, setIsProjectCompleted] = useState(false);
   // Get Project By Id
 
   const getProjectById = () => {
@@ -200,6 +200,7 @@ const ProjectEdit = () => {
       .post('/project/getProjectsByIDs', { project_id: id })
       .then((res) => {
         setProjectDetail(res.data.data[0]);
+        setIsProjectCompleted(res.data.data[0].status === 'Complete');
       })
       .catch(() => {
         message('Project not found', 'info');
@@ -222,7 +223,7 @@ const ProjectEdit = () => {
   };
 
 
-
+ 
   const getLineItem = (quotationId) => {
     api.post('/project/getQuoteLineItemsById', { quote_id: quotationId }).then((res) => {
       setLineItem(res.data.data);
@@ -256,6 +257,7 @@ const ProjectEdit = () => {
       })
       .catch(() => { });
   };
+   
   const insertQuote = async (code) => {
     const newQuoteId = quoteForm;
     newQuoteId.project_id = id;
@@ -530,11 +532,19 @@ const ProjectEdit = () => {
         insertQuote('');
       });
   };
+const [project,setProject]=useState([]);
+  const getProject = () => {
+    api.get('project/getOppProject').then((res) => {
+      setProject(res.data.data);
+      console.log("Project",res.data.data)
+    });
+  };
 
   useEffect(() => {
     getProjectById();
     getMilestoneById();
     getTaskById();
+    getProject();
     //getTimeSheetById();
     getSupervisor();
     getProjectManager();
@@ -598,6 +608,7 @@ const ProjectEdit = () => {
                     name="title"
                     value={projectDetail && projectDetail.title}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   />
                 </FormGroup>
               </Col>
@@ -612,6 +623,7 @@ const ProjectEdit = () => {
                     name="category"
                     value={projectDetail && projectDetail.category}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   >
                     <option defaultValue="selected">Please Select</option>
                     <option value="Project">Project</option>
@@ -630,6 +642,7 @@ const ProjectEdit = () => {
                     name="status"
                     value={projectDetail && projectDetail.status}
                     onChange={handleInputs}
+                    //disabled={isProjectCompleted}
                   >
                     <option defaultValue="selected">Please Select</option>
                     <option value="WIP">WIP</option>
@@ -650,6 +663,7 @@ const ProjectEdit = () => {
                     name="job_no"
                     defaultValue={projectDetail && projectDetail.job_no}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   />
                 </FormGroup>
               </Col>
@@ -671,6 +685,7 @@ const ProjectEdit = () => {
                     type="select"
                     name="company_id"
                     value={projectDetail && projectDetail.company_id}
+                    disabled={isProjectCompleted}
                     onChange={(e) => {
                       handleInputs(e);
                       const selectedProject = e.target.value;
@@ -696,6 +711,7 @@ const ProjectEdit = () => {
                     name="contact_id"
                     value={projectDetail && projectDetail.contact_id}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   >
                     <option defaultValue="selected">Please Select</option>
                     {contact &&
@@ -718,6 +734,7 @@ const ProjectEdit = () => {
                     name="start_date"
                     defaultValue={projectDetail && projectDetail.start_date}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   />
                 </FormGroup>
               </Col>
@@ -729,6 +746,7 @@ const ProjectEdit = () => {
                     name="end_date"
                     defaultValue={projectDetail && projectDetail.end_date}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   />
                 </FormGroup>
               </Col>
@@ -739,6 +757,7 @@ const ProjectEdit = () => {
                     type="date"
                     name="estimated_finish_date"
                     defaultValue={projectDetail && projectDetail.estimated_finish_date}
+                    disabled={isProjectCompleted}
                     onChange={handleInputs}
                   />
                 </FormGroup>
@@ -752,6 +771,7 @@ const ProjectEdit = () => {
                     name="project_manager_id"
                     onChange={handleInputs}
                     value={projectDetail && projectDetail.project_manager_id}
+                    disabled={isProjectCompleted}
                   >
                     <option value="selected">Please Select</option>
                     {incharge &&
@@ -773,6 +793,7 @@ const ProjectEdit = () => {
                     name="project_supervisor_id"
                     onChange={handleInputs}
                     value={projectDetail && projectDetail.project_supervisor_id}
+                    disabled={isProjectCompleted}
                   >
                     <option value="selected">Please Select</option>
                     {supervisor &&
@@ -794,6 +815,7 @@ const ProjectEdit = () => {
                     name="description"
                     defaultValue={projectDetail && projectDetail.description}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
                   />
                 </FormGroup>
               </Col>
@@ -810,7 +832,7 @@ const ProjectEdit = () => {
                     name="pipe_erection_amount"
                     defaultValue={projectDetail && projectDetail.pipe_erection_amount}
                     onChange={handleInputs}
-
+                    disabled={isProjectCompleted}
                   >
 
                   </Input>
@@ -824,6 +846,7 @@ const ProjectEdit = () => {
                     name="plank_erection_amount"
                     defaultValue={projectDetail && projectDetail.plank_erection_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -838,6 +861,7 @@ const ProjectEdit = () => {
                     name="volume_erection_amount"
                     defaultValue={projectDetail && projectDetail.volume_erection_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -852,6 +876,7 @@ const ProjectEdit = () => {
                     name="tb_erection_amount"
                     defaultValue={projectDetail && projectDetail.tb_erection_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -866,6 +891,7 @@ const ProjectEdit = () => {
                     name="others_erection_amount"
                     defaultValue={projectDetail && projectDetail.others_erection_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -880,6 +906,7 @@ const ProjectEdit = () => {
                     name="pipe_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.pipe_dismantel_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -894,6 +921,7 @@ const ProjectEdit = () => {
                     name="plank_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.plank_dismantel_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -908,6 +936,7 @@ const ProjectEdit = () => {
                     name="volume_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.volume_dismantel_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -922,6 +951,7 @@ const ProjectEdit = () => {
                     name="tb_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.tb_dismantel_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -936,6 +966,7 @@ const ProjectEdit = () => {
                     name="others_dismantel_amount"
                     defaultValue={projectDetail && projectDetail.others_dismantel_amount}
                     onChange={handleInputs}
+                    disabled={isProjectCompleted}
 
                   >
 
@@ -954,7 +985,6 @@ const ProjectEdit = () => {
           addDuctingCostModal={addDuctingCostModal}
           setAddDuctingCostModal={setAddDuctingCostModal}
         />
-                   <CreateFinance financeModal={financeModal} setFinanceModal={setFinanceModal} />
 
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
@@ -973,9 +1003,32 @@ const ProjectEdit = () => {
          
             <TabPane tabId="2" eventkey="quotationMoreDetails">
               <br />
+              <Row className="mb-4">
+              {Object.keys(quotation).length === 0 && (
+                <Col md="2">
+                  <Button
+                    color="primary"
+                    className="shadow-none"
+                    onClick={(ele) => {
+                      if (
+                        window.confirm(
+                          'Do you Like to Add Quote ?',
+                        )
+                      ) {
+                      handleQuoteForms(ele);
+                      generateCode(ele);
+                    }}
+                  }
+                  >
+                    Add Quote
+                  </Button>
+                </Col>
+              )}
+            </Row>
          
               <QuotationMoreDetails
                 id={id}
+                quotation={quotation}
                 insertQuote={insertQuote}
                 handleQuoteForms={handleQuoteForms}
                 generateCodeQuote={generateCodeQuote}
@@ -990,7 +1043,6 @@ const ProjectEdit = () => {
           {/* Tab 3 Milestone */}
           <ViewLineItemModal viewLineModal={viewLineModal1} setViewLineModal={setViewLineModal1} />
         <EditQuotation editQuoteModal={editQuoteModal} setEditQuoteModal={setEditQuoteModal} />
-
           <TabPane tabId="3">
             <br />
             <ProjectMilestones
@@ -1110,13 +1162,17 @@ const ProjectEdit = () => {
             setProjectYard1={setProjectYard1} ></ProjectYardEdit> */}
           </TabPane>
           <TabPane tabId="8">
+       
             <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
             getWorkOrderById={getWorkOrderById}
               addModalWorkOrder={addModalWorkOrder}
               setAddModalWorkOrder={setAddModalWorkOrder}
               workorderbyId={workorderbyId}
-              id={id}>
+              id={id}
+              project={project}
+                isProjectCompleted={isProjectCompleted}>
             </ProjectWorkOrder>
+            
           </TabPane>
 
           {/* </TabPane> */}
@@ -1190,11 +1246,16 @@ const ProjectEdit = () => {
               <MaterialsTransferred projectId={id} />
             </TabPane>
           </HasAccess>
-       
+          <HasAccess
+            roles={null}
+            permissions={`client-edit`}
+            renderAuthFailed={<p></p>}
+          >
+            {/* Tab 11 */}
             <TabPane tabId="11" eventkey="financeTab">
               <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
             </TabPane>
-        
+          </HasAccess>
         </TabContent>
       </ComponentCard>
     </>
