@@ -111,7 +111,7 @@ export default function ProjectTask({
   // Gettind data from Job By Id
   const editJobById = () => {
     api
-      .get('/projectteam/getProjectTeam')
+      .post('/projectteam/getProjectTeambyProjectId',{project_id:id})
       .then((res) => {
         console.log(res.data.data);
         setTeam(res.data.data);

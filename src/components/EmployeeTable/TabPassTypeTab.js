@@ -186,7 +186,7 @@ function TabPassTypeTab({ tabPassTypeDetails, handlePassTypeInputs }) {
             <Col md="4">
               <FormGroup>
                 <Label>
-                  Fin No <span style={{ color: 'red' }}>*</span>
+                  Fin No 
                 </Label>
                 <Input
                   name="fin_no"
@@ -196,7 +196,7 @@ function TabPassTypeTab({ tabPassTypeDetails, handlePassTypeInputs }) {
                 />
               </FormGroup>
             </Col>
-            <Col md="4">
+            {/* <Col md="4">
               <FormGroup>
                 <Label>Fin No Expiry date </Label>
                 <Input
@@ -208,7 +208,7 @@ function TabPassTypeTab({ tabPassTypeDetails, handlePassTypeInputs }) {
                   onChange={handlePassTypeInputs}
                 />
               </FormGroup>
-            </Col>
+            </Col> */}
           </Row>
           <Row>
             <Col md="4">
