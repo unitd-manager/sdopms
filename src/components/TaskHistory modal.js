@@ -88,9 +88,17 @@ const TaskHistoryModal = ({
     api
       .post('/projecttask/getPipeCount', { pipe_code:countPipe})
       .then((res) => {
-        setPipeCount(res.data.data[0]);
-        console.log('resPipe',res.data.data[0])
-      })
+        api
+        .post('/projecttask/getDismantelCount', { pipe_code:countPipe})
+        .then((resp) => {
+          setDismantelCount(resp.data.data[0]);
+          setPipeCount(res.data.data[0]);
+          console.log('resPipe',res.data.data[0])
+          setInsertTask({ ...insertTask, pipe:parseFloat(res.data.data[0].pipeCount)-parseFloat(resp.data.data[0].pipeCount||0),plank:parseFloat(res.data.data[0].plankCount)-parseFloat(resp.data.data[0].plankCount||0),tb:parseFloat(res.data.data[0].tbCount)-parseFloat(resp.data.data[0].tbCount||0),volume:parseFloat(res.data.data[0].volumeCount)-parseFloat(resp.data.data[0].volumeCount ||0) });
+       
+        })
+        .catch(() => { });
+ })
       .catch(() => { });
   };
   console.log('pipeCount', pipeCount)
@@ -173,6 +181,7 @@ const TaskHistoryModal = ({
     console.log('Employee ID:', employeeId);
   };
 console.log('contactDatas',contactDatas)
+console.log('pipeCount',pipeCount)
   const employeesInTask=selectedNames.filter(val => val.checked)
   const empCount=selectedNames.filter(val => val.checked).length
   const employeelead=selectedNames?.filter(val => val.checked && val.team_leader)
@@ -363,8 +372,11 @@ console.log('work',work)
   },[insertTask && insertTask.length,insertTask && insertTask.breath,insertTask && insertTask.height,insertTask && insertTask.volume_count]);
 
   useEffect(() => {
+    if(contactDatas.task_type ==='Dismantel'){
     getDismantelCount();
     getPipeCount()
+    }
+    
   }, [insertTask && insertTask.pipe_code]);
 
   useEffect(() => {
@@ -557,7 +569,7 @@ console.log('work',work)
                               />
                             </FormGroup>
                           </Col>}
-                         {((contactDatas.task_type === 'Erection' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ) ||(contactDatas.task_type === 'Dismantel' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ))&& <><Col md="4">
+                         {(contactDatas.task_type === 'Erection' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ) && <><Col md="4">
                             <FormGroup>
                               <Label>Pipe</Label>
                               <Input
@@ -578,6 +590,110 @@ console.log('work',work)
                                 name="tb"
                                 onChange={handleInputsTask}
                                 value={insertTask && insertTask.tb}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Plank</Label>
+                              <Input
+                                type="text"
+                                name="plank"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.plank}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Length</Label>
+                              <Input
+                                type="text"
+                                name="length"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.length}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Breath</Label>
+                              <Input
+                                type="text"
+                                name="breath"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.breath}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>height</Label>
+                              <Input
+                                type="text"
+                                name="height"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.height}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Volume Count</Label>
+                              <Input
+                                type="text"
+                                name="volume_count"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.volume_count}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Volume</Label>
+                              <Input
+                                type="text"
+                                name="volume"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.volume}
+                                disabled
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>Others</Label>
+                              <Input
+                                type="text"
+                                name="others"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.others}
+                              />
+                            </FormGroup>
+                          </Col>
+                          </>}
+                        
+                          {(contactDatas.task_type === 'Dismantel' && insertTask && insertTask.pipe_code && insertTask.pipe_code!=='' ) && <><Col md="4">
+                            <FormGroup>
+                              <Label>Pipe</Label>
+                              <Input
+                                type="text"
+                                name="pipe"
+                                // min={0}
+                                // max={Number(pipeCount.pipeCount)-Number(dismantelCount.pipeCount)}
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.pipe}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col md="4">
+                            <FormGroup>
+                              <Label>TB</Label>
+                              <Input
+                                type="text"
+                                name="tb"
+                                onChange={handleInputsTask}
+                                value={insertTask && insertTask.tb }
                               />
                             </FormGroup>
                           </Col>

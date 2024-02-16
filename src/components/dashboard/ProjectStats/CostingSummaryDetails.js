@@ -233,11 +233,11 @@ export default function CostingSummaryDetails() {
                       <tr key={element.project_work_order_id}>
                         <td>{index + 1}</td>
                         <td>{element.work_order_no}</td>
-                        <td>{element.pipe_erection_amount}</td>
-                        <td>{element.plank_erection_amount}</td>
-                        <td>{element.volume_erection_amount}</td>
-                        <td>{element.tb_erection_amount}</td>
-                        <td>{element.others_erection_amount}</td>
+                        <td>{parseFloat(element.pipe_erection_amount).toFixed(2)}</td>
+                        <td>{parseFloat(element.plank_erection_amount).toFixed(2)}</td>
+                        <td>{parseFloat(element.volume_erection_amount).toFixed(2)}</td>
+                        <td>{parseFloat(element.tb_erection_amount).toFixed(2)}</td>
+                        <td>{parseFloat(element.others_erection_amount).toFixed(2)}</td>
                         <td>{element.pipe_count}</td>
                         <td>{element.plank_count}</td>
                         <td>{element.volume_count}</td>
@@ -282,11 +282,11 @@ export default function CostingSummaryDetails() {
                         {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td> */}
                         <td>{index + 1}</td>
                         <td>{element.project_work_order}</td>
-                        <td>{element.pipe_value}</td>
-                        <td>{element.plank_value}</td>
-                        <td>{element.tb_value}</td>
-                        <td>{element.volume_value}</td>
-                        <td>{element.others_value}</td>
+                        <td>{parseFloat(element.pipe_value).toFixed(2)}</td>
+                        <td>{parseFloat(element.plank_value).toFixed(2)}</td>
+                        <td>{parseFloat(element.tb_value).toFixed(2)}</td>
+                        <td>{parseFloat(element.volume_value).toFixed(2)}</td>
+                        <td>{parseFloat(element.others_value).toFixed(2)}</td>
 
                         <td>{element.pipe_count}</td>
                         <td>{element.plank_count}</td>

@@ -86,6 +86,12 @@ export const columns = [
       selector: "yard_stock",
       sortable: true
     },
+    {
+      id:12,
+      name: "Ship Stock",
+      selector: "ship_stock",
+      sortable: true
+    },
   ];
 
   export const pocolumns = [
@@ -140,3 +146,25 @@ export const columns = [
         name: "Numbers",
       }
     ]
+
+    
+ export const stcolumns = [
+        
+       
+  {
+    name: "Date",
+    
+  },
+  
+  {
+    name: "Project Title",
+    
+  },
+  {
+    name: "Stock Move",
+   
+  },
+  {
+      name: "Quantity",
+    }
+  ]

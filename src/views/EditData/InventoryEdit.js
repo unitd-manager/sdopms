@@ -21,7 +21,7 @@ const Test = () => {
   //state variables
   const [tabPurchaseOrdersLinked, setTabPurchaseOrdersLinked] = useState();
   const [projectsLinked, setProjectsLinked] = useState([]);
-  const [productQty, setProductQty] = useState({});
+  // const [ setProductQty] = useState({});
   const [inventoryDetails, setInventoryDetails] = useState({
     inventory_code: '',
     inventory_id: '',
@@ -52,10 +52,16 @@ const Test = () => {
   //params and routing
   const { id } = useParams();
   const { loggedInuser } = useContext(AppContext);
-
+  const [stockLogs, setStockLogs] = useState([]);
   const [adjustStocks, setAdjustStocks] = useState([]);
   const [changedStock, setChangedStock] = useState();
-  
+  const [shipToYard, setShipToYard] = useState(0);
+  const [movedToShip, setMovedToShip] = useState(0);
+  const [shipStock, setShipStock] = useState(0);
+   const [totalQty, setTotalQty] = useState(0);
+  console.log('shipstock',shipStock)
+  console.log('shipToYard',shipToYard)
+  console.log('movedToShip',movedToShip)
   const getAdjustStocklogsById = () => {
     api
       .post('/inventory/getAdjustStock', { inventory_id: id })
@@ -77,6 +83,7 @@ const Test = () => {
       .post('/inventory/getinventoryById', { inventory_id: id })
       .then((res) => {
         setInventoryDetails(res.data.data[0]);
+        console.log('inventorydetails',res.data.data[0])
       })
       .catch(() => {
         message('Unable to get inventory data.', 'error');
@@ -93,6 +100,36 @@ const Test = () => {
         message('Unable to get purchase order data.', 'error');
       });
   };
+
+  const getStockExchangelogs = () => {
+    api
+      .post('/projecttabmaterialusedportal/getstockExchangeLogsByProductId', { product_id: inventoryDetails && inventoryDetails.productId })
+      .then((res) => {
+        setStockLogs(res.data.data);
+        let ship=0;
+        let yard=0;
+        res.data.data.forEach((el)=>{
+          console.log('el',el)
+if(el.stock_move==="YardToShip"){
+ship += parseFloat(el.quantity ||0)
+}
+if(el.stock_move==="ShipToYard"){
+  yard+=parseFloat(el.quantity ||0)
+}
+        })
+        console.log('ship',ship)
+        console.log('yard',yard)
+setMovedToShip(ship);
+setShipToYard(yard);
+const shipstock=parseFloat(ship)-parseFloat(yard)
+setShipStock(shipstock)
+setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock)+parseFloat(shipstock))
+      })
+      .catch(() => {
+      
+      });
+  };
+
   console.log("productId", tabPurchaseOrdersLinked)
 
   //get data for projects table
@@ -111,8 +148,8 @@ const Test = () => {
   const getproductquantity = () => {
     api
       .post('/inventory/getProductQuantity', {product_id: inventoryDetails && inventoryDetails.productId })
-      .then((res) => {
-        setProductQty(res.data.data[0]);
+      .then(() => {
+        //setProductQty(res.data.data[0]);
       })
       .catch(() => {
         message('Unable to get productqty data.', 'error');
@@ -201,6 +238,7 @@ const Test = () => {
   useEffect(() => {
     getInventoryData();
     getAllpurchaseOrdersLinked();
+    getStockExchangelogs();
     getAllProjectsLinked();
   getAdjustStocklogsById();
     getproductquantity( inventoryDetails && inventoryDetails.productId);
@@ -226,33 +264,40 @@ changes +=parseFloat(el.adjust_stock);
           <Form>
             <ComponentCard title="Stock Details">
               <Row>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Total Purchased quantity</h5>
+                    <h5>Stock in Store</h5>
                   </Row>
-                  <span>{productQty && productQty.materials_purchased}</span>
+                  <span>{inventoryDetails &&inventoryDetails.stock ||0}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Sold quantity</h5>
+                    <h5>Stock in Yard</h5>
                   </Row>
-                  <span>{productQty && productQty.materials_used}</span>
+                  <span>{inventoryDetails &&inventoryDetails.yard_stock ||0}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
+                  <Row>
+                    <h5>Stock in Ships</h5>
+                  </Row>
+                  <span>{shipStock&&shipStock ||0}</span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="2">
                   <Row>
                     <h5>Adjusted quantity</h5>
                   </Row>
-                  <span>{changedStock&&changedStock}</span>
+                  <span>{changedStock&&changedStock ||0}</span>
                   <Row></Row>
                 </Col>
                 
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Remaining quantity</h5>
+                    <h5>Total quantity</h5>
                   </Row>
-                  <span>{productQty && productQty.actual_stock}</span>
+                  <span>{totalQty && totalQty||0}</span>
 
                   <Row></Row>
                 </Col>
@@ -263,6 +308,7 @@ changes +=parseFloat(el.adjust_stock);
         <InventoryEditTables
           tabPurchaseOrdersLinked={tabPurchaseOrdersLinked}
           projectsLinked={projectsLinked}
+          stockLogs={stockLogs}
         />
       </>
   );

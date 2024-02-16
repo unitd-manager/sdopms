@@ -49,6 +49,7 @@ import { HasAccess, usePermify } from '@permify/react-role';
 import CostingSummaryDetails from '../../components/dashboard/ProjectStats/CostingSummaryDetails';
 import ProjectWorksheet from '../../components/WorkSheetTable/ProjectWorksheet';
 //import ProjectYardEdit from '../../components/ProjectYardEdit';
+import ProjectMaterials from '../../components/projectTabContent/ProjectMaterials';
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -105,6 +106,7 @@ const ProjectEdit = () => {
   const [editTeamModal, setEditTeamEditModal] = useState(false);
   const [addContactModalTeam, setAddContactModalTeam] = useState(false);
   const [addModalWorkOrder, setAddModalWorkOrder] = useState(false);
+  const [addModalProjectMaterial, setAddModalProjectMaterial] = useState(false);
   //get staff details
   const { loggedInuser } = useContext(AppContext);
   const [selectedPoProducts, setSelectedPoProducts] = useState([]);
@@ -148,8 +150,9 @@ const ProjectEdit = () => {
     // { id: '8', name: 'Material Purchase Order' },
     // { id: '9', name: 'Material Used' },
     // { id: '10',name: 'Material Transferred' },
-     { id: '11',name: 'Finance' },
-
+    { id: '11',name: 'Project Materials' },
+     { id: '12',name: 'Finance' },
+    
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -178,6 +181,9 @@ const ProjectEdit = () => {
   };
   const addToggleWorkOrder = () => {
     setAddModalWorkOrder(!addModalWorkOrder);
+  };
+  const addToggleProjectMaterial = () => {
+    setAddModalProjectMaterial(!addModalProjectMaterial);
   };
   useEffect(() => {
     api
@@ -1118,7 +1124,7 @@ const ProjectEdit = () => {
               id={id}>
             </ProjectWorkOrder>
           </TabPane>
-
+          
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
           <HasAccess
@@ -1190,11 +1196,19 @@ const ProjectEdit = () => {
               <MaterialsTransferred projectId={id} />
             </TabPane>
           </HasAccess>
-       
-            <TabPane tabId="11" eventkey="financeTab">
+          <TabPane tabId="11">
+              <>
+              </>
+            <ProjectMaterials addToggleProjectMaterial={addToggleProjectMaterial}
+            addModalProjectMaterial={addModalProjectMaterial}
+            setAddModalProjectMaterial={setAddModalProjectMaterial}
+              projectId={id}>
+            </ProjectMaterials>
+          </TabPane>
+            <TabPane tabId="12" eventkey="financeTab">
               <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
             </TabPane>
-        
+           
         </TabContent>
       </ComponentCard>
     </>
