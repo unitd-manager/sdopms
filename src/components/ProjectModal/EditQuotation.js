@@ -236,17 +236,7 @@ const EditQuotation = ({ editQuoteModal, setEditQuoteModal, quoteId , quoteData,
                     />
                     <Label for="inlineradio2">No</Label>{' '}
                   </Col> */}
-                  <Col md="4">
-                    <FormGroup>
-                      <Label>Validity</Label>
-                      <Input
-                        type="text"
-                        name="validity"
-                        onChange={handleQuoteInputs}
-                        value={quotationeditDetails && quotationeditDetails.validity}
-                      />
-                    </FormGroup>
-                  </Col>
+                 
                   <Col md="4">
                     <FormGroup>
                       <Label>Project Reference</Label>
@@ -275,8 +265,6 @@ const EditQuotation = ({ editQuoteModal, setEditQuoteModal, quoteId , quoteData,
                       </Input>
                     </FormGroup>
                   </Col>
-                </Row>
-                <Row>
                  
                   <Col md="4">
                     <FormGroup>

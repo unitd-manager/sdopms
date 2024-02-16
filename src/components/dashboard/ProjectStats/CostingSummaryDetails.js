@@ -20,7 +20,7 @@ export default function CostingSummaryDetails() {
 
   const getYard = () => {
     api
-      .post('/projecttask/getYardsheetByProjectId', { project_id: id })
+      .post('/projecttask/getYardByProjectId', { project_id: id })
       .then((res) => {
         setProjectYard(res.data.data);
         console.log('rest', res.data.data);

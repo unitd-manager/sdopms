@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Row, Col } from 'reactstrap';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import * as Icon from 'react-feather';
 import PropTypes from 'prop-types';
 import api from '../../constants/api';
 import message from '../Message';
 import QuoteviewEditItem from './QuoteviewEditItem';
 
-const QuotationViewLineItem = ({
+export default function QuotationViewLineItem  ({
   projectId,
   quote,
   quotationViewLineItem,
   setQuotationViewLineItem,
-}) => {
+}) {
   QuotationViewLineItem.propTypes = {
     quotationViewLineItem: PropTypes.bool,
     setQuotationViewLineItem: PropTypes.func,
@@ -37,19 +38,28 @@ const QuotationViewLineItem = ({
       });
   };
 
-  console.log('quotation',quotation)
-  const QuotationDeleteItem = (quoteItemsId) => {
-    api
-      .post('/projecttabquote/deleteQuoteItems', {
-        quote_items_id: quoteItemsId,
-      })
-      .then(() => {
-        message('Record deteled successfully', 'success');
-        QuotationViewLine();
-      })
-      .catch(() => {
-        message(' delete Line Data not found', 'info');
-      });
+  console.log('quotation', quotation);
+
+  const deleteRecord = (deleteID) => {
+    Swal.fire({
+      title: `Are you sure? ${deleteID}`,
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/project/deleteEditItem', { quote_items_id: deleteID }).then(() => {
+          Swal.fire('Deleted!', 'Your Line Items has been deleted.', 'success');
+           // Remove the deleted record from the state
+           setQuotationViewLineItems((prevQuotation) =>
+           prevQuotation.filter((item) => item.quote_items_id !== deleteID)
+         );
+        });
+      }
+    });
   };
   useEffect(() => {
     QuotationViewLine();
@@ -85,37 +95,33 @@ const QuotationViewLineItem = ({
                       <td>{e.unit}</td>
                       <td>{e.unit_price}</td>
                       <td>{e.amount} </td>
-                      
+
                       <td></td>
 
                       <td>
                         <Row>
                           <Col md="3">
                             <Label>
-                              <Link to="">
-                                <span
-                                  onClick={() => {
-                                    setQuoteLine(e);
-                                    setQuoteData(true);
-                                  }}
-                                >
-                                  <Icon.Edit />
-                                </span>
-                              </Link>
+                              <span
+                                onClick={() => {
+                                  setQuoteLine(e);
+                                  setQuoteData(true);
+                                }}
+                              >
+                                <Icon.Edit />
+                              </span>
                             </Label>
                           </Col>
                           <Col md="3">
                             <Label>
-                              <Link to="">
-                                <span
-                                  onClick={() => {
-                                    setQuoteLine(e);
-                                    QuotationDeleteItem(e.quote_items_id);
-                                  }}
-                                >
-                                  <Icon.Delete />
-                                </span>{' '}
-                              </Link>
+                              <span
+                                
+                                onClick={() => {
+                                  deleteRecord(e.quote_items_id);
+                                }}
+                              >
+                                <Icon.Trash2 />
+                              </span>
                             </Label>
                           </Col>
                         </Row>
@@ -127,8 +133,8 @@ const QuotationViewLineItem = ({
           </table>
           {quoteData && (
             <QuoteviewEditItem
-            FetchLineItemData={quoteLine}
-            QuotationViewLine={QuotationViewLine}
+              FetchLineItemData={quoteLine}
+              QuotationViewLine={QuotationViewLine}
               quoteData={quoteData}
               setQuoteData={setQuoteData}
               quoteId={quote}
@@ -150,4 +156,4 @@ const QuotationViewLineItem = ({
   );
 };
 
-export default QuotationViewLineItem;
+

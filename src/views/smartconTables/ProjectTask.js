@@ -233,7 +233,7 @@ export default function ProjectTask({
         });
 
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
 
   };
@@ -320,7 +320,7 @@ export default function ProjectTask({
         setMilestones(res.data.data);
       })
       .catch(() => {
-        message('Milestones not found', 'info');
+        //message('Milestones not found', 'info');
       });
   };
 
@@ -331,7 +331,7 @@ export default function ProjectTask({
         setWorkorders(res.data.data);
       })
       .catch(() => {
-        message('Milestones not found', 'info');
+        //message('Milestones not found', 'info');
       });
   };
 
