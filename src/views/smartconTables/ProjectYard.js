@@ -70,6 +70,35 @@ export default function ProjectYard({
       .catch(() => {});
   };
 
+  const resetForm = () => {
+    // Clear the form fields
+    setProjectYard({
+      work_order_no: '',
+      pipe_erection_amount: '',
+      plank_erection_amount: '',
+      tb_erection_amount: '',
+      volume_erection_amount: '',
+      others_erection_amount: '',
+      pipe_count: '',
+      plank_count: '',
+      tb_count: '',
+      volume_count: '',
+      others_count: '',
+    });
+  };
+
+  // const resetInsertModal = () => {
+  //   setProjectYard({
+  //     work_order_no: '', // Reset other fields as needed
+  //   });
+  // };
+
+  const resetEditModal = () => {
+    setProjectYard1({
+      work_order_no: '', // Reset other fields as needed
+    });
+  };
+
   const insertTaskData = () => {
     if (isSubmitting) {
       return; // Prevent multiple submissions
@@ -93,7 +122,8 @@ export default function ProjectYard({
         addContactToggle(false);
         // Reset isSubmitting on submission failure
         setIsSubmitting(false);
- getYard()
+        resetForm(); // Reset the form fields
+        getYard();
         // Clear the selected names after insertion
       })
       .catch(() => {
@@ -160,11 +190,22 @@ export default function ProjectYard({
       <div className=" pt-xs-25">
         <br />
 
-        <Label></Label>
+        {/* <Label></Label>
         <Button color="primary" className="shadow-none" onClick={addContactToggle.bind(null)}>
           Add Yard Detail{' '}
-        </Button>
+        </Button> */}
 
+        <Label></Label>
+        <Button
+          color="primary"
+          className="shadow-none"
+          onClick={() => {
+            addContactToggle(true);
+            resetEditModal(); // Reset the state for Edit Modal
+          }}
+        >
+          Add Yard Detail
+        </Button>
         <br />
         <Modal size="lg" isOpen={addContactModal} toggle={addContactToggle.bind(null)}>
           <ModalHeader
@@ -183,7 +224,7 @@ export default function ProjectYard({
                         <Row>
                           <Col md="4">
                             <FormGroup>
-                              <Label>Work Order No</Label>
+                              <Label>Work Order No<span className='required'>*</span></Label>
                               <Input
                                 type="select"
                                 name="work_order_no"
@@ -344,7 +385,7 @@ export default function ProjectYard({
           </Card>
                
           </ComponentCard> */}
-        <Table id="example" className="display border border-secondary rounded">
+        <Table style={{ marginTop: '20px' }} id="example" className="display border border-secondary rounded">
           <thead>
             <tr>
               <th>#</th>

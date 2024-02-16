@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import { Button } from 'reactstrap';
+import { Button,Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
+import readXlsxFile from 'read-excel-file';
 // import 'datatables.net-buttons/js/buttons.html5';
 // import 'datatables.net-buttons/js/buttons.print';
 import { Link } from 'react-router-dom';
@@ -131,6 +132,70 @@ const Clients = () => {
     getArabicCompanyName();
   }, []);
 
+  
+
+  // TRIGGER TO IMPORT EXCEL SHEET
+  const importExcel = () => {
+    $('#import_excel').trigger('click');
+  }
+
+  // UPLOAD FILE ON THER SERVER
+  const uploadOnServer = (arr) => {
+      api.post('/employeeModule/import1/excel', {data: JSON.stringify(arr)})
+      .then(() => {
+        message('File uploaded successfully', 'success');
+        $('#upload_file').val(null);
+      })
+      .catch(() => {
+        message('Failed to upload.', 'error');
+      });
+  }
+
+  // PROCESSING AND FORMATTING THE DATA
+  const processData = (rows) => {
+    const arr = [];
+    rows.shift();
+
+    console.log(rows[0]);
+    for ( let x = 0; x < rows.length; x++ ) {
+      arr.push(
+        {
+          CompanyName: rows[x][0],
+          Email: rows[x][1],
+          Status: rows[x][2],
+          Phone: rows[x][3],
+          
+        }
+      )
+    }
+
+    uploadOnServer(arr);
+  }
+
+
+  // IMPORTING EXCEL FILE
+  const importExcelFile = (e) => {
+    console.log(e.target.id)
+    message('test1', 'success');
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        readXlsxFile(e.target.files[0])
+          .then((rows) => {
+            processData(rows);
+            message('Uploading File On The Server', 'info');
+          })
+          .finally(() => {
+            $('#upload_file').val(null);
+          }).catch(
+            err => console.log('Error Found:', err)
+          );
+      }
+    };
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
   return (
     <div className="MainDiv">
       <div className="pt-xs-25">
@@ -147,6 +212,14 @@ const Clients = () => {
             </Link>
           }
         >
+           <Col md="4">
+            {/* <Link to=""> */}
+            <Button color="primary" className="shadow-none mr-2" onClick={() => importExcel()}>
+                Import
+              </Button>
+            {/* </Link> */}
+            <input type='file' style={{display: 'none'}} id="import_excel" onChange={importExcelFile} />
+            </Col>
           <thead>
             <tr>
               {columns.map((col) => (

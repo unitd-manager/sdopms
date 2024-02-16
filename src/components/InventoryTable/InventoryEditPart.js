@@ -1,19 +1,24 @@
-import React from 'react';
-import { Row, Col, FormGroup, Label, Input, Form } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
+import React,{useState} from 'react';
+import { Row, Col, FormGroup, Label, Input, Form,Button } from 'reactstrap';
+import { useNavigate,Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../ComponentCard';
+import message from '../Message';
+import YardStockHistoryModal from './YardStockHistoryModal';
 //import ComponentCardV2 from '../ComponentCardV2';
 import ApiButton from '../ApiButton';
 
-function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,handleStockinput1 }) {
+function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,handleStockinput1,validationMessage,updateStockinInventory1,adjuststock1 }) {
   InventoryEditPart.propTypes = {
     inventoryDetails: PropTypes.object,
     handleInputs: PropTypes.func,
     editinventoryData: PropTypes.func,
     handleStockinput1:PropTypes.func,
+    validationMessage:PropTypes.any,
+    updateStockinInventory1:PropTypes.any,
+    adjuststock1:PropTypes.any
   };
   //navigation
   const navigate = useNavigate();
@@ -22,6 +27,11 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
   const backToList = () => {
     navigate('/Inventory');
   };
+
+  const [stockinputOpen1, setStockinputOpen1] = useState(false);
+  const [modalId1, setModalId1] = useState(null);
+  const [adjustStockHistoryModal1, setAdjustStockHistoryModal1] = useState(false);
+  const [stockChangeId1, setStockChangeId1] = useState();
   return (
     <div>
       <Row>
@@ -188,9 +198,64 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
                       type="text"
                       defaultValue={inventoryDetails && inventoryDetails.yard_stock}
                       name="yard_stock"
+                      disabled
                     ></Input>
                   </FormGroup>
                 </Col>
+                {stockinputOpen1 && stockChangeId1 === inventoryDetails.inventory_id ? (
+                      <Col md='3'>
+                        {' '}
+                        <Input
+                          type="text"
+                          defaultValue={inventoryDetails&& inventoryDetails.yard_stock}
+                          onChange={(e) => handleStockinput1(e, )}
+                        />
+                        <Button
+                          color="primary"
+                          className="shadow-none"
+                          onClick={() => {
+                            if (validationMessage) {
+                              message(validationMessage, 'error');
+                            } else {
+                              adjuststock1(inventoryDetails);
+                              updateStockinInventory1();
+                              setStockinputOpen1(false);
+                            }
+                          
+                          }}
+                        >
+                          save
+                        </Button>
+                        {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
+                      </Col>
+                    ) : 
+                    (
+                     <Col>
+                        <span
+                          onClick={() => {
+                            setStockChangeId1(inventoryDetails.inventory_id);
+                            setStockinputOpen1(true);
+                          }}
+                        >
+                          <Link to="">Yard Stock</Link>
+                        </span>
+                   </Col>
+                    )}
+                 <Col>
+                      <span
+                        onClick={() => {
+                          setAdjustStockHistoryModal1(true);
+                          setModalId1(inventoryDetails.inventory_id);
+                        }}
+                      >
+                        <Link to="">view</Link>
+                      </span>
+                      {adjustStockHistoryModal1 && (modalId1===inventoryDetails.inventory_id) && <YardStockHistoryModal
+                      adjustStockHistoryModal1={adjustStockHistoryModal1}
+                      setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
+                      inventoryId={modalId1}
+                    />} 
+                    </Col>
               </Row>
             </ComponentCard>
           </FormGroup>

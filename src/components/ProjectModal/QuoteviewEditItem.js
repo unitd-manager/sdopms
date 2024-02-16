@@ -88,6 +88,7 @@ const {id}=useParams();
     api
       .post('/tender/edit-TabQuoteLine', lineItemData)
       .then((res) => {
+        insertquote();
         console.log('edit Line Item', res.data.data);
         message('Edit Line Item Udated Successfully.', 'success');
         if (hasChanges) {

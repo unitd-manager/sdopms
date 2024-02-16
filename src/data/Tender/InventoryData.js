@@ -76,7 +76,7 @@ export const columns = [
     },
     {
       id:12,
-      name: "yards",
+      name: "yard",
       selector: "yard_stock",
       sortable: true
     },

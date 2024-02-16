@@ -27,6 +27,7 @@ export default function ProjectTeam({
   addModalWorkOrder,
   id,
   workorderbyId,
+  project,
   getWorkOrderById
 }) {
   ProjectTeam.propTypes = {
@@ -34,6 +35,7 @@ export default function ProjectTeam({
     addModalWorkOrder: PropTypes.bool,
     id: PropTypes.any,
     workorderbyId: PropTypes.any,
+    project:PropTypes.any,
     getWorkOrderById:PropTypes.any,
   };
 
@@ -53,6 +55,7 @@ export default function ProjectTeam({
   //Milestone data in milestoneDetails
 
   const [insertworkOrder, setInsertWorkOrder] = useState({
+    work_order_id:'',
     work_order_no: '',
 
   });
@@ -61,6 +64,13 @@ export default function ProjectTeam({
   };
   /// Insert or update team member
   const insertTeamMember = () => {
+     // Validate work_order_no
+     if (!insertworkOrder.work_order_no) {
+      // Display an error message or handle the validation error as needed
+      message('Work Order No is required.', 'error');
+      return;
+    }
+
     insertworkOrder.project_id = id;
     api
       .post(`/projecttask/insertWorkOrder`, insertworkOrder)
@@ -97,12 +107,21 @@ export default function ProjectTeam({
     });
   };
 
-
+  const QuoteProject = project.find((element) => {
+    return element.project_id === workorderbyId.project_id;
+  });
+  console.log('QuoteProject:', QuoteProject);
+console.log('project:', project);
   return (
     <Form>
+      <br/>
       <Row>
+     
         <Col md="3">
           <FormGroup>
+          {(QuoteProject === undefined &&  project.status === 'Complete') || 
+          (QuoteProject === undefined &&  project && project.status !== 'Complete') && (
+           
             <Button
               color="primary"
               className="shadow-none"
@@ -110,6 +129,8 @@ export default function ProjectTeam({
             >
               Add Work Order
             </Button>
+            )}
+            
             <Modal
               size="lg"
               isOpen={addModalWorkOrder}
@@ -125,9 +146,9 @@ export default function ProjectTeam({
                       <CardBody>
                         <Form>
                           <Row>
-                            <Col md="4">
+                            <Col md="3">
                               <FormGroup>
-                                <Label>Work Order</Label>
+                                <Label>Work Order No <span className='required'>*</span></Label>
                                 <Input
                                   type="text"
                                   onChange={handleInputs}

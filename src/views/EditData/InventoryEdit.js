@@ -36,10 +36,7 @@ const Test = () => {
     product_code: '',
   });
 
-  const [inventoryStock1, setInventoryStock1] = useState({
-    inventory_id: null,
-    yard_stock:null,
-  });
+ 
   const [adjuststockDetails1, setAdjuststockDetails1] = useState({
     inventory_id: null,
     product_id: null,
@@ -62,6 +59,12 @@ const Test = () => {
   console.log('shipstock',shipStock)
   console.log('shipToYard',shipToYard)
   console.log('movedToShip',movedToShip)
+  const [inventoryStock1, setInventoryStock1] = useState({
+    inventory_id: null,
+    yard_stock:null,
+  });
+  const [validationMessage, setValidationMessage] = useState('');
+  
   const getAdjustStocklogsById = () => {
     api
       .post('/inventory/getAdjustStock', { inventory_id: id })
@@ -174,6 +177,18 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inve
     yard_stock: newYardStockValue,
     stock: initialStockValue - newYardStockValue,
   });
+   // Check if the new yard stock is greater than the actual stock
+ if (newYardStockValue > initialStockValue) {
+  setValidationMessage('Yard stock cannot be greater than the actual stock.');
+  // Optionally, reset the input value to the previous valid value or 0
+  setInventoryStock1({
+    inventory_id: inventoryDetails.inventory_id,
+    yard_stock: initialStockValue, // Reset to the initial stock value
+    stock: 0,
+  });
+  return;
+}
+setValidationMessage(''); // Reset validation message if valid
 
   setAdjuststockDetails1({
     inventory_id: inventoryDetails.inventory_id,
@@ -192,7 +207,7 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inve
       .post('/inventory/insertyard_stock_log', adjuststockDetails1)
       .then(() => {
         message('yard Stock inserted successfully', 'success');
-        //getAllinventories();
+        getInventoryData();
         //navigate('/inventory');
       })
       .catch(() => {
@@ -223,8 +238,8 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inve
     api
       .post('/inventory/editinventoryMain', inventoryDetails)
       .then(() => {
-        adjuststock1();
-        updateStockinInventory1();
+        //adjuststock1();
+        //updateStockinInventory1();
         message('Record editted successfully', 'success');
         setTimeout(() => {
           window.location.reload();
@@ -259,6 +274,9 @@ changes +=parseFloat(el.adjust_stock);
           handleInputs={handleInputs}
           editinventoryData={editinventoryData}
           handleStockinput1={handleStockinput1}
+          validationMessage={validationMessage}
+          adjuststock1={adjuststock1}
+          updateStockinInventory1={updateStockinInventory1}
         />
         <Row>
           <Form>

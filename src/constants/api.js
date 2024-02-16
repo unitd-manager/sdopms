@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
+ //import dotenv from 'dotenv';
 import axios from 'axios';
 
-dotenv.config();
+//dotenv.config();
 // // Define the base URL(s) conditionally
 // let baseURL;
 

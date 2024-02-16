@@ -35,17 +35,6 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
       </Col>
       <Col md="4">
         <FormGroup>
-          <Label>Quote Code</Label>
-          <Input
-            type="text"
-            value={invoiceData && invoiceData.quote_code}
-            onChange={handleInputs}
-            name="quote_code"
-          />
-        </FormGroup>
-      </Col>
-      <Col md="4">
-        <FormGroup>
           <Label>PO Number</Label>
           <Input
             type="text"
@@ -146,17 +135,7 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
         </FormGroup>
       </Col>
 
-      <Col md="4">
-        <FormGroup>
-          <Label>Site Code</Label>
-          <Input
-            type="text"
-            value={invoiceData && invoiceData.site_code}
-            onChange={handleInputs}
-            name="site_code"
-          />
-        </FormGroup>
-      </Col>
+     
       <Col md="4">
         <FormGroup>
           <Label>Attention</Label>
@@ -165,17 +144,6 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
             value={invoiceData && invoiceData.attention}
             onChange={handleInputs}
             name="attention"
-          />
-        </FormGroup>
-      </Col>
-      <Col md="4">
-        <FormGroup>
-          <Label>Reference</Label>
-          <Input
-            type="textarea"
-            value={invoiceData && invoiceData.reference}
-            onChange={handleInputs}
-            name="reference"
           />
         </FormGroup>
       </Col>

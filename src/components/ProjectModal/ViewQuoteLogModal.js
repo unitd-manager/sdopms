@@ -9,7 +9,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -18,17 +17,17 @@ import api from '../../constants/api';
 import PdfProjectQuoteLog from '../PDF/PdfProjectQuoteLog';
 import ViewQuotelogLineItemsModal from './ViewQuotelogLineItemsModal';
 
-const ViewQuoteLogModal = ({ quotationsModal, setquotationsModal, quoteId ,id}) => {
+const ViewQuoteLogModal = ({ quotationsModal, setquotationsModal, quoteId, id }) => {
   ViewQuoteLogModal.propTypes = {
     quotationsModal: PropTypes.bool,
     setquotationsModal: PropTypes.func,
     quoteId: PropTypes.any,
-    id:PropTypes.any,
+    id: PropTypes.any,
   };
 
-  console.log("quoteId",quoteId)
-  console.log("id",id)
-  const[quoteLogId,setQuoteLogId]=useState();
+  console.log('quoteId', quoteId);
+  console.log('id', id);
+  const [quoteLogId, setQuoteLogId] = useState();
   const [quoteLogViewLineItem, setQuoteLogViewLineItem] = useState(false);
   const [quote, setQuote] = useState();
   const getquotations = () => {
@@ -40,7 +39,6 @@ const ViewQuoteLogModal = ({ quotationsModal, setquotationsModal, quoteId ,id}) 
       .catch(() => {});
   };
 
-  
   useEffect(() => {
     //QuotationViewLineItem();
   }, []);
@@ -155,17 +153,17 @@ const ViewQuoteLogModal = ({ quotationsModal, setquotationsModal, quoteId ,id}) 
                                   setQuoteLogId(element.quote_log_id);
                                 }}
                               >
-                                {quoteLogViewLineItem && quoteLogId===element.quote_log_id &&
-  <ViewQuotelogLineItemsModal
-  quoteLogViewLineItem={quoteLogViewLineItem} setQuoteLogViewLineItem={setQuoteLogViewLineItem} logId={quoteLogId}
-  ></ViewQuotelogLineItemsModal>
-}
+                                {quoteLogViewLineItem && quoteLogId === element.quote_log_id && (
+                                  <ViewQuotelogLineItemsModal
+                                    quoteLogViewLineItem={quoteLogViewLineItem}
+                                    setQuoteLogViewLineItem={setQuoteLogViewLineItem}
+                                    logId={quoteLogId}
+                                  ></ViewQuotelogLineItemsModal>
+                                )}
                                 <u>View Line Items</u>
                               </span>
                             </Label>
 
-                           
-                  
                             {/* <QuoteLogViewLineItem
                                   quoteLogViewLineItem={quoteLogViewLineItem}
                                   setQuoteLogViewLineItem={setQuoteLogViewLineItem}
