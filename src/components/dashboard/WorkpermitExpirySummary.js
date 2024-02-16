@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Input,Col,Label } from 'reactstrap';
 import moment from 'moment';
 import CommonTable from "../CommonTable";
 import message from '../Message';
@@ -6,34 +7,56 @@ import api from '../../constants/api';
 
 const WorkpermitExpirySummary = () => {
   const[remainderLists,setRemainderLists]=useState([]);
-
+  const[data,setData]=useState([]);
+  const [period, setPeriod] = useState({
+    days: null
+  });
   const today=new Date();
-const lastDate = new Date(new Date().setDate(today.getDate() + 60));
 
+
+const handleInputs = (e) => {
+  setPeriod({ ...period, [e.target.name]: e.target.value });
+}
   const getAllEmployees=()=>{
     
     api.get('/employeeModule/getCurrentEmployee')
     .then((res) => {
       // setEmployees(res.data.data);
       
-      const remainders= res.data.data.filter((el)=>{
-        return (new Date(el.work_permit_expiry_date)) >= today && (new Date(el.work_permit_expiry_date))<=lastDate
-          })
+      setData(res.data.data);
           
-setRemainderLists(remainders);
+setRemainderLists(res.data.data);
     })
     .catch(() => {
       message('Employee Data Not Found', 'info');
      
     });
   }
+  useEffect(()=>{
+    const lastDate = new Date(new Date().setDate(today.getDate() + parseFloat(period.days)));
+    const remainders= data.filter((el)=>{
+    
+      return (new Date(el.work_permit_expiry_date)) >= today && (new Date(el.work_permit_expiry_date))<=lastDate
+        })
+        setRemainderLists(remainders);
+  },[period&& period.days])
 
   useEffect(()=>{
     getAllEmployees();
   },[])
   return (
     <>
-    <CommonTable title="Workpermit Expiry Reminders (next 60 days)">
+      <Col md="3">
+    <Label>Days</Label>
+            <Input type="select" name="days" onChange={handleInputs}>
+              <option value="">Please Select</option>
+              <option value="60">next 60 Days</option>
+              <option value="90">next 90 Days</option>
+              <option value="120">next 120 Days</option>
+              <option value="180">next 180 Days</option>
+            </Input>
+          </Col>
+    <CommonTable title="Workpermit Expiry Reminders">
   { remainderLists.length >0  &&  <>  <thead>
             <tr>
                 <td>Name</td>
@@ -52,11 +75,10 @@ setRemainderLists(remainders);
           })}
         </tbody></>}
         {
-          remainderLists.length <=0 && <span>No employee has renewal for next 60 days.</span> 
+          remainderLists.length <=0 && <span>No employee has renewal for next {period.days} days.</span> 
         }
     </CommonTable>
     </>
   )
 }
-
-export default WorkpermitExpirySummary
+export default WorkpermitExpirySummary;
