@@ -138,12 +138,13 @@ const [selectedStatus, setSelectedStatus] = useState('');
   const handleStockinput1 = (e, element) => {
     const newYardStockValue = parseFloat(e.target.value) || 0;
     const initialStockValue = parseFloat(element.stock) || 0;
+    
 
     setInventoryStock1({
-      inventory_id: element.inventory_id,
-      yard_stock: newYardStockValue,
-      stock: initialStockValue - newYardStockValue,
-    });
+  inventory_id: element.inventory_id,
+  yard_stock: selectedStatus === 'yardToStore' ?  (Number(element.yard_stock ||0)) -(newYardStockValue) :newYardStockValue + (Number(element.yard_stock) || 0) ,
+  stock: selectedStatus === 'yardToStore' ? initialStockValue + newYardStockValue : initialStockValue - newYardStockValue,
+});
 
     // Check if the new yard stock is greater than the actual stock
     if (newYardStockValue > initialStockValue) {
@@ -162,10 +163,12 @@ const [selectedStatus, setSelectedStatus] = useState('');
     setAdjuststockDetails1({
       inventory_id: element.inventory_id,
       product_id: element.productId,
-      yard_stock: newYardStockValue, // Calculate the change in yard_stock
+      yard_stock: newYardStockValue + (Number(element.yard_stock) || 0),
+       // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
       modified_by: '',
       created_by: '',
-      actual_stock: initialStockValue - newYardStockValue,
+      // actual_stock: initialStockValue - newYardStockValue,
+      actual_stock: selectedStatus === 'Yard to Store' ? initialStockValue + newYardStockValue : initialStockValue,
       status_field:status
     });
   };
@@ -397,7 +400,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
                               onChange={(e) => setSelectedStatus(e.target.value)}
                             >
                               <option defaultValue="selected">Please Select</option>
-                              <option value="yardToStore">yardToStore</option>
+                              <option value="YardToStore">Yard to Store</option>
                               <option value="storeToYard">Store to Yard</option>
                             </Input>
                           </FormGroup>
