@@ -52,44 +52,51 @@ export const columns = [
     },
     {
       id:8,
-      name: "Stock",
+      name: "Store Stock",
       selector: "ref",
       sortable: true
     },
     {
       id:9,
-      name: "Adjust Stock",
-      selector: "ref",
+      name: "Yard Stock",
+      selector: "yard_stock",
       sortable: true
     },
     {
       id:10,
+      name: "Ship Stock",
+      selector: "ship_stock",
+      sortable: true
+    },
+   
+    {
+      id:11,
+      name: "Yard",
+      selector: "yard_stock",
+      sortable: true
+    },
+    {
+      id:12,
       name: "",
       selector: "ref",
       sortable: true
     },
     {
-      id:11,
-      name: "MOL",
-      selector: "minimum_order_level",
+      id:13,
+      name: "Damaged Stock",
+      selector: "damaged_stock",
       sortable: true
     },
     {
-      id:12,
-      name: "yard",
-      selector: "yard_stock",
+      id:14,
+      name: "Adjust Stock",
+      selector: "ref",
       sortable: true
     },
     {
-      id:12,
-      name: "Yard stock",
-      selector: "yard_stock",
-      sortable: true
-    },
-    {
-      id:12,
-      name: "Ship Stock",
-      selector: "ship_stock",
+      id:15,
+      name: "",
+      selector: "ref",
       sortable: true
     },
   ];

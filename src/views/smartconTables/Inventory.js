@@ -331,55 +331,15 @@ setValidationMessage(''); // Reset validation message if valid
                     <td>{element.item_code}</td>
                     <td>{element.unit}</td>
                     <td>{element.stock}</td>
-                    {stockinputOpen && stockChangeId === element.inventory_id ? (
-                      <td>
-                        {' '}
-                        <Input
-                          type="text"
-                          defaultValue={element.stock}
-                          onChange={(e) => handleStockinput(e, element)}
-                        />
-                        <Button
-                          color="primary"
-                          className="shadow-none"
-                          onClick={() => {
-                            adjuststock(element);
-                            updateStockinInventory();
-                            setStockinputOpen(false);
-                          }}
-                        >
-                          save
-                        </Button>
-                      </td>
-                    ) : (
-                      <td>
-                        <span
-                          onClick={() => {
-                            setStockChangeId(element.inventory_id);
-                            setStockinputOpen(true);
-                          }}
-                        >
-                          <Link to="">Adjust Stock</Link>
-                        </span>
-                      </td>
-                    )}
-                    <td>
-                      <span
-                        onClick={() => {
-                          setAdjustStockHistoryModal(true);
-                          setModalId(element.inventory_id);
-                        }}
-                      >
-                        <Link to="">view</Link>
-                      </span>
-                    </td>
+                   
                   {adjustStockHistoryModal && (modalId===element.inventory_id) && <ViewAdjustStockHistoryModal
                       adjustStockHistoryModal={adjustStockHistoryModal}
                       setAdjustStockHistoryModal={setAdjustStockHistoryModal}
                       inventoryId={modalId}
                     />}
-                    <td>{element.minimum_order_level}</td>
                     <td>{element.yard_stock}</td>
+                    <td>{element.shipStock}</td>
+                    
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
                       <td>
                         {' '}
@@ -423,6 +383,49 @@ setValidationMessage(''); // Reset validation message if valid
                         onClick={() => {
                           setAdjustStockHistoryModal1(true);
                           setModalId1(element.inventory_id);
+                        }}
+                      >
+                        <Link to="">view</Link>
+                      </span>
+                    </td>
+                    <td>{element.damaged_stock}</td>
+                    {stockinputOpen && stockChangeId === element.inventory_id ? (
+                      <td>
+                        {' '}
+                        <Input
+                          type="text"
+                          defaultValue={element.stock}
+                          onChange={(e) => handleStockinput(e, element)}
+                        />
+                        <Button
+                          color="primary"
+                          className="shadow-none"
+                          onClick={() => {
+                            adjuststock(element);
+                            updateStockinInventory();
+                            setStockinputOpen(false);
+                          }}
+                        >
+                          save
+                        </Button>
+                      </td>
+                    ) : (
+                      <td>
+                        <span
+                          onClick={() => {
+                            setStockChangeId(element.inventory_id);
+                            setStockinputOpen(true);
+                          }}
+                        >
+                          <Link to="">Adjust Stock</Link>
+                        </span>
+                      </td>
+                    )}
+                    <td>
+                      <span
+                        onClick={() => {
+                          setAdjustStockHistoryModal(true);
+                          setModalId(element.inventory_id);
                         }}
                       >
                         <Link to="">view</Link>

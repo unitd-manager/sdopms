@@ -46,6 +46,15 @@ const Test = () => {
     created_by: '',
     //current_stock: null,
   });
+  const [adjuststockDetails2, setAdjuststockDetails2] = useState({
+    inventory_id: null,
+    product_id: null,
+    //adjust_stock: 0,
+    yard_stock:0,
+    modified_by: '',
+    created_by: '',
+    //current_stock: null,
+  });
   //params and routing
   const { id } = useParams();
   const { loggedInuser } = useContext(AppContext);
@@ -63,8 +72,12 @@ const Test = () => {
     inventory_id: null,
     yard_stock:null,
   });
+  const [inventoryStock2, setInventoryStock2] = useState({
+    inventory_id: null,
+    yard_stock:null,
+  });
   const [validationMessage, setValidationMessage] = useState('');
-  
+
   const getAdjustStocklogsById = () => {
     api
       .post('/inventory/getAdjustStock', { inventory_id: id })
@@ -126,7 +139,7 @@ setMovedToShip(ship);
 setShipToYard(yard);
 const shipstock=parseFloat(ship)-parseFloat(yard)
 setShipStock(shipstock)
-setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock)+parseFloat(shipstock))
+setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock)+parseFloat(shipstock)+parseFloat(inventoryDetails&&inventoryDetails.damaged_stock)+parseFloat(changedStock&&changedStock ||0))
       })
       .catch(() => {
       
@@ -164,6 +177,7 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inve
  const handleStockinput1 = (e) => {
   const newYardStockValue = parseFloat(e.target.value) || 0;
   const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
+  const yardStockValue = parseFloat(inventoryDetails.yard_stock) || 0;
   // Check if the new yard stock is greater than the actual stock
   if (newYardStockValue > initialStockValue) {
     message('Yard stock cannot be greater than the actual stock.', 'error');
@@ -174,7 +188,7 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inve
 
   setInventoryStock1({
     inventory_id: inventoryDetails.inventory_id,
-    yard_stock: newYardStockValue,
+    yard_stock: parseFloat(newYardStockValue)+parseFloat(yardStockValue),
     stock: initialStockValue - newYardStockValue,
   });
    // Check if the new yard stock is greater than the actual stock
@@ -231,6 +245,80 @@ setValidationMessage(''); // Reset validation message if valid
     });
 };
  
+
+   //Yard stock
+   const handleStockinput2 = (e) => {
+    const newYardStockValue = parseFloat(e.target.value) || 0;
+    const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
+    const damagedStockValue = parseFloat(inventoryDetails.damaged_stock) || 0;
+    // Check if the new yard stock is greater than the actual stock
+    if (newYardStockValue > initialStockValue) {
+      message('Yard stock cannot be greater than the actual stock.', 'error');
+      // Optionally, reset the input value to the previous valid value or 0
+      e.target.value = initialStockValue;
+      return;
+    }
+  
+    setInventoryStock2({
+      inventory_id: inventoryDetails.inventory_id,
+      damaged_stock: parseFloat(newYardStockValue)+parseFloat(damagedStockValue),
+      stock: initialStockValue - newYardStockValue,
+    });
+    
+     // Check if the new yard stock is greater than the actual stock
+   if (newYardStockValue > initialStockValue) {
+    setValidationMessage('Yard stock cannot be greater than the actual stock.');
+    // Optionally, reset the input value to the previous valid value or 0
+    setInventoryStock2({
+      inventory_id: inventoryDetails.inventory_id,
+      damaged_stock: initialStockValue, // Reset to the initial stock value
+      stock: 0,
+    });
+    return;
+  }
+  setValidationMessage(''); // Reset validation message if valid
+  
+    setAdjuststockDetails2({
+      inventory_id: inventoryDetails.inventory_id,
+      product_id: inventoryDetails.productId,
+      damaged_stock: newYardStockValue, // Calculate the change in yard_stock
+      modified_by: '',
+      created_by: '',
+      actual_stock:initialStockValue - newYardStockValue,
+      
+    });
+   };
+    
+  
+    const adjuststock2 = () => {
+      api
+        .post('/inventory/insertdamaged_stock_log', adjuststockDetails2)
+        .then(() => {
+          message('Damage Stock updated successfully', 'success');
+          getInventoryData();
+          //navigate('/inventory');
+        })
+        .catch(() => {
+          message('Unable to edit record.', 'error');
+        });
+    };
+    //update stock
+  
+   // updateStockinInventory1 function
+   const updateStockinInventory2 = () => {
+    api
+      .post('/inventory/updateInventoryStock2', inventoryStock2)
+      .then(() => {
+        //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+        message('Yard stock updated successfully', 'success');
+        //getAllinventories();
+        //navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+
   //update Inventory
   const editinventoryData = () => {
     inventoryDetails.modification_date = creationdatetime;
@@ -274,9 +362,12 @@ changes +=parseFloat(el.adjust_stock);
           handleInputs={handleInputs}
           editinventoryData={editinventoryData}
           handleStockinput1={handleStockinput1}
+          handleStockinput2={handleStockinput2}
           validationMessage={validationMessage}
           adjuststock1={adjuststock1}
           updateStockinInventory1={updateStockinInventory1}
+          adjuststock2={adjuststock2}
+          updateStockinInventory2={updateStockinInventory2}
         />
         <Row>
           <Form>
@@ -305,7 +396,14 @@ changes +=parseFloat(el.adjust_stock);
                 </Col>
                 <Col xs="12" md="2">
                   <Row>
-                    <h5>Adjusted quantity</h5>
+                    <h5>Damaged Stock</h5>
+                  </Row>
+                  <span>{inventoryDetails &&inventoryDetails.damaged_stock ||0}</span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="2">
+                  <Row>
+                    <h5>Adjusted Stock</h5>
                   </Row>
                   <span>{changedStock&&changedStock ||0}</span>
                   <Row></Row>
@@ -313,7 +411,7 @@ changes +=parseFloat(el.adjust_stock);
                 
                 <Col xs="12" md="2">
                   <Row>
-                    <h5>Total quantity</h5>
+                    <h5>Total Stock</h5>
                   </Row>
                   <span>{totalQty && totalQty||0}</span>
 
