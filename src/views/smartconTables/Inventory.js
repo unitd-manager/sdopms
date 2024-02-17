@@ -335,59 +335,17 @@ const [selectedStatus, setSelectedStatus] = useState('');
                     <td>{element.product_name}</td>
                     <td>{element.product_type}</td>
                     <td>{element.item_code}</td>
-                    <td>{element.unit}</td>
+                   
                     <td>{element.stock}</td>
-                    {stockinputOpen && stockChangeId === element.inventory_id ? (
-                      <td>
-                        {' '}
-                        <Input
-                          type="text"
-                          defaultValue={element.stock}
-                          onChange={(e) => handleStockinput(e, element)}
-                        />
-                        <Button
-                          color="primary"
-                          className="shadow-none"
-                          onClick={() => {
-                            adjuststock(element);
-                            updateStockinInventory();
-                            setStockinputOpen(false);
-                          }}
-                        >
-                          save
-                        </Button>
-                      </td>
-                    ) : (
-                      <td>
-                        <span
-                          onClick={() => {
-                            setStockChangeId(element.inventory_id);
-                            setStockinputOpen(true);
-                          }}
-                        >
-                          <Link to="">Adjust Stock</Link>
-                        </span>
-                      </td>
-                    )}
-                    <td>
-                      <span
-                        onClick={() => {
-                          setAdjustStockHistoryModal(true);
-                          setModalId(element.inventory_id);
-                        }}
-                      >
-                        <Link to="">view</Link>
-                      </span>
-                    </td>
-                    {adjustStockHistoryModal && modalId === element.inventory_id && (
-                      <ViewAdjustStockHistoryModal
-                        adjustStockHistoryModal={adjustStockHistoryModal}
-                        setAdjustStockHistoryModal={setAdjustStockHistoryModal}
-                        inventoryId={modalId}
-                      />
-                    )}
-                    <td>{element.minimum_order_level}</td>
+                   
+                  {adjustStockHistoryModal && (modalId===element.inventory_id) && <ViewAdjustStockHistoryModal
+                      adjustStockHistoryModal={adjustStockHistoryModal}
+                      setAdjustStockHistoryModal={setAdjustStockHistoryModal}
+                      inventoryId={modalId}
+                    />}
                     <td>{element.yard_stock}</td>
+                    <td>{element.shipStock}</td>
+                    <td>{element.damaged_stock}</td>
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
                       <td>
                         <Col>
@@ -465,61 +423,55 @@ const [selectedStatus, setSelectedStatus] = useState('');
                         <Link to="">view</Link>
                       </span>
                     </td>
-                    {adjustStockHistoryModal1 && modalId1 === element.inventory_id && (
-                      <YardStockHistoryModal
-                        adjustStockHistoryModal1={adjustStockHistoryModal1}
-                        setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
-                        inventoryId={modalId1}
-                      />
+                   
+                    {stockinputOpen && stockChangeId === element.inventory_id ? (
+                      <td>
+                        {' '}
+                        <Input
+                          type="text"
+                          defaultValue={element.stock}
+                          onChange={(e) => handleStockinput(e, element)}
+                        />
+                        <Button
+                          color="primary"
+                          className="shadow-none"
+                          onClick={() => {
+                            adjuststock(element);
+                            updateStockinInventory();
+                            setStockinputOpen(false);
+                          }}
+                        >
+                          save
+                        </Button>
+                      </td>
+                    ) : (
+                      <td>
+                        <span
+                          onClick={() => {
+                            setStockChangeId(element.inventory_id);
+                            setStockinputOpen(true);
+                          }}
+                        >
+                          <Link to="">Adjust Stock</Link>
+                        </span>
+                      </td>
                     )}
-                    {/* <td> <Col >
-                <FormGroup>
-                  
-                  <Input
-                    type="select"
-                    name="status"
-                    //value={element.status}
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    //onChange={handleInputs}
-                    //disabled={isProjectCompleted}
-                  >
-                    <option defaultValue="selected">Please Select</option>
-                    <option value="WIP">Yard_store</option>
-                    <option value="Billable">store_yard</option>
-                 
-                  </Input>
-                </FormGroup>
-              </Col>
-              {selectedStatus === 'WIP' && (
-                      <>
-                      <Row>
-                        <Col md="6">
-                         
-                            <Input
-                              type="text"
-                              name="yardToStoreValue"
-                              placeholder="Enter value"
-                              value={yardToStoreValue}
-                              onChange={(e) => setYardToStoreValue(e.target.value)}
-                            />
-                          
-                      </Col>
-                      <Col md="6">
-                          <Button
-                            color="primary"
-                            className="shadow-none"
-                            onClick={() => {
-                              // Perform actions when the "Save" button is clicked
-                              console.log('Save clicked! Yard to Store Value:', yardToStoreValue);
-                            }}
-                          >
-                            Save
-                          </Button>
-                        </Col>
-                        </Row>
-                      </>
-                    )}</td> */}
+                    <td>
+                      <span
+                        onClick={() => {
+                          setAdjustStockHistoryModal(true);
+                          setModalId(element.inventory_id);
+                        }}
+                      >
+                        <Link to="">view</Link>
+                      </span>
+                    </td>
+                  {adjustStockHistoryModal1 && (modalId1===element.inventory_id) && <YardStockHistoryModal
+                      adjustStockHistoryModal1={adjustStockHistoryModal1}
+                      setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
+                      inventoryId={modalId1}
+                    />}
+                    
                   </tr>
                 );
               })}
