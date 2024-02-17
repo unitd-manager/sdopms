@@ -80,7 +80,7 @@ export default function CostingSummaryDetails() {
   useEffect(() => {
     if (selectedWorkOrder) {
       // Filter works based on the selected project_work_order
-      const filteredWorks = works.filter((work) => work.project_work_order === selectedWorkOrder);
+      const filteredWorks = works.filter((work) => work.work_order_no === selectedWorkOrder);
 
       // Calculate the total amount of work
       const totalWorkAmount = filteredWorks.reduce(
@@ -117,7 +117,7 @@ export default function CostingSummaryDetails() {
       // Filter projectYard based on the selected project_work_order
       const filteredYard = projectYard.filter((yard) => yard.work_order_no === selectedWorkOrder);
       // Filter works based on the selected project_work_order
-      const filteredWorks = works.filter((work) => work.project_work_order === selectedWorkOrder);
+      const filteredWorks = works.filter((work) => work.work_order_no === selectedWorkOrder);
 
       const yardPipeCount = filteredYard.reduce(
         (total, yard) => total + parseFloat(yard.pipe_count || 0),
@@ -281,7 +281,7 @@ export default function CostingSummaryDetails() {
                       <tr key={element.yard_id}>
                         {/* <td style={{ borderRight: 1, borderWidth: 1 }}>{element.task_title}</td> */}
                         <td>{index + 1}</td>
-                        <td>{element.project_work_order}</td>
+                        <td>{element.work_order_no}</td>
                         <td>{parseFloat(element.pipe_value).toFixed(2)}</td>
                         <td>{parseFloat(element.plank_value).toFixed(2)}</td>
                         <td>{parseFloat(element.tb_value).toFixed(2)}</td>

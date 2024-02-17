@@ -465,7 +465,7 @@ export default function ProjectYard({
                         <Input
                           type="select"
                           name="work_order_no"
-                          onChange={handleInputs}
+                          onChange={handleprojectYardInputs}
                           value={projectYard && projectYard.work_order_no}
                         >
                           <option value="">Please Select</option>

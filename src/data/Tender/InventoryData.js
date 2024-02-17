@@ -87,6 +87,13 @@ export const columns = [
       sortable: true
     },
     {
+      id:10,
+      name: "",
+      selector: "ref",
+      sortable: true
+    },
+    
+    {
       id:12,
       name: "Ship Stock",
       selector: "ship_stock",

@@ -53,6 +53,7 @@ export default function QuotationViewLineItem  ({
       if (result.isConfirmed) {
         api.post('/project/deleteEditItem', { quote_items_id: deleteID }).then(() => {
           Swal.fire('Deleted!', 'Your Line Items has been deleted.', 'success');
+          window.location.reload();
            // Remove the deleted record from the state
            setQuotationViewLineItems((prevQuotation) =>
            prevQuotation.filter((item) => item.quote_items_id !== deleteID)
