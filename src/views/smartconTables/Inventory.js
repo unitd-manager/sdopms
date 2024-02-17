@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import { Input, Button, Row, Col,FormGroup } from 'reactstrap';
+import { Input, Button, Row, Col, FormGroup } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -31,6 +31,8 @@ function Inventory() {
   const [adjustStockHistoryModal1, setAdjustStockHistoryModal1] = useState(false);
   const [stockChangeId, setStockChangeId] = useState();
   const [stockChangeId1, setStockChangeId1] = useState();
+  const [stockInputValue, setStockInputValue] = useState('');
+  const [yardStockInputValue, setYardStockInputValue] = useState('');
   // New state variable for tracking the input value
   const [inventoryStock, setInventoryStock] = useState({
     inventory_id: null,
@@ -43,8 +45,8 @@ function Inventory() {
   });
   const [loading, setLoading] = useState(false);
   // Add state variables for dropdown selection and input values
-const [selectedStatus, setSelectedStatus] = useState('');
-// /const [yardToStoreValue, setYardToStoreValue] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  // /const [yardToStoreValue, setYardToStoreValue] = useState('');
 
   const [adjuststockDetails, setAdjuststockDetails] = useState({
     inventory_id: null,
@@ -63,7 +65,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
     yard_stock: 0,
     modified_by: '',
     created_by: '',
-    status:'',
+    status: '',
     //current_stock: null,
   });
   //navigate
@@ -88,6 +90,8 @@ const [selectedStatus, setSelectedStatus] = useState('');
       stock: e.target.value,
       //yard_stock:e.target.value
     });
+    // Reset input value after updating stock
+    setStockInputValue('');
 
     const adjustedStockValue = parseFloat(e.target.value);
     //const yardStockValue = parseFloat(element.yard_stock) || 0;
@@ -138,14 +142,20 @@ const [selectedStatus, setSelectedStatus] = useState('');
   const handleStockinput1 = (e, element) => {
     const newYardStockValue = parseFloat(e.target.value) || 0;
     const initialStockValue = parseFloat(element.stock) || 0;
-    
 
     setInventoryStock1({
-  inventory_id: element.inventory_id,
-  yard_stock: selectedStatus === 'yardToStore' ?  (Number(element.yard_stock ||0)) -(newYardStockValue) :newYardStockValue + (Number(element.yard_stock) || 0) ,
-  stock: selectedStatus === 'yardToStore' ? initialStockValue + newYardStockValue : initialStockValue - newYardStockValue,
-});
-
+      inventory_id: element.inventory_id,
+      yard_stock:
+        selectedStatus === 'YardToStore'
+          ? Number(element.yard_stock || 0) - newYardStockValue
+          : newYardStockValue + (Number(element.yard_stock) || 0),
+      stock:
+        selectedStatus === 'YardToStore'
+          ? initialStockValue + newYardStockValue
+          : initialStockValue - newYardStockValue,
+    });
+    // Reset input values after updating yard stock
+    setYardStockInputValue('');
     // Check if the new yard stock is greater than the actual stock
     if (newYardStockValue > initialStockValue) {
       setValidationMessage('Yard stock cannot be greater than the actual stock.');
@@ -157,19 +167,22 @@ const [selectedStatus, setSelectedStatus] = useState('');
       });
       return;
     }
-    const status = selectedStatus === 'yardToStore' ? 'Yard to Store' : 'Store to Yard';
+    const status = selectedStatus === 'YardToStore' ? 'Yard to Store' : 'Store to Yard';
 
     setValidationMessage(''); // Reset validation message if valid
     setAdjuststockDetails1({
       inventory_id: element.inventory_id,
       product_id: element.productId,
       yard_stock: newYardStockValue + (Number(element.yard_stock) || 0),
-       // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
+      // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
       modified_by: '',
       created_by: '',
       // actual_stock: initialStockValue - newYardStockValue,
-      actual_stock: selectedStatus === 'Yard to Store' ? initialStockValue + newYardStockValue : initialStockValue,
-      status_field:status
+      actual_stock:
+        selectedStatus === 'Yard to Store'
+          ? initialStockValue + newYardStockValue
+          : initialStockValue,
+      status_field: status,
     });
   };
 
@@ -335,17 +348,18 @@ const [selectedStatus, setSelectedStatus] = useState('');
                     <td>{element.product_name}</td>
                     <td>{element.product_type}</td>
                     <td>{element.item_code}</td>
-                   
                     <td>{element.stock}</td>
-                   
-                  {adjustStockHistoryModal && (modalId===element.inventory_id) && <ViewAdjustStockHistoryModal
-                      adjustStockHistoryModal={adjustStockHistoryModal}
-                      setAdjustStockHistoryModal={setAdjustStockHistoryModal}
-                      inventoryId={modalId}
-                    />}
+                    {adjustStockHistoryModal && modalId === element.inventory_id && (
+                      <ViewAdjustStockHistoryModal
+                        adjustStockHistoryModal={adjustStockHistoryModal}
+                        setAdjustStockHistoryModal={setAdjustStockHistoryModal}
+                        inventoryId={modalId}
+                      />
+                    )}
                     <td>{element.yard_stock}</td>
                     <td>{element.shipStock}</td>
                     <td>{element.damaged_stock}</td>
+
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
                       <td>
                         <Col>
@@ -365,14 +379,18 @@ const [selectedStatus, setSelectedStatus] = useState('');
                         </Col>
                         {selectedStatus && (
                           <>
-                          
-                              {' '}
-                              <Input
-                                type="text"
-                                defaultValue={element.yard_stock}
-                                onChange={(e) => handleStockinput1(e, element)}
-                              />
-                              {/* <Col md="6">
+                            {' '}
+                            <Input
+                              type="text"
+                              value={yardStockInputValue}
+                              defaultValue={element.yard_stock}
+                              //onChange={(e) => handleStockinput1(e, element)}
+                              onChange={(e) => {
+                                handleStockinput1(e, element);
+                                setYardStockInputValue(e.target.value);
+                              }}
+                            />
+                            {/* <Col md="6">
                                 <Input
                                   type="text"
                                   name="yardToStoreValue"
@@ -381,22 +399,23 @@ const [selectedStatus, setSelectedStatus] = useState('');
                                   onChange={(e) => setYardToStoreValue(e.target.value)}
                                 />
                               </Col> */}
-                              <Button
-                                color="primary"
-                                className="shadow-none"
-                                onClick={() => {
-                                  if (validationMessage) {
-                                    message(validationMessage, 'error');
-                                  } else {
-                                    adjuststock1(element);
-                                    updateStockinInventory1();
-                                    setStockinputOpen1(false);
-                                  }
-                                }}
-                              >
-                                save
-                              </Button>
-                          
+                            <Button
+                              color="primary"
+                              className="shadow-none"
+                              onClick={() => {
+                                if (validationMessage) {
+                                  message(validationMessage, 'error');
+                                } else {
+                                  adjuststock1(element);
+                                  updateStockinInventory1();
+                                  setStockinputOpen1(false);
+                                  // Reset yardStockInputValue to an empty string
+                                  setYardStockInputValue('');
+                                }
+                              }}
+                            >
+                              save
+                            </Button>
                           </>
                         )}
                         {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
@@ -423,14 +442,24 @@ const [selectedStatus, setSelectedStatus] = useState('');
                         <Link to="">view</Link>
                       </span>
                     </td>
-                   
+                    {adjustStockHistoryModal1 && modalId1 === element.inventory_id && (
+                      <YardStockHistoryModal
+                        adjustStockHistoryModal1={adjustStockHistoryModal1}
+                        setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
+                        inventoryId={modalId1}
+                      />
+                    )}
                     {stockinputOpen && stockChangeId === element.inventory_id ? (
                       <td>
                         {' '}
                         <Input
                           type="text"
                           defaultValue={element.stock}
-                          onChange={(e) => handleStockinput(e, element)}
+                          value={stockInputValue}
+                          onChange={(e) => {
+                            handleStockinput(e, element);
+                            setStockInputValue(e.target.value);
+                          }}
                         />
                         <Button
                           color="primary"
@@ -439,6 +468,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
                             adjuststock(element);
                             updateStockinInventory();
                             setStockinputOpen(false);
+                            setStockInputValue('');
                           }}
                         >
                           save
@@ -461,17 +491,19 @@ const [selectedStatus, setSelectedStatus] = useState('');
                         onClick={() => {
                           setAdjustStockHistoryModal(true);
                           setModalId(element.inventory_id);
+                          
                         }}
                       >
                         <Link to="">view</Link>
                       </span>
                     </td>
-                  {adjustStockHistoryModal1 && (modalId1===element.inventory_id) && <YardStockHistoryModal
-                      adjustStockHistoryModal1={adjustStockHistoryModal1}
-                      setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
-                      inventoryId={modalId1}
-                    />}
-                    
+                    {adjustStockHistoryModal && modalId === element.inventory_id && (
+                      <ViewAdjustStockHistoryModal
+                        adjustStockHistoryModal={adjustStockHistoryModal}
+                        setAdjustStockHistoryModal={setAdjustStockHistoryModal}
+                        inventoryId={modalId}
+                      />
+                    )}
                   </tr>
                 );
               })}
