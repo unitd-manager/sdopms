@@ -58,8 +58,8 @@ export const columns = [
     },
     {
       id:9,
-      name: "Yard Stock",
-      selector: "yard_stock",
+      name: "Adjust Stock",
+      selector: "ref",
       sortable: true
     },
     {
@@ -68,7 +68,6 @@ export const columns = [
       selector: "ship_stock",
       sortable: true
     },
-   
     {
       id:11,
       name: "Yard",
@@ -77,14 +76,8 @@ export const columns = [
     },
     {
       id:12,
-      name: "",
-      selector: "ref",
-      sortable: true
-    },
-    {
-      id:13,
-      name: "Damaged Stock",
-      selector: "damaged_stock",
+      name: "yard",
+      selector: "yard_stock",
       sortable: true
     },
     {

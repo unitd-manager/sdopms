@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-feather';
-import { Input, Button, Row, Col } from 'reactstrap';
+import { Input, Button, Row, Col,FormGroup } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -31,6 +31,7 @@ function Inventory() {
   const [adjustStockHistoryModal1, setAdjustStockHistoryModal1] = useState(false);
   const [stockChangeId, setStockChangeId] = useState();
   const [stockChangeId1, setStockChangeId1] = useState();
+  // New state variable for tracking the input value
   const [inventoryStock, setInventoryStock] = useState({
     inventory_id: null,
     stock: null,
@@ -38,9 +39,12 @@ function Inventory() {
   });
   const [inventoryStock1, setInventoryStock1] = useState({
     inventory_id: null,
-    yard_stock:null,
+    yard_stock: null,
   });
   const [loading, setLoading] = useState(false);
+  // Add state variables for dropdown selection and input values
+const [selectedStatus, setSelectedStatus] = useState('');
+// /const [yardToStoreValue, setYardToStoreValue] = useState('');
 
   const [adjuststockDetails, setAdjuststockDetails] = useState({
     inventory_id: null,
@@ -56,9 +60,10 @@ function Inventory() {
     inventory_id: null,
     product_id: null,
     //adjust_stock: 0,
-    yard_stock:0,
+    yard_stock: 0,
     modified_by: '',
     created_by: '',
+    status:'',
     //current_stock: null,
   });
   //navigate
@@ -83,14 +88,13 @@ function Inventory() {
       stock: e.target.value,
       //yard_stock:e.target.value
     });
-  
-  
+
     const adjustedStockValue = parseFloat(e.target.value);
     //const yardStockValue = parseFloat(element.yard_stock) || 0;
     const currentStockValue = parseFloat(element.stock) || 0; // If element.stock is null, set it to 0
-  
+
     const adjustStock = adjustedStockValue - currentStockValue;
-  
+
     setAdjuststockDetails({
       inventory_id: element.inventory_id,
       product_id: element.productId,
@@ -124,48 +128,47 @@ function Inventory() {
         message('Stock updated successfully', 'success');
         getAllinventories();
         navigate('/inventory');
-        
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
       });
   };
 
+  // handleStockinput1 function
+  const handleStockinput1 = (e, element) => {
+    const newYardStockValue = parseFloat(e.target.value) || 0;
+    const initialStockValue = parseFloat(element.stock) || 0;
 
- // handleStockinput1 function
- const handleStockinput1 = (e, element) => {
-  const newYardStockValue = parseFloat(e.target.value) || 0;
-  const initialStockValue = parseFloat(element.stock) || 0;
+    setInventoryStock1({
+      inventory_id: element.inventory_id,
+      yard_stock: newYardStockValue,
+      stock: initialStockValue - newYardStockValue,
+    });
 
-  setInventoryStock1({
-    inventory_id: element.inventory_id,
-    yard_stock: newYardStockValue,
-    stock: initialStockValue - newYardStockValue,
-  });
- 
- // Check if the new yard stock is greater than the actual stock
- if (newYardStockValue > initialStockValue) {
-  setValidationMessage('Yard stock cannot be greater than the actual stock.');
-  // Optionally, reset the input value to the previous valid value or 0
-  setInventoryStock1({
-    inventory_id: element.inventory_id,
-    yard_stock: initialStockValue, // Reset to the initial stock value
-    stock: 0,
-  });
-  return;
-}
-setValidationMessage(''); // Reset validation message if valid
-  setAdjuststockDetails1({
-    inventory_id: element.inventory_id,
-    product_id: element.productId,
-    yard_stock: newYardStockValue, // Calculate the change in yard_stock
-    modified_by: '',
-    created_by: '',
-    actual_stock:initialStockValue - newYardStockValue,
-    
-  });
- };
-  
+    // Check if the new yard stock is greater than the actual stock
+    if (newYardStockValue > initialStockValue) {
+      setValidationMessage('Yard stock cannot be greater than the actual stock.');
+      // Optionally, reset the input value to the previous valid value or 0
+      setInventoryStock1({
+        inventory_id: element.inventory_id,
+        yard_stock: initialStockValue, // Reset to the initial stock value
+        stock: 0,
+      });
+      return;
+    }
+    const status = selectedStatus === 'yardToStore' ? 'Yard to Store' : 'Store to Yard';
+
+    setValidationMessage(''); // Reset validation message if valid
+    setAdjuststockDetails1({
+      inventory_id: element.inventory_id,
+      product_id: element.productId,
+      yard_stock: newYardStockValue, // Calculate the change in yard_stock
+      modified_by: '',
+      created_by: '',
+      actual_stock: initialStockValue - newYardStockValue,
+      status_field:status
+    });
+  };
 
   const adjuststock1 = () => {
     api
@@ -181,31 +184,30 @@ setValidationMessage(''); // Reset validation message if valid
   };
   //update stock
 
- // updateStockinInventory1 function
- const updateStockinInventory1 = () => {
-  api
-    .post('/inventory/updateInventoryStock1', inventoryStock1)
-    .then(() => {
-      //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
-      message('Yard stock updated successfully', 'success');
-      getAllinventories();
-      navigate('/inventory');
-      
-    })
-    .catch(() => {
-      message('Unable to edit record.', 'error');
-    });
-};
+  // updateStockinInventory1 function
+  const updateStockinInventory1 = () => {
+    api
+      .post('/inventory/updateInventoryStock1', inventoryStock1)
+      .then(() => {
+        //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+        message('Yard stock updated successfully', 'success');
+        getAllinventories();
+        navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
 
-
-   // TRIGGER TO IMPORT EXCEL SHEET
-   const importExcel = () => {
+  // TRIGGER TO IMPORT EXCEL SHEET
+  const importExcel = () => {
     $('#import_excel').trigger('click');
-  }
+  };
 
   // UPLOAD FILE ON THER SERVER
   const uploadOnServer = (arr) => {
-      api.post('/inventory/import/excel', {data: JSON.stringify(arr)})
+    api
+      .post('/inventory/import/excel', { data: JSON.stringify(arr) })
       .then(() => {
         message('File uploaded successfully', 'success');
         $('#upload_file').val(null);
@@ -213,41 +215,38 @@ setValidationMessage(''); // Reset validation message if valid
       .catch((err) => {
         message('Failed to upload.', 'error');
         console.log(err.stack);
-        console.log('err.response', err.response)
-        console.log('err.request', err.request)
-        console.log('err.config', err.config)
+        console.log('err.response', err.response);
+        console.log('err.request', err.request);
+        console.log('err.config', err.config);
       });
-  }
+  };
 
   // PROCESSING AND FORMATTING THE DATA
   const processData = (rows) => {
     const arr = [];
     rows.shift();
 
-    for ( let x = 0; x < rows.length; x++ ) {
-      arr.push(
-        {
-          ProductCode: rows[x][0],
-          ProductName: rows[x][1],
-          Description: rows[x][2],
-          Price: rows[x][3],
-          Unit: rows[x][4],
-          Category: rows[x][5],
-          Stock: rows[x][6]
-         
-        }
-      )
+    for (let x = 0; x < rows.length; x++) {
+      arr.push({
+        ProductCode: rows[x][0],
+        ProductName: rows[x][1],
+        Description: rows[x][2],
+        Price: rows[x][3],
+        Unit: rows[x][4],
+        Category: rows[x][5],
+        Stock: rows[x][6],
+      });
     }
 
     uploadOnServer(arr);
-  }
+  };
 
   // IMPORTING EXCEL FILE
   const importExcelFile = (e) => {
-    console.log(e.target.id)
+    console.log(e.target.id);
     const reader = new FileReader();
     reader.onload = () => {
-      console.log(reader.readyState)
+      console.log(reader.readyState);
       if (reader.readyState === 2) {
         readXlsxFile(e.target.files[0])
           .then((rows) => {
@@ -256,18 +255,14 @@ setValidationMessage(''); // Reset validation message if valid
           })
           .finally(() => {
             $('#upload_file').val(null);
-          }).catch(
-            err => console.log(err)
-          );
+          })
+          .catch((err) => console.log(err));
       }
     };
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
-
-
- 
 
   useEffect(() => {
     getAllinventories();
@@ -286,12 +281,20 @@ setValidationMessage(''); // Reset validation message if valid
             <>
               <Row>
                 <Col md="6">
-                <Button color="primary" className="shadow-none mr-2" onClick={() => importExcel()}>
-                Import
-              </Button>
-            {/* </Link> */}
-            <input type='file' style={{display: 'none'}} id="import_excel" onChange={importExcelFile} />
-          
+                  <Button
+                    color="primary"
+                    className="shadow-none mr-2"
+                    onClick={() => importExcel()}
+                  >
+                    Import
+                  </Button>
+                  {/* </Link> */}
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    id="import_excel"
+                    onChange={importExcelFile}
+                  />
                 </Col>
                 <Col md="6">
                   <a
@@ -342,28 +345,57 @@ setValidationMessage(''); // Reset validation message if valid
                     
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
                       <td>
-                        {' '}
-                        <Input
-                          type="text"
-                          defaultValue={element.yard_stock}
-                          onChange={(e) => handleStockinput1(e, element)}
-                        />
-                        <Button
-                          color="primary"
-                          className="shadow-none"
-                          onClick={() => {
-                            if (validationMessage) {
-                              message(validationMessage, 'error');
-                            } else {
-                              adjuststock1(element);
-                              updateStockinInventory1();
-                              setStockinputOpen1(false);
-                            }
+                        <Col>
+                          <FormGroup>
+                            <Input
+                              type="select"
+                              name="status"
+                              value={selectedStatus}
+                              defaultValue={element.status}
+                              onChange={(e) => setSelectedStatus(e.target.value)}
+                            >
+                              <option defaultValue="selected">Please Select</option>
+                              <option value="yardToStore">yardToStore</option>
+                              <option value="storeToYard">Store to Yard</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                        {selectedStatus && (
+                          <>
                           
-                          }}
-                        >
-                          save
-                        </Button>
+                              {' '}
+                              <Input
+                                type="text"
+                                defaultValue={element.yard_stock}
+                                onChange={(e) => handleStockinput1(e, element)}
+                              />
+                              {/* <Col md="6">
+                                <Input
+                                  type="text"
+                                  name="yardToStoreValue"
+                                  placeholder="Enter value"
+                                  value={yardToStoreValue}
+                                  onChange={(e) => setYardToStoreValue(e.target.value)}
+                                />
+                              </Col> */}
+                              <Button
+                                color="primary"
+                                className="shadow-none"
+                                onClick={() => {
+                                  if (validationMessage) {
+                                    message(validationMessage, 'error');
+                                  } else {
+                                    adjuststock1(element);
+                                    updateStockinInventory1();
+                                    setStockinputOpen1(false);
+                                  }
+                                }}
+                              >
+                                save
+                              </Button>
+                          
+                          </>
+                        )}
                         {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
                       </td>
                     ) : (
