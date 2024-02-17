@@ -87,6 +87,9 @@ const insertTeamMember = () => {
     .post(`/projectteam/editTeam`, updatedTeam)
     .then(() => {
       message('Team member updated successfully.', 'success');
+      setTimeout(()=>{
+        window.location.reload();
+      },500)
       getTeamById(); // Assuming this function retrieves updated team data
     })
     .catch(() => {
