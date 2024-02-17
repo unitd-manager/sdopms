@@ -332,7 +332,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
                     <td>{element.product_name}</td>
                     <td>{element.product_type}</td>
                     <td>{element.item_code}</td>
-                    <td>{element.unit}</td>
+                   
                     <td>{element.stock}</td>
                    
                   {adjustStockHistoryModal && (modalId===element.inventory_id) && <ViewAdjustStockHistoryModal
@@ -342,7 +342,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
                     />}
                     <td>{element.yard_stock}</td>
                     <td>{element.shipStock}</td>
-                    
+                    <td>{element.damaged_stock}</td>
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
                       <td>
                         <Col>
@@ -420,7 +420,7 @@ const [selectedStatus, setSelectedStatus] = useState('');
                         <Link to="">view</Link>
                       </span>
                     </td>
-                    <td>{element.damaged_stock}</td>
+                   
                     {stockinputOpen && stockChangeId === element.inventory_id ? (
                       <td>
                         {' '}

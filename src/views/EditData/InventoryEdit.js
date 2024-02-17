@@ -139,7 +139,7 @@ setMovedToShip(ship);
 setShipToYard(yard);
 const shipstock=parseFloat(ship)-parseFloat(yard)
 setShipStock(shipstock)
-setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock)+parseFloat(shipstock)+parseFloat(inventoryDetails&&inventoryDetails.damaged_stock)+parseFloat(changedStock&&changedStock ||0))
+setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock||0)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock||0)+parseFloat(shipstock||0)+parseFloat(inventoryDetails&&inventoryDetails.damaged_stock||0)+parseFloat(changedStock||0))
       })
       .catch(() => {
       

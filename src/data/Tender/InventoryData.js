@@ -44,50 +44,52 @@ export const columns = [
       selector: "ref",
       sortable: true
     },
+ 
     {
       id:7,
-      name: "UOM",
-      selector: "ref",
-      sortable: true
-    },
-    {
-      id:8,
       name: "Store Stock",
       selector: "ref",
       sortable: true
     },
+  
     {
-      id:9,
-      name: "Adjust Stock",
-      selector: "ref",
+      id:8,
+      name: "Yard Stock",
+      selector: "yard_stock",
       sortable: true
     },
     {
-      id:10,
+      id:9,
       name: "Ship Stock",
       selector: "ship_stock",
       sortable: true
     },
     {
-      id:11,
-      name: "Yard",
-      selector: "yard_stock",
+      id:10,
+      name: "Damaged Stock",
+      selector: "damaged_stock",
       sortable: true
     },
     {
-      id:12,
+      id:11,
       name: "yard",
       selector: "yard_stock",
       sortable: true
     },
     {
-      id:14,
+      id:12,
+      name: "",
+      selector: "ref",
+      sortable: true
+    },
+    {
+      id:13,
       name: "Adjust Stock",
       selector: "ref",
       sortable: true
     },
     {
-      id:15,
+      id:14,
       name: "",
       selector: "ref",
       sortable: true
