@@ -156,10 +156,19 @@ function Inventory() {
     });
     // Reset input values after updating yard stock
     setYardStockInputValue('');
-    // Check if the new yard stock is greater than the actual stock
-    if (newYardStockValue > initialStockValue) {
-      setValidationMessage('Yard stock cannot be greater than the actual stock.');
+   
       // Optionally, reset the input value to the previous valid value or 0
+
+      // Check if the new yard stock is greater than the actual stock
+if (
+  (selectedStatus === 'storeToYard' && newYardStockValue > initialStockValue) ||
+  (selectedStatus === 'YardToStore' && newYardStockValue > (Number(element.yard_stock) || 0))
+) {
+  if (selectedStatus === 'storeToYard') {
+    setValidationMessage('Yard stock cannot be greater than the actual stock.');
+  } else if (selectedStatus === 'YardToStore') {
+    setValidationMessage('store stock cannot exceed to the yard stock.');
+  }
       setInventoryStock1({
         inventory_id: element.inventory_id,
         yard_stock: initialStockValue, // Reset to the initial stock value
