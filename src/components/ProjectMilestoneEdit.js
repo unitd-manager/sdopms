@@ -23,13 +23,13 @@ const ProjectMilestoneEdit = ({
   editTaskEditModals,
   setEditTaskEditModals,
   contactData,
-  getMilestone,
+ // getMilestone,
 }) => {
   ProjectMilestoneEdit.propTypes = {
     editTaskEditModals: PropTypes.bool,
     setEditTaskEditModals: PropTypes.func,
     contactData: PropTypes.object,
-    getMilestone: PropTypes.func,
+    //getMilestone: PropTypes.func,
   };
 
   //All state variable
@@ -45,7 +45,7 @@ const ProjectMilestoneEdit = ({
       .post('/milestone/editMilestone', milestoneEdit)
       .then(() => {
         message('Record editted successfully', 'success');
-        getMilestone();
+        //getMilestone();
         setTimeout(() => {
           setEditTaskEditModals(false);
         }, 300);
@@ -56,6 +56,7 @@ const ProjectMilestoneEdit = ({
   };
 
   useEffect(() => {
+    
     setMilestoneEdit(contactData);
   }, [contactData]);
 

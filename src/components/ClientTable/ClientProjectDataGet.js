@@ -21,10 +21,6 @@ export default function ClientProjectDataGet({projectDetails}) {
      
     },
     {
-      name: 'Project Value',
-     
-    },
-    {
       name: 'Status',
       
     },
@@ -49,7 +45,7 @@ export default function ClientProjectDataGet({projectDetails}) {
                   <td>
                     <Link to={`/projectEdit/${element.project_id}`}>{element.title}</Link>
                   </td>
-                  <td>{element.project_value}</td>
+                  
                   <td>{element.status}</td>
                 </tr>
               )

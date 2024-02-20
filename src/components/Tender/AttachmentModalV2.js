@@ -70,7 +70,7 @@ const AttachmentModalV2 = ({
           setHandleValue()
           setFile([])
           setAttachmentModal(false);
-          message('Unable to upload File', 'error');
+          //message('Unable to upload File', 'error');
           setUpdate(!update)
         });
     } else {

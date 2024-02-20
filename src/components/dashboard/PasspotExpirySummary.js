@@ -72,7 +72,7 @@ setRemainderLists(res.data.data);
            return( 
              <tr key={elem.employee_id_duplicate}>
                 <td>{elem.employee_name}</td>
-                <td>{moment(elem.date_of_expiry).format('DD-MM-YYYY')}</td>
+                <td>{elem.date_of_expiry?moment(elem.date_of_expiry).format('DD-MM-YYYY'):''}</td>
               </tr>
            )
           })}

@@ -256,57 +256,7 @@ console.log('ids1',financeDetails);
         creationModificationDate={financeDetails}
         handleInputs={handleInputs}
       ></FinanceMainDetails>
-
-      <ComponentCard title="More Details">
-        <Tab toggle={toggle} tabs={tabs} />
-        <TabContent className="p-4" activeTab={activeTab}>
-          {/* Delivery address Form */}
-          {/* <TabPane tabId="1">
-            <FinanceDeliveryAddress
-              financeDetails={financeDetails}
-              handleInputs={handleInputs}
-            ></FinanceDeliveryAddress>
-          </TabPane> */}
-
-          {/* Customer Details Form */}
-          <TabPane tabId="1">
-            <CustomerDetail financeDetails={financeDetails}></CustomerDetail>
-          </TabPane>
-          {/* Summary */}
-          <TabPane tabId="3">
-            <FinanceSummary
-              invoicesummary={invoicesummary}
-              receiptsummary={receiptsummary}
-              invoiceitemsummary={invoiceitemsummary}
-            ></FinanceSummary>
-          </TabPane>
-          <TabPane tabId="4">
-            <FinanceInvoiceModal
-              createInvoice={createInvoice}
-              cancelInvoice={cancelInvoice}
-              invoiceCancel={invoiceCancel}
-              setEditModal={setEditModal}
-              setEditInvoiceModal={setEditInvoiceModal}
-              setInvoiceDatas={setInvoiceDatas}
-              financeDetails={financeDetails}
-            ></FinanceInvoiceModal>
-          </TabPane>
-          <TabPane tabId="5">
-            <CustomerFinanceReceipt
-              receiptCancel={receiptCancel}
-              cancelReceipt={cancelReceipt}
-              receipt={receipt}
-              setEditReceiptModal={setEditReceiptModal}
-              setReceiptDataModal={setReceiptDataModal}
-              financeDetails={financeDetails}
-              id={id}
-            ></CustomerFinanceReceipt>
-          </TabPane>
-          <TabPane tabId="6">
-            <CustomerFinanceCreditNote note={note}></CustomerFinanceCreditNote>
-          </TabPane>
-
-          <ComponentCard title="Add More">
+  <ComponentCard title="Add More">
             <ToastContainer></ToastContainer>
 
             {/* Modal for invoice,receipt and credit note */}
@@ -378,6 +328,56 @@ console.log('ids1',financeDetails);
               </Col>
             </Row>
           </ComponentCard>
+      <ComponentCard title="More Details">
+        <Tab toggle={toggle} tabs={tabs} />
+        <TabContent className="p-4" activeTab={activeTab}>
+          {/* Delivery address Form */}
+          {/* <TabPane tabId="1">
+            <FinanceDeliveryAddress
+              financeDetails={financeDetails}
+              handleInputs={handleInputs}
+            ></FinanceDeliveryAddress>
+          </TabPane> */}
+
+          {/* Customer Details Form */}
+          <TabPane tabId="1">
+            <CustomerDetail financeDetails={financeDetails}></CustomerDetail>
+          </TabPane>
+          {/* Summary */}
+          <TabPane tabId="3">
+            <FinanceSummary
+              invoicesummary={invoicesummary}
+              receiptsummary={receiptsummary}
+              invoiceitemsummary={invoiceitemsummary}
+            ></FinanceSummary>
+          </TabPane>
+          <TabPane tabId="4">
+            <FinanceInvoiceModal
+              createInvoice={createInvoice}
+              cancelInvoice={cancelInvoice}
+              invoiceCancel={invoiceCancel}
+              setEditModal={setEditModal}
+              setEditInvoiceModal={setEditInvoiceModal}
+              setInvoiceDatas={setInvoiceDatas}
+              financeDetails={financeDetails}
+            ></FinanceInvoiceModal>
+          </TabPane>
+          <TabPane tabId="5">
+            <CustomerFinanceReceipt
+              receiptCancel={receiptCancel}
+              cancelReceipt={cancelReceipt}
+              receipt={receipt}
+              setEditReceiptModal={setEditReceiptModal}
+              setReceiptDataModal={setReceiptDataModal}
+              financeDetails={financeDetails}
+              id={id}
+            ></CustomerFinanceReceipt>
+          </TabPane>
+          <TabPane tabId="6">
+            <CustomerFinanceCreditNote note={note}></CustomerFinanceCreditNote>
+          </TabPane>
+
+        
         </TabContent>
       </ComponentCard>
     </>

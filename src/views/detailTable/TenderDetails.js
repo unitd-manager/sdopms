@@ -118,7 +118,7 @@ const OpportunityDetails = () => {
           getTendersById();
           message('Tender inserted successfully.', 'success');
           setTimeout(() => {
-            navigate(`/EnquiryEdit/${insertedDataId}?tab=1`);
+            navigate(`/TenderEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {

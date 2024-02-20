@@ -106,14 +106,14 @@ export const columns = [
       name: "Date",
       
     },
-    {
-      name: "Project Title",
+    // {
+    //   name: "Project Title",
       
-    },
-    {
-      name: "Client Name",
+    // },
+    // {
+    //   name: "Client Name",
      
-    },
+    // },
     {
         name: "Amount",
         
