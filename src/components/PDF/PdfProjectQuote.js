@@ -19,6 +19,7 @@ const PdfProjectQuote = ({ id, quoteId }) => {
   const [quote, setQuote] = React.useState([]);
   // const [projectDetail, setProjectDetail] = useState();
   const [lineItem, setLineItem] = useState([]);
+  const [parsedQuoteCondition, setParsedQuoteCondition] = useState('');
   const [gTotal, setGtotal] = React.useState(0);
   // const [gstTotal, setGsttotal] = React.useState(0);
   // const [Total, setTotal] = React.useState(0);
@@ -43,6 +44,14 @@ const PdfProjectQuote = ({ id, quoteId }) => {
   //     })
   //     .catch(() => { });
   // };
+
+  const calculateTotal = () => {
+    const grandTotal = lineItem.reduce((acc, element) => acc + element.amount, 0);
+    const discount = quote.discount || 0; // Get the discount from the quote or default to 0 if not provided
+    const total = grandTotal - discount; // Deduct the discount from the grand total
+
+    return total;
+  };
 
   // Get Quote By Id
   const getQuote = () => {
@@ -79,6 +88,46 @@ const PdfProjectQuote = ({ id, quoteId }) => {
     //getProjectById();
   }, []);
 
+
+  React.useEffect(() => {
+    const parseHTMLContent = (htmlContent) => {
+      if (htmlContent) {
+        // Replace all occurrences of &nbsp; with an empty string
+        const plainText = htmlContent.replace(/&nbsp;/g, '');
+
+        // Remove HTML tags using a regular expression
+        const plainTextWithoutTags = plainText.replace(/<[^>]*>?/gm, '');
+
+        setParsedQuoteCondition(plainTextWithoutTags);
+      }
+    };
+    // Assuming quote.quote_condition contains your HTML content like "<p>Terms</p>"
+    parseHTMLContent(quote.quote_condition);
+
+    // Other logic you have here...
+  }, [quote.quote_condition]);
+
+  //The quote_condition content and format it as bullet points
+  const formatQuoteConditions = (conditionsText) => {
+    const formattedConditions = conditionsText.split(':-').map((condition, index) => {
+      const trimmedCondition = condition.trim();
+      return index === 0 ? `${trimmedCondition}` : `:- ${trimmedCondition}`;
+    });
+    return formattedConditions;
+  };
+
+  // Format the conditions content for PDF
+  const conditions = formatQuoteConditions(parsedQuoteCondition);
+
+  // / Format the conditions content for PDF
+  const conditionsContent = conditions.map((condition) => ({
+    text: `${condition}`,
+    fontSize: 10,
+    margin: [15, 5, 0, 0],
+    style: ['notesText', 'textSize'],
+    lineHeight: 1.2,
+  }));
+
   const GetPdf = () => {
     const lineItemBody = [
       [
@@ -94,6 +143,11 @@ const PdfProjectQuote = ({ id, quoteId }) => {
         },
         {
           text: 'Qty',
+          style: 'tableHead',
+          alignment: 'center'
+        },
+        {
+          text: 'Unit Price',
           style: 'tableHead',
           alignment: 'center'
         },
@@ -124,6 +178,13 @@ const PdfProjectQuote = ({ id, quoteId }) => {
           alignment: 'center',
           style: 'tableBody',
         },
+        {
+          text: `${element.unit_price}`,
+          // border: [false, false, false, true],
+          alignment: 'center',
+          style: 'tableBody',
+        },
+
 
         {
           text: `${(element.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`,
@@ -139,27 +200,121 @@ const PdfProjectQuote = ({ id, quoteId }) => {
     const dd = {
       pageSize: 'A4',
       // header: PdfHeader({ findCompany }),
-      pageMargins: [60, 40, 30, 0],
+      pageMargins:  [40, 40, 30, 0],
       // footer: PdfFooter,
       content: [       
-        {text:`${findCompany("cp.companyName")}`,alignment: 'center', bold:true,fontSize: 18 ,color:'green' },
         {
-          columns:[
-            
-            {text:`${findCompany("cp.companyAddress1")},\n ${findCompany("cp.companyAddress2")}, \n  ${findCompany("cp.companyAddress3")}`,alignment: 'right',fontSize: 11 },
-              ],
-          margin: [50, 20, 50, 10],
+          columns: [
+            {
+              image: `${findCompany('cp.companyLogo')}`,
+              style: 'logo',
+              width: 80,
+              alignment: 'left',
+              margin: [0, -20, 0, 0],
+            },
+
+            {
+              text: `${findCompany('cp.companyName')}`,
+              alignment: 'center',
+              bold: true,
+              fontSize: 17,
+              color: 'green',
+              margin: [0, -20, 80, 0],
+            },
+          ],
         },
-        { text: `Date : ${(quote.quote_date) ? moment(quote.quote_date).format('DD-MM-YYYY') : ''} `, style: ['notesText', 'textSize'] },
-         { text: `Ref   : ${quote.ref_no_quote ? quote.ref_no_quote : ''}`, style: ['invoiceAdd', 'textSize'],margin:[0,10,0,0] },
+
         {
-          text: `QUOTATION`,
+          text: `${findCompany('cp.companyAddress1')}, ${findCompany(
+            'cp.companyAddress2',
+          )}, ${findCompany('cp.companyAddress3')}`,
+          alignment: 'center',
+          fontSize: 11,
+          color: 'blue',
+          margin: [55, 0, 50, 10],
+        },
+        {
+          text: `Tel No:${findCompany('cp.companyPhone')}, Fax:${findCompany(
+            'cp.companyEmail',
+          )}, Email:${findCompany('cp.companyEmail')}`,
+          style: 'textSize',
+          margin: [45, -8, 50, 10],
+          color: 'blue',
+          alignment: 'center',
+          fontSize: 11,
+        },
+        {
+          text: `Registration No:${findCompany('cp.companyUEN')}, ${findCompany('cp.gstNumber')}`,
+          style: 'textSize',
+          margin: [45, -8, 50, 10],
+          color: 'blue',
+          alignment: 'center',
+          fontSize: 11,
+        },
+        {
+          canvas: [{ type: 'line', x1: 480, y1: 0, x2: 0, y2: 0, lineWidth: 1 }],
+          margin: [15, -9, 0, 20],
+        },
+
+        {
+          text: `Quotation`,
           alignment: 'center',
           fontSize: 12,
           decoration: 'underline', // Underline added here
           style: 'tableHead',
         },
-        // {
+        '\n',
+        {
+          columns: [
+            {
+              stack: [
+                {
+                  text: `To : `,
+                  bold: true,
+                  style: ['textSize'],
+                  margin: [0, 0, 0, 0],
+                },
+
+                {
+                  text: ` ${quote.company_name ? quote.company_name : ''}\n${
+                    quote.address_flat ? quote.address_flat : ''
+                  }\n ${quote.address_street ? quote.address_street : ''}\n${
+                    quote.address_country ? quote.address_country : ''
+                  }\n${
+                    quote.address_po_code ? quote.address_po_code : ''
+                  }`,
+                  style: ['textSize'],
+                  margin: [23, 3, 0, 0],
+                },
+              ],
+            },
+            {
+              stack: [
+                {
+                  text: `QUOTE DATE  : ${(quote.quote_date) ? moment(quote.quote_date).format('DD-MM-YYYY') : ''}  `,
+                  bold: true,
+                  fontSize: 9,
+                  margin: [90, 0, 0, 0],
+                },
+                {
+                  text: `REF NO            : ${
+                    quote.ref_no_quote ? quote.ref_no_quote : ''
+                  } `,
+                  fontSize: 9,
+                  alignment:'left',
+                  bold: true,
+                  margin: [90, 3, 0, 0],
+                },
+               
+                '\n',
+              ],
+            },
+          ],
+        },
+        '\n',
+
+      '\n',
+      { text: `Project :${quote.title ? quote.title : ''}`, style: ['notesText', 'textSize'] },// {
 
         //     headerRows: 1,
         //     widths: ['105%', '51%'],
@@ -175,9 +330,6 @@ const PdfProjectQuote = ({ id, quoteId }) => {
         //     ],
 
         // }, '\n',
-
-        '\n',
-        { text: `TO :${quote.first_name ? quote.first_name : ''}`, style: ['notesText', 'textSize'] },
 
         '\n',
 
@@ -236,7 +388,7 @@ const PdfProjectQuote = ({ id, quoteId }) => {
           },
           table: {
             headerRows: 1,
-            widths: ['18%', '37%', '20%', '24%'],
+            widths: ['18%', '35%', '15%', '14%','17%'],
 
             body: lineItemBody
           },
@@ -246,6 +398,19 @@ const PdfProjectQuote = ({ id, quoteId }) => {
           stack: [
             { text: `Total ($) :  ${(gTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`, style: ['textSize'], margin: [0, 0, 15, 0], alignment: 'right',bold:true },
             '\n',
+            {
+              text: `Discount  :       ${quote.discount ? quote.discount.toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '0'}`,
+              alignment: 'right',
+              margin: [0, 0, 15, 0],
+              style: 'textSize',
+            },
+            '\n',
+            {
+              text: `Grand Total $ :   ${calculateTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+              alignment: 'right',
+              margin: [0, 0, 15, 0],
+              style: 'textSize',
+            },
             // { text: `GST:       ${(gstTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`, style: ['textSize'], margin: [330, 0, 0, 0] },
             // '\n',
             // { text: `Total $ :     ${(Total.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`, style: ['textSize'], margin: [320, 0, 0, 0] },
@@ -256,19 +421,29 @@ const PdfProjectQuote = ({ id, quoteId }) => {
         '\n\n',       
         
           
-             {
-              text: `Terms and Condition:-`,
-              decoration: 'underline',
-              alignment:'Left',
+            //  {
+            //   text: `Terms and Condition:-`,
+            //   decoration: 'underline',
+            //   alignment:'Left',
               
-                         },'\n',
-            {
-              text: `${findCompany("cp.quoteTermsAndCondition")}`,
-              style: ['notesText', 'textSize'],
-              margin:[30,0,0,0]
-            },
+            //              },'\n',
+            // {
+            //   text: `${findCompany("cp.quoteTermsAndCondition")}`,
+            //   style: ['notesText', 'textSize'],
+            //   margin:[30,0,0,0]
+            // },
 
-          
+            {
+              text: `Terms and Conditions: `,
+              fontSize: 11,
+              decoration: 'underline',
+              margin: [0, 5, 0, 0],
+              style: ['notesText', 'textSize'],
+            },
+            ...conditionsContent, // Add each condition as a separate paragraph
+    
+            '\n',
+            '\n',   
         
 //         {
 //           columns: [

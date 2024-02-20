@@ -171,46 +171,66 @@ setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock||0)+parseFloat(i
         message('Unable to get productqty data.', 'error');
       });
   };
-
-
+  const [yardStockInputValue, setYardStockInputValue] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
    //Yard stock
  const handleStockinput1 = (e) => {
   const newYardStockValue = parseFloat(e.target.value) || 0;
   const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
-  const yardStockValue = parseFloat(inventoryDetails.yard_stock) || 0;
-  // Check if the new yard stock is greater than the actual stock
-  if (newYardStockValue > initialStockValue) {
-    message('Yard stock cannot be greater than the actual stock.', 'error');
+  //const yardStockValue = parseFloat(inventoryDetails.yard_stock) || 0;
+  setInventoryStock1({
+    inventory_id: inventoryDetails.inventory_id,
+    yard_stock:
+      selectedStatus === 'YardToStore'
+        ? Number(inventoryDetails.yard_stock || 0) - newYardStockValue
+        : newYardStockValue + (Number(inventoryDetails.yard_stock) || 0),
+    stock:
+      selectedStatus === 'YardToStore'
+        ? initialStockValue + newYardStockValue
+        : initialStockValue - newYardStockValue,
+  });
+  // Reset input values after updating yard stock
+  setYardStockInputValue('');
+ 
     // Optionally, reset the input value to the previous valid value or 0
-    e.target.value = initialStockValue;
+
+    // Check if the new yard stock is greater than the actual stock
+if (
+(selectedStatus === 'storeToYard' && newYardStockValue > initialStockValue) ||
+(selectedStatus === 'YardToStore' && newYardStockValue > (Number(inventoryDetails.yard_stock) || 0))
+) {
+if (selectedStatus === 'storeToYard') {
+  setValidationMessage('Yard stock cannot be greater than the actual stock.');
+} else if (selectedStatus === 'YardToStore') {
+  setValidationMessage('store stock cannot exceed to the yard stock.');
+}
+    setInventoryStock1({
+      inventory_id: inventoryDetails.inventory_id,
+      yard_stock: initialStockValue, // Reset to the initial stock value
+      stock: 0,
+    });
     return;
   }
+  const status = selectedStatus === 'YardToStore' ? 'Yard to Store' : 'Store to Yard';
 
-  setInventoryStock1({
-    inventory_id: inventoryDetails.inventory_id,
-    yard_stock: parseFloat(newYardStockValue)+parseFloat(yardStockValue),
-    stock: initialStockValue - newYardStockValue,
-  });
-   // Check if the new yard stock is greater than the actual stock
- if (newYardStockValue > initialStockValue) {
-  setValidationMessage('Yard stock cannot be greater than the actual stock.');
-  // Optionally, reset the input value to the previous valid value or 0
-  setInventoryStock1({
-    inventory_id: inventoryDetails.inventory_id,
-    yard_stock: initialStockValue, // Reset to the initial stock value
-    stock: 0,
-  });
-  return;
-}
-setValidationMessage(''); // Reset validation message if valid
-
+  setValidationMessage(''); // Reset validation message if valid
   setAdjuststockDetails1({
     inventory_id: inventoryDetails.inventory_id,
     product_id: inventoryDetails.productId,
-    yard_stock: newYardStockValue, // Calculate the change in yard_stock
+    // yard_stock: newYardStockValue, // Calculate the change in yard_stock
+    // modified_by: '',
+    // created_by: '',
+    // actual_stock:initialStockValue - newYardStockValue,
+    yard_stock: newYardStockValue + (Number(inventoryDetails.yard_stock) || 0),
+    // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
     modified_by: '',
     created_by: '',
-    actual_stock:initialStockValue - newYardStockValue,
+    // actual_stock: initialStockValue - newYardStockValue,
+    actual_stock:
+      selectedStatus === 'Yard to Store'
+        ? initialStockValue + newYardStockValue
+        : initialStockValue,
+    status_field: status,
     
   });
  };
@@ -366,6 +386,10 @@ changes +=parseFloat(el.adjust_stock);
           validationMessage={validationMessage}
           adjuststock1={adjuststock1}
           updateStockinInventory1={updateStockinInventory1}
+          yardStockInputValue={yardStockInputValue}
+          setSelectedStatus={setSelectedStatus}
+          selectedStatus={selectedStatus}
+          setYardStockInputValue={setYardStockInputValue}
           adjuststock2={adjuststock2}
           updateStockinInventory2={updateStockinInventory2}
         />

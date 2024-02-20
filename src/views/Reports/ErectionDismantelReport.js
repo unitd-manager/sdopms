@@ -134,7 +134,7 @@ const ErectionDismantelReport = () => {
     },
     {
       name: 'Work Order No',
-      selector: 'project_work_order',
+      selector: 'work_order_no',
     },
     {
       name: 'Task Type',

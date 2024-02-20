@@ -142,15 +142,15 @@ const ProjectEdit = () => {
     { id: '2', name: 'Quotation' },
     { id: '3', name: 'Milestones' },
     { id: '4', name: 'Team' },
-    { id: '5', name: 'Work Order' },
-    { id: '6', name: 'Task' },
-    { id: '7', name: 'Worksheet' },
-    { id: '8', name: 'Yard' },
-    // { id: '9', name: 'Material Purchase Order' },
-    // { id: '10', name: 'Material Used' },
-    // { id: '11',name: 'Material Transferred' },
-    { id: '12',name: 'Project Materials' },
-     { id: '13',name: 'Finance' },
+    { id: '5', name: 'Task' },
+    { id: '6', name: 'Worksheet' },
+    { id: '7', name: 'Yard' },
+    { id: '8', name: 'Work Order' },
+    // { id: '8', name: 'Material Purchase Order' },
+    // { id: '9', name: 'Material Used' },
+    // { id: '10',name: 'Material Transferred' },
+    { id: '11',name: 'Project Materials' },
+     { id: '12',name: 'Finance' },
     
   ];
   const toggle = (tab) => {
@@ -1087,21 +1087,8 @@ const [project,setProject]=useState([]);
               setEditTeamEditModal={setEditTeamEditModal}
             />}
           </TabPane>
-          <TabPane tabId="5">
-       
-       <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
-       getWorkOrderById={getWorkOrderById}
-         addModalWorkOrder={addModalWorkOrder}
-         setAddModalWorkOrder={setAddModalWorkOrder}
-         workorderbyId={workorderbyId}
-         id={id}
-         project={project}
-           isProjectCompleted={isProjectCompleted}>
-       </ProjectWorkOrder>
-       
-     </TabPane>
           {/* Tab 5 */}
-          <TabPane tabId="6">
+          <TabPane tabId="5">
             <ProjectTask
               projectDetail={projectDetail}
               userSearchData={userSearchData}
@@ -1143,7 +1130,7 @@ const [project,setProject]=useState([]);
             ></TaskHistoriesModal>}
           </TabPane>
 
-          <TabPane tabId="7">
+          <TabPane tabId="6">
             <br />
             <ProjectWorksheet
               WorkSheet={WorkSheet}
@@ -1153,7 +1140,7 @@ const [project,setProject]=useState([]);
             {/* <ProjectTimeSheet></ProjectTimeSheet> */}
           </TabPane>
 
-          <TabPane tabId="8">
+          <TabPane tabId="7">
             <br />
             <ProjectYard
               projectDetail={projectDetail}
@@ -1181,7 +1168,19 @@ const [project,setProject]=useState([]);
             projectYard={projectYard}
             setProjectYard1={setProjectYard1} ></ProjectYardEdit> */}
           </TabPane>
-          
+          <TabPane tabId="8">
+       
+            <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
+            getWorkOrderById={getWorkOrderById}
+              addModalWorkOrder={addModalWorkOrder}
+              setAddModalWorkOrder={setAddModalWorkOrder}
+              workorderbyId={workorderbyId}
+              id={id}
+              project={project}
+                isProjectCompleted={isProjectCompleted}>
+            </ProjectWorkOrder>
+            
+          </TabPane>
           
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
@@ -1190,7 +1189,7 @@ const [project,setProject]=useState([]);
             permissions={`client-edit`}
             renderAuthFailed={<p></p>}
           >
-            <TabPane tabId="9" eventkey="materialPurchased">
+            <TabPane tabId="8" eventkey="materialPurchased">
               <AddPurchaseOrderModal
                 projectId={id}
                 addPurchaseOrderModal={addPurchaseOrderModal}
@@ -1240,7 +1239,7 @@ const [project,setProject]=useState([]);
             renderAuthFailed={<p></p>}
           >
             {/* Tab 9*/}
-            <TabPane tabId="10" eventkey="materialsusedTab">
+            <TabPane tabId="9" eventkey="materialsusedTab">
               <MaterialsusedTab projectId={id} />
             </TabPane>
           </HasAccess>
@@ -1250,11 +1249,11 @@ const [project,setProject]=useState([]);
             renderAuthFailed={<p></p>}
           >
             {/* Tab 10 */}
-            <TabPane tabId="11" eventkey="materialsTransferred">
+            <TabPane tabId="10" eventkey="materialsTransferred">
               <MaterialsTransferred projectId={id} />
             </TabPane>
           </HasAccess>
-          <TabPane tabId="12">
+          <TabPane tabId="11">
               <>
               </>
             <ProjectMaterials addToggleProjectMaterial={addToggleProjectMaterial}
@@ -1263,7 +1262,7 @@ const [project,setProject]=useState([]);
               projectId={id}>
             </ProjectMaterials>
           </TabPane>
-            <TabPane tabId="13" eventkey="financeTab">
+            <TabPane tabId="12" eventkey="financeTab">
               <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
             </TabPane>
            
