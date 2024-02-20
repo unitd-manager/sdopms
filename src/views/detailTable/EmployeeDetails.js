@@ -90,7 +90,7 @@ const EmployeeDetails = () => {
             if (response.data.error) {
               // Number already exists, show an alert message
               setIsNricAlreadyInserted(true); // Set the state to indicate that NRIC is already inserted
-              message('NRIC is already inserted. Please provide a different number.', 'warning');
+              message('NRIC is already inserted. Please provide a different number.', 'error');
             } else {
               // No duplicates found, proceed with inserting the employee
               setIsNricAlreadyInserted(false); // Reset the state
@@ -110,10 +110,10 @@ const EmployeeDetails = () => {
             message('Unable to check for duplicate numbers.', 'error');
           });
       } else {
-        message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'warning');
+        message('Please fill at least one required field (NRIC, FIN, or Work Permit).', 'error');
       }
     } else {
-      message('Please fill all required fields.', 'warning');
+      message('Please fill all required fields.', 'error');
     }
   };
   // const insertEmployee = (code) => {
@@ -200,7 +200,7 @@ const EmployeeDetails = () => {
                       type="text"
                     />
                     {(isNricAlreadyInserted && (
-                      <alert color="warning">
+                      <alert color="error">
                         NRIC is already inserted. Please provide a different number.
                       </alert>
                     )) ||

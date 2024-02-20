@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import { Card, CardBody, Col, FormGroup, Input, Label, Row ,Button} from 'reactstrap';
 import ReactPaginate from 'react-paginate';
 //import { useParams } from 'react-router-dom';
+import moment from 'moment';
 import CommonTable from '../../components/CommonTable';
 import api from '../../constants/api';
 import message from '../../components/Message';
@@ -56,7 +57,7 @@ const ErectionDismantelReport = () => {
 
   // getting data from Category
   const getWorkOrder = (sectionId) => {
-    api.post('/projecttask/getreports', { project_id: sectionId }).then((res) => {
+    api.post('/projecttask/getworkorderByprojectID', { project_id: sectionId }).then((res) => {
       setProjectWorkOrders(res.data.data);
     });
   };
@@ -69,7 +70,7 @@ const ErectionDismantelReport = () => {
   const handleSearch = () => {
     const newData = Report
       .filter((y) => y.title === (projectName === '' ? y.title : projectName))
-      .filter((x) => x.project_work_order === (workOrderNo === '' ? x.project_work_order : workOrderNo))
+      .filter((x) => x.project_work_order_id === (workOrderNo === '' ? x.project_work_order_id : workOrderNo))
     setUserSearchData(newData);
   };
 
@@ -113,6 +114,10 @@ const ErectionDismantelReport = () => {
     {
       name: 'Project Name',
       selector: 'title',
+    },
+    {
+      name: 'Date',
+      selector: 'date',
     },
     {
       name: 'Work Order No',
@@ -184,14 +189,14 @@ const ErectionDismantelReport = () => {
             <Col md="4">
               <FormGroup>
                 <Label>Project Work Order</Label>
-                <Input type="select" name="work_order_no"
+                <Input type="select" name="project_work_order_id"
                  onChange={(e) => 
                 
                   setworkOrderNo(e.target.value)}
               >
                   <option value="">Please Select</option>
                   {projectWorkOrders.map((e) => (
-                    <option key={e.work_order_id} value={e.work_order_no}>
+                    <option key={e.project_id} value={e.work_order_id}>
                       {e.work_order_no}
                     </option>
                   ))}
@@ -249,8 +254,8 @@ const ErectionDismantelReport = () => {
                     <tr key={element.task_history_id}>
                       <td>{index + 1}</td>
                       <td>{element.title}</td>
-                      <td>{element.date}</td>
-                      <td>{element.project_work_order}</td>
+                      <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
+                      <td>{element.work_order_no}</td>
                       <td>{element.task_type}</td>
                       <td>{element.pipe}</td>
                       <td>{element.plankCount}</td>
@@ -262,6 +267,7 @@ const ErectionDismantelReport = () => {
                   );
                 })}
                   <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

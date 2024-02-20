@@ -244,7 +244,7 @@ const TrainingEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill all required fields', 'warning');
+        message('Please fill all required fields', 'error');
       }
     } else {
       message('The To date should be the future date of From date', 'error');

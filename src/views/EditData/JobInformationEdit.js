@@ -168,7 +168,7 @@ const JobInformationEdit = () => {
       // Check if the status is "archive"
       if (!job.termination_date || !job.termination_reason || !job.notice_period_for_termination || !job.resignation_notice_date || !job.departure_date) {
         // If any of the required fields is empty, show a validation error
-        message('Please enter all required termination information for Archive status.', 'warning');
+        message('Please enter all required termination information for Archive status.', 'error');
         return; // Exit the function without making the API request
       }
     }
@@ -193,7 +193,7 @@ const JobInformationEdit = () => {
     } else {
       message(
         'Please fill Employment Start/date,basic pay,working days,join date and govt donation required fields.',
-        'warning',
+        'error',
       );
     }
   };

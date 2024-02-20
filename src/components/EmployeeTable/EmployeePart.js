@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import ComponentCard from '../ComponentCard';
 
-function EmployeePart({ employeeDetails, handleInputChange, allCountries, companies,team }) {
+function EmployeePart({ employeeDetails, handleInputChange, allCountries, companies, team }) {
   EmployeePart.propTypes = {
     employeeDetails: PropTypes.object,
     handleInputChange: PropTypes.func,
@@ -13,26 +13,37 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
     team: PropTypes.array,
   };
 
+  // Use localStorage to get the initial value or set it to 0 by default
+  const initialProjectManagerValue = localStorage.getItem('project_manager') || '0';
+  const initialTeamLeaderValue = localStorage.getItem('team_leader') || '0';
+
+  // Set the initial state based on localStorage
+  const [projectManager, setProjectManager] = React.useState(initialProjectManagerValue);
+  const [teamLeader, setTeamLeader] = React.useState(initialTeamLeaderValue);
+  React.useEffect(() => {
+    // Save the current value to localStorage whenever it changes
+    localStorage.setItem('project_manager', projectManager);
+    localStorage.setItem('team_leader', teamLeader);
+  }, [projectManager, teamLeader]);
+
   const calculateTotalExperience = (dateJoined) => {
     if (!dateJoined) {
-      return ""; 
+      return '';
     }
-    
 
     const joinDateTime = new Date(dateJoined);
-    
+
     const currentDate = new Date();
-    
+
     const difference = currentDate - joinDateTime;
-    
+
     const totalYears = difference / (1000 * 60 * 60 * 24 * 365.25);
-    
+
     const totalMonths = totalYears * 12;
-    
+
     const years = Math.floor(totalYears);
     const months = Math.floor(totalMonths % 12);
 
-    
     let experienceString = '';
     if (years > 0) {
       experienceString += `${years} year${years > 1 ? 's' : ''}`;
@@ -48,7 +59,7 @@ function EmployeePart({ employeeDetails, handleInputChange, allCountries, compan
 
   const totalExperience = calculateTotalExperience(employeeDetails.act_join_date);
 
-console.log('all countries',allCountries)
+  console.log('all countries', allCountries);
   return (
     <div>
       <FormGroup>
@@ -193,6 +204,7 @@ console.log('all countries',allCountries)
             <Col md="3">
               <FormGroup>
                 <Label>
+                  {/* Nationality */}
                   Nationality <span style={{ color: 'red' }}>*</span>
                 </Label>
                 <Input
@@ -201,18 +213,19 @@ console.log('all countries',allCountries)
                   onChange={handleInputChange}
                   type="select"
                 >
-                  <option>Please Select</option>
+                  <option value="">Please Select</option>
                   {allCountries &&
                     allCountries.map((ele) => {
                       return (
-                        <option key={ele.nationality_code} value={parseFloat(ele.nationality_code)}>
-                          {ele.title}
+                        <option key={ele.country_code} value={parseFloat(ele.country_code)}>
+                          {ele.name}
                         </option>
                       );
                     })}
                 </Input>
               </FormGroup>
             </Col>
+
             <Col md="3">
               <FormGroup>
                 <Label>Race</Label>
@@ -278,11 +291,11 @@ console.log('all countries',allCountries)
                 >
                   <option defaultValue="selected">Please Select</option>
                   {team &&
-                                  team.map((ele) => (
-                                    <option key={ele.project_team_id} value={ele.project_team_id}>
-                                      {ele.team_title}
-                                    </option>
-                                  ))}
+                    team.map((ele) => (
+                      <option key={ele.project_team_id} value={ele.project_team_id}>
+                        {ele.team_title}
+                      </option>
+                    ))}
                 </Input>
               </FormGroup>
             </Col>
@@ -300,7 +313,6 @@ console.log('all countries',allCountries)
                     Group Pay
                   </option>
                   <option value="HourlyPay">Hourly Pay</option>
-                  
                 </Input>
               </FormGroup>
             </Col>
@@ -340,15 +352,15 @@ console.log('all countries',allCountries)
             <Col md="3">
               <FormGroup>
                 <Label>Project manager</Label>
-                <br></br>
+                <br />
                 <Label>Yes</Label>
                 &nbsp;
                 <Input
                   name="project_manager"
                   value="1"
                   type="radio"
-                  defaultChecked={employeeDetails && employeeDetails.project_manager === 1 && true}
-                  onChange={handleInputChange}
+                  checked={projectManager === '1'}
+                  onChange={(e) => setProjectManager(e.target.value)}
                 />
                 &nbsp; &nbsp;
                 <Label>No</Label>
@@ -357,23 +369,24 @@ console.log('all countries',allCountries)
                   name="project_manager"
                   value="0"
                   type="radio"
-                  defaultChecked={employeeDetails && employeeDetails.project_manager === 0 && true}
-                  onChange={handleInputChange}
+                  checked={projectManager === '0'}
+                  onChange={(e) => setProjectManager(e.target.value)}
                 />
               </FormGroup>
             </Col>
+
             <Col md="3">
               <FormGroup>
                 <Label>Team Leader</Label>
-                <br></br>
+                <br />
                 <Label>Yes</Label>
                 &nbsp;
                 <Input
                   name="team_leader"
                   value="1"
                   type="radio"
-                  defaultChecked={employeeDetails && employeeDetails.team_leader === 1 && true}
-                  onChange={handleInputChange}
+                  checked={teamLeader === '1'}
+                  onChange={(e) => setTeamLeader(e.target.value)}
                 />
                 &nbsp; &nbsp;
                 <Label>No</Label>
@@ -382,8 +395,8 @@ console.log('all countries',allCountries)
                   name="team_leader"
                   value="0"
                   type="radio"
-                  defaultChecked={employeeDetails && employeeDetails.team_leader === 0 && true}
-                  onChange={handleInputChange}
+                  checked={teamLeader === '0'}
+                  onChange={(e) => setTeamLeader(e.target.value)}
                 />
               </FormGroup>
             </Col>
