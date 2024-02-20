@@ -126,7 +126,7 @@ const ProductUpdate = () => {
         message('Staff Data Not Found', 'info');
       });
   };
-
+console.log('productDetails',productDetails);
   //Attachments
   const dataForAttachment = () => {
     setDataForAttachment({

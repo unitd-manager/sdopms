@@ -1,16 +1,16 @@
 import { Row, Col } from 'reactstrap';
-import Stats from '../../components/dashboard/StatsPms';
-import StatsPmsDonut from '../../components/dashboard/StatsPmsDonut';
-import ActualHour from '../../components/dashboard/ActualHour';
-import PriorityStats from '../../components/dashboard/PriorityStats';
-import MilestoneCompleted from '../../components/dashboard/MilestoneCompletedChart';
-import AverageIssues from '../../components/dashboard/AverageIssues';
+// import Stats from '../../components/dashboard/StatsPms';
+// import StatsPmsDonut from '../../components/dashboard/StatsPmsDonut';
+// import ActualHour from '../../components/dashboard/ActualHour';
+// import PriorityStats from '../../components/dashboard/PriorityStats';
+// import MilestoneCompleted from '../../components/dashboard/MilestoneCompletedChart';
+// import AverageIssues from '../../components/dashboard/AverageIssues';
 
 
 // import SalesOverview from '../../components/dashboard/classicDashboard/ProjectOverview';
 // import TenderSummaryCard from '../../components/dashboard/TenderSummaryCard';
 // import ProjectSummaryChart from '../../components/dashboard/ProjectSummaryChart';
-import TaskSummary from '../../components/dashboard/TenderSummary';
+//import TaskSummary from '../../components/dashboard/TenderSummary';
 // import InvoiceSummary from '../../components/dashboard/InvoiceSummary';
 // import InvoiceSummaryChart from '../../components/dashboard/InvoiceSummaryChart';
 // import EmployeeSummary from '../../components/dashboard/ecommerceDashboard/EmployeeSummary';
@@ -21,9 +21,9 @@ const Classic = () => {
   return (
     <>
       {/*********************Sales Overview ************************/}
-      <Row>
+       <Row>
         <Col lg="12">
-          <TaskSummary />
+          {/* <TaskSummary /> */} 
           {/* <TenderSummaryCard />
           <ProjectSummaryChart/>
           <InvoiceSummary/>
@@ -32,7 +32,7 @@ const Classic = () => {
           <PasspotExpirySummary />
           <WorkpermitExpirySummary/> */}
           {/* <SalesOverview /> */}
-          <Row>
+          {/* <Row>
         <Col sm="4" lg="6" xl="6" xxl="6">
           <Stats />
         </Col>
@@ -47,14 +47,14 @@ const Classic = () => {
         <Col sm="4" lg="10" xl="6" xxl="6">
           <AverageIssues />
         </Col>
-      </Row>
+      </Row>  */}
       <br/>
       <PasspotExpirySummary />
           <WorkpermitExpirySummary/>
       <br />
-      <ActualHour />
+      {/* <ActualHour />
       <br />
-      <PriorityStats />
+      <PriorityStats /> */}
         </Col>
       </Row>
       {/*********************Email & Visitor ************************/}

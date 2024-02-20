@@ -15,7 +15,7 @@ import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
 
-const Opportunity = () => {
+const Tender = () => {
   const [tenders, setTenders] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -119,9 +119,9 @@ const Opportunity = () => {
         <BreadCrumbs />
         <CommonTable
           loading={loading}
-          title="Enquiry List"
+          title="Tender List"
           Button={
-            <Link to="/EnquiryDetails">
+            <Link to="/TenderDetails">
               <Button color="primary" className="shadow-none">
                 Add New
               </Button>
@@ -142,7 +142,7 @@ const Opportunity = () => {
                   <tr key={element.opportunity_id}>
                     <td>{index + 1}</td>
                     <td>
-                      <Link to={`/EnquiryEdit/${element.opportunity_id}?tab=1`}>
+                      <Link to={`/TenderEdit/${element.opportunity_id}?tab=1`}>
                         <Icon.Edit2 />
                       </Link>
                     </td>
@@ -163,4 +163,4 @@ const Opportunity = () => {
   );
 };
 
-export default Opportunity;
+export default Tender;

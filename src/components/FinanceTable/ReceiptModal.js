@@ -38,7 +38,7 @@ const ReceiptModal = ({ editReceiptModal, editReceiptDataModal, setReceiptDataMo
   useEffect(() => {
     getReceiptById();
     setReceiptData(editReceiptModal);
-  }, [editReceiptModal]);
+  }, [editReceiptDataModal]);
   return (
     <>
       <Modal size="xl" isOpen={editReceiptDataModal}>

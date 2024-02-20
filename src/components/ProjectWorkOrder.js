@@ -82,6 +82,9 @@ export default function ProjectTeam({
         
         message('Work order updated successfully.', 'success');
         // Assuming this function retrieves updated team data
+        setTimeout(()=>{
+window.location.reload();
+        },300)
       })
       .catch(() => {
         message('Network connection error.', 'error');

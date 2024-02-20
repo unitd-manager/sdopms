@@ -17,9 +17,11 @@ import api from '../../constants/api';
 
 const ProjectWorksheet = ({
  WorkSheet,
+ getworksheetbyId
 }) => {
   ProjectWorksheet.propTypes = {
     WorkSheet: PropTypes.object,
+    getworksheetbyId: PropTypes.func
   };
   // const { id } = useParams();
   // const [WorkSheet, setWorkSheet] = useState(null);
@@ -46,7 +48,7 @@ const ProjectWorksheet = ({
   useEffect(() => {
     getLineItem();
     //getTimeSheet();
-    // getworksheetbyId();
+    getworksheetbyId();
   }, []);
  
   const columns = [

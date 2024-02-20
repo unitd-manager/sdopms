@@ -198,7 +198,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
         finalinsertapi(res.data.data.insertId, results);
         setTimeout(() => {
           window.location.reload();
-        }, 300);
+        }, 1500);
       })
       .catch(() => {
         message('Network connection error.');
@@ -206,6 +206,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
   };
   //generateCode
   const generateCode = (results) => {
+    console.log('results',results)
     api
       .post('/tender/getCodeValue', { type:'invoice'})
       .then((res) => {
@@ -214,6 +215,7 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
       .catch(() => {
         insertInvoice(results, '');
       });
+   
   };
 
   //Add new line item

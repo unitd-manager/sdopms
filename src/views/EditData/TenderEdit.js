@@ -18,7 +18,7 @@ import TenderAttachment from '../../components/TenderTable/TenderAttachment';
 import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
 
-const OpportunityEdit = () => {
+const TenderEdit = () => {
   const [activeTab, setActiveTab] = useState('1');
   const [quote, setQuote] = useState({});
   const [lineItem, setLineItem] = useState([]);
@@ -56,7 +56,7 @@ const OpportunityEdit = () => {
   const navigate = useNavigate();
   // const applyChanges = () => {};
   const backToList = () => {
-    navigate('/Enquiry');
+    navigate('/Tender');
   };
 
   const viewLineToggle = () => {
@@ -364,4 +364,4 @@ const OpportunityEdit = () => {
   );
 };
 
-export default OpportunityEdit;
+export default TenderEdit;

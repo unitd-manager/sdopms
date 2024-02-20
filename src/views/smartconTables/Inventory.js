@@ -265,7 +265,22 @@ if (
 
     uploadOnServer(arr);
   };
-
+  useEffect(() => {
+    setTimeout(() => {
+      $('#example').DataTable({
+        pagingType: 'full_numbers',
+        pageLength: 20,
+        processing: true,
+        dom: 'Bfrtip',
+      //   buttons: [ {
+      //     extend: 'print',
+      //     text: "Print",
+      //     className:"shadow-none btn btn-primary",
+      // }],
+      });
+    }, 1000);
+    getAllinventories();
+  }, []);
   // IMPORTING EXCEL FILE
   const importExcelFile = (e) => {
     console.log(e.target.id);

@@ -16,10 +16,11 @@ const PdfQuotation = ({ id, quoteId }) => {
     quoteId: PropTypes.any,
   };
   const [hfdata, setHeaderFooterData] = React.useState();
-  const [quote, setQuote] = React.useState();
+  const [quote, setQuote] = React.useState([]);
   //const [projectDetail, setProjectDetail] = useState();
   const [lineItem, setLineItem] = useState([]);
   const [gTotal, setGtotal] = React.useState(0);
+//   const [parsedQuoteCondition, setParsedQuoteCondition] = useState('');
   // const [gstTotal, setGsttotal] = React.useState(0);
   // const [Total, setTotal] = React.useState(0);
   //const [lineItem, setLineItem] = useState(null);
@@ -35,14 +36,6 @@ const PdfQuotation = ({ id, quoteId }) => {
     return filteredResult.value;
   };
 
-//   const getProjectById = () => {
-//     api
-//       .post('/project/getProjectsByIDs', { project_id: id })
-//       .then((res) => {
-//         setProjectDetail(res.data.data[0]);
-//       })
-//       .catch(() => { });
-//   };
 
   // Get Quote By Id
   const getQuote = () => {
@@ -87,6 +80,45 @@ const PdfQuotation = ({ id, quoteId }) => {
     //getProjectById();
   }, []);
 
+//   React.useEffect(() => {
+//     const parseHTMLContent = (htmlContent) => {
+//       if (htmlContent) {
+//         // Replace all occurrences of &nbsp; with an empty string
+//         const plainText = htmlContent.replace(/&nbsp;/g, '');
+
+//         // Remove HTML tags using a regular expression
+//         const plainTextWithoutTags = plainText.replace(/<[^>]*>?/gm, '');
+
+//         setParsedQuoteCondition(plainTextWithoutTags);
+//       }
+//     };
+//     // Assuming quote.quote_condition contains your HTML content like "<p>Terms</p>"
+//     parseHTMLContent(quote.quote_condition);
+
+//     // Other logic you have here...
+//   }, [quote.quote_condition]);
+
+//   //The quote_condition content and format it as bullet points
+//   const formatQuoteConditions = (conditionsText) => {
+//     const formattedConditions = conditionsText.split(':-').map((condition, index) => {
+//       const trimmedCondition = condition.trim();
+//       return index === 0 ? `${trimmedCondition}` : `:- ${trimmedCondition}`;
+//     });
+//     return formattedConditions;
+//   };
+
+//   // Format the conditions content for PDF
+//   const conditions = formatQuoteConditions(parsedQuoteCondition);
+
+//   // / Format the conditions content for PDF
+//   const conditionsContent = conditions.map((condition) => ({
+//     text: `${condition}`,
+//     fontSize: 10,
+//     margin: [15, 5, 0, 0],
+//     style: ['notesText', 'textSize'],
+//     lineHeight: 1.2,
+//   }));
+
   const GetPdf = () => {
     const lineItemBody = [
       [
@@ -105,6 +137,11 @@ const PdfQuotation = ({ id, quoteId }) => {
           style: 'tableHead',
           alignment: 'center'
         },
+        {
+            text: 'Unit Price',
+            style: 'tableHead',
+            alignment: 'center'
+          },
         {
           text: 'Amount $',
           style: 'tableHead',
@@ -132,6 +169,12 @@ const PdfQuotation = ({ id, quoteId }) => {
           alignment: 'center',
           style: 'tableBody',
         },
+        {
+            text: `${element.unit_price}`,
+            // border: [false, false, false, true],
+            alignment: 'center',
+            style: 'tableBody',
+          },
 
         {
           text: `${(element.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`,
@@ -149,24 +192,7 @@ const PdfQuotation = ({ id, quoteId }) => {
       // header: PdfHeader({ findCompany }),
       pageMargins: [40, 40, 30, 0],
       // footer: PdfFooter,
-      content: [       
-        // {text:`${findCompany("cp.companyName")}`,alignment: 'center', bold:true,fontSize: 18 ,color:'green' },
-        // {
-        //   columns:[
-            
-        //     {text:`${findCompany("cp.companyAddress1")},\n ${findCompany("cp.companyAddress2")}, \n  ${findCompany("cp.companyAddress3")}`,alignment: 'right',fontSize: 11 },
-        //       ],
-        //   margin: [50, 20, 50, 10],
-        // },
-        // { text: `Date : ${(quote.quote_date) ? moment(quote.quote_date).format('DD-MM-YYYY') : ''} `, style: ['notesText', 'textSize'] },
-        //  { text: `Ref No   : ${quote.ref_no_quote ? quote.ref_no_quote : ''}`, style: ['invoiceAdd', 'textSize'],margin:[0,10,0,0] },
-        // {
-        //   text: `QUOTATION`,
-        //   alignment: 'center',
-        //   fontSize: 12,
-        //   decoration: 'underline', // Underline added here
-        //   style: 'tableHead',
-        // },
+      content: [      
 
         {
             columns: [
@@ -243,10 +269,10 @@ const PdfQuotation = ({ id, quoteId }) => {
                   {
                     text: ` ${quote.company_name ? quote.company_name : ''}\n${
                       quote.billing_address_flat ? quote.billing_address_flat : ''
-                    }\n ${quote.cust_address2 ? quote.cust_address2 : ''}\n${
-                      quote.cust_address_country ? quote.cust_address_country : ''
+                    }\n ${quote.billing_address_street ? quote.billing_address_street : ''}\n${
+                      quote.billing_address_country ? quote.billing_address_country : ''
                     }\n${
-                      quote.cust_address_po_code ? quote.cust_address_po_code : ''
+                      quote.billing_address_po_code ? quote.billing_address_po_code : ''
                     }`,
                     style: ['textSize'],
                     margin: [20, -5, 0, 0],
@@ -256,16 +282,17 @@ const PdfQuotation = ({ id, quoteId }) => {
               {
                 stack: [
                   {
-                    text: `Quote DATE : ${(quote.quote_date) ? moment(quote.quote_date).format('DD-MM-YYYY') : ''}  `,
+                    text: `QUOTE DATE  : ${(quote.quote_date) ? moment(quote.quote_date).format('DD-MM-YYYY') : ''}  `,
                     bold: true,
                     fontSize: 9,
                     margin: [90, 0, 0, 0],
                   },
                   {
-                    text: `Ref No : ${
+                    text: `REF NO            : ${
                       quote.ref_no_quote ? quote.ref_no_quote : ''
                     } `,
                     fontSize: 9,
+                    alignment:'left',
                     bold: true,
                     margin: [90, 3, 0, 0],
                   },
@@ -337,7 +364,7 @@ const PdfQuotation = ({ id, quoteId }) => {
           },
           table: {
             headerRows: 1,
-            widths: ['18%', '37%', '20%', '24%'],
+            widths: ['18%', '35%', '15%', '14%','17%'],
 
             body: lineItemBody
           },
@@ -360,11 +387,7 @@ const PdfQuotation = ({ id, quoteId }) => {
                 margin: [0, 0, 15, 0],
                 style: 'textSize',
               },
-            // { text: `GST:       ${(gstTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`, style: ['textSize'], margin: [330, 0, 0, 0] },
-            // '\n',
-            // { text: `Total $ :     ${(Total.toLocaleString('en-IN', { minimumFractionDigits: 2 }))}`, style: ['textSize'], margin: [320, 0, 0, 0] },
-            // '\n\n\n',
-            // { text: `TOTAL : ${Converter.toWords(Total)}`, style: 'bold', margin: [40, 0, 0, 0] }
+        
           ]
         },
         '\n\n',       
@@ -381,6 +404,20 @@ const PdfQuotation = ({ id, quoteId }) => {
               style: ['notesText', 'textSize'],
               margin:[30,0,0,0]
             },
+
+            // {
+            //     text: `Terms and Conditions: `,
+            //     fontSize: 11,
+            //     decoration: 'underline',
+            //     margin: [0, 5, 0, 0],
+            //     style: ['notesText', 'textSize'],
+            //   },
+            //   ...conditionsContent, // Add each condition as a separate paragraph
+      
+            //   '\n',
+            //   '\n',
+      
+            
 
 
         '\n',

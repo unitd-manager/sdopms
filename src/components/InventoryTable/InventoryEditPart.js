@@ -113,30 +113,9 @@ function InventoryEditPart({
                   </Button>
                 </Col>
               </Row> */}
-
-            <ComponentCard
-              title="Product Details"
-              righttitle={
-                <Row>
-                  <Col className="fs-10 small">
-                    <small>Creation :</small>
-                    <small>
-                      {inventoryDetails && inventoryDetails.created_by}
-                      {inventoryDetails && inventoryDetails.creation_date}
-                    </small>
-                  </Col>
-
-                  <Col className="fs-10 small">
-                    <small>Modification :</small>
-
-                    <small>
-                      {inventoryDetails && inventoryDetails.modified_by}
-                      {inventoryDetails && inventoryDetails.modification_date}
-                    </small>
-                  </Col>
-                </Row>
-              }
-            >
+           
+           
+            <ComponentCard title="Product Details" creationModificationDate={inventoryDetails} >
               <Row>
                 <Col md="3">
                   <FormGroup>

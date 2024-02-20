@@ -40,8 +40,7 @@ function InventoryEditTables({ tabPurchaseOrdersLinked,stockLogs }) {
                         ? moment(element.purchase_order_date).format('YYYY-MM-DD')
                         : ''}
                     </td>
-                    <td>{element.title}</td>
-                    <td>{element.company_name}</td>
+                   
                     <td>{element.cost_price}</td>
                     <td>{element.qty}</td>
                     <td>{element.supplier_name}</td>
@@ -96,7 +95,7 @@ function InventoryEditTables({ tabPurchaseOrdersLinked,stockLogs }) {
                     <td>
                       <Link to={`/projectEdit/${element.project_id}`}>{element.project_title}</Link>
                     </td>
-                    <td>{element.stock_move}</td>
+                    <td>{element.stock_move ==="YardToShip"?"Yard to Ship":element.stock_move ==="ShipToYard"?"Ship to Yard":""}</td>
                     <td>{element.quantity}</td>
                   </tr>
                 );

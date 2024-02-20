@@ -1135,6 +1135,7 @@ const [project,setProject]=useState([]);
             <ProjectWorksheet
               WorkSheet={WorkSheet}
               getworksheetbyId={getworksheetbyId}
+              id={id}
             ></ProjectWorksheet>
             {/* <ProjectTimeSheet></ProjectTimeSheet> */}
           </TabPane>

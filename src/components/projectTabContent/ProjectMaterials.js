@@ -327,10 +327,10 @@ const insertProduct = (ProductCode, ItemCode) => {
         // }, 1000);
 
         let qnty=0;
-         if(itemObj.unit==="YardToShip"){
+         if(itemObj.unit==="YardtoShip"){
           qnty-=parseFloat(itemObj.qty)
          }
-         if(itemObj.unit==="ShipToYard"){
+         if(itemObj.unit==="ShiptoYard"){
           qnty+=parseFloat(itemObj.qty)
          }
     api
@@ -445,10 +445,10 @@ const insertProduct = (ProductCode, ItemCode) => {
   // Fetch data from API for unit options
   const getUnitOptions = () => {
     
-      const items = [{value:"YardToShip"},{value:"ShipToYard"}]
+      const items = [{value:"YardToShip",label:"Yard to Ship"},{value:"ShipToYard",label:"Ship to Yard"}]
       const finaldat = [];
       items.forEach((item) => {
-        finaldat.push({ value: item.value, label: item.value });
+        finaldat.push({ value: item.value, label: item.label });
       });
       setUnitOptions(finaldat);
     
@@ -518,7 +518,7 @@ const insertProduct = (ProductCode, ItemCode) => {
                     <td>{element.title}</td>
                     <td>{element.quantity}</td>
                     <td>{moment(element.date).format('DD-MM-YYYY')}</td>
-                    <td>{element.stock_move}</td>
+                    <td>{element.stock_move ==="YardToShip"?"Yard to Ship":element.stock_move ==="ShipToYard"?"Ship to Yard":""}</td>
                    
                     
                   </tr>

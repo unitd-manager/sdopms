@@ -316,6 +316,7 @@ const ClientsEdit = () => {
               editContactEditModal={editContactEditModal}
               setEditContactEditModal={setEditContactEditModal}
               contactData={contactData}
+              getContactLinked={getContactLinked}
             />
           </TabPane>
           {/* clientProject */}
