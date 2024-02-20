@@ -1,6 +1,6 @@
-import React,{useState} from 'react';
-import { Row, Col, FormGroup, Label, Input, Form,Button } from 'reactstrap';
-import { useNavigate,Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Row, Col, FormGroup, Label, Input, Form, Button } from 'reactstrap';
+import { useNavigate, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -11,18 +11,37 @@ import YardStockHistoryModal from './YardStockHistoryModal';
 import ApiButton from '../ApiButton';
 import DamagedStockLogModal from './DamagedStockLogModal';
 
-function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,handleStockinput1,validationMessage,updateStockinInventory1,adjuststock1,handleStockinput2,updateStockinInventory2,adjuststock2 }) {
+function InventoryEditPart({
+  inventoryDetails,
+  handleInputs,
+  editinventoryData,
+  handleStockinput1,
+  yardStockInputValue,
+  setSelectedStatus,
+  selectedStatus,
+  setYardStockInputValue,
+  validationMessage,
+  updateStockinInventory1,
+  adjuststock1,
+  handleStockinput2,
+  updateStockinInventory2,
+  adjuststock2,
+}) {
   InventoryEditPart.propTypes = {
     inventoryDetails: PropTypes.object,
     handleInputs: PropTypes.func,
     editinventoryData: PropTypes.func,
-    handleStockinput1:PropTypes.func,
-    validationMessage:PropTypes.any,
-    updateStockinInventory1:PropTypes.any,
-    adjuststock1:PropTypes.any,
-    handleStockinput2:PropTypes.func,
-    updateStockinInventory2:PropTypes.any,
-    adjuststock2:PropTypes.any
+    handleStockinput1: PropTypes.func,
+    validationMessage: PropTypes.any,
+    updateStockinInventory1: PropTypes.any,
+    adjuststock1: PropTypes.any,
+    setSelectedStatus: PropTypes.any,
+    selectedStatus:PropTypes.any,
+    setYardStockInputValue:PropTypes.any,
+    yardStockInputValue: PropTypes.any,
+    handleStockinput2: PropTypes.func,
+    updateStockinInventory2: PropTypes.any,
+    adjuststock2: PropTypes.any,
   };
   //navigation
   const navigate = useNavigate();
@@ -33,7 +52,7 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
   };
 
   const [stockinputOpen1, setStockinputOpen1] = useState(false);
-  
+
   const [stockinputOpen2, setStockinputOpen2] = useState(false);
   const [modalId1, setModalId1] = useState(null);
   const [adjustStockHistoryModal1, setAdjustStockHistoryModal1] = useState(false);
@@ -48,16 +67,15 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
         <ToastContainer></ToastContainer>
         <Form>
           <FormGroup>
-          
             <ApiButton
               editData={editinventoryData}
               navigate={navigate}
               applyChanges={applyChanges}
               backToList={backToList}
-             // deleteData={deleteLoanData}
+              // deleteData={deleteLoanData}
               module="Inventory"
             ></ApiButton>
-              {/* <Row>
+            {/* <Row>
                 <Col>
                   <Button
                     className="shadow-none"
@@ -95,17 +113,18 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
                   </Button>
                 </Col>
               </Row> */}
-           
-           
-            <ComponentCard title="Product Details" righttitle={<Row>
-                <Col className='fs-10 small'>
-                  <small>Creation :</small>
-                  <small>
-                    {inventoryDetails && inventoryDetails.created_by}
-                    {inventoryDetails &&
-                      inventoryDetails.creation_date}
-                  </small>
-                </Col>
+
+            <ComponentCard
+              title="Product Details"
+              righttitle={
+                <Row>
+                  <Col className="fs-10 small">
+                    <small>Creation :</small>
+                    <small>
+                      {inventoryDetails && inventoryDetails.created_by}
+                      {inventoryDetails && inventoryDetails.creation_date}
+                    </small>
+                  </Col>
 
                   <Col className="fs-10 small">
                     <small>Modification :</small>
@@ -211,130 +230,171 @@ function InventoryEditPart({ inventoryDetails, handleInputs, editinventoryData,h
                     ></Input>
                   </FormGroup>
                 </Col>
-                <Row>
-                <Col md="3">
-                  <FormGroup>
-                    <Label>Damaged Stock</Label>
-                    <Input
-                      onChange={handleStockinput1}
-                      type="text"
-                      defaultValue={inventoryDetails && inventoryDetails.damaged_stock}
-                      name="yard_stock"
-                      disabled
-                    ></Input>
-                  </FormGroup>
+         
+                  <Col md="3">
+                    <FormGroup>
+                      <Label>Damaged Stock</Label>
+                      <Input
+                        onChange={handleStockinput1}
+                        type="text"
+                        defaultValue={inventoryDetails && inventoryDetails.damaged_stock}
+                        name="yard_stock"
+                        disabled
+                      ></Input>
+                    </FormGroup>
+                  </Col>
+ 
+              
+        
+              {stockinputOpen1 && stockChangeId1 === inventoryDetails.inventory_id ? (
+          <Col md="3">
+                  <Col md="11">
+                    <FormGroup>
+                      <Input
+                        type="select"
+                        name="status"
+                        value={selectedStatus}
+                        defaultValue={inventoryDetails.status}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                      >
+                        <option defaultValue="selected">Please Select</option>
+                        <option value="YardToStore">Yard to Store</option>
+                        <option value="storeToYard">Store to Yard</option>
+                      </Input>
+                    </FormGroup>
+                  </Col>
+                  {selectedStatus && (
+                  
+                    <>
+                      {' '}
+                      <Input
+                        type="text"
+                        value={yardStockInputValue}
+                        defaultValue={inventoryDetails.yard_stock}
+                        //onChange={(e) => handleStockinput1(e, inventoryDetails)}
+                        onChange={(e) => {
+                          handleStockinput1(e, inventoryDetails);
+                          setYardStockInputValue(e.target.value);
+                        }}
+                      />
+                      {/* <Col md="6">
+                                <Input
+                                  type="text"
+                                  name="yardToStoreValue"
+                                  placeholder="Enter value"
+                                  value={yardToStoreValue}
+                                  onChange={(e) => setYardToStoreValue(e.target.value)}
+                                />
+                              </Col> */}
+                      <Button
+                        color="primary"
+                        className="shadow-none"
+                        onClick={() => {
+                          if (validationMessage) {
+                            message(validationMessage, 'error');
+                          } else {
+                            adjuststock1(inventoryDetails);
+                            updateStockinInventory1();
+                            setStockinputOpen1(false);
+                            // Reset yardStockInputValue to an empty string
+                            setYardStockInputValue('');
+                          }
+                        }}
+                      >
+                        save
+                      </Button>
+                    </>
+                  )}
+                  {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
                 </Col>
-                </Row>
-                {stockinputOpen1 && stockChangeId1 === inventoryDetails.inventory_id ? (
-                      <Col md='3'>
-                        {' '}
-                        <Input
-                          type="text"
-                          //defaultValue={inventoryDetails&& inventoryDetails.yard_stock}
-                          onChange={(e) => handleStockinput1(e, )}
-                        />
-                        <Button
-                          color="primary"
-                          className="shadow-none"
-                          onClick={() => {
-                            if (validationMessage) {
-                              message(validationMessage, 'error');
-                            } else {
-                              adjuststock1(inventoryDetails);
-                              updateStockinInventory1();
-                              setStockinputOpen1(false);
-                            }
-                          
-                          }}
-                        >
-                          save
-                        </Button>
-                        {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
-                      </Col>
-                    ) : 
-                    (
-                     <Col>
-                        <span
-                          onClick={() => {
-                            setStockChangeId1(inventoryDetails.inventory_id);
-                            setStockinputOpen1(true);
-                          }}
-                        >
-                          <Link to="">Yard Stock</Link>
-                        </span>
-                   </Col>
-                    )}
-                 <Col>
-                      <span
-                        onClick={() => {
-                          setAdjustStockHistoryModal1(true);
-                          setModalId1(inventoryDetails.inventory_id);
-                        }}
-                      >
-                        <Link to="">view</Link>
-                      </span>
-                      {adjustStockHistoryModal1 && (modalId1===inventoryDetails.inventory_id) && <YardStockHistoryModal
-                      adjustStockHistoryModal1={adjustStockHistoryModal1}
-                      setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
-                      inventoryId={modalId1}
-                    />} 
-                    </Col>
+              ) : (
+             
+                  <Col md="3">
+                  <span
+                    onClick={() => {
+                      setStockChangeId1(inventoryDetails.inventory_id);
+                      setStockinputOpen1(true);
+                    }}
+                  >
+                    <Link to="">Yard Stock</Link>
+                  </span>
+                  </Col>
+               
+              )}
+              <Col>
+                <span
+                  onClick={() => {
+                    setAdjustStockHistoryModal1(true);
+                    setModalId1(inventoryDetails.inventory_id);
+                  }}
+                >
+                  <Link to="">view</Link>
+                </span>
+              </Col>
               </Row>
+         
+              {adjustStockHistoryModal1 && modalId1 === inventoryDetails.inventory_id && (
+                <YardStockHistoryModal
+                  adjustStockHistoryModal1={adjustStockHistoryModal1}
+                  setAdjustStockHistoryModal1={setAdjustStockHistoryModal1}
+                  inventoryId={modalId1}
+                />
+              )}
               <Row>
-              {stockinputOpen2 && stockChangeId2 === inventoryDetails.inventory_id ? (
-                      <Col md='3'>
-                        {' '}
-                        <Input
-                          type="text"
-                          //defaultValue={inventoryDetails&& inventoryDetails.damaged_stock}
-                          onChange={(e) => handleStockinput2(e, )}
-                        />
-                        <Button
-                          color="primary"
-                          className="shadow-none"
-                          onClick={() => {
-                            if (validationMessage) {
-                              message(validationMessage, 'error');
-                            } else {
-                              adjuststock2(inventoryDetails);
-                              updateStockinInventory2();
-                              setStockinputOpen2(false);
-                            }
-                          
-                          }}
-                        >
-                          save
-                        </Button>
-                        {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
-                      </Col>
-                    ) : 
-                    (
-                     <Col>
-                        <span
-                          onClick={() => {
-                            setStockChangeId2(inventoryDetails.inventory_id);
-                            setStockinputOpen2(true);
-                          }}
-                        >
-                          <Link to="">Damaged Stock</Link>
-                        </span>
-                   </Col>
-                    )}
-                 <Col>
-                      <span
-                        onClick={() => {
-                          setAdjustStockHistoryModal2(true);
-                          setModalId2(inventoryDetails.inventory_id);
-                        }}
-                      >
-                        <Link to="">view</Link>
-                      </span>
-                      {adjustStockHistoryModal2 && (modalId2===inventoryDetails.inventory_id) && <DamagedStockLogModal
+                {stockinputOpen2 && stockChangeId2 === inventoryDetails.inventory_id ? (
+                  <Col md="3">
+                    {' '}
+                    <Input
+                      type="text"
+                      //defaultValue={inventoryDetails&& inventoryDetails.damaged_stock}
+                      onChange={(e) => handleStockinput2(e)}
+                    />
+                    <Button
+                      color="primary"
+                      className="shadow-none"
+                      onClick={() => {
+                        if (validationMessage) {
+                          message(validationMessage, 'error');
+                        } else {
+                          adjuststock2(inventoryDetails);
+                          updateStockinInventory2();
+                          setStockinputOpen2(false);
+                        }
+                      }}
+                    >
+                      save
+                    </Button>
+                    {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
+                  </Col>
+                ) : (
+                  <Col>
+                    <span
+                      onClick={() => {
+                        setStockChangeId2(inventoryDetails.inventory_id);
+                        setStockinputOpen2(true);
+                      }}
+                    >
+                      <Link to="">Damaged Stock</Link>
+                    </span>
+                  </Col>
+                )}
+                <Col>
+                  <span
+                    onClick={() => {
+                      setAdjustStockHistoryModal2(true);
+                      setModalId2(inventoryDetails.inventory_id);
+                    }}
+                  >
+                    <Link to="">view</Link>
+                  </span>
+                  {adjustStockHistoryModal2 && modalId2 === inventoryDetails.inventory_id && (
+                    <DamagedStockLogModal
                       damagedStockLogModal={adjustStockHistoryModal2}
                       setDamagedStockLogModal={setAdjustStockHistoryModal2}
                       inventoryId={modalId2}
-                    />} 
-                    </Col>
+                    />
+                  )}
+                </Col>
               </Row>
             </ComponentCard>
           </FormGroup>

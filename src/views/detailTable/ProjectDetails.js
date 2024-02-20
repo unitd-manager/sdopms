@@ -227,7 +227,7 @@ console.log('projectdetails',projectDetails)
           <Form>
               <FormGroup>
                 <Row>
-                  <Col md="10">
+                  <Col md="9">
                     <Label>
                       {' '}
                       Title <span className="required"> *</span>{' '}
@@ -239,7 +239,7 @@ console.log('projectdetails',projectDetails)
               </FormGroup>
               <FormGroup>
                 <Row>
-                  <Col md="10">
+                  <Col md="9">
                     <Label>
                       Company Name <span className="required"> *</span>{' '}
                     </Label>

@@ -286,7 +286,7 @@ console.log('work',work)
               })
           })
             message('Worksheet has been created successfully.', 'success');
-        
+            window.location.reload();
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();

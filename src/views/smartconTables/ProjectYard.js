@@ -124,6 +124,7 @@ export default function ProjectYard({
         setIsSubmitting(false);
         resetForm(); // Reset the form fields
         getYard();
+        window.location.reload();
         // Clear the selected names after insertion
       })
       .catch(() => {
@@ -170,7 +171,7 @@ export default function ProjectYard({
       .post('/projecttask/editYardsheet', projectYard1)
       .then(() => {
         message('Yard sheet has been Updated successfully.', 'success');
-
+        window.location.reload();
         getYard();
         setEditYardModal(false);
         // Clear the selected names after insertion

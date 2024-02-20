@@ -75,8 +75,11 @@ export default function ProjectTeam({
     api
       .post(`/projecttask/insertWorkOrder`, insertworkOrder)
       .then(() => {
+        
         getWorkOrderById();
         addToggleWorkOrder();
+        window.location.reload();
+        
         message('Work order updated successfully.', 'success');
         // Assuming this function retrieves updated team data
       })
