@@ -97,7 +97,7 @@ const LeavesEdit = () => {
   //Logic for edit data in db
   const editLeavesData = () => {
     if (!leavesDetails.no_of_days) {
-      message('Please fill No of Days (Current Month)', 'warning');
+      message('Please fill No of Days (Current Month)', 'error');
       return; // Stop further processing
     }
     if (new Date(leavesDetails.to_date) >= new Date(leavesDetails.from_date)) {
@@ -117,7 +117,7 @@ const LeavesEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill all required fields', 'warning');
+        message('Please fill all required fields', 'error');
       }
     }else{
       message('The To date should be the future date of From date', 'error');

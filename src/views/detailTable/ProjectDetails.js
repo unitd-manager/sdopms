@@ -77,7 +77,7 @@ const ProjectDetails = () => {
           message('Network connection error.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'warning');
+      message('Please fill all required fields.', 'error');
     }
   };
 
@@ -227,7 +227,7 @@ console.log('projectdetails',projectDetails)
           <Form>
               <FormGroup>
                 <Row>
-                  <Col md="12">
+                  <Col md="10">
                     <Label>
                       {' '}
                       Title <span className="required"> *</span>{' '}
@@ -239,7 +239,7 @@ console.log('projectdetails',projectDetails)
               </FormGroup>
               <FormGroup>
                 <Row>
-                  <Col md="9">
+                  <Col md="10">
                     <Label>
                       Company Name <span className="required"> *</span>{' '}
                     </Label>

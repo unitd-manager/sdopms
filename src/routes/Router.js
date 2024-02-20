@@ -141,6 +141,7 @@ const InvoiceTable = Loadable(lazy(() => import('../views/smartconTables/Invoice
 const TaskTable = Loadable(lazy(() => import('../views/smartconTables/Task')));
 const ProjectTable = Loadable(lazy(() => import('../views/smartconTables/Project')));
 const ClientTable = Loadable(lazy(() => import('../views/smartconTables/Client')));
+const QuotationTable = Loadable(lazy(() => import('../views/smartconTables/Quotation')));
 const LeadTable = Loadable(lazy(() => import('../views/smartconTables/Lead')));
 const TimesheetTable = Loadable(lazy(() => import('../views/smartconTables/Timesheet')));
 const ProductTable = Loadable(lazy(() => import('../views/smartconTables/product')));
@@ -530,6 +531,7 @@ const Routernew = () => {
 
           <Route path="/Project" name="projectdata" element={<ProjectTable />}></Route>
           <Route path="/Client" name="clienttdata" element={<ClientTable />}></Route>
+          <Route path="/Quotation" name="clienttdata" element={<QuotationTable />}></Route>
           <Route path="/ClientDetails" name="clienttdata" element={<ClientDetailsTable />}></Route>
           {/* <Route path="/TaskDetails" name="taskdata" element={<TaskDetailsTable />}></Route> */}
           <Route path="/Lead" name="leaddata" element={<LeadTable />}></Route>
