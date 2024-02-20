@@ -48,6 +48,18 @@ const ErectionDismantelReport = () => {
       });
   };
 
+
+  const handleProjectSelect = (e) => {
+    const selectedProjectId = e.target.value;
+    if (selectedProjectId === selectedProject) {
+      // If the selected project is the same, reset workOrderNo to "Please Select"
+      setworkOrderNo('');
+    } else {
+      // Otherwise, update the selectedProject and projectName
+      setSelectedProject(selectedProjectId);
+      setProjectName(e.target.options[e.target.selectedIndex].text);
+    }
+  };
   const getCompany = () => {
     api.get('/projecttask/getprojects', project).then((res) => {
       setProject(res.data.data);
@@ -73,6 +85,7 @@ const ErectionDismantelReport = () => {
       .filter((x) => x.project_work_order_id === (workOrderNo === '' ? x.project_work_order_id : workOrderNo))
     setUserSearchData(newData);
   };
+  
 
   console.log(setUserSearchData);
   useEffect(() => {
@@ -171,11 +184,13 @@ const ErectionDismantelReport = () => {
                 <Input
                   type="select"
                   name="project_id"
-                  onChange={(e) => {
-                    //setSelectedProject(e.target.value);
-                    setSelectedProject(e.target.value);
-                    setProjectName(e.target.options[e.target.selectedIndex].text);
-                    }}
+                  // onChange={(e) => {
+                  //   //setSelectedProject(e.target.value);
+                  //   setSelectedProject(e.target.value);
+                  //   setProjectName(e.target.options[e.target.selectedIndex].text);
+                  //   }}
+
+                  onChange={handleProjectSelect}
                 >
                   <option value="">Please Select</option>
                   {project.map((e) => (
@@ -189,10 +204,13 @@ const ErectionDismantelReport = () => {
             <Col md="4">
               <FormGroup>
                 <Label>Project Work Order</Label>
-                <Input type="select" name="project_work_order_id"
+                <Input
+                 type="select" 
+                name="project_work_order_id"
                  onChange={(e) => 
                 
                   setworkOrderNo(e.target.value)}
+                  value={workOrderNo || ''}  
               >
                   <option value="">Please Select</option>
                   {projectWorkOrders.map((e) => (
