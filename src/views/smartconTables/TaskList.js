@@ -262,13 +262,13 @@ const ProjectTask = () => {
             <CommonTable
               loading={loading}
               title="Task List"
-              Button={
-                <Link to="/ProjectTaskDetails">
-                  <Button color="primary" className="shadow-none">
-                    Add New
-                  </Button>
-                </Link>
-              }
+              // Button={
+              //   <Link to="/ProjectTaskDetails">
+              //     <Button color="primary" className="shadow-none">
+              //       Add New
+              //     </Button>
+              //   </Link>
+              // }
             >
               <thead>
                 <tr>

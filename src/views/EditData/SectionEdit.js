@@ -199,8 +199,9 @@ const SectionEdit = () => {
                     <option defaultValue="selected">Please Select</option>
                     <option value="Reports">Reports</option>
                     <option value="Home">Home</option>
-                    <option value="Enquiry/Project">Enquiry/Project</option>
+                    <option value="Enquiry/Project">Tender/Project</option>
                     <option value="Finance/Admin/Purchase">Finance/Admin/Purchase</option>
+                    <option value="Finance/Purchase">Finance/Purchase</option>
                     <option value="Payroll/HR">Payroll/HR</option>
                     <option value="Admin">Admin</option>
                     <option value="MileStone">Milestone</option>

@@ -35,13 +35,20 @@ setRemainderLists(res.data.data);
      
     });
   }
+  console.log('period days',period&&period.days)
   useEffect(()=>{
+    if(period&& period.days !=="" &&period&& period.days !==null){
     const lastDate = new Date(new Date().setDate(today.getDate() + parseFloat(period.days)));
     const remainders= data.filter((el)=>{
     
       return (new Date(el.date_of_expiry)) >= today && (new Date(el.date_of_expiry))<=lastDate
         })
-        setRemainderLists(remainders);
+      
+        setRemainderLists(remainders);}
+        else{
+          console.log('ok')
+          getAllEmployees();
+        }
   },[period&& period.days])
   useEffect(()=>{
     getAllEmployees();
