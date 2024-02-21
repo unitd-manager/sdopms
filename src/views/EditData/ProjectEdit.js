@@ -1080,12 +1080,12 @@ const [project,setProject]=useState([]);
               setEditTeamEditModal={setEditTeamEditModal}
               getTeamById={getTeamById}
             />
-            <ProjectTeamEdit
+           {editTeamModal&& <ProjectTeamEdit
               getTeamById={getTeamById}
               contactDataTeam={contactDataTeam}
               editTeamModal={editTeamModal}
               setEditTeamEditModal={setEditTeamEditModal}
-            />
+            />}
           </TabPane>
           {/* Tab 5 */}
           <TabPane tabId="5">

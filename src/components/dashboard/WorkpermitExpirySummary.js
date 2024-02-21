@@ -33,12 +33,17 @@ setRemainderLists(res.data.data);
     });
   }
   useEffect(()=>{
+    if(period&& period.days !=="" &&period&& period.days !==null){
     const lastDate = new Date(new Date().setDate(today.getDate() + parseFloat(period.days)));
     const remainders= data.filter((el)=>{
     
       return (new Date(el.work_permit_expiry_date)) >= today && (new Date(el.work_permit_expiry_date))<=lastDate
         })
-        setRemainderLists(remainders);
+        setRemainderLists(remainders);}
+        else{
+          console.log('ok')
+          getAllEmployees();
+        }
   },[period&& period.days])
 
   useEffect(()=>{

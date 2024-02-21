@@ -86,7 +86,7 @@ const ProjectTeamEdit = ({
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>First Name</th>
+                          <th>Employee Name</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -95,7 +95,7 @@ const ProjectTeamEdit = ({
                             return (
                               <tr key={element.project_team_id}>
                                 <td>{index + 1}</td>
-                                <td>{element.first_name || element.employee_name}</td>
+                                <td>{element.employee_name}</td>
                               </tr>
                             );
                           })}
