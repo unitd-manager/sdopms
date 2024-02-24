@@ -7,7 +7,7 @@ import { purchaseTableColumn } from '../../data/PurchaseOrder/PurchaseTableColum
 function ProductLinkedTable({
   products,
   setProduct,
-  getCheckedDeliverProducts,
+  //getCheckedDeliverProducts,
   getCheckedPoProducts,
   setEditModal,
   setViewHistoryModal,
@@ -17,7 +17,7 @@ function ProductLinkedTable({
   ProductLinkedTable.propTypes = {
     products: PropTypes.array,
     setProduct: PropTypes.func,
-    getCheckedDeliverProducts: PropTypes.func,
+    //getCheckedDeliverProducts: PropTypes.func,
     getCheckedPoProducts: PropTypes.func,
     setEditModal: PropTypes.func,
     setViewHistoryModal: PropTypes.func,
@@ -51,7 +51,7 @@ function ProductLinkedTable({
                         }}
                       />
                     </td>
-                    <td>
+                    {/* <td>
                       <input
                         type="checkbox"
                         id="dno"
@@ -61,7 +61,7 @@ function ProductLinkedTable({
                           getCheckedDeliverProducts(e, index, element);
                         }}
                       />
-                    </td>
+                    </td> */}
                     <td>{index + 1}</td>
                     <td>{element.item_code}</td>
                     <td>{element.title}</td>

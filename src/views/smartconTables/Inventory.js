@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import * as Icon from 'react-feather';
-import { Input, Button, Row, Col, FormGroup } from 'reactstrap';
+import { Input, Button, Row, Col, FormGroup, Modal,ModalHeader,ModalBody,ModalFooter, Label } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import readXlsxFile from 'read-excel-file';
 import api from '../../constants/api';
 import message from '../../components/Message';
+import AppContext from '../../context/AppContext';
 import { columns } from '../../data/Tender/InventoryData';
 import ViewAdjustStockHistoryModal from '../../components/InventoryTable/ViewAdjustStockHistoryModal';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
@@ -33,6 +34,10 @@ function Inventory() {
   const [stockChangeId1, setStockChangeId1] = useState();
   const [stockInputValue, setStockInputValue] = useState('');
   const [yardStockInputValue, setYardStockInputValue] = useState('');
+  const [yardDateValue, setYardDateValue] = useState('');
+  const [adjustDate, setAdjustDate] = useState('');
+  const { loggedInuser } = useContext(AppContext);
+
   // New state variable for tracking the input value
   const [inventoryStock, setInventoryStock] = useState({
     inventory_id: null,
@@ -112,6 +117,8 @@ function Inventory() {
   const [validationMessage, setValidationMessage] = useState('');
   //adjust stock
   const adjuststock = () => {
+    adjuststockDetails.created_by=loggedInuser.name;
+    adjuststockDetails.date=adjustDate;
     api
       .post('/inventory/insertadjust_stock_log', adjuststockDetails)
       .then(() => {
@@ -171,7 +178,8 @@ if (
   }
       setInventoryStock1({
         inventory_id: element.inventory_id,
-        yard_stock: initialStockValue, // Reset to the initial stock value
+        yard_stock: initialStockValue,
+        date:yardDateValue, // Reset to the initial stock value
         stock: 0,
       });
       return;
@@ -184,11 +192,12 @@ if (
       product_id: element.productId,
       yard_stock: newYardStockValue + (Number(element.yard_stock) || 0),
       // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
+     date:adjustDate,
       modified_by: '',
       created_by: '',
       // actual_stock: initialStockValue - newYardStockValue,
       actual_stock:
-        selectedStatus === 'Yard to Store'
+        selectedStatus === 'YardToStore'
           ? initialStockValue + newYardStockValue
           : initialStockValue,
       status_field: status,
@@ -385,9 +394,16 @@ if (
                     <td>{element.damaged_stock}</td>
 
                     {stockinputOpen1 && stockChangeId1 === element.inventory_id ? (
+                      
                       <td>
-                        <Col>
+                        <Modal size="xl" isOpen={stockinputOpen1}>
+        <ModalHeader>Move Stock</ModalHeader>
+
+        <ModalBody>
+          <Row>
+                        <Col md="3">
                           <FormGroup>
+                            <Label>Move Stock</Label>
                             <Input
                               type="select"
                               name="status"
@@ -401,9 +417,10 @@ if (
                             </Input>
                           </FormGroup>
                         </Col>
-                        {selectedStatus && (
-                          <>
+                       
+                        <Col md="3">
                             {' '}
+                            <Label>Qty</Label>
                             <Input
                               type="text"
                               value={yardStockInputValue}
@@ -423,6 +440,25 @@ if (
                                   onChange={(e) => setYardToStoreValue(e.target.value)}
                                 />
                               </Col> */}
+                              </Col>
+                              <Col md="3">
+                          <FormGroup>
+                            <Label>Date</Label>
+                            <Input
+                              type="date"
+                              name="date"
+                              value={yardDateValue}
+                            //  defaultValue={element.date}
+                              onChange={(e) =>{ setYardDateValue(e.target.value);
+                                //handleStockinput1(e, element);
+                              }}
+                            >
+                              </Input>
+                          </FormGroup>
+                        </Col>
+                              </Row>
+                                </ModalBody>
+        <ModalFooter>
                             <Button
                               color="primary"
                               className="shadow-none"
@@ -440,8 +476,19 @@ if (
                             >
                               save
                             </Button>
-                          </>
-                        )}
+                            <Button
+            color="secondary"
+            className="shadow-none"
+            onClick={() => {
+              setStockinputOpen1(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+                          
+                        
                         {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
                       </td>
                     ) : (
@@ -475,7 +522,14 @@ if (
                     )}
                     {stockinputOpen && stockChangeId === element.inventory_id ? (
                       <td>
+                         <Modal size="xl" isOpen={stockinputOpen}>
+        <ModalHeader>Adjust Stock</ModalHeader>
+
+        <ModalBody>
                         {' '}
+                        <Row>
+                          <Col md="3">
+                            <Label>Qty</Label>
                         <Input
                           type="text"
                           defaultValue={element.stock}
@@ -485,6 +539,22 @@ if (
                             setStockInputValue(e.target.value);
                           }}
                         />
+                        </Col>
+                        <Col md="3">
+                          <Label>Date</Label>
+                        <Input
+                          type="date"
+                         // defaultValue={element.date}
+                          value={adjustDate}
+                          onChange={(e) => {
+                            // handleStockinput(e, element);
+                            setAdjustDate(e.target.value);
+                          }}
+                        />
+                        </Col>
+                        </Row>
+                         </ModalBody>
+        <ModalFooter>
                         <Button
                           color="primary"
                           className="shadow-none"
@@ -497,6 +567,17 @@ if (
                         >
                           save
                         </Button>
+                        <Button
+            color="secondary"
+            className="shadow-none"
+            onClick={() => {
+              setStockinputOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
                       </td>
                     ) : (
                       <td>

@@ -22,6 +22,7 @@ import api from '../../constants/api';
 import message from '../Message'
 import creationdatetime from '../../constants/creationdatetime';
 
+
 const AddPoModal = ({
   projectId,
   supplierId,
@@ -203,7 +204,7 @@ console.log('shipstock',shipStock)
     const items = res.data.data;
     const finaldat = [];
     items.forEach((item) => {
-      finaldat.push({ value: item.product_id, label: item.title });
+      finaldat.push({ value: item.product_id, label: item.title, stock: item.actual_stock,ystock:item.yard_stock ,sstock:item.shipStock });
     });
     setProductValue(finaldat);
   });
@@ -301,8 +302,30 @@ const insertProduct = (ProductCode, ItemCode) => {
         message('Tab Purchase Order not found', 'info');
       });
   };
+  console.log('loggedinuser',loggedInuser)
   const poProduct = (itemObj) => {
-    
+    itemObj.created_by=loggedInuser.name;
+    let qnty=0;
+    if(itemObj.unit==="" ||!itemObj.unit){
+     
+        message('Please select the option to move stock', 'error');
+        
+      
+    }
+    if(itemObj.unit==="YardToShip"){
+      if(parseFloat(itemObj.qty)>parseFloat(itemObj.qty_in_yard)){
+        message('Stock in Yard in less than the quantity you entered', 'error');
+        return
+      }
+     qnty=parseFloat(-(itemObj.qty))
+    }
+    if(itemObj.unit==="ShipToYard"){
+      if(parseFloat(itemObj.qty)>parseFloat(itemObj.qty_in_ship)){
+        message('Stock in Ship in less than the quantity you entered', 'error');
+        return
+      }
+     qnty=parseFloat(itemObj.qty)
+    }
     api
       .post('/projecttabmaterialusedportal/insertStockExchange', {
        
@@ -311,9 +334,10 @@ const insertProduct = (ProductCode, ItemCode) => {
         quantity: itemObj.qty,
         unit: itemObj.unit,
         description: itemObj.description,
-        date:new Date(),
+        date:itemObj.date||new Date(),
         creation_date: new Date(),
         modification_date: new Date(),
+        created_by:itemObj.created_by,
         stock_move: itemObj.unit,
         qty: parseInt(itemObj.qty, 10),
         product_id: itemObj.product_id,
@@ -326,13 +350,7 @@ const insertProduct = (ProductCode, ItemCode) => {
         //   window.location.reload();
         // }, 1000);
 
-        let qnty=0;
-         if(itemObj.unit==="YardtoShip"){
-          qnty-=parseFloat(itemObj.qty)
-         }
-         if(itemObj.unit==="ShiptoYard"){
-          qnty+=parseFloat(itemObj.qty)
-         }
+     
     api
     .post('/inventory/updateInventoryYardStock', {
       quantity: qnty,
@@ -340,10 +358,12 @@ const insertProduct = (ProductCode, ItemCode) => {
    
     })
     .then(() => {
+      console.log('qnty',qnty);
+      console.log('product_id',itemObj.product_id);
       message('Product Added!', 'success');
       setTimeout(() => {
         window.location.reload();
-      }, 1500);
+      }, 1300);
     })
     .catch(() => {
       message('Unable to update yard stock', 'error');
@@ -438,7 +458,10 @@ const insertProduct = (ProductCode, ItemCode) => {
     element.title = str.label;
     element.item_title = str.label;
     element.product_id = str.value.toString();
-    setMoreItem(addMoreItem);
+    element.qty_in_stock = str.stock;
+    element.qty_in_yard=str.ystock;
+    element.qty_in_ship=str.sstock;
+    setMoreItem([...addMoreItem]);
   };
   const [unitOptions, setUnitOptions] = useState([]);
 
@@ -502,10 +525,11 @@ const insertProduct = (ProductCode, ItemCode) => {
           <thead>
             <tr>
               <th>#</th>
+              <th> Date</th>
               <th>Product</th>
               <th>Quantity</th>
-              <th> Date</th>
-              <th> Stock Move</th>
+              <th> Move Stock</th>
+              <th>Moved By</th>
              
             </tr>
           </thead>
@@ -515,12 +539,12 @@ const insertProduct = (ProductCode, ItemCode) => {
                 return (
                   <tr key={element.stock_exchange_log_id}>
                     <td>{index + 1}</td>
+                    <td>{moment(element.date).format('DD-MM-YYYY')}</td>
                     <td>{element.title}</td>
                     <td>{element.quantity}</td>
-                    <td>{moment(element.date).format('DD-MM-YYYY')}</td>
                     <td>{element.stock_move ==="YardToShip"?"Yard to Ship":element.stock_move ==="ShipToYard"?"Ship to Yard":""}</td>
                    
-                    
+                    <td>{element.created_by}</td>
                   </tr>
                 );
               })}
@@ -535,7 +559,7 @@ const insertProduct = (ProductCode, ItemCode) => {
             <Row>
               <Col md="12" className="mb-4">
                 <Row>
-                  <Col md="3">
+                  {/* <Col md="3">
                     <Button
                       color="primary"
                       className="shadow-none"
@@ -545,7 +569,7 @@ const insertProduct = (ProductCode, ItemCode) => {
                     >
                       Add New Product
                     </Button>
-                  </Col>
+                  </Col> */}
                   <Col md="3">
                     <Button
                       color="primary"
@@ -568,9 +592,12 @@ const insertProduct = (ProductCode, ItemCode) => {
                   <th width="20%" scope="col">
                     Item
                   </th>
-                  <th scope="col">Stock Move</th>
+                 
+                  <th scope="col">Move Stock</th>
+                  <th scope="col">Stock in Yard</th>
+                  <th scope="col">Stock in Ship</th>
                   <th scope="col">Quantity</th>
-                  
+                  <th scope="col">Date</th>
                  
                   <th scope="col"></th>
                 </tr>
@@ -590,6 +617,7 @@ const insertProduct = (ProductCode, ItemCode) => {
                         />
                         <Input value={item.product_id} type="hidden" name="product_id"></Input>
                         <Input value={item.title} type="hidden" name="title"></Input>
+                        
                           {/* <div className="autocomplete-container">
       <Input className="autocomplete-input"
         type="text"
@@ -626,7 +654,7 @@ const insertProduct = (ProductCode, ItemCode) => {
                         /> 
                       </td> */}
                     
-                    <td data-label="Stock Move">
+                    <td data-label="Move Stock">
                         <Select
                           name="stock_move"
                           defaultValue={{ value: item.unit, label: item.unit }}
@@ -634,6 +662,8 @@ const insertProduct = (ProductCode, ItemCode) => {
                           options={unitOptions}
                         />
                       </td>
+                      <td data-label="Stock in Yard">{item.qty_in_yard}</td>
+                      <td data-label="Stock in Ship">{item.qty_in_ship}</td>
                       <td data-label="Qty">
                         <Input
                           defaultValue={item.qty}
@@ -643,7 +673,15 @@ const insertProduct = (ProductCode, ItemCode) => {
                           value={insertPurchaseOrderData && insertPurchaseOrderData.qty}
                         />
                       </td>
-                   
+                      <td data-label="Date">
+                        <Input
+                          defaultValue={item.date}
+                          type="date"
+                          name="date"
+                          onChange={(e) => updateState(index, 'date', e)}
+                          value={insertPurchaseOrderData && insertPurchaseOrderData.date}
+                        />
+                      </td>
                  
                       
                       <td data-label="Action">

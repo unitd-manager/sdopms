@@ -1,12 +1,12 @@
 import React, { useEffect, useState,useContext } from 'react';
-import * as Icon from 'react-feather';
+//import * as Icon from 'react-feather';
 import { Row, Col, Button, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
-import moment from 'moment';
+//import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import AddNote from '../../components/Tender/AddNote';
 import ViewNote from '../../components/Tender/ViewNote';
@@ -19,10 +19,10 @@ import AttachmentTab from '../../components/purchaseOrder/AttachmentTab';
 import PurchaseOrderlineItemEdit from '../../components/purchaseOrder/PurchaseOrderLineItem';
 //import PurchaseOrderButtons from '../../components/purchaseOrder/PurchaseOrderButtons';
 import ViewHistoryModal from '../../components/purchaseOrder/ViewHistoryModal';
-import DeliveryOrderEditModal from '../../components/purchaseOrder/DeliveryOrderEditModal';
+//import DeliveryOrderEditModal from '../../components/purchaseOrder/DeliveryOrderEditModal';
 import PurchaseOrderDetailsPart from '../../components/purchaseOrder/PurchaseOrderDetailsPart';
 import ProductLinkedTable from '../../components/purchaseOrder/ProductLinkedTable';
-import PdfDeliveryOrderPO from '../../components/PDF/PdfDeliveryOrderPO';
+//import PdfDeliveryOrderPO from '../../components/PDF/PdfDeliveryOrderPO';
 import PdfPurchaseOrder from '../../components/PDF/PdfPurchaseOrder';
 import PdfPurchaseOrderPrice from '../../components/PDF/PdfPurchaseOrderPrice';
 import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -48,11 +48,11 @@ const PurchaseOrderEdit = () => {
   });
   const [activeTab, setActiveTab] = useState('1');
   const [viewHistoryModal, setViewHistoryModal] = useState(false);
-  const [deliveryOrderEditModal, setDeliveryOrderEditModal] = useState(false);
+  //const [deliveryOrderEditModal, setDeliveryOrderEditModal] = useState(false);
   const [selectedPoProducts, setSelectedPoProducts] = useState([]);
   const [selectedPoDelivers, setSelectedPoDelivers] = useState([]);
-  const [deliveryOrderId, setDeliveryOrderId] = useState();
-  const [deliveryOrders, setDeliveryOrders] = useState([]);
+ // const [deliveryOrderId, setDeliveryOrderId] = useState();
+  //const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [supplierId, setSupplierId] = useState();
   const [gTotal, setGtotal] = useState(0);
   const [grTotal, setGrTotal] = useState(0);
@@ -147,49 +147,49 @@ const PurchaseOrderEdit = () => {
   //Delivery order
 
 
-const deliverOrder = () => {
-  if (selectedPoDelivers && selectedPoDelivers.length > 0) {
-    const confirmDelivery = window.confirm("Do you want to create a delivery order?");
+// const deliverOrder = () => {
+//   if (selectedPoDelivers && selectedPoDelivers.length > 0) {
+//     const confirmDelivery = window.confirm("Do you want to create a delivery order?");
     
-    if (confirmDelivery) {
-      api.post('/Purchaseorder/insertDeliveryOrder', { purchase_order_id: id }).then((res) => {
-        selectedPoDelivers.forEach((elem) => {
-          elem.delivery_order_id = res.data.data.insertId;
-          elem.purchase_order_id = id;
+//     if (confirmDelivery) {
+//       api.post('/Purchaseorder/insertDeliveryOrder', { purchase_order_id: id }).then((res) => {
+//         selectedPoDelivers.forEach((elem) => {
+//           elem.delivery_order_id = res.data.data.insertId;
+//           elem.purchase_order_id = id;
 
-          api
-            .post('/Purchaseorder/insertDeliveryOrderHistory', elem)
-            .then(() => {
-              message('Inserted successfully.', 'success');
-              setTimeout(() => {
-                window.location.reload();
-              }, 300);
-            })
-            .catch(() => {
-              message('unable to deliver.', 'danger');
-            });
-        });
-      });
-    }
-  } else {
-    alert('Please select at least one product');
-  }
-};
+//           api
+//             .post('/Purchaseorder/insertDeliveryOrderHistory', elem)
+//             .then(() => {
+//               message('Inserted successfully.', 'success');
+//               setTimeout(() => {
+//                 window.location.reload();
+//               }, 300);
+//             })
+//             .catch(() => {
+//               message('unable to deliver.', 'danger');
+//             });
+//         });
+//       });
+//     }
+//   } else {
+//     alert('Please select at least one product');
+//   }
+// };
 
 
 
   // get delivery orders
 
-  const getDeliveryOrders = () => {
-    api
-      .post('/Purchaseorder/getDeliveryOrder', { purchase_order_id: id })
-      .then((res) => {
-        setDeliveryOrders(res.data.data);
-      })
-      .catch(() => {
-        message('DeliveryOrder Data Not Found', 'info');
-      });
-  };
+  // const getDeliveryOrders = () => {
+  //   api
+  //     .post('/Purchaseorder/getDeliveryOrder', { purchase_order_id: id })
+  //     .then((res) => {
+  //       setDeliveryOrders(res.data.data);
+  //     })
+  //     .catch(() => {
+  //       message('DeliveryOrder Data Not Found', 'info');
+  //     });
+  // };
   const { loggedInuser } = useContext(AppContext);
   //Update Setting
   const editPurchaseData = () => {
@@ -279,9 +279,9 @@ const deliverOrder = () => {
 
   // Start for tab refresh navigation #Renuka 1-06-23
   const tabs = [
-    { id: '1', name: 'Delivery order' },
-    { id: '2', name: 'Attachments' },
-    { id: '3', name: 'Notes' },
+    // { id: '1', name: 'Delivery order' },
+    { id: '1', name: 'Attachments' },
+    { id: '2', name: 'Notes' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -305,7 +305,7 @@ const deliverOrder = () => {
     getSupplier();
     getPoProduct();
     getPurchaseOrderId();
-    getDeliveryOrders();
+    //getDeliveryOrders();
   }, [id]);
 
   return (
@@ -383,7 +383,7 @@ const deliverOrder = () => {
               Add all Qty to Stock
             </Button>
           </Col>
-          <Col md="2">
+          {/* <Col md="2">
             <Button
               color="primary"
               onClick={() => {
@@ -392,7 +392,7 @@ const deliverOrder = () => {
             >
               Delivery Order
             </Button>
-          </Col>
+          </Col> */}
           <Col md="3">
             <b color="primary">Grand Total(for delivered qty):{grTotal}</b>
           </Col>
@@ -429,19 +429,19 @@ const deliverOrder = () => {
         />
       )}
 
-      {deliveryOrderEditModal && (
+      {/* {deliveryOrderEditModal && (
         <DeliveryOrderEditModal
           deliveryOrderEditModal={deliveryOrderEditModal}
           setDeliveryOrderEditModal={setDeliveryOrderEditModal}
           deliveryOrderId={deliveryOrderId}
         />
-      )}
+      )} */}
       <ComponentCard title="More Details">
         <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
-          <TabPane tabId="1">
+          {/* <TabPane tabId="1"> */}
             {/* delivery order  */}
-            {deliveryOrders &&
+            {/* {deliveryOrders &&
               deliveryOrders.map((element) => {
                 return (
                   <Row key={element.delivery_order_id}>
@@ -467,9 +467,9 @@ const deliverOrder = () => {
                     </Col>
                   </Row>
                 );
-              })}
-          </TabPane>
-          <TabPane tabId="2">
+              })} */}
+          {/* </TabPane> */}
+          <TabPane tabId="1">
             <Row>
               <AttachmentTab
                 dataForPicture={dataForPicture}
@@ -482,7 +482,7 @@ const deliverOrder = () => {
               />
             </Row>
           </TabPane>
-          <TabPane tabId="3">
+          <TabPane tabId="2">
             <Row>
               <AddNote recordId={id} roomName="PurchaseOrderEdit" />
               <ViewNote recordId={id} roomName="PurchaseOrderEdit" />
