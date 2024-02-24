@@ -1,9 +1,9 @@
 import * as Icon from 'react-feather'
 
 export const purchaseTableColumn = [
-  // {
-  //   name: '',
-  // },
+  {
+    name: '',
+  },
   // {
   //   name: 'D.O',
   // },
@@ -35,7 +35,7 @@ export const purchaseTableColumn = [
     name: 'Damaged Qty	',
   },
   {
-    name: 'Added to Stock	',
+    name: 'Delivered Qty	',
   },
   {
     name: 'Qty Balance	',

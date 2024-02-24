@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, FormGroup, Label, Input, Form, Button } from 'reactstrap';
+import { Row, Col, FormGroup, Label, Input, Form, Button, Modal,ModalHeader,ModalFooter,ModalBody } from 'reactstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
@@ -226,8 +226,14 @@ function InventoryEditPart({
               
         
               {stockinputOpen1 && stockChangeId1 === inventoryDetails.inventory_id ? (
-          <Col md="3">
-                  <Col md="11">
+                         <Modal size="xl" isOpen={stockinputOpen1}>
+                         <ModalHeader>Move Stock</ModalHeader>
+                 
+                         <ModalBody>
+                           <Row>
+          
+                  <Col md="3">
+                    <Label>Move Stock</Label>
                     <FormGroup>
                       <Input
                         type="select"
@@ -242,10 +248,11 @@ function InventoryEditPart({
                       </Input>
                     </FormGroup>
                   </Col>
-                  {selectedStatus && (
+                 
                   
-                    <>
+                    <Col md="3">
                       {' '}
+                      <Label>Qty</Label>
                       <Input
                         type="text"
                         value={yardStockInputValue}
@@ -256,6 +263,7 @@ function InventoryEditPart({
                           setYardStockInputValue(e.target.value);
                         }}
                       />
+                      </Col>
                       {/* <Col md="6">
                                 <Input
                                   type="text"
@@ -265,6 +273,10 @@ function InventoryEditPart({
                                   onChange={(e) => setYardToStoreValue(e.target.value)}
                                 />
                               </Col> */}
+                              
+                              </Row>
+                              </ModalBody>
+        <ModalFooter>
                       <Button
                         color="primary"
                         className="shadow-none"
@@ -282,10 +294,20 @@ function InventoryEditPart({
                       >
                         save
                       </Button>
-                    </>
-                  )}
-                  {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
-                </Col>
+                      <Button
+            color="secondary"
+            className="shadow-none"
+            onClick={() => {
+              setStockinputOpen1(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+                    
+                 
+                  
               ) : (
              
                   <Col md="3">

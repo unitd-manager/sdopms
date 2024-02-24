@@ -1,11 +1,12 @@
 import React, { useEffect, useState,useContext } from 'react';
+//import * as Icon from 'react-feather';
 import { Row, Col, Button, TabContent, TabPane } from 'reactstrap';
 import { ToastContainer } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../form-editor/editor.scss';
-// import moment from 'moment';
+//import moment from 'moment';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import AddNote from '../../components/Tender/AddNote';
 import ViewNote from '../../components/Tender/ViewNote';
@@ -18,10 +19,10 @@ import AttachmentTab from '../../components/purchaseOrder/AttachmentTab';
 import PurchaseOrderlineItemEdit from '../../components/purchaseOrder/PurchaseOrderLineItem';
 //import PurchaseOrderButtons from '../../components/purchaseOrder/PurchaseOrderButtons';
 import ViewHistoryModal from '../../components/purchaseOrder/ViewHistoryModal';
-import DeliveryOrderEditModal from '../../components/purchaseOrder/DeliveryOrderEditModal';
+//import DeliveryOrderEditModal from '../../components/purchaseOrder/DeliveryOrderEditModal';
 import PurchaseOrderDetailsPart from '../../components/purchaseOrder/PurchaseOrderDetailsPart';
 import ProductLinkedTable from '../../components/purchaseOrder/ProductLinkedTable';
-// import PdfDeliveryOrderPO from '../../components/PDF/PdfDeliveryOrderPO';
+//import PdfDeliveryOrderPO from '../../components/PDF/PdfDeliveryOrderPO';
 import PdfPurchaseOrder from '../../components/PDF/PdfPurchaseOrder';
 import PdfPurchaseOrderPrice from '../../components/PDF/PdfPurchaseOrderPrice';
 import ComponentCardV2 from '../../components/ComponentCardV2';
@@ -48,12 +49,12 @@ const PurchaseOrderEdit = () => {
   });
   const [activeTab, setActiveTab] = useState('1');
   const [viewHistoryModal, setViewHistoryModal] = useState(false);
-  const [deliveryOrderEditModal, setDeliveryOrderEditModal] = useState(false);
+  //const [deliveryOrderEditModal, setDeliveryOrderEditModal] = useState(false);
   const [selectedPoProducts, setSelectedPoProducts] = useState([]);
   const [addDeliveryInvoiceModal, setDeliveryInvoiceModal] = useState(false);
   const [selectedPoDelivers, setSelectedPoDelivers] = useState([]);
-  // const [deliveryOrderId, setDeliveryOrderId] = useState();
-  // const [deliveryOrders, setDeliveryOrders] = useState([]);
+ // const [deliveryOrderId, setDeliveryOrderId] = useState();
+  //const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [supplierId, setSupplierId] = useState();
   const [gTotal, setGtotal] = useState(0);
   const [grTotal, setGrTotal] = useState(0);
@@ -308,6 +309,7 @@ const PurchaseOrderEdit = () => {
     getPoProduct();
     getPurchaseOrderId();
     //getDeliveryOrders();
+    //getDeliveryOrders();
   }, [id]);
 
   return (
@@ -384,7 +386,7 @@ const PurchaseOrderEdit = () => {
             >
               Add all Qty to Stock
             </Button>
-          </Col> */}
+          </Col>
           {/* <Col md="2">
             <Button
               color="primary"
@@ -431,13 +433,13 @@ const PurchaseOrderEdit = () => {
         />
       )}
 
-      {deliveryOrderEditModal && (
+      {/* {deliveryOrderEditModal && (
         <DeliveryOrderEditModal
           deliveryOrderEditModal={deliveryOrderEditModal}
           setDeliveryOrderEditModal={setDeliveryOrderEditModal}
           //deliveryOrderId={deliveryOrderId}
         />
-      )}
+      )} */}
       <ComponentCard title="More Details">
         <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
@@ -492,7 +494,7 @@ const PurchaseOrderEdit = () => {
               />
             </Row>
           </TabPane>
-          <TabPane tabId="3">
+          <TabPane tabId="2">
             <Row>
               <AddNote recordId={id} roomName="PurchaseOrderEdit" />
               <ViewNote recordId={id} roomName="PurchaseOrderEdit" />
