@@ -26,6 +26,7 @@ import ProductLinkedTable from '../../components/purchaseOrder/ProductLinkedTabl
 import PdfPurchaseOrder from '../../components/PDF/PdfPurchaseOrder';
 import PdfPurchaseOrderPrice from '../../components/PDF/PdfPurchaseOrderPrice';
 import ComponentCardV2 from '../../components/ComponentCardV2';
+import DeliveryInvoice from '../../components/purchaseOrder/DeliveryInvoice';
 import Tab from '../../components/project/Tab';
 import ApiButton from '../../components/ApiButton';
 import AppContext from '../../context/AppContext';
@@ -50,6 +51,7 @@ const PurchaseOrderEdit = () => {
   const [viewHistoryModal, setViewHistoryModal] = useState(false);
   //const [deliveryOrderEditModal, setDeliveryOrderEditModal] = useState(false);
   const [selectedPoProducts, setSelectedPoProducts] = useState([]);
+  const [addDeliveryInvoiceModal, setDeliveryInvoiceModal] = useState(false);
   const [selectedPoDelivers, setSelectedPoDelivers] = useState([]);
  // const [deliveryOrderId, setDeliveryOrderId] = useState();
   //const [deliveryOrders, setDeliveryOrders] = useState([]);
@@ -84,6 +86,7 @@ const PurchaseOrderEdit = () => {
       .post('/Purchaseorder/TabPurchaseOrderLineItemById', { purchase_order_id: id })
       .then((res) => {
         setProducts(res.data.data);
+        //setProducts(res.data.data.map(product => ({ ...product, product_id: product.id })));
         //grand total
         let grandTotal = 0;
         let grand = 0;
@@ -114,35 +117,35 @@ const PurchaseOrderEdit = () => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
-  //Add to stocks
-  const addQtytoStocks = () => {
-    if (selectedPoProducts && selectedPoProducts.length > 0) { 
-      selectedPoProducts.forEach((elem) => {
-        if (elem.status !== 'Closed') {
-          elem.status = 'Closed';
-          elem.qty_updated = elem.qty_delivered;
-          elem.qty_in_stock += parseFloat(elem.qty_delivered);
+  // //Add to stocks
+  // const addQtytoStocks = () => {
+  //   if (selectedPoProducts && selectedPoProducts.length > 0) { 
+  //     selectedPoProducts.forEach((elem) => {
+  //       if (elem.status !== 'Closed') {
+  //         elem.status = 'Closed';
+  //         elem.qty_updated = elem.qty_delivered;
+  //         elem.qty_in_stock += parseFloat(elem.qty_delivered);
 
-          api
-            .post('/inventory/editInventoryStock', elem)
-            .then(() => {
+  //         api
+  //           .post('/inventory/editInventoryStock', elem)
+  //           .then(() => {
             
-              message('Quantity added successfully.', 'success');
-               setTimeout(() => {
-          window.location.reload();
-        }, 800);
-            })
-            .catch(() => {
-              message('unable to add quantity.', 'danger');
-            });
-        } else {
-          message('This product is already added', 'danger');
-        }
-      });
-    } else {
-      Swal.fire('Please select atleast one product!');
-    }
-  };
+  //             message('Quantity added successfully.', 'success');
+  //              setTimeout(() => {
+  //         window.location.reload();
+  //       }, 800);
+  //           })
+  //           .catch(() => {
+  //             message('unable to add quantity.', 'danger');
+  //           });
+  //       } else {
+  //         message('This product is already added', 'danger');
+  //       }
+  //     });
+  //   } else {
+  //     Swal.fire('Please select atleast one product!');
+  //   }
+  // };
 
   //Delivery order
 
@@ -279,9 +282,9 @@ const PurchaseOrderEdit = () => {
 
   // Start for tab refresh navigation #Renuka 1-06-23
   const tabs = [
-    // { id: '1', name: 'Delivery order' },
-    { id: '1', name: 'Attachments' },
-    { id: '2', name: 'Notes' },
+    { id: '1', name: 'Delivery Invoice' },
+    { id: '2', name: 'Attachments' },
+    { id: '3', name: 'Notes' },
   ];
   const toggle = (tab) => {
     setActiveTab(tab);
@@ -305,6 +308,7 @@ const PurchaseOrderEdit = () => {
     getSupplier();
     getPoProduct();
     getPurchaseOrderId();
+    //getDeliveryOrders();
     //getDeliveryOrders();
   }, [id]);
 
@@ -373,7 +377,7 @@ const PurchaseOrderEdit = () => {
               Add Product
             </Button>
           </Col>
-          <Col md="2">
+          {/* <Col md="2">
             <Button
               color="success"
               onClick={() => {
@@ -433,13 +437,13 @@ const PurchaseOrderEdit = () => {
         <DeliveryOrderEditModal
           deliveryOrderEditModal={deliveryOrderEditModal}
           setDeliveryOrderEditModal={setDeliveryOrderEditModal}
-          deliveryOrderId={deliveryOrderId}
+          //deliveryOrderId={deliveryOrderId}
         />
       )} */}
       <ComponentCard title="More Details">
         <Tab toggle={toggle} tabs={tabs} />
         <TabContent className="p-4" activeTab={activeTab}>
-          {/* <TabPane tabId="1"> */}
+          {/* <TabPane tabId="1">
             {/* delivery order  */}
             {/* {deliveryOrders &&
               deliveryOrders.map((element) => {
@@ -467,9 +471,17 @@ const PurchaseOrderEdit = () => {
                     </Col>
                   </Row>
                 );
-              })} */}
-          {/* </TabPane> */}
+              })}
+          </TabPane> */} 
+
           <TabPane tabId="1">
+            <DeliveryInvoice
+             products={products}
+             addDeliveryInvoiceModal={addDeliveryInvoiceModal}
+             setDeliveryInvoiceModal={setDeliveryInvoiceModal}
+             projectId={id}></DeliveryInvoice>
+          </TabPane>
+          <TabPane tabId="2">
             <Row>
               <AttachmentTab
                 dataForPicture={dataForPicture}

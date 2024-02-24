@@ -68,10 +68,10 @@ function ProductLinkedTable({
                     <td>{element.cost_price}</td>
                     <td>{element.selling_price}</td>
                     <td>{element.gst}</td>
-                    <td>{element.qty_in_stock}</td>
+                    <td>{element.qty_delivered}</td>
                     <td>{element.qty}</td>
                     <td>{element.damage_qty}</td>
-                    <td>{element.qty_delivered}</td>
+                    <td>{element.stock}</td>
                     <td>{element.qty_balance}</td>
                     <td>{element.status}</td>
                     <td>{element.po_value}</td>

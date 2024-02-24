@@ -457,17 +457,20 @@ const PdfCreateInvoice = ({ invoiceId, projectDetail }) => {
           ],
         },
         '\n\n',
+        // {
+        //   text: `Terms and Conditions: `,
+        //   fontSize: 11,
+        //   decoration: 'underline',
+        //   margin: [0, 5, 0, 0],
+        //   style: ['notesText', 'textSize'],
+        // },
+        // ...conditionsContent, // Add each condition as a separate paragraph
 
-        {
-          text: 'Terms and conditions : \n\n 1.The above rates are in Singapore Dollars. \n\n 2. Payment Terms 30 days from the date of Invoice \n\n  3.Payment should be made in favor of " CUBOSALE ENGINEERING PTE LTD " \n\n 4.Any discrepancies please write to us within 3 days from the date of invoice  \n\n\n 5. For Account transfer \n\n \n\n',
-          style: 'textSize',
-        },
-        {
-          text: 'UNITED OVERSEAS BANK \n ACCT NAME: CUBOSALE ENGINEERING PTE LTD \n ACCT NO.:- 3923023427 \n Paynow By UEN : 201222688M   \n\n',
-          style: 'textSize',
-          bold: true,
-        },
-
+        // {
+        //   text: 'Terms and conditions : \n\n 1.The above rates are in Singapore Dollars. \n\n 2. Payment Terms 30 days from the date of Invoice \n\n  3.Payment should be made in favor of " CUBOSALE ENGINEERING PTE LTD " \n\n 4.Any discrepancies please write to us within 3 days from the date of invoice  \n\n\n 5. For Account transfer \n\n \n\n',
+        //   style: 'textSize',
+        // },
+       
         '\n\n',
       ],
       margin: [0, 50, 50, 50],
