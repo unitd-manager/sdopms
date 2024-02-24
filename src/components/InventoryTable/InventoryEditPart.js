@@ -350,7 +350,7 @@ function InventoryEditPart({
               <Row>
                 {stockinputOpen2 && stockChangeId2 === inventoryDetails.inventory_id ? (
                   <Modal size="xl" isOpen={stockinputOpen2}>
-                  <ModalHeader>Move Stock</ModalHeader>
+                  <ModalHeader>Damaged Stock</ModalHeader>
           
                   <ModalBody>
                     <Row>
@@ -395,7 +395,7 @@ function InventoryEditPart({
             color="secondary"
             className="shadow-none"
             onClick={() => {
-              setStockinputOpen1(false);
+              setStockinputOpen2(false);
             }}
           >
             Cancel
