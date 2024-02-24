@@ -219,7 +219,14 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
     api
       .post('/Purchaseorder/TabPurchaseOrderLineItemById', { purchase_order_id: projectId })
       .then((res) => {
-        setProducts(res.data.data);
+        const items = res.data.data;
+        console.log('items',items)
+        const finaldat = [];
+        items.forEach((item) => {
+          finaldat.push({ value: item.product_id, label: item.title,...item });
+        });
+        setProducts(finaldat);
+        console.log('finaldat',finaldat)
         const poProductIds = res.data.data.map((item) => item.po_product_id);
       setPoProductIds(poProductIds); // Store po_product_ids
 
@@ -242,9 +249,10 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
   console.log('pro', products);
   
 
-  const poProduct = (itemObj, deliveryInvoiceId, poProductId) => {
+  const poProduct = (itemObj, deliveryInvoiceId) => {
     console.log("All Products:", products);
-    const currentProduct = products.find((product) => product.po_product_id === poProductId);
+    console.log("All itemobj:", itemObj);
+    const currentProduct = products.find((product) => product.po_product_id === itemObj.po_product_id);
     console.log("All Products1:", products);
     console.log("currentProduct",currentProduct)
     if (currentProduct) {
@@ -271,7 +279,7 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
           purchase_order_id: projectId,
           delivery_invoice_id: deliveryInvoiceId,
           item_title: itemObj.title,
-          po_product_id: poProductId,
+          po_product_id: itemObj.po_product_id,
           quantity: itemObj.qty,
           qty: parseInt(itemObj.qty, 10),
           product_id: itemObj.product_id,
@@ -307,7 +315,8 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
         });
     }
   };
-
+console.log('addMoreItem',addMoreItem);
+console.log('getProductValue',getProductValue);
   const getAllValues = async () => {
 
      // Validate invoice_date and invoice_code
@@ -327,9 +336,10 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
 
       const deliveryInvoiceId = response.data.data.insertId;
 
-      addMoreItem.forEach((item, index) => {
+      addMoreItem.forEach((item) => {
         if (item.qty !== '' || !item.qty) {
-          poProduct(item, deliveryInvoiceId, poProductIds1[index]);
+          console.log('item')
+          poProduct(item, deliveryInvoiceId);
         }
       });
       // Validate each line item
@@ -395,6 +405,9 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
     element.title = str.label;
     element.item_title = str.label;
     element.product_id = str.value.toString();
+    element.po_product_id = str.po_product_id;
+    element.stock = str.stock;
+    element.qty_in_stock = str.qty_in_stock;
     setMoreItem(addMoreItem);
   };
   const [unitOptions, setUnitOptions] = useState([]);
@@ -558,11 +571,11 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
                       <td data-label="title">
                         <Select
                           key={item.id}
-                          defaultValue={{ value: item.product_id, label: item.title }}
+                          defaultValue={{ value: item.product_id, label: item.title,product_id:item.product_id, po_product_id:item.po_product_id }}
                           onChange={(e) => {
                             onchangeItem(e, item.id);
                           }}
-                          options={getProductValue}
+                          options={products}
                         />
                         <Input value={item.product_id} type="hidden" name="product_id"></Input>
                         <Input value={item.title} type="hidden" name="title"></Input>
