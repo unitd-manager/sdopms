@@ -309,7 +309,10 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
             .catch(() => {
               message('Unable to update product qty_to_stock.', 'error');
             });
+            // Close the modal only after successful updates
+        //setDeliveryInvoiceModal(false);
         })
+        
         .catch(() => {
           message('Unable to create inventory record.', 'error');
         });
@@ -320,19 +323,19 @@ console.log('getProductValue',getProductValue);
   const getAllValues = async () => {
 
      // Validate invoice_date and invoice_code
-  if (!deliveryInvoiceDetails.invoice_date || !deliveryInvoiceDetails.invoice_code) {
-    message('Please enter Invoice Date and Invoice Code', 'error');
-    return;
-  }
+//   if (!deliveryInvoiceDetails.invoice_date || !deliveryInvoiceDetails.invoice_code) {
+//     message('Please enter Invoice Date and Invoice Code', 'error');
+//     return;
+//   }
 
-  
+if (deliveryInvoiceDetails.invoice_date !== ''  && deliveryInvoiceDetails.invoice_code!=='') {
     deliveryInvoiceDetails.purchase_order_id = projectId;
     try {
       const response = await api.post(
         '/purchaseorder/insertDeliveryInvoice',
         deliveryInvoiceDetails,
       );
-      message('Purchase Order Added!', 'success');
+      //message('Purchase Order Added!', 'success');
 
       const deliveryInvoiceId = response.data.data.insertId;
 
@@ -342,20 +345,32 @@ console.log('getProductValue',getProductValue);
           poProduct(item, deliveryInvoiceId);
         }
       });
-      // Validate each line item
-  const isValid = addMoreItem.every((item) => {
-    if (!item.product_id || !item.qty) {
-      message('Please fill in all required fields for line items', 'error');
-      return false;
-    }
-    return true;
-  });
-  if (!isValid) {
-    return;
-  }
+
     } catch (error) {
       console.error('Error inserting delivery invoice:', error);
     }
+} else {
+    message('Please fill all required fields', 'error');
+  
+}
+  };
+
+  const submitForm = async () => {
+    // Validate invoice_date and invoice_code
+    if (!deliveryInvoiceDetails.invoice_date || !deliveryInvoiceDetails.invoice_code) {
+      message('Please enter Invoice Date and Invoice Code', 'error');
+      return;
+    }
+
+    // Validate other conditions if needed...
+
+    // Proceed with the form submission
+    await getAllValues();
+    
+
+    // Additional logic after form submission
+    // For example, close the modal
+    //setDeliveryInvoiceModal(false);
   };
 
   function updateState(index, property, e) {
@@ -588,6 +603,7 @@ console.log('getProductValue',getProductValue);
                           name="qty"
                           onChange={(e) => updateState(index, 'qty', e)}
                           value={insertPurchaseOrderData && insertPurchaseOrderData.qty}
+                          
                         />
                       </td>
                       <td data-label="Action">
@@ -612,13 +628,14 @@ console.log('getProductValue',getProductValue);
           <Button
             color="primary"
             className="shadow-none"
-            onClick={() => {
+            // onClick={() => {
               //generateCodes();
               //insertPurchaseOrderData();
-              getAllValues();
-              getProduct();
-              poProduct();
-            }}
+            //   getAllValues();
+            //   //getProduct();
+            //   poProduct();
+            onClick={submitForm}
+            // }}
           >
             Submit
           </Button>
