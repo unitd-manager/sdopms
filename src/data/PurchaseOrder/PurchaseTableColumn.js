@@ -1,12 +1,12 @@
 import * as Icon from 'react-feather'
 
 export const purchaseTableColumn = [
-  {
-    name: '',
-  },
-  {
-    name: 'D.O',
-  },
+  // {
+  //   name: '',
+  // },
+  // {
+  //   name: 'D.O',
+  // },
   {
     name: 'S.No',
   },

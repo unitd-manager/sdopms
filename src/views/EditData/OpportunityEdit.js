@@ -150,7 +150,7 @@ const OpportunityEdit = () => {
           message('Network connection error.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'warning');
+      message('Please fill all required fields.', 'error');
       setFormSubmitted(true)
     }
   };
@@ -204,7 +204,7 @@ const OpportunityEdit = () => {
       });
     }
     else{
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
 
@@ -246,7 +246,7 @@ const OpportunityEdit = () => {
         });
     } else {
       setFormSubmitted(true)
-      message('All fields are required.', 'warning');
+      message('All fields are required.', 'error');
     }
   };
 

@@ -19,7 +19,7 @@ import axios from 'axios';
 //console.log('env variable',process.env.REACT_APP_PRODUCTION_URL)
 //console.log('env variable',process.env.REACT_APP_TEST_URL)
 const api = axios.create({
-    baseURL: 'http://43.228.126.245:5007',
+    baseURL: 'http://43.228.126.245:4017',
     //baseURL: 'http://localhost:5007',
     
     

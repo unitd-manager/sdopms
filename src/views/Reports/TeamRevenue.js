@@ -24,6 +24,7 @@ const OverAllReport = () => {
   // const [totaltotals, setTotal] = useState();
   const [salesReport, setSalesReport] = useState(null);
   const [startDate, setStartDate] = useState('');
+  const [EndDate, setEndDate] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [company, setCompany] = useState();
   const [userSearchData, setUserSearchData] = useState('');
@@ -92,6 +93,8 @@ const OverAllReport = () => {
   //   });
   // };
 
+
+ 
   const viewLineToggle = (taskID) => {
     setViewLineModal(!viewLineModal);
     if (viewLineModal) {
@@ -124,19 +127,48 @@ const OverAllReport = () => {
     });
   };
 
+  // const handleSearch = () => {
+  //   const newData = salesReport
+  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+  //     .filter((x) => x.date === (startDate === '' ? x.date : startDate))
+  //     .filter((z) => z.date === (EndDate === '' ? z.date : EndDate))
+  //   setUserSearchData(newData);
+  // };
+  // console.log('lineItems',lineItems)
+  // const handleSearchData = () => {
+  //   const newData1 = lineItems
+  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+  //     .filter((x) => x.date === (startDate === '' ? x.date : startDate))
+  //     .filter((z) => z.date === (EndDate === '' ? z.date : EndDate))
+  //     setSearchData(newData1);
+  // };
+
   const handleSearch = () => {
     const newData = salesReport
       .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
-      .filter((x) => x.date === (startDate === '' ? x.date : startDate))
+      .filter((x) => {
+        const date = moment(x.date);
+        const start = moment(startDate);
+        const end = moment(EndDate);
+        return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
+      });
+  
     setUserSearchData(newData);
   };
-  console.log('lineItems',lineItems)
+  
   const handleSearchData = () => {
     const newData1 = lineItems
       .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
-      .filter((x) => x.date === (startDate === '' ? x.date : startDate))
-      setSearchData(newData1);
+      .filter((x) => {
+        const date = moment(x.date);
+        const start = moment(startDate);
+        const end = moment(EndDate);
+        return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
+      });
+  
+    setSearchData(newData1);
   };
+  
 
   console.log('searchData',searchData)
   useEffect(() => {
@@ -224,11 +256,22 @@ const OverAllReport = () => {
           <Row>
             <Col>
               <FormGroup>
-                <Label>Date</Label>
+                <Label> Start Date</Label>
                 <Input
                   type="date"
                   name="startDate"
                   onChange={(e) => setStartDate(e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+
+            <Col>
+              <FormGroup>
+                <Label> End Date</Label>
+                <Input
+                  type="date"
+                  name="EndDate"
+                  onChange={(e) => setEndDate(e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -270,7 +313,12 @@ const OverAllReport = () => {
             </Col>
             <Col md="3">
               <Label>
-                <b>Date:</b> {startDate}
+                <b>Start Date:</b> {startDate}
+              </Label>
+            </Col>
+            <Col md="3">
+              <Label>
+                <b>End Date:</b> {EndDate}
               </Label>
             </Col>
 
