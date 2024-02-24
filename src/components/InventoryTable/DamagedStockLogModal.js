@@ -39,7 +39,7 @@ function DamagedStockLogModal({
 
   const alcolumns = [
     {
-      name: 'Yard Stock',
+      name: 'Damaged Stock',
     },
     {
       name: 'Actual Stock',
@@ -76,9 +76,11 @@ function DamagedStockLogModal({
                               <td>{element.damaged_stock}</td>
                               <td>{element.actual_stock}</td>
                               <td>
-                                {element.creation_date
+                                {element.date
+                                  ? moment(element.date).format('YYYY-MM-DD  hh:mm:ss'):element.creation_date
                                   ? moment(element.creation_date).format('YYYY-MM-DD  hh:mm:ss')
                                   : ''}
+                                  {element.created_by}
                               </td>
                             </tr>
                           );
