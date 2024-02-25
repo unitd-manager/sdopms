@@ -65,6 +65,7 @@ const Test = () => {
   const [movedToShip, setMovedToShip] = useState(0);
   const [shipStock, setShipStock] = useState(0);
    const [totalQty, setTotalQty] = useState(0);
+   const [damageDate, setDamageDate] = useState();
   console.log('shipstock',shipStock)
   console.log('shipToYard',shipToYard)
   console.log('movedToShip',movedToShip)
@@ -311,6 +312,8 @@ if (selectedStatus === 'storeToYard') {
     
   
     const adjuststock2 = () => {
+      adjuststockDetails2.date=damageDate;
+      adjuststockDetails2.created_by=loggedInuser.name;
       api
         .post('/inventory/insertdamaged_stock_log', adjuststockDetails2)
         .then(() => {
@@ -392,6 +395,8 @@ changes +=parseFloat(el.adjust_stock);
           setYardStockInputValue={setYardStockInputValue}
           adjuststock2={adjuststock2}
           updateStockinInventory2={updateStockinInventory2}
+          damageDate={damageDate}
+          setDamageDate={setDamageDate}
         />
         <Row>
           <Form>

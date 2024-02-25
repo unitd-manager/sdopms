@@ -26,6 +26,8 @@ function InventoryEditPart({
   handleStockinput2,
   updateStockinInventory2,
   adjuststock2,
+  setDamageDate,
+  damageDate
 }) {
   InventoryEditPart.propTypes = {
     inventoryDetails: PropTypes.object,
@@ -42,6 +44,8 @@ function InventoryEditPart({
     handleStockinput2: PropTypes.func,
     updateStockinInventory2: PropTypes.any,
     adjuststock2: PropTypes.any,
+    setDamageDate: PropTypes.func,
+    damageDate:PropTypes.any,
   };
   //navigation
   const navigate = useNavigate();
@@ -60,6 +64,8 @@ function InventoryEditPart({
   const [adjustStockHistoryModal2, setAdjustStockHistoryModal2] = useState(false);
   const [stockChangeId1, setStockChangeId1] = useState();
   const [stockChangeId2, setStockChangeId2] = useState();
+  
+  
   return (
     <div>
       <Row>
@@ -343,13 +349,33 @@ function InventoryEditPart({
               )}
               <Row>
                 {stockinputOpen2 && stockChangeId2 === inventoryDetails.inventory_id ? (
+                  <Modal size="xl" isOpen={stockinputOpen2}>
+                  <ModalHeader>Damaged Stock</ModalHeader>
+          
+                  <ModalBody>
+                    <Row>
                   <Col md="3">
                     {' '}
+                    <Label>Qty</Label>
                     <Input
                       type="text"
                       //defaultValue={inventoryDetails&& inventoryDetails.damaged_stock}
                       onChange={(e) => handleStockinput2(e)}
                     />
+                    </Col>
+                    <Col md="3">
+                    {' '}
+                    <Label>Date</Label>
+                    <Input
+                      type="date"
+                      value={damageDate}
+                      //defaultValue={inventoryDetails&& inventoryDetails.damaged_stock}
+                      onChange={(e) => setDamageDate(e.target.value)}
+                    />
+                    </Col>
+                    </Row>
+                    </ModalBody>
+        <ModalFooter>
                     <Button
                       color="primary"
                       className="shadow-none"
@@ -365,8 +391,19 @@ function InventoryEditPart({
                     >
                       save
                     </Button>
-                    {/* {validationMessage && <div className="text-danger">{validationMessage}</div>} */}
-                  </Col>
+                    <Button
+            color="secondary"
+            className="shadow-none"
+            onClick={() => {
+              setStockinputOpen2(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+                    
+               
                 ) : (
                   <Col>
                     <span
