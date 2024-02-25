@@ -92,9 +92,9 @@ const StaffEdit = () => {
   const editStaffData = () => {
     staffeditdetails.modification_date = creationdatetime;
     if (!staffeditdetails.email) {
-      message('Email is required', 'warning');
+      message('Email is required', 'error');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(staffeditdetails.email)) {
-      message('Enter valid email', 'warning');
+      message('Enter valid email', 'error');
     } else if (staffeditdetails.email !== '' && staffeditdetails.first_name !== '') {
       api
         .post('/staff/editStaff', staffeditdetails)

@@ -8,7 +8,7 @@ function ProductLinkedTable({
   products,
   setProduct,
   //getCheckedDeliverProducts,
-  getCheckedPoProducts,
+  //getCheckedPoProducts,
   setEditModal,
   setViewHistoryModal,
   deletePoProduct,
@@ -18,7 +18,7 @@ function ProductLinkedTable({
     products: PropTypes.array,
     setProduct: PropTypes.func,
     //getCheckedDeliverProducts: PropTypes.func,
-    getCheckedPoProducts: PropTypes.func,
+    //getCheckedPoProducts: PropTypes.func,
     setEditModal: PropTypes.func,
     setViewHistoryModal: PropTypes.func,
     deletePoProduct: PropTypes.func,
@@ -40,7 +40,7 @@ function ProductLinkedTable({
               products.map((element, index) => {
                 return (
                   <tr key={element.po_product_id}>
-                    <td>
+                    {/* <td>
                       <input
                         type="checkbox"
                         id="sno"
@@ -50,7 +50,7 @@ function ProductLinkedTable({
                           getCheckedPoProducts(e, index, element);
                         }}
                       />
-                    </td>
+                    </td> */}
                     {/* <td>
                       <input
                         type="checkbox"
@@ -68,10 +68,10 @@ function ProductLinkedTable({
                     <td>{element.cost_price}</td>
                     <td>{element.selling_price}</td>
                     <td>{element.gst}</td>
-                    <td>{element.qty_delivered}</td>
+                    <td>{element.stock}</td>
                     <td>{element.qty}</td>
                     <td>{element.damage_qty}</td>
-                    <td>{element.qty_in_stock}</td>
+                    <td>{element.qty_delivered}</td>
                     <td>{element.qty_balance}</td>
                     <td>{element.status}</td>
                     <td>{element.po_value}</td>

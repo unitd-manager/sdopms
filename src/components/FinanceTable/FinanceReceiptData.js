@@ -387,7 +387,7 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt, orderId, 
                       generateCode();
                     } else {
                       // Show an error message indicating that the amount should not exceed the invoice amount
-                      message('Amount should not be greater than the total invoice amount.', 'warning');
+                      message('Amount should not be greater than the total invoice amount.', 'error');
                       setSubmitting(false); // Reset submitting state
                     }
                   } else {
@@ -401,7 +401,7 @@ const FinanceReceiptData = ({ editCreateReceipt, setEditCreateReceipt, orderId, 
                   //   }
                 } else {
                   // Show an error message indicating that the amount should be greater than 0
-                  message('Pls select atleast one Invoice', 'warning');
+                  message('Pls select atleast one Invoice', 'error');
                   setSubmitting(false); // Reset submitting state
                 }
 

@@ -43,7 +43,7 @@ const ClientDetails = () => {
           message('Network connection error.', 'error');
         });
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
 

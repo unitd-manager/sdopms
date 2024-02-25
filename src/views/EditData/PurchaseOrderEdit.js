@@ -494,7 +494,7 @@ const PurchaseOrderEdit = () => {
               />
             </Row>
           </TabPane>
-          <TabPane tabId="2">
+          <TabPane tabId="3">
             <Row>
               <AddNote recordId={id} roomName="PurchaseOrderEdit" />
               <ViewNote recordId={id} roomName="PurchaseOrderEdit" />

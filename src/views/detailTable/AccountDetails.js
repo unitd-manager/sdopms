@@ -134,7 +134,7 @@ const AccountsDetails = () => {
           if (count > 0) {
             message(
               'Invoice Code  must be unique. Another record with the same invoice code already exists.',
-              'warning',
+              'error',
             );
           } else {
             // If the description is unique, proceed with inserting the expense data
@@ -153,7 +153,7 @@ const AccountsDetails = () => {
           }
         });
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
   useEffect(() => {

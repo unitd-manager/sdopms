@@ -258,9 +258,12 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
     if (currentProduct) {
       const newYardStockValue = parseFloat(itemObj.qty) || 0;
       const initialStockValue = parseFloat(currentProduct.qty) || 0;
+      const qtyDelivered = parseFloat(currentProduct.qty_delivered) || 0;
+      const totalDeliveredQuantity = addMoreItem && addMoreItem.reduce((sum) => sum + parseFloat(itemObj.qty || 0), 0);
 
       const initialStockValue1 = parseFloat(currentProduct.stock) || 0;
       const initialStock = initialStockValue1+newYardStockValue
+
       
       // Validate that newYardStockValue is not greater than initialStockValue
       if (newYardStockValue > initialStockValue) {
@@ -273,6 +276,7 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
       console.log('initial', initialStockValue);
       console.log("initial1",initialStockValue1);
       console.log("initial1=2",initialStock);
+      console.log("initial",totalDeliveredQuantity);
 
       api
         .post('/purchaseorder/insertDeliveryInvoicehistory', {
@@ -296,6 +300,16 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
               message('Product and Inventory records updated successfully.', 'success');
             });
           //const deliveredQuantity = parseInt(itemObj.qty, 10);
+          //const deliveredQuantity = reduce((total) => total + (Number(itemObj.qty) || 0), 0);
+            api
+            .post('/purchaseorder/editPOProduct', {
+              po_product_id:itemObj.po_product_id,
+              qty_delivered: totalDeliveredQuantity +qtyDelivered,// Add the inventory_id to the itemObj
+              // Set actual_stock to the entered qty
+            })
+            .then(() => {
+              message('Inventory updated successfully.', 'success');
+            })
           // After updating the product and inventory records, call the edit-inventory endpoint
           api
             .post('/inventory/editInventoryqty', {
@@ -303,7 +317,7 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
               actual_stock: initialStock // Set actual_stock to the entered qty
             })
             .then(() => {
-              message('Inventory updated successfully.', 'success');
+              message('stock updated successfully.', 'success');
             })
 
             .catch(() => {
@@ -423,6 +437,7 @@ if (deliveryInvoiceDetails.invoice_date !== ''  && deliveryInvoiceDetails.invoic
     element.po_product_id = str.po_product_id;
     element.stock = str.stock;
     element.qty_in_stock = str.qty_in_stock;
+    element.qty_delivered = str.qty_delivered;
     setMoreItem(addMoreItem);
   };
   const [unitOptions, setUnitOptions] = useState([]);

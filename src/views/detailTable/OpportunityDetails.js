@@ -74,7 +74,7 @@ const OpportunityDetails = () => {
         });
     } else {
       setAddFormSubmitted(true)
-      message('Please fill all required fields.', 'warning');
+      message('Please fill all required fields.', 'error');
     }
   };
 

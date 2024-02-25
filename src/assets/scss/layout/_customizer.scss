@@ -435,3 +435,40 @@ a.active.nav-link, a.nav-link:focus-visible  {
 .autocomplete-suggestions option:hover {
   background-color: #f2f2f2;
 }
+
+
+
+/* Add these styles to your existing CSS */
+
+/* Adjust the padding and font size for the table */
+.lineitem{
+  width: 100%;
+  
+  margin-top: 10px;
+}
+// .lineitem1 tr {
+//   background-color: #f2f2f2;
+//   //background-color: #0066CC;
+  
+//   border: 1px solid #ddd;
+//   padding: .35em;
+// }
+
+
+.lineitem2{
+  width: 75%;
+  
+  margin-top: 5px;
+}
+.lineitem2 th,
+.lineitem2 td {
+  
+  padding: 6px; /* Reduced padding */
+  border: 1px solid #ddd;
+  text-align: Center;
+  font-size: 15px; /* Reduced font size */
+}
+
+.lineitem2 th {
+  background-color: #f2f2f2;
+}
