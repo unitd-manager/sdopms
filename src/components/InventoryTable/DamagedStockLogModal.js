@@ -55,8 +55,15 @@ function DamagedStockLogModal({
   return (
     <>
       <Modal isOpen={damagedStockLogModal}>
-        <ModalHeader>Damaged Stock History</ModalHeader>
-        <ModalBody>
+        <ModalHeader>Damaged Stock History <Button
+            color="secondary"
+            onClick={() => {
+              setDamagedStockLogModal(false);
+            }}
+          >
+            X
+          </Button></ModalHeader>
+        <ModalBody  style={{overflowY:'scroll',maxHeight:'500px'}}>
           <Row>
             <Col md="12">
                 <CardBody>

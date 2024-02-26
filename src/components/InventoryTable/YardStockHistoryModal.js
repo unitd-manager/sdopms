@@ -55,20 +55,27 @@ function YardStockHistoryModal({
   return (
     <>
       <Modal isOpen={adjustStockHistoryModal1}>
-        <ModalHeader>Yard Stock History</ModalHeader>
-        <ModalBody>
+        <ModalHeader>Yard Stock History <Button
+            color="secondary"
+            onClick={() => {
+              setAdjustStockHistoryModal1(false);
+            }}
+          >
+            X
+          </Button></ModalHeader>
+        <ModalBody style={{overflowY:'scroll',maxHeight:'500px'}}>
           <Row>
             <Col md="12">
                 <CardBody>
                   <Table id="example" className="display">
-                    <thead>
+                    <thead style={{position:'sticky'}}>
                       <tr>
                         {alcolumns.map((cell) => {
                           return <td key={cell.name}>{cell.name}</td>;
                         })}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody style={{overflowY:'scroll',maxHeight:'500px'}}>
                       {adjustStocks &&
                         adjustStocks.map((element) => {
                           return (
@@ -76,9 +83,12 @@ function YardStockHistoryModal({
                               <td>{element.yard_stock}</td>
                               <td>{element.actual_stock}</td>
                               <td>
-                                {element.creation_date
+                                {element.date
+                                  ? moment(element.date).format('YYYY-MM-DD  hh:mm:ss')
+                                  : element.creation_date
                                   ? moment(element.creation_date).format('YYYY-MM-DD  hh:mm:ss')
                                   : ''}
+                                  {element.created_by}
                               </td>
                             </tr>
                           );
