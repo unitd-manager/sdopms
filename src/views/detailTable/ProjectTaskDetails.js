@@ -75,7 +75,7 @@ const ProjectTaskDetails = () => {
         setFormSubmitted(true);
       }
     else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
 

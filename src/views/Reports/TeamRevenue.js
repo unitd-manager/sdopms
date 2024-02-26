@@ -143,14 +143,30 @@ const OverAllReport = () => {
   //     setSearchData(newData1);
   // };
 
+  // const handleSearch = () => {
+  //   const newData = salesReport
+  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+  //     .filter((x) => {
+  //       const date = moment(x.date);
+  //       const start = moment(startDate);
+  //       const end = moment(EndDate);
+  //       return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
+  //     });
+  
+  //   setUserSearchData(newData);
+  // };
+
   const handleSearch = () => {
     const newData = salesReport
       .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
       .filter((x) => {
         const date = moment(x.date);
         const start = moment(startDate);
-        const end = moment(EndDate);
-        return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
+        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date
+        return (
+          (startDate === '' || date.isSameOrAfter(start)) && 
+          (EndDate === '' || date.isSameOrBefore(end))
+        );
       });
   
     setUserSearchData(newData);
@@ -162,12 +178,16 @@ const OverAllReport = () => {
       .filter((x) => {
         const date = moment(x.date);
         const start = moment(startDate);
-        const end = moment(EndDate);
-        return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
+        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date
+        return (
+          (startDate === '' || date.isSameOrAfter(start)) && 
+          (EndDate === '' || date.isSameOrBefore(end))
+        );
       });
   
     setSearchData(newData1);
   };
+  
   
 
   console.log('searchData',searchData)

@@ -182,7 +182,7 @@ const AddMaterialsUsed = ({ addMaterialsUsed, setAddMaterialsUsed }) => {
           message('Unable to add Product!', 'error');
         });
     } else {
-      message('please select item', 'warning');
+      message('please select item', 'error');
     }
   };
 
