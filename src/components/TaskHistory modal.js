@@ -64,6 +64,10 @@ const TaskHistoryModal = ({
     date: '',
     actual_hours: '',
     head_count:'',
+    length:'',
+    breadth:'',
+    height:'',
+    vcount:'',
    pipe:'',
    tb:'',
    plank:'',
@@ -94,7 +98,7 @@ const TaskHistoryModal = ({
           setDismantelCount(resp.data.data[0]);
           setPipeCount(res.data.data[0]);
           console.log('resPipe',res.data.data[0])
-          setInsertTask({ ...insertTask, pipe:parseFloat(res.data.data[0].pipeCount)-parseFloat(resp.data.data[0].pipeCount||0),plank:parseFloat(res.data.data[0].plankCount)-parseFloat(resp.data.data[0].plankCount||0),tb:parseFloat(res.data.data[0].tbCount)-parseFloat(resp.data.data[0].tbCount||0),volume:parseFloat(res.data.data[0].volumeCount)-parseFloat(resp.data.data[0].volumeCount ||0) });
+          setInsertTask({ ...insertTask, pipe:parseFloat(res.data.data[0].pipeCount)-parseFloat(resp.data.data[0].pipeCount||0),plank:parseFloat(res.data.data[0].plankCount)-parseFloat(resp.data.data[0].plankCount||0),tb:parseFloat(res.data.data[0].tbCount)-parseFloat(resp.data.data[0].tbCount||0),volume:parseFloat(res.data.data[0].volumeCount)-parseFloat(resp.data.data[0].volumeCount ||0),length:parseFloat(res.data.data[0].lengthCount)-parseFloat(resp.data.data[0].lengthCount||0),breadth:parseFloat(res.data.data[0].breadthCount)-parseFloat(resp.data.data[0].breadthCount||0),height:parseFloat(res.data.data[0].heightCount)-parseFloat(resp.data.data[0].heightCount||0),vcount:parseFloat(res.data.data[0].vcountCount)-parseFloat(resp.data.data[0].vcountCount ||0) });
        
         })
         .catch(() => { });
@@ -224,7 +228,7 @@ console.log('pipeCount',pipeCount)
   if(employeelead.length ===0){
     message('Please Select Team leader', 'Error');
   }
-   else if(((contactDatas.task_type === 'Dismantel') &&((parseFloat(parseFloat(pipeCount.pipeCount || 0)-parseFloat(dismantelCount.pipeCount || 0))<parseFloat(insertTask.pipe))  || parseFloat(insertTask.plank)> (parseFloat(parseFloat(pipeCount.plankCount || 0)-parseFloat(dismantelCount.plankCount||0))) || parseFloat(insertTask.tb)> (parseFloat(parseFloat(pipeCount.tbCount || 0)-parseFloat(dismantelCount.tbCount ||0))) || parseFloat(insertTask.volume)> (parseFloat(parseFloat(pipeCount.volumeCount ||0)-parseFloat(dismantelCount.volumeCount ||0))))) ){
+   else if(((contactDatas.task_type === 'Dismantel') &&((parseFloat(parseFloat(pipeCount.pipeCount || 0)-parseFloat(dismantelCount.pipeCount || 0))<parseFloat(insertTask.pipe))  || parseFloat(insertTask.plank)> (parseFloat(parseFloat(pipeCount.plankCount || 0)-parseFloat(dismantelCount.plankCount||0))) || parseFloat(insertTask.tb)> (parseFloat(parseFloat(pipeCount.tbCount || 0)-parseFloat(dismantelCount.tbCount ||0))) || parseFloat(insertTask.volume)> (parseFloat(parseFloat(pipeCount.volumeCount ||0)-parseFloat(dismantelCount.volumeCount ||0))) ||(parseFloat(parseFloat(pipeCount.lengthCount || 0)-parseFloat(dismantelCount.lengthCount || 0))<parseFloat(insertTask.length))  || parseFloat(insertTask.breadth)> (parseFloat(parseFloat(pipeCount.breadthCount || 0)-parseFloat(dismantelCount.breadthCount||0))) || parseFloat(insertTask.height)> (parseFloat(parseFloat(pipeCount.heightCount || 0)-parseFloat(dismantelCount.heightCount ||0))) || parseFloat(insertTask.vcount)> (parseFloat(parseFloat(pipeCount.vcountCount ||0)-parseFloat(dismantelCount.vcountCount ||0))))) ){
       message('Please check the count', 'Error');
     }else if(!insertTask.pipe_code && insertTask.pipe_code===''){
       message('Please Fill the Log no', 'Error');
@@ -363,13 +367,13 @@ console.log('work',work)
     
   useEffect(() => {
     const num1 = parseFloat(insertTask&&insertTask.length) || 0;
-    const num2 = parseFloat(insertTask&&insertTask.breath) || 0;
+    const num2 = parseFloat(insertTask&&insertTask.breadth) || 0;
     const num3 = parseFloat(insertTask&&insertTask.height) || 0;
-    const num4 = parseFloat(insertTask&&insertTask.volume_count) || 0;
+    const num4 = parseFloat(insertTask&&insertTask.vcount) || 0;
     const result=(parseFloat(num1) * parseFloat(num2) * parseFloat(num3) * parseFloat(num4));
     setInsertTask({...insertTask, volume: result})
     console.log('result')
-  },[insertTask && insertTask.length,insertTask && insertTask.breath,insertTask && insertTask.height,insertTask && insertTask.volume_count]);
+  },[insertTask && insertTask.length,insertTask && insertTask.breadth,insertTask && insertTask.height,insertTask && insertTask.vcount]);
 
   useEffect(() => {
     if(contactDatas.task_type ==='Dismantel'){
@@ -617,12 +621,12 @@ console.log('work',work)
                           </Col>
                           <Col md="4">
                             <FormGroup>
-                              <Label>Breath</Label>
+                              <Label>Breadth</Label>
                               <Input
                                 type="text"
-                                name="breath"
+                                name="breadth"
                                 onChange={handleInputsTask}
-                                value={insertTask && insertTask.breath}
+                                value={insertTask && insertTask.breadth}
                               />
                             </FormGroup>
                           </Col>
@@ -642,9 +646,9 @@ console.log('work',work)
                               <Label>Volume Count</Label>
                               <Input
                                 type="text"
-                                name="volume_count"
+                                name="vcount"
                                 onChange={handleInputsTask}
-                                value={insertTask && insertTask.volume_count}
+                                value={insertTask && insertTask.vcount}
                               />
                             </FormGroup>
                           </Col>
@@ -724,9 +728,9 @@ console.log('work',work)
                               <Label>Breath</Label>
                               <Input
                                 type="text"
-                                name="breath"
+                                name="breadth"
                                 onChange={handleInputsTask}
-                                value={insertTask && insertTask.breath}
+                                value={insertTask && insertTask.breadth}
                               />
                             </FormGroup>
                           </Col>
@@ -746,9 +750,9 @@ console.log('work',work)
                               <Label>Volume Count</Label>
                               <Input
                                 type="text"
-                                name="volume_count"
+                                name="vcount"
                                 onChange={handleInputsTask}
-                                value={insertTask && insertTask.volume_count}
+                                value={insertTask && insertTask.vcount}
                               />
                             </FormGroup>
                           </Col>
