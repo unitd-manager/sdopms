@@ -317,6 +317,7 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
               actual_stock: initialStock // Set actual_stock to the entered qty
             })
             .then(() => {
+              window.location.reload();
               message('stock updated successfully.', 'success');
             })
 

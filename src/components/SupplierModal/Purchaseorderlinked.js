@@ -175,12 +175,12 @@ console.log('createsupamount',createSupplier.amount)
       .catch(() => {
       });
     }else{
-      message('Your amount Exceeds the limit.','warning');
+      message('Your amount Exceeds the limit.','error');
     }}
     else{
-      message('Please fill the required Fields.','warning');
+      message('Please fill the required Fields.','error');
     }}else{
-      message('Please select Purchase order to pay.','warning');
+      message('Please select Purchase order to pay.','error');
     }
   
   };
