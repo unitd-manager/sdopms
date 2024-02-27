@@ -266,7 +266,8 @@ const DeliveryInvoice = ({ projectId, addDeliveryInvoiceModal, setDeliveryInvoic
 
       
       // Validate that newYardStockValue is not greater than initialStockValue
-      if (newYardStockValue > initialStockValue) {
+         // Validate that newYardStockValue is not greater than initialStockValue
+    if (qtyDelivered + newYardStockValue > initialStockValue) {
         // Display alert message
         message('New qty should not be greater than initial qty value', 'error');
         return; // Stop further execution
