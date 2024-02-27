@@ -76,8 +76,8 @@ const OverAllReport = () => {
     useEffect(() => {
       getProjects();
     }, []);
-  const getLineItem = (taskID) => {
-    api.post('/projecttask/getteamEmployeeById2', { task_history_id: taskID })
+  const getLineItem = (taskID,date,teamTitle) => {
+    api.post('/projecttask/getteamEmployeeById2', { task_history_id: taskID,date, team_title: teamTitle })
       .then((res) => {
         setLineItem(res.data.data);
         console.log("12", res.data.data);
@@ -95,12 +95,12 @@ const OverAllReport = () => {
 
 
  
-  const viewLineToggle = (taskID) => {
+  const viewLineToggle = (taskID,date,teamTitle) => {
     setViewLineModal(!viewLineModal);
     if (viewLineModal) {
       setLineItem([]); // Clear previous data
     } else {
-      getLineItem(taskID); // Pass teamTitle as an argument
+      getLineItem(taskID,date,teamTitle); // Pass teamTitle as an argument
     }
   };
   // const viewLineToggle = (taskId, teamTitle) => {
@@ -143,28 +143,15 @@ const OverAllReport = () => {
   //     setSearchData(newData1);
   // };
 
-  // const handleSearch = () => {
-  //   const newData = salesReport
-  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
-  //     .filter((x) => {
-  //       const date = moment(x.date);
-  //       const start = moment(startDate);
-  //       const end = moment(EndDate);
-  //       return (startDate === '' || date.isSameOrAfter(start)) && (EndDate === '' || date.isSameOrBefore(end));
-  //     });
-  
-  //   setUserSearchData(newData);
-  // };
-
   const handleSearch = () => {
     const newData = salesReport
       .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
       .filter((x) => {
         const date = moment(x.date);
         const start = moment(startDate);
-        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date
+        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date;
         return (
-          (startDate === '' || date.isSameOrAfter(start)) && 
+          (startDate === '' || date.isSameOrAfter(start)) &&
           (EndDate === '' || date.isSameOrBefore(end))
         );
       });
@@ -178,9 +165,9 @@ const OverAllReport = () => {
       .filter((x) => {
         const date = moment(x.date);
         const start = moment(startDate);
-        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date
+        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date;
         return (
-          (startDate === '' || date.isSameOrAfter(start)) && 
+          (startDate === '' || date.isSameOrAfter(start)) &&
           (EndDate === '' || date.isSameOrBefore(end))
         );
       });
@@ -188,7 +175,7 @@ const OverAllReport = () => {
     setSearchData(newData1);
   };
   
-  
+
 
   console.log('searchData',searchData)
   useEffect(() => {
