@@ -290,7 +290,10 @@ console.log('work',work)
               })
           })
             message('Worksheet has been created successfully.', 'success');
-            window.location.reload();
+            setTimeout(()=>{
+              window.location.reload();
+            },1500)
+         
             setTaskhistorymodal(false);
             getTaskById();
             getStaffName();
