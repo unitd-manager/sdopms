@@ -313,19 +313,19 @@ function WorkSheetTask() {
                     
                     <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                     <td style={{ textAlign: 'right' }}>{element.head_count}</td>
-                    <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
-                    <td style={{ textAlign: 'right' }}>{parseFloat(element.share_per_head).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right' }}>{element.total_amount?parseFloat(element.total_amount).toFixed(2):''}</td>
+                    <td style={{ textAlign: 'right' }}>{element.share_per_head?parseFloat(element.share_per_head).toFixed(2):''}</td>
                     <td >{element.task_type}</td>
                     <td style={{ textAlign: 'right' }}>{element.pipe}</td>
                     <td style={{ textAlign: 'right' }}>{element.plank}</td>
                     <td style={{ textAlign: 'right' }}>{element.volume}</td>
                     <td style={{ textAlign: 'right' }}>{element.tb}</td>
                     <td style={{ textAlign: 'right' }}>{element.others}</td>
-                    <td style={{ textAlign: 'right' }}>{element.pipe_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.plank_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.volume_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.tb_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.others_value}</td>
+                    <td style={{ textAlign: 'right' }}>{element.pipe_value?parseFloat(element.pipe_value).toFixed(2):''}</td>
+                    <td style={{ textAlign: 'right' }}>{element.plank_value?parseFloat(element.plank_value).toFixed(2):''}</td>
+                    <td style={{ textAlign: 'right' }}>{element.volume_value?parseFloat(element.volume_value).toFixed(2):''}</td>
+                    <td style={{ textAlign: 'right' }}>{element.tb_value?parseFloat(element.tb_value).toFixed(2):''}</td>
+                    <td style={{ textAlign: 'right' }}>{element.others_value?parseFloat(element.others_value).toFixed(2):''}</td>
                     {/* <td>{element.pipe_dismantle}</td>
                     <td>{element.plank_dismantle}</td>
                     <td>{element.volume_dismantle}</td>

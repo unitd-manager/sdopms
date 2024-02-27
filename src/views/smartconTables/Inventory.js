@@ -205,6 +205,7 @@ if (
   };
 
   const adjuststock1 = () => {
+    adjuststockDetails1.created_by=loggedInuser.name;
     api
       .post('/inventory/insertyard_stock_log', adjuststockDetails1)
       .then(() => {

@@ -55,8 +55,15 @@ function ViewAdjustStockHistoryModal({
   return (
     <>
       <Modal isOpen={adjustStockHistoryModal}>
-        <ModalHeader>Adjust Stock History</ModalHeader>
-        <ModalBody>
+        <ModalHeader>Adjust Stock History <Button
+            color="secondary"
+            onClick={() => {
+              setAdjustStockHistoryModal(false);
+            }}
+          >
+            X
+          </Button> </ModalHeader>
+        <ModalBody  style={{overflowY:'scroll',maxHeight:'500px'}}>
           <Row>
             <Col md="12">
                 <CardBody>
