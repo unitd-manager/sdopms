@@ -101,7 +101,7 @@ const Quotation = () => {
     },
     {
       name: 'Discount',
-      selector: 'company_name',
+      selector: 'discount',
       sortable: true,
       width: 'auto',
       grow: 3,

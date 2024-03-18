@@ -161,9 +161,9 @@ const Clients = () => {
       arr.push(
         {
           CompanyName: rows[x][0],
-          Email: rows[x][1],
-          Status: rows[x][2],
-          Phone: rows[x][3],
+          Phone: rows[x][1],
+          Mobile: rows[x][2],
+          Email: rows[x][3],
           
         }
       )

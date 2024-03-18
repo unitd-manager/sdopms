@@ -435,7 +435,7 @@ const OpportunityEdit = () => {
         formSubmitted={formSubmitted}
       ></TenderMoreDetails>
 
-      <ComponentCard>
+      <ComponentCard title="More Details">
 
         <EditCostingSummaryModal
           editCostingSummaryModel={editCostingSummaryModel}
