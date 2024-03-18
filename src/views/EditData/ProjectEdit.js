@@ -60,7 +60,8 @@ const ProjectEdit = () => {
 
   console.log('project_id', id);
   const { isAuthorized, isLoading } = usePermify();
-
+  const storagePermit = localStorage.getItem('__permifyUser') || JSON.stringify([]);
+  const { permissions } = JSON.parse(storagePermit);
 
   const fetchData = async (type) => {
     // Pass roles and permissions accordingly
@@ -138,22 +139,43 @@ const ProjectEdit = () => {
   // Start for tab refresh navigation
   const tabs = [
 
-    { id: '1', name: 'Costing Summary' },
-    { id: '2', name: 'Quotation' },
-    { id: '3', name: 'Milestones' },
-    { id: '4', name: 'Team' },
-    { id: '5', name: 'Work Order' },
-    { id: '6', name: 'Task' },
-    { id: '7', name: 'Worksheet' },
-    { id: '8', name: 'Yard' },
+    { id: '1', name:'Costing Summary' },
+    { id: '2', name:'Quotation' },
+    { id: '3', name:'Milestones' },
+    { id: '4', name:'Team' },
+    { id: '5', name:'Work Order' },
+    { id: '6', name:'Task' },
+    { id: '7', name:'Worksheet' },
+    { id: '8', name:'Yard' },
    
     // { id: '9', name: 'Material Purchase Order' },
     // { id: '10', name: 'Material Used' },
     // { id: '11',name: 'Material Transferred' },
-    { id: '12',name: 'Project Materials' },
-     { id: '13',name: 'Finance' },
+    { id: '12',name:'Project Materials' },
+     { id: '13',name:'Finance' },
     
   ];
+const permittedTabs=[];
+  {tabs &&
+    tabs.forEach((navi) => {
+      console.log('navi', navi)
+      if (navi.name) {
+        let hasPermit = false;
+       
+        let count = 0;
+     
+          console.log('naviname', navi.name)
+          if (permissions.includes(`${navi.name}-list`)) {
+            count = count + 1;
+            hasPermit = true;
+          }
+        
+        console.log('hasPermit', hasPermit)
+        if (hasPermit) {
+          permittedTabs.push(navi);
+        }
+      }})}
+console.log('permittedtabs',permittedTabs)
   const toggle = (tab) => {
     setActiveTab(tab);
   };
@@ -995,19 +1017,28 @@ const [project,setProject]=useState([]);
 
         {/* Tab 1 */}
         <TabContent className="p-4" activeTab={activeTab}>
-          <Tab toggle={toggle} tabs={tabs} />
+          <Tab toggle={toggle} tabs={permittedTabs} />
 
           {/* <TabPane tabId="1">
             <br />
             <CostingSummary />
           </TabPane> */}
+          <HasAccess
+            roles={null}
+            permissions={`Costing Summary-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="1">
             <br />
             <CostingSummaryDetails />
           </TabPane>
-
+          </HasAccess>
           {/* Tab 2 */}
-         
+          <HasAccess
+            roles={null}
+            permissions={`Quotation-edit`}
+            renderAuthFailed={<p></p>}
+          >
             <TabPane tabId="2" eventkey="quotationMoreDetails">
               <br />
               <Row className="mb-4">
@@ -1045,12 +1076,19 @@ const [project,setProject]=useState([]);
                 setquotationsModal={setquotationsModal}
               ></QuotationMoreDetails>
             </TabPane>
+            </HasAccess>
             
        
           {/* Tab 3 Milestone */}
           <ViewLineItemModal viewLineModal={viewLineModal1} setViewLineModal={setViewLineModal1} />
         <EditQuotation editQuoteModal={editQuoteModal} setEditQuoteModal={setEditQuoteModal} />
-          <TabPane tabId="3">
+         
+        <HasAccess
+            roles={null}
+            permissions={`Milestones-edit`}
+            renderAuthFailed={<p></p>}
+          >
+             <TabPane tabId="3">
             <br />
             <ProjectMilestones
               setContactDatas={setContactDatas}
@@ -1068,8 +1106,13 @@ const [project,setProject]=useState([]);
               setEditTaskEditModals={setEditTaskEditModals}
             ></ProjectMilestoneEdit>
           </TabPane>
-
+</HasAccess>
           {/* Tab 4 */}
+          <HasAccess
+            roles={null}
+            permissions={`Team-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="4">
             <br />
             <ProjectTeam
@@ -1088,6 +1131,12 @@ const [project,setProject]=useState([]);
               setEditTeamEditModal={setEditTeamEditModal}
             />}
           </TabPane>
+          </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`Work Order-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="5">
        
        <ProjectWorkOrder addToggleWorkOrder={addToggleWorkOrder}
@@ -1101,7 +1150,13 @@ const [project,setProject]=useState([]);
        </ProjectWorkOrder>
        
      </TabPane>
+     </HasAccess>
           {/* Tab 5 */}
+          <HasAccess
+            roles={null}
+            permissions={`Task-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="6">
             <ProjectTask
               projectDetail={projectDetail}
@@ -1143,7 +1198,12 @@ const [project,setProject]=useState([]);
               setTaskhistoriesmodal={setTaskhistoriesmodal}
             ></TaskHistoriesModal>}
           </TabPane>
-
+</HasAccess>
+<HasAccess
+            roles={null}
+            permissions={`Worksheet-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="7">
             <br />
             <ProjectWorksheet
@@ -1153,7 +1213,12 @@ const [project,setProject]=useState([]);
             ></ProjectWorksheet>
             {/* <ProjectTimeSheet></ProjectTimeSheet> */}
           </TabPane>
-
+</HasAccess>
+<HasAccess
+            roles={null}
+            permissions={`Yard-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="8">
             <br />
             <ProjectYard
@@ -1182,7 +1247,7 @@ const [project,setProject]=useState([]);
             projectYard={projectYard}
             setProjectYard1={setProjectYard1} ></ProjectYardEdit> */}
           </TabPane>
-      
+          </HasAccess>
           
           {/* </TabPane> */}
           {/* Tab 5 Materials Purchased */}
@@ -1255,6 +1320,11 @@ const [project,setProject]=useState([]);
               <MaterialsTransferred projectId={id} />
             </TabPane>
           </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`Project Materials-edit`}
+            renderAuthFailed={<p></p>}
+          >
           <TabPane tabId="12">
               <>
               </>
@@ -1264,9 +1334,16 @@ const [project,setProject]=useState([]);
               projectId={id}>
             </ProjectMaterials>
           </TabPane>
+          </HasAccess>
+          <HasAccess
+            roles={null}
+            permissions={`Finance-edit`}
+            renderAuthFailed={<p></p>}
+          >
             <TabPane tabId="13" eventkey="financeTab">
               <FinanceTab projectId={id} projectDetail={projectDetail}></FinanceTab>
             </TabPane>
+            </HasAccess>
            
         </TabContent>
       </ComponentCard>

@@ -182,6 +182,7 @@ const SectionEdit = () => {
                   >
                     <option defaultValue="selected">Please Select</option>
                     <option value="Top">Top</option>
+                    <option value="Tab">Tab</option>
                     <option value="Admin">Admin</option>
                     <option value="Reports">Reports</option>
                   </Input>
@@ -205,6 +206,7 @@ const SectionEdit = () => {
                     <option value="Payroll">Payroll</option>
                     <option value="Admin">Admin</option>
                     <option value="Reports">Reports</option>
+                    <option value="Tabs">Tabs</option>
                     {/* <option value="MileStone">Milestone</option> */}
                   </Input>
                 </FormGroup>
