@@ -115,6 +115,10 @@ const ErectionDismantelReport = () => {
       selector: 'title',
     },
     {
+      name: 'Date',
+      selector: 'date',
+    },
+    {
       name: 'Work Order No',
       selector: 'project_work_order',
     },
@@ -249,6 +253,7 @@ const ErectionDismantelReport = () => {
                     <tr key={element.task_history_id}>
                       <td>{index + 1}</td>
                       <td>{element.title}</td>
+                      <td>{element.date}</td>
                       <td>{element.project_work_order}</td>
                       <td>{element.task_type}</td>
                       <td>{element.pipe}</td>
