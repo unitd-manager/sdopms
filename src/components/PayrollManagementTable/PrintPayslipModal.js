@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   CardBody,
   Row,
@@ -13,42 +13,56 @@ import {
   FormGroup,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-import PdfAllPayslip from '../PDF/PdfAllPayslip'
+import api from '../../constants/api';
+import PdfAllPayslip from '../PDF/PdfAllPayslip';
 
-function PrintPayslipModal({ printPayslipModal, setPrintPayslipModal,payrollManagementsdata }) {
+function PrintPayslipModal({ printPayslipModal, setPrintPayslipModal, payrollManagementsdata }) {
   PrintPayslipModal.propTypes = {
     printPayslipModal: PropTypes.bool,
     setPrintPayslipModal: PropTypes.func,
-    payrollManagementsdata:PropTypes.array
+    payrollManagementsdata: PropTypes.array,
   };
-const[filterPeriod, setFilterPeriod]=useState({
-  month:'',
-  year:''
-})
+  const [filterPeriod, setFilterPeriod] = useState({
+    month: '',
+    year: '',
+  });
 
-const handleFilterInputs=(e)=>{
-setFilterPeriod({...filterPeriod,[e.target.name]:e.target.value})
-}
+  const handleFilterInputs = (e) => {
+    setFilterPeriod({ ...filterPeriod, [e.target.name]: e.target.value });
+  };
 
-  const payrolls=payrollManagementsdata.filter((e)=>{
-    if(filterPeriod.month ==='' && filterPeriod.year ===''){
-return payrollManagementsdata
+  const payrolls = payrollManagementsdata.filter((e) => {
+    if (filterPeriod.month === '' && filterPeriod.year === '') {
+      return payrollManagementsdata;
     }
-    if(filterPeriod.month ==='' && filterPeriod.year !==''){
-      return e.payroll_year === Number(filterPeriod.year)
-          }
-          if(filterPeriod.month !=='' && filterPeriod.year ===''){
-            return e.payroll_month ===filterPeriod.month
-                }
-                
-                  return e.payroll_month ===filterPeriod.month && e.payroll_year === Number(filterPeriod.year)
-                      
+    if (filterPeriod.month === '' && filterPeriod.year !== '') {
+      return e.payroll_year === Number(filterPeriod.year);
+    }
+    if (filterPeriod.month !== '' && filterPeriod.year === '') {
+      return e.payroll_month === filterPeriod.month;
+    }
 
-  })
-console.log('payrolls',payrolls)
-console.log('filterPeriod',filterPeriod)
-console.log('filteryear',filterPeriod.year)
-console.log('filtermonth',filterPeriod.month)
+    return e.payroll_month === filterPeriod.month && e.payroll_year === Number(filterPeriod.year);
+  });
+  console.log('payrolls', payrolls);
+  console.log('filterPeriod', filterPeriod);
+  console.log('filteryear', filterPeriod.year);
+  console.log('filtermonth', filterPeriod.month);
+  const [payslipdetails, setPayslipDetails] = useState();
+  //Api call for getting Unit From Valuelist
+  const getUnit = () => {
+    api
+      .get('/product/getYearFromValueList')
+      .then((res) => {
+        setPayslipDetails(res.data.data);
+      })
+      .catch(() => {
+        //message('Staff Data Not Found', 'info');
+      });
+  };
+  useEffect(()=>{
+    getUnit();
+  },[]);
   return (
     <div>
       <Modal isOpen={printPayslipModal}>
@@ -66,12 +80,24 @@ console.log('filtermonth',filterPeriod.month)
                   </Col>
                   <Col>
                     <FormGroup>
-                      <Input name="year" type="select"
-                      value={ filterPeriod.year}
-                      onChange={handleFilterInputs}>
-                        <option value="">Please Select</option>
+                      <Input
+                        name="year"
+                        type="select"
+                        value={filterPeriod.year}
+                        onChange={handleFilterInputs}
+                      >
+                   <option defaultValue="selected">Please Select</option>
+                    {payslipdetails &&
+                      payslipdetails.map((ele) => {
+                        return (
+                          <option key={ele.value} value={ele.value}>
+                            {ele.value}
+                          </option>
+                        );
+                      })}
+                        {/* <option value="">Please Select</option>
                         <option value={2022}>2022</option>
-                        <option value={2023}>2023</option>
+                        <option value={2023}>2023</option> */}
                       </Input>
                     </FormGroup>
                   </Col>
@@ -86,9 +112,12 @@ console.log('filtermonth',filterPeriod.month)
                   </Col>
                   <Col>
                     <FormGroup>
-                      <Input name="month" type="select" 
-                      value={filterPeriod.month}
-                      onChange={handleFilterInputs}>
+                      <Input
+                        name="month"
+                        type="select"
+                        value={filterPeriod.month}
+                        onChange={handleFilterInputs}
+                      >
                         <option value="">Please Select</option>
                         <option value="01">January</option>
                         <option value="02">February</option>
@@ -112,7 +141,12 @@ console.log('filtermonth',filterPeriod.month)
           </Row>
         </ModalBody>
         <ModalFooter>
-         {filterPeriod.year && filterPeriod.month && <PdfAllPayslip payrollsYear={filterPeriod.year} payrollsMonth={filterPeriod.month}></PdfAllPayslip>}
+          {filterPeriod.year && filterPeriod.month && (
+            <PdfAllPayslip
+              payrollsYear={filterPeriod.year}
+              payrollsMonth={filterPeriod.month}
+            ></PdfAllPayslip>
+          )}
           <Button
             color="dark"
             className="shadow-none"

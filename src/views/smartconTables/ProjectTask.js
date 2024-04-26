@@ -38,7 +38,7 @@ export default function ProjectTask({
   userSearchData,
   setTaskhistorymodal,
   setTaskhistoriesmodal,
-  workorderbyId,
+  //workorderbyId,
 
 }) {
   ProjectTask.propTypes = {
@@ -53,7 +53,7 @@ export default function ProjectTask({
     getTaskById: PropTypes.func,
     setUserSearchData: PropTypes.func,
     userSearchData: PropTypes.func,
-    workorderbyId:PropTypes.func,
+    //workorderbyId:PropTypes.func,
   };
 
   console.log("check id's", taskById);
@@ -72,6 +72,7 @@ export default function ProjectTask({
     project_team_id: '',
   });
   const [milestoneDetail, setMilestones] = useState([]);
+  const [workorders, setWorkorders] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [categoryName, setCategoryName] = useState('');
@@ -110,7 +111,7 @@ export default function ProjectTask({
   // Gettind data from Job By Id
   const editJobById = () => {
     api
-      .get('/projectteam/getProjectTeam')
+      .post('/projectteam/getProjectTeambyProjectId',{project_id:id})
       .then((res) => {
         console.log(res.data.data);
         setTeam(res.data.data);
@@ -176,7 +177,7 @@ export default function ProjectTask({
       return; // Prevent multiple submissions
     }
     if (employeelead.length === 0) {
-      message('Please Select Team leader', 'warning');
+      message('Please Select Team leader', 'error');
     } else if (insertTask.project_milestone_id !== '' && insertTask.task_title !== '') {
       setIsSubmitting(true); // Set submission in progress
       const newContactWithCompanyId = insertTask;
@@ -232,7 +233,7 @@ export default function ProjectTask({
         });
 
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
 
   };
@@ -319,9 +320,21 @@ export default function ProjectTask({
         setMilestones(res.data.data);
       })
       .catch(() => {
-        message('Milestones not found', 'info');
+        //message('Milestones not found', 'info');
       });
   };
+
+  const getWorkOrder = () => {
+    api
+      .post('/projecttask/getworkorderByprojectID', { project_id: id })
+      .then((res) => {
+        setWorkorders(res.data.data);
+      })
+      .catch(() => {
+        //message('Milestones not found', 'info');
+      });
+  };
+
   const fetchEmployeeDetails = (projectTeamId) => {
     api
       .post('/projectteam/getEmployeeByID', { project_team_id: projectTeamId })
@@ -367,6 +380,7 @@ export default function ProjectTask({
     editJobById();
     //dataForAttachment();
     getMilestoneTitle();
+    getWorkOrder();
   }, [id]);
 
   useEffect(() => {
@@ -611,6 +625,26 @@ export default function ProjectTask({
                         <Col md="4">
                           <FormGroup>
                             <Label>
+                              Work Order <span className="required">*</span>
+                            </Label>
+                            <Input
+                              type="select"
+                              name="project_work_order_id"
+                              onChange={handleInputsTask}
+                            >
+                              <option>Select Work order</option>
+                              {workorders &&
+                                workorders.map((e) => (
+                                  <option key={e.project_id} value={e.work_order_id}>
+                                    {e.work_order_no}
+                                  </option>
+                                ))}
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                        <Col md="4">
+                          <FormGroup>
+                            <Label>
                               Title <span className="required">*</span>
                             </Label>
                             <Input
@@ -698,7 +732,7 @@ export default function ProjectTask({
                             />
                           </FormGroup>
                         </Col>
-                        <Col md="4">
+                        {/* <Col md="4">
                           <FormGroup>
                             <Label>Work Order No</Label>
                             <Input
@@ -717,7 +751,7 @@ export default function ProjectTask({
                               ))}
                               </Input>
                           </FormGroup>
-                        </Col>
+                        </Col> */}
                         <Col md="4">
                           <FormGroup>
                             <Label>Start date</Label>

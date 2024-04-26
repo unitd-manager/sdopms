@@ -21,7 +21,7 @@ const Test = () => {
   //state variables
   const [tabPurchaseOrdersLinked, setTabPurchaseOrdersLinked] = useState();
   const [projectsLinked, setProjectsLinked] = useState([]);
-  const [productQty, setProductQty] = useState({});
+  // const [ setProductQty] = useState({});
   const [inventoryDetails, setInventoryDetails] = useState({
     inventory_code: '',
     inventory_id: '',
@@ -36,13 +36,49 @@ const Test = () => {
     product_code: '',
   });
 
+ 
+  const [adjuststockDetails1, setAdjuststockDetails1] = useState({
+    inventory_id: null,
+    product_id: null,
+    //adjust_stock: 0,
+    yard_stock:0,
+    modified_by: '',
+    created_by: '',
+    //current_stock: null,
+  });
+  const [adjuststockDetails2, setAdjuststockDetails2] = useState({
+    inventory_id: null,
+    product_id: null,
+    //adjust_stock: 0,
+    yard_stock:0,
+    modified_by: '',
+    created_by: '',
+    //current_stock: null,
+  });
   //params and routing
   const { id } = useParams();
   const { loggedInuser } = useContext(AppContext);
-
+  const [stockLogs, setStockLogs] = useState([]);
   const [adjustStocks, setAdjustStocks] = useState([]);
   const [changedStock, setChangedStock] = useState();
-  
+  const [shipToYard, setShipToYard] = useState(0);
+  const [movedToShip, setMovedToShip] = useState(0);
+  const [shipStock, setShipStock] = useState(0);
+   const [totalQty, setTotalQty] = useState(0);
+   const [damageDate, setDamageDate] = useState();
+  console.log('shipstock',shipStock)
+  console.log('shipToYard',shipToYard)
+  console.log('movedToShip',movedToShip)
+  const [inventoryStock1, setInventoryStock1] = useState({
+    inventory_id: null,
+    yard_stock:null,
+  });
+  const [inventoryStock2, setInventoryStock2] = useState({
+    inventory_id: null,
+    yard_stock:null,
+  });
+  const [validationMessage, setValidationMessage] = useState('');
+
   const getAdjustStocklogsById = () => {
     api
       .post('/inventory/getAdjustStock', { inventory_id: id })
@@ -64,6 +100,7 @@ const Test = () => {
       .post('/inventory/getinventoryById', { inventory_id: id })
       .then((res) => {
         setInventoryDetails(res.data.data[0]);
+        console.log('inventorydetails',res.data.data[0])
       })
       .catch(() => {
         message('Unable to get inventory data.', 'error');
@@ -80,6 +117,36 @@ const Test = () => {
         message('Unable to get purchase order data.', 'error');
       });
   };
+
+  const getStockExchangelogs = () => {
+    api
+      .post('/projecttabmaterialusedportal/getstockExchangeLogsByProductId', { product_id: inventoryDetails && inventoryDetails.productId })
+      .then((res) => {
+        setStockLogs(res.data.data);
+        let ship=0;
+        let yard=0;
+        res.data.data.forEach((el)=>{
+          console.log('el',el)
+if(el.stock_move==="YardToShip"){
+ship += parseFloat(el.quantity ||0)
+}
+if(el.stock_move==="ShipToYard"){
+  yard+=parseFloat(el.quantity ||0)
+}
+        })
+        console.log('ship',ship)
+        console.log('yard',yard)
+setMovedToShip(ship);
+setShipToYard(yard);
+const shipstock=parseFloat(ship)-parseFloat(yard)
+setShipStock(shipstock)
+setTotalQty(parseFloat(inventoryDetails&&inventoryDetails.stock||0)+parseFloat(inventoryDetails&&inventoryDetails.yard_stock||0)+parseFloat(shipstock||0)+parseFloat(inventoryDetails&&inventoryDetails.damaged_stock||0)+parseFloat(changedStock||0))
+      })
+      .catch(() => {
+      
+      });
+  };
+
   console.log("productId", tabPurchaseOrdersLinked)
 
   //get data for projects table
@@ -98,14 +165,183 @@ const Test = () => {
   const getproductquantity = () => {
     api
       .post('/inventory/getProductQuantity', {product_id: inventoryDetails && inventoryDetails.productId })
-      .then((res) => {
-        setProductQty(res.data.data[0]);
+      .then(() => {
+        //setProductQty(res.data.data[0]);
       })
       .catch(() => {
         message('Unable to get productqty data.', 'error');
       });
   };
+  const [yardStockInputValue, setYardStockInputValue] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+   //Yard stock
+ const handleStockinput1 = (e) => {
+  const newYardStockValue = parseFloat(e.target.value) || 0;
+  const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
+  //const yardStockValue = parseFloat(inventoryDetails.yard_stock) || 0;
+  setInventoryStock1({
+    inventory_id: inventoryDetails.inventory_id,
+    yard_stock:
+      selectedStatus === 'YardToStore'
+        ? Number(inventoryDetails.yard_stock || 0) - newYardStockValue
+        : newYardStockValue + (Number(inventoryDetails.yard_stock) || 0),
+    stock:
+      selectedStatus === 'YardToStore'
+        ? initialStockValue + newYardStockValue
+        : initialStockValue - newYardStockValue,
+  });
+  // Reset input values after updating yard stock
+  setYardStockInputValue('');
  
+    // Optionally, reset the input value to the previous valid value or 0
+
+    // Check if the new yard stock is greater than the actual stock
+if (
+(selectedStatus === 'storeToYard' && newYardStockValue > initialStockValue) ||
+(selectedStatus === 'YardToStore' && newYardStockValue > (Number(inventoryDetails.yard_stock) || 0))
+) {
+if (selectedStatus === 'storeToYard') {
+  setValidationMessage('Yard stock cannot be greater than the actual stock.');
+} else if (selectedStatus === 'YardToStore') {
+  setValidationMessage('store stock cannot exceed to the yard stock.');
+}
+    setInventoryStock1({
+      inventory_id: inventoryDetails.inventory_id,
+      yard_stock: initialStockValue, // Reset to the initial stock value
+      stock: 0,
+    });
+    return;
+  }
+  const status = selectedStatus === 'YardToStore' ? 'Yard to Store' : 'Store to Yard';
+
+  setValidationMessage(''); // Reset validation message if valid
+  setAdjuststockDetails1({
+    inventory_id: inventoryDetails.inventory_id,
+    product_id: inventoryDetails.productId,
+    // yard_stock: newYardStockValue, // Calculate the change in yard_stock
+    // modified_by: '',
+    // created_by: '',
+    // actual_stock:initialStockValue - newYardStockValue,
+    yard_stock: newYardStockValue + (Number(inventoryDetails.yard_stock) || 0),
+    // Add previous yard_stock + element.yard_stock, // Add previous yard_stockrdStockValue, // Calculate the change in yard_stock
+    modified_by: '',
+    created_by: '',
+    // actual_stock: initialStockValue - newYardStockValue,
+    actual_stock:
+      selectedStatus === 'Yard to Store'
+        ? initialStockValue + newYardStockValue
+        : initialStockValue,
+    status_field: status,
+    
+  });
+ };
+  
+
+  const adjuststock1 = () => {
+    api
+      .post('/inventory/insertyard_stock_log', adjuststockDetails1)
+      .then(() => {
+        message('yard Stock inserted successfully', 'success');
+        getInventoryData();
+        //navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+  //update stock
+
+ // updateStockinInventory1 function
+ const updateStockinInventory1 = () => {
+  api
+    .post('/inventory/updateInventoryStock1', inventoryStock1)
+    .then(() => {
+      //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+      message('Yard stock updated successfully', 'success');
+      //getAllinventories();
+      //navigate('/inventory');
+    })
+    .catch(() => {
+      message('Unable to edit record.', 'error');
+    });
+};
+ 
+
+   //Yard stock
+   const handleStockinput2 = (e) => {
+    const newYardStockValue = parseFloat(e.target.value) || 0;
+    const initialStockValue = parseFloat(inventoryDetails.stock) || 0;
+    const damagedStockValue = parseFloat(inventoryDetails.damaged_stock) || 0;
+    // Check if the new yard stock is greater than the actual stock
+    if (newYardStockValue > initialStockValue) {
+      message('Yard stock cannot be greater than the actual stock.', 'error');
+      // Optionally, reset the input value to the previous valid value or 0
+      e.target.value = initialStockValue;
+      return;
+    }
+  
+    setInventoryStock2({
+      inventory_id: inventoryDetails.inventory_id,
+      damaged_stock: parseFloat(newYardStockValue)+parseFloat(damagedStockValue),
+      stock: initialStockValue - newYardStockValue,
+    });
+    
+     // Check if the new yard stock is greater than the actual stock
+   if (newYardStockValue > initialStockValue) {
+    setValidationMessage('Yard stock cannot be greater than the actual stock.');
+    // Optionally, reset the input value to the previous valid value or 0
+    setInventoryStock2({
+      inventory_id: inventoryDetails.inventory_id,
+      damaged_stock: initialStockValue, // Reset to the initial stock value
+      stock: 0,
+    });
+    return;
+  }
+  setValidationMessage(''); // Reset validation message if valid
+  
+    setAdjuststockDetails2({
+      inventory_id: inventoryDetails.inventory_id,
+      product_id: inventoryDetails.productId,
+      damaged_stock: newYardStockValue, // Calculate the change in yard_stock
+      modified_by: '',
+      created_by: '',
+      actual_stock:initialStockValue - newYardStockValue,
+      
+    });
+   };
+    
+  
+    const adjuststock2 = () => {
+      adjuststockDetails2.date=damageDate;
+      adjuststockDetails2.created_by=loggedInuser.name;
+      api
+        .post('/inventory/insertdamaged_stock_log', adjuststockDetails2)
+        .then(() => {
+          message('Damage Stock updated successfully', 'success');
+          getInventoryData();
+          //navigate('/inventory');
+        })
+        .catch(() => {
+          message('Unable to edit record.', 'error');
+        });
+    };
+    //update stock
+  
+   // updateStockinInventory1 function
+   const updateStockinInventory2 = () => {
+    api
+      .post('/inventory/updateInventoryStock2', inventoryStock2)
+      .then(() => {
+        //adjuststock1(); // Call the function to adjust stock based on the yard_stock change
+        message('Yard stock updated successfully', 'success');
+        //getAllinventories();
+        //navigate('/inventory');
+      })
+      .catch(() => {
+        message('Unable to edit record.', 'error');
+      });
+  };
+
   //update Inventory
   const editinventoryData = () => {
     inventoryDetails.modification_date = creationdatetime;
@@ -113,6 +349,8 @@ const Test = () => {
     api
       .post('/inventory/editinventoryMain', inventoryDetails)
       .then(() => {
+        //adjuststock1();
+        //updateStockinInventory1();
         message('Record editted successfully', 'success');
         setTimeout(() => {
           window.location.reload();
@@ -126,6 +364,7 @@ const Test = () => {
   useEffect(() => {
     getInventoryData();
     getAllpurchaseOrdersLinked();
+    getStockExchangelogs();
     getAllProjectsLinked();
   getAdjustStocklogsById();
     getproductquantity( inventoryDetails && inventoryDetails.productId);
@@ -145,38 +384,65 @@ changes +=parseFloat(el.adjust_stock);
           inventoryDetails={inventoryDetails}
           handleInputs={handleInputs}
           editinventoryData={editinventoryData}
+          handleStockinput1={handleStockinput1}
+          handleStockinput2={handleStockinput2}
+          validationMessage={validationMessage}
+          adjuststock1={adjuststock1}
+          updateStockinInventory1={updateStockinInventory1}
+          yardStockInputValue={yardStockInputValue}
+          setSelectedStatus={setSelectedStatus}
+          selectedStatus={selectedStatus}
+          setYardStockInputValue={setYardStockInputValue}
+          adjuststock2={adjuststock2}
+          updateStockinInventory2={updateStockinInventory2}
+          damageDate={damageDate}
+          setDamageDate={setDamageDate}
         />
         <Row>
           <Form>
             <ComponentCard title="Stock Details">
               <Row>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Total Purchased quantity</h5>
+                    <h5>Stock in Store</h5>
                   </Row>
-                  <span>{productQty && productQty.materials_purchased}</span>
+                  <span>{inventoryDetails &&inventoryDetails.stock ||0}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Sold quantity</h5>
+                    <h5>Stock in Yard</h5>
                   </Row>
-                  <span>{productQty && productQty.materials_used}</span>
+                  <span>{inventoryDetails &&inventoryDetails.yard_stock ||0}</span>
                   <Row></Row>
                 </Col>
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Adjusted quantity</h5>
+                    <h5>Stock in Ships</h5>
                   </Row>
-                  <span>{changedStock&&changedStock}</span>
+                  <span>{shipStock&&shipStock ||0}</span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="2">
+                  <Row>
+                    <h5>Damaged Stock</h5>
+                  </Row>
+                  <span>{inventoryDetails &&inventoryDetails.damaged_stock ||0}</span>
+                  <Row></Row>
+                </Col>
+                <Col xs="12" md="2">
+                  <Row>
+                    <h5>Adjusted Stock</h5>
+                  </Row>
+                  <span>{changedStock&&changedStock ||0}</span>
                   <Row></Row>
                 </Col>
                 
-                <Col xs="12" md="3">
+                <Col xs="12" md="2">
                   <Row>
-                    <h5>Remaining quantity</h5>
+                    <h5>Total Stock</h5>
                   </Row>
-                  <span>{productQty && productQty.actual_stock}</span>
+                  <span>{totalQty && totalQty||0}</span>
 
                   <Row></Row>
                 </Col>
@@ -187,6 +453,7 @@ changes +=parseFloat(el.adjust_stock);
         <InventoryEditTables
           tabPurchaseOrdersLinked={tabPurchaseOrdersLinked}
           projectsLinked={projectsLinked}
+          stockLogs={stockLogs}
         />
       </>
   );

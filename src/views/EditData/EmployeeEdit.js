@@ -31,7 +31,7 @@ const EmployeeEdit = () => {
     address_area: '',
     address_street: '',
     address_po_code: '',
-    address_country1: '',
+    address_country1: 'Singapore',
     mobile: '',
     phone: '',
     email: '',
@@ -206,7 +206,7 @@ const EmployeeEdit = () => {
   //Api for getting all countries
   const getAllCountries = () => {
     api
-      .get('/geocountry/getNationality')
+      .get('/geocountry/getCountry')
       .then((res) => {
         setallCountries(res.data.data);
       })
@@ -255,7 +255,7 @@ const EmployeeEdit = () => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill the required fields', 'warning');
+      message('Please fill the required fields', 'error');
     }
   };
 
@@ -307,7 +307,7 @@ const EmployeeEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill the nricno fields', 'warning');
+        message('Please fill the nricno fields', 'error');
       }
     } else if (
       
@@ -325,7 +325,7 @@ const EmployeeEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill the fin no field', 'warning');
+        message('Please fill the fin no field', 'error');
       }
     } else if (tabPassTypeDetails.citizen === 'WP') {
       if (tabPassTypeDetails.fin_no !== '' && tabPassTypeDetails.work_permit !== '') {
@@ -338,7 +338,7 @@ const EmployeeEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill the Fin no and Work permit No field', 'warning');
+        message('Please fill the Fin no and Work permit No field', 'error');
       }
     } else if ( tabPassTypeDetails.citizen === 'PR') {
       if (tabPassTypeDetails.nric_no !== '' && tabPassTypeDetails.spr_year !== '') {
@@ -351,10 +351,10 @@ const EmployeeEdit = () => {
             message('Unable to edit record.', 'error');
           });
       } else {
-        message('Please fill the Nric No and Spryear field', 'warning');
+        message('Please fill the Nric No and Spryear field', 'error');
       }
     } else {
-      message('Please fill the PassType', 'warning');
+      message('Please fill the PassType', 'error');
     }
   };
   //update all data

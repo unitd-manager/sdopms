@@ -69,7 +69,7 @@ const OpportunityDetails = () => {
           message('Network connection error.', 'error');
         });
     } else {
-      message('Please fill all required fields.', 'warning');
+      message('Please fill all required fields.', 'error');
     }
   };
 
@@ -118,14 +118,14 @@ const OpportunityDetails = () => {
           getTendersById();
           message('Tender inserted successfully.', 'success');
           setTimeout(() => {
-            navigate(`/EnquiryEdit/${insertedDataId}?tab=1`);
+            navigate(`/TenderEdit/${insertedDataId}?tab=1`);
           }, 300);
         })
         .catch(() => {
           message('Network connection error.', 'error');
         });
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
 

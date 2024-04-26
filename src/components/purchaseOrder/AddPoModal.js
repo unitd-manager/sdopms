@@ -239,7 +239,7 @@ const insertProduct = (ProductCode, ItemCode) => {
         message('Unable to insert product.', 'error');
       });
     } else {
-      message('Please fill the Product Name', 'warning');
+      message('Please fill the Product Name', 'error');
     }
   };
 
@@ -276,8 +276,10 @@ const insertProduct = (ProductCode, ItemCode) => {
         message('Tab Purchase Order not found', 'info');
       });
   };
+  console.log('supplierid',supplierId)
   const poProduct = (itemObj) => {
-    console.log('supplierid',supplierId)
+    
+
     api
       .post('/purchaseorder/insertPoProduct', {
         purchase_order_id: PurchaseOrderId,
@@ -306,9 +308,9 @@ const insertProduct = (ProductCode, ItemCode) => {
       })
       .then(() => {
         message('Product Added!', 'success');
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 300);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       })
       .catch(() => {
         message('Unable to add Product!', 'error');

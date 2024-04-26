@@ -195,10 +195,10 @@ const { loggedInuser } = useContext(AppContext);
             setSubmitting(false); // Reset the submitting state after the API call completes (success or error).
           });
       } else {
-        message('Amount should not be greater than the total invoice amount.', 'warning');
+        message('Amount should not be greater than the total invoice amount.', 'error');
       }
     } else {
-      message('Please fill mode of payment fields', 'warning');
+      message('Please fill mode of payment fields', 'error');
       setSubmitting(false);
     }
   };
@@ -463,7 +463,7 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
                       generateCode();
                     } else {
                       // Show an error message indicating that the amount should not exceed the invoice amount
-                      message('Amount should not be greater than the total invoice amount.', 'warning');
+                      message('Amount should not be greater than the total invoice amount.', 'error');
                       setSubmitting(false); // Reset submitting state
                     }
                   } else {
@@ -473,7 +473,7 @@ const addAndDeductAmount = (checkboxVal, receiptObj) => {
                   }
                 } else {
                   // Show an error message indicating that the amount should be greater than 0
-                  message('Pls select atleast one Invoice', 'warning');
+                  message('Pls select atleast one Invoice', 'error');
                   setSubmitting(false); // Reset submitting state
                 }
 

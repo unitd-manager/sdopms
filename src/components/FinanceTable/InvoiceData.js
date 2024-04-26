@@ -198,22 +198,24 @@ const FinanceInvoiceData = ({ editInvoiceData, setEditInvoiceData, projectInfo, 
         finalinsertapi(res.data.data.insertId, results);
         setTimeout(() => {
           window.location.reload();
-        }, 300);
+        }, 1500);
       })
       .catch(() => {
         message('Network connection error.');
       });
   };
   //generateCode
-  const generateCode = (results,type) => {
+  const generateCode = (results) => {
+    console.log('results',results)
     api
-      .post('/tender/getCodeValue', { type })
+      .post('/tender/getCodeValue', { type:'invoice'})
       .then((res) => {
         insertInvoice(results, res.data.data);
       })
       .catch(() => {
         insertInvoice(results, '');
       });
+   
   };
 
   //Add new line item

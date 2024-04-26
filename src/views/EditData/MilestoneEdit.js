@@ -152,6 +152,7 @@ const MilestoneEdit = () => {
       .post('/milestone/editMilestone', milestone)
       .then(() => {
         message('Record editted successfully', 'success');
+        getMilestoneById();
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -415,7 +416,7 @@ const MilestoneEdit = () => {
                       <Input
                         type="date"
                         onChange={handleInputs}
-                        value={actualCompletedDate}
+                        value={milestone && moment(milestone.actual_completed_date).format('YYYY-MM-DD') || actualCompletedDate}
                         name="actual_completed_date"
                         disabled
                         // disabled={milestone && milestone.task_status !== 'completed'} // Disable the input when status is not "completed"
@@ -597,7 +598,7 @@ const MilestoneEdit = () => {
                                                   key={ele.employee_id}
                                                   value={ele.employee_id}
                                                 >
-                                                  {ele.first_name}
+                                                  {ele.employee_name}
                                                 </option>
                                               );
                                             })}

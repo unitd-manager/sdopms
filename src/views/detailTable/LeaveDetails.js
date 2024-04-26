@@ -57,7 +57,7 @@ const LeaveDetails = () => {
         isDateInRange(dateToCheckFromDate, emp.from_date, emp.to_date) ||
         isDateInRange(dateToCheckToDate, emp.from_date, emp.to_date)
       ) {
-        message('You already applied for that day', 'warning');
+        message('You already applied for that day', 'error');
       } else {
         api
           .post('/leave/insertLeave', leaveInsertData)
@@ -73,7 +73,7 @@ const LeaveDetails = () => {
           });
       }
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
     
   }

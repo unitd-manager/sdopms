@@ -122,6 +122,7 @@ const Cards = () => {
         <BreadCrumbs />
         <ToastContainer></ToastContainer>
         <CommonTable
+        
           loading={loading}
           title="Employee    List"
           Button={
@@ -155,7 +156,10 @@ const Cards = () => {
               </Row>
             </>
           }
-        ></CommonTable>
+          
+        >
+        <p><b>Total Employees: {employees.length}</b></p>
+        </CommonTable>
 
         <Row className="employee-img">
           {employees.map((blg) => {
@@ -174,6 +178,7 @@ const Cards = () => {
                   team={blg.team}
                   empCode={blg.emp_code}
                   email={blg.login_email}
+                  joinDate={blg.act_join_date}
                 />
               </Col>
             )

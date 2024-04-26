@@ -17,9 +17,11 @@ import api from '../../constants/api';
 
 const ProjectWorksheet = ({
  WorkSheet,
+ getworksheetbyId
 }) => {
   ProjectWorksheet.propTypes = {
     WorkSheet: PropTypes.object,
+    getworksheetbyId: PropTypes.func
   };
   // const { id } = useParams();
   // const [WorkSheet, setWorkSheet] = useState(null);
@@ -46,7 +48,7 @@ const ProjectWorksheet = ({
   useEffect(() => {
     getLineItem();
     //getTimeSheet();
-    // getworksheetbyId();
+    getworksheetbyId();
   }, []);
  
   const columns = [
@@ -238,7 +240,7 @@ const ProjectWorksheet = ({
                     
                     <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                     <td style={{ textAlign: 'right' }}>{element.head_count}</td>
-                    <td style={{ textAlign: 'right' }}>{element.total_amount}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.total_amount).toFixed(2)}</td>
                     <td style={{ textAlign: 'right' }}>{parseFloat(element.share_per_head).toFixed(2)}</td>
                     <td >{element.task_type}</td>
                     <td style={{ textAlign: 'right' }}>{element.pipe} </td>
@@ -246,11 +248,11 @@ const ProjectWorksheet = ({
                     <td style={{ textAlign: 'right' }}>{element.volume}</td>
                     <td style={{ textAlign: 'right' }}>{element.tb}</td>
                     <td style={{ textAlign: 'right' }}>{element.others}</td>
-                    <td style={{ textAlign: 'right' }}>{element.pipe_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.plank_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.volume_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.tb_value}</td>
-                    <td style={{ textAlign: 'right' }}>{element.others_value}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.pipe_value).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.plank_value).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.volume_value).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.tb_value).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right' }}>{parseFloat(element.others_value).toFixed(2)}</td>
                     {/* <td>{element.pipe_dismantle}</td>
                     <td>{element.plank_dismantle}</td>
                     <td>{element.volume_dismantle}</td>

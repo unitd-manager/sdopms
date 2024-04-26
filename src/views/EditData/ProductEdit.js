@@ -101,7 +101,7 @@ const ProductUpdate = () => {
           message('Unable to edit record.', 'error');
         });
     } else {
-      message('Please fill all required fields', 'warning');
+      message('Please fill all required fields', 'error');
     }
   };
 
@@ -126,7 +126,7 @@ const ProductUpdate = () => {
         message('Staff Data Not Found', 'info');
       });
   };
-
+console.log('productDetails',productDetails);
   //Attachments
   const dataForAttachment = () => {
     setDataForAttachment({

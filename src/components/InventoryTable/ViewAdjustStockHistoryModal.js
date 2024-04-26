@@ -55,8 +55,15 @@ function ViewAdjustStockHistoryModal({
   return (
     <>
       <Modal isOpen={adjustStockHistoryModal}>
-        <ModalHeader>Adjust Stock History</ModalHeader>
-        <ModalBody>
+        <ModalHeader>Adjust Stock History <Button
+            color="secondary"
+            onClick={() => {
+              setAdjustStockHistoryModal(false);
+            }}
+          >
+            X
+          </Button> </ModalHeader>
+        <ModalBody  style={{overflowY:'scroll',maxHeight:'500px'}}>
           <Row>
             <Col md="12">
                 <CardBody>
@@ -76,9 +83,12 @@ function ViewAdjustStockHistoryModal({
                               <td>{element.adjust_stock}</td>
                               <td>{element.current_stock}</td>
                               <td>
-                                {element.creation_date
-                                  ? moment(element.creation_date).format('YYYY-MM-DD  hh:mm:ss')
-                                  : ''}
+                                {element.date
+                                  ? moment(element.date).format('YYYY-MM-DD  hh:mm:ss')
+                                  : element.creation_date
+                                  ? moment(element.creation_date).format('YYYY-MM-DD  hh:mm:ss'):''}
+                              
+                                {element.created_by}
                               </td>
                             </tr>
                           );

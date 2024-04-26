@@ -41,11 +41,13 @@ import api from '../../constants/api';
 import AttachmentModalV2 from '../../components/Tender/AttachmentModalV2';
 import ViewFileComponentV2 from '../../components/ProjectModal/ViewFileComponentV2';
 import ApiButton from '../../components/ApiButton';
+import TaskEmployeesModal from '../../components/TaskEmployeesModal';
 
 const TaskEdit = () => {
   //All state variable
   const [projectTask, setProjectTask] = useState();
-  
+  const [taskIdForEmployees, setTaskIdForEmployees] = useState(null);
+  const [taskEmployeeModal, setTaskEmployeeModal] = useState(false);
   const [attachmentModal, setAttachmentModal] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
   const [timeSheet, setTimesheet] = useState(null);
@@ -222,6 +224,7 @@ const TaskEdit = () => {
       }
     });
   };
+  console.log('taskemp',taskEmployees)
   //attachments
   const dataForAttachment = () => {
     setDataForAttachment({
@@ -450,6 +453,7 @@ const TaskEdit = () => {
                         onChange={handleInputs}
                         value={projectTask && projectTask.head_count}
                         name="head_count"
+                        disabled
                       >
                         
                       </Input>
@@ -525,16 +529,22 @@ const TaskEdit = () => {
                   </Col>
                   <Col md="3">
                     <FormGroup>
-                      <Label>Employees in this Task</Label>
-                      <ul>
-                      {taskEmployees && taskEmployees.map((el)=>{
-                        return <li >
-                          {el.first_name}
-                        </li>
-                      })}
-                      </ul>
+                      {/* <Label>Employees in this Task</Label> */}
+                      <Button
+                          className="shadow-none"
+                          color="primary" onClick={() => { setTaskIdForEmployees(id); setTaskEmployeeModal(true) }}>
+                          View Employees
+                      
+                        </Button>
                     </FormGroup>
                   </Col>
+                 
+                  {taskEmployeeModal && <TaskEmployeesModal
+          taskEmployeesModal={taskEmployeeModal}
+          setTaskEmployeesModal={setTaskEmployeeModal}
+          taskId={taskIdForEmployees}
+        >
+        </TaskEmployeesModal>}
                 </Row>
               </Form>
             </div>
@@ -641,7 +651,7 @@ const TaskEdit = () => {
                                                   key={ele.employee_id}
                                                   value={ele.employee_id}
                                                 >
-                                                  {ele.first_name}
+                                                  {ele.employee_name}
                                                 </option>
                                               );
                                             })}

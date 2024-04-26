@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import * as Icon from 'react-feather';
-import { Button } from 'reactstrap';
+import { Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 import $ from 'jquery';
 import 'datatables.net-buttons/js/buttons.colVis';
 import 'datatables.net-buttons/js/buttons.flash';
-// import 'datatables.net-buttons/js/buttons.html5';
-// import 'datatables.net-buttons/js/buttons.print';
-import { Link } from 'react-router-dom';
+import 'datatables.net-buttons/js/buttons.html5';
+import 'datatables.net-buttons/js/buttons.print';
 import moment from 'moment';
 import api from '../../constants/api';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import CommonTable from '../../components/CommonTable';
+import PdfQuotation from '../../components/PDF/PdfQuotation';
 
-const Opportunity = () => {
+const Quotation = () => {
   const [tenders, setTenders] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  //const [Quotations, setQuotation] = useState(false);
+//const {id}=useParams();
   const getTenders = () => {
     api
-      .get('/tender/getTenders')
+      .get('/projecttabquote/getTabQuote')
       .then((res) => {
         setTenders(res.data.data);
         $('#example').DataTable({
@@ -29,13 +29,13 @@ const Opportunity = () => {
           pageLength: 20,
           processing: true,
           dom: 'Bfrtip',
-          // buttons: [
-          //   {
-          //     extend: 'print',
-          //     text: 'Print',
-          //     className: 'shadow-none btn btn-primary',
-          //   },
-          // ],
+          buttons: [
+            {
+              extend: 'print',
+              text: 'Print',
+              className: 'shadow-none btn btn-primary',
+            },
+          ],
         });
         setLoading(false);
       })
@@ -43,9 +43,19 @@ const Opportunity = () => {
         setLoading(false);
       });
   };
+
+//   const getQuotations = () => {
+//     api.post('/projecttabquote/getTabQuoteById', { project_id: id }).then((res) => {
+//       setQuotation(res.data.data);
+//     });
+//   };
+ // console.log("quotation",Quotations);
   useEffect(() => {
     getTenders();
+    //getQuotations();
   }, []);
+
+  
 
   const columns = [
     {
@@ -56,61 +66,61 @@ const Opportunity = () => {
       width: '4%',
     },
     {
-      name: 'Edit',
-      selector: 'edit',
-      cell: () => <Icon.Edit2 />,
-      grow: 0,
-      width: 'auto',
-      button: true,
-      sortable: false,
-    },
+        name: 'Project Name',
+        selector: 'opportunity_code',
+        sortable: true,
+        grow: 0,
+        wrap: true,
+      },
+      {
+        name: 'Quote Date',
+        selector: 'opportunity_code',
+        sortable: true,
+        grow: 0,
+        wrap: true,
+      },
     {
-      name: 'Code',
+      name: 'Quote No',
       selector: 'opportunity_code',
       sortable: true,
       grow: 0,
       wrap: true,
     },
     {
-      name: 'Project',
+      name: 'Quote Status',
       selector: 'title',
       sortable: true,
       grow: 2,
       wrap: true,
     },
     {
-      name: 'Ref No',
+      name: 'Quote Ref No',
       selector: 'office_ref_no',
       sortable: true,
       grow: 0,
     },
     {
-      name: 'Main Con',
-      selector: 'company_name',
+      name: 'Discount',
+      selector: 'discount',
       sortable: true,
       width: 'auto',
       grow: 3,
     },
     {
-      name: 'Actual Closing',
+      name: 'Amount',
       selector: 'actual_closing',
       sortable: true,
       grow: 2,
       width: 'auto',
     },
     {
-      name: 'Status',
+      name: 'Pdf',
       selector: 'status',
       sortable: true,
       grow: 2,
       wrap: true,
     },
-    {
-      name: 'Quoted By',
-      selector: 'quote_ref',
-      sortable: true,
-      width: 'auto',
-    },
+
   ];
 
   return (
@@ -119,14 +129,8 @@ const Opportunity = () => {
         <BreadCrumbs />
         <CommonTable
           loading={loading}
-          title="Enquiry List"
-          Button={
-            <Link to="/EnquiryDetails">
-              <Button color="primary" className="shadow-none">
-                Add New
-              </Button>
-            </Link>
-          }
+          title="Quotation List"
+        
         >
           <thead>
             <tr>
@@ -141,18 +145,20 @@ const Opportunity = () => {
                 return (
                   <tr key={element.opportunity_id}>
                     <td>{index + 1}</td>
-                    <td>
-                      <Link to={`/EnquiryEdit/${element.opportunity_id}?tab=1`}>
-                        <Icon.Edit2 />
-                      </Link>
-                    </td>
-                    <td>{element.opportunity_code}</td>
                     <td>{element.title}</td>
-                    <td>{element.office_ref_no}</td>
-                    <td>{element.company_name}</td>
-                    <td>{element.actual_closing ? moment(element.actual_closing).format('DD-MM-YYYY') : ''}</td>
-                    <td>{element.status}</td>
-                    <td>{element.quote_ref}</td>
+              
+                    <td>{element.quote_date ? moment(element.quote_date).format('DD-MM-YYYY') : ''}</td>
+                    <td>{element.quote_code}</td>
+                    <td>{element.quote_status}</td>
+                    <td>{element.ref_no_quote}</td>
+                    <td>{element.discount}</td>
+                    <td>{element.totalamount}</td>
+                    <Col md="3">
+                          <span>
+                            <PdfQuotation id={element.quote_id} quoteId={element.quote_id}></PdfQuotation>
+                          </span>
+                        </Col>
+                    {/* <td>{element.quote_ref}</td> */}
                   </tr>
                 );
               })}
@@ -163,4 +169,4 @@ const Opportunity = () => {
   );
 };
 
-export default Opportunity;
+export default Quotation;

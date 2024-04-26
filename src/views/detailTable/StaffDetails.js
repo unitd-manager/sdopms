@@ -31,9 +31,9 @@ const StaffDetails = () => {
     staffdetails.creation_date = creationdatetime;
 
    if (!staffdetails.email) {
-     message('Email is required', 'warning');
+     message('Email is required', 'error');
    }else if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(staffdetails.email) ) {
-     message('Invalid email address', 'warning');
+     message('Invalid email address', 'error');
    }else if(staffdetails.email !== '' && staffdetails.first_name !== ''){
    api
    .post('/staff/insertStaff', staffdetails)
@@ -50,7 +50,7 @@ const StaffDetails = () => {
      message('Unable to edit record.', 'error');
    });
   }else{
-   message('please fill all fields.', 'warning');
+   message('please fill all fields.', 'error');
   }
  };
 

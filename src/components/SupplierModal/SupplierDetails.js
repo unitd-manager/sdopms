@@ -19,7 +19,7 @@ export default function SupplierDetails({
     status: PropTypes.object,
     setEditPurchaseOrderLinked: PropTypes.bool,
   };
-
+console.log('supplier',supplier)
   return (
     <Form>
       <FormGroup>

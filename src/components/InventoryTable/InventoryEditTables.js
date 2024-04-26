@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import ComponentCard from '../ComponentCard';
-import { pocolumns, plcolumns } from '../../data/Tender/InventoryData';
+import { pocolumns,stcolumns } from '../../data/Tender/InventoryData';
 
-function InventoryEditTables({ tabPurchaseOrdersLinked, projectsLinked }) {
+function InventoryEditTables({ tabPurchaseOrdersLinked,stockLogs }) {
   InventoryEditTables.propTypes = {
     tabPurchaseOrdersLinked: PropTypes.array,
-    projectsLinked: PropTypes.array,
+    //projectsLinked: PropTypes.array,
+    stockLogs:PropTypes.array
   };
 
   return (
@@ -39,8 +40,7 @@ function InventoryEditTables({ tabPurchaseOrdersLinked, projectsLinked }) {
                         ? moment(element.purchase_order_date).format('YYYY-MM-DD')
                         : ''}
                     </td>
-                    <td>{element.title}</td>
-                    <td>{element.company_name}</td>
+                   
                     <td>{element.cost_price}</td>
                     <td>{element.qty}</td>
                     <td>{element.supplier_name}</td>
@@ -51,7 +51,7 @@ function InventoryEditTables({ tabPurchaseOrdersLinked, projectsLinked }) {
         </Table>
       </ComponentCard>
 
-      <ComponentCard title="Projects Linked">
+      {/* <ComponentCard title="Projects Linked">
         <Table id="examplepl" className="display border border-secondary rounded">
           <thead>
             <tr>
@@ -70,6 +70,32 @@ function InventoryEditTables({ tabPurchaseOrdersLinked, projectsLinked }) {
                       <Link to={`/projectEdit/${element.project_id}`}>{element.title}</Link>
                     </td>
                     <td>{element.company_name}</td>
+                    <td>{element.quantity}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </Table>
+      </ComponentCard> */}
+      <ComponentCard title="Stocks in Projects">
+        <Table id="examplepl" className="display border border-secondary rounded">
+          <thead>
+            <tr>
+              {stcolumns.map((cell) => {
+                return <td key={cell.name}>{cell.name}</td>;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {stockLogs &&
+              stockLogs.map((element) => {
+                return (
+                  <tr key={element.project_id}>
+                    <td>{moment(element.material_used_date).format('YYYY-MM-DD')}</td>
+                    <td>
+                      <Link to={`/projectEdit/${element.project_id}`}>{element.project_title}</Link>
+                    </td>
+                    <td>{element.stock_move ==="YardToShip"?"Yard to Ship":element.stock_move ==="ShipToYard"?"Ship to Yard":""}</td>
                     <td>{element.quantity}</td>
                   </tr>
                 );

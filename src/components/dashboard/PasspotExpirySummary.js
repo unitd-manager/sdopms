@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { Input,Col,Label } from 'reactstrap';
 import moment from 'moment';
 import CommonTable from "../CommonTable";
 import message from '../Message';
@@ -7,34 +8,65 @@ import api from '../../constants/api';
 const PasspotExpirySummary = () => {
  
   const[remainderLists,setRemainderLists]=useState([]);
-
+  const[data,setData]=useState([]);
+  const [period, setPeriod] = useState({
+    days: null
+  });
   const today=new Date();
-const lastDate = new Date(new Date().setDate(today.getDate() + 180));
 
+
+const handleInputs = (e) => {
+  setPeriod({ ...period, [e.target.name]: e.target.value });
+};
   const getAllEmployees=()=>{
     
     api.get('/employeeModule/getCurrentEmployee')
     .then((res) => {
       // setEmployees(res.data.data);
-      const remainders= res.data.data.filter((el)=>{
+      // const remainders= res.data.data.filter((el)=>{
     
-        return (new Date(el.date_of_expiry)) >= today && (new Date(el.date_of_expiry))<=lastDate
-          })
-          
-setRemainderLists(remainders);
+      //   return (new Date(el.date_of_expiry)) >= today && (new Date(el.date_of_expiry))<=lastDate
+      //     })
+          setData(res.data.data)
+setRemainderLists(res.data.data);
     })
     .catch(() => {
       message('Employee Data Not Found', 'info');
      
     });
   }
-
+  console.log('period days',period&&period.days)
+  useEffect(()=>{
+    if(period&& period.days !=="" &&period&& period.days !==null){
+    const lastDate = new Date(new Date().setDate(today.getDate() + parseFloat(period.days)));
+    const remainders= data.filter((el)=>{
+    
+      return (new Date(el.date_of_expiry)) >= today && (new Date(el.date_of_expiry))<=lastDate
+        })
+      
+        setRemainderLists(remainders);}
+        else{
+          console.log('ok')
+          getAllEmployees();
+        }
+  },[period&& period.days])
   useEffect(()=>{
     getAllEmployees();
   },[])
   return (
     <>
-    <CommonTable title="Passport Expiry Reminders (next 180 days)">
+    <Col md="3">
+    <Label>Days</Label>
+            <Input type="select" name="days" onChange={handleInputs}>
+              <option value="">Please Select</option>
+              <option value="60">next 60 Days</option>
+              <option value="90">next 90 Days</option>
+              <option value="120">next 120 Days</option>
+              <option value="180">next 180 Days</option>
+            </Input>
+          </Col>
+    <CommonTable title="Passport Expiry Reminders">
+    
        { remainderLists.length>0  && <> <thead>
             <tr>
                 <td>Name</td>
@@ -46,15 +78,15 @@ setRemainderLists(remainders);
         { remainderLists&& remainderLists.map((elem)=>{
            return( 
              <tr key={elem.employee_id_duplicate}>
-                <td>{elem.first_name}</td>
-                <td>{moment(elem.date_of_expiry).format('DD-MM-YYYY')}</td>
+                <td>{elem.employee_name}</td>
+                <td>{elem.date_of_expiry?moment(elem.date_of_expiry).format('DD-MM-YYYY'):''}</td>
               </tr>
            )
           })}
             
         </tbody></>}
         {
-          remainderLists.length <= 0 && <span>No employee has renewal for next 180 days.</span> 
+          remainderLists.length <= 0 && <span>No employee has renewal for next {period.days} days.</span> 
         }
     </CommonTable>
     </>

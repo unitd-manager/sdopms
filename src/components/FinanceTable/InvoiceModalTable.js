@@ -35,17 +35,6 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
       </Col>
       <Col md="4">
         <FormGroup>
-          <Label>Quote Code</Label>
-          <Input
-            type="text"
-            value={invoiceData && invoiceData.quote_code}
-            onChange={handleInputs}
-            name="quote_code"
-          />
-        </FormGroup>
-      </Col>
-      <Col md="4">
-        <FormGroup>
           <Label>PO Number</Label>
           <Input
             type="text"
@@ -103,6 +92,39 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
       </Col>
       <Col md="4">
         <FormGroup>
+          <Label>WO NO</Label>
+          <Input
+            type="text"
+            onChange={handleInputs}
+            value={invoiceData && invoiceData.wo_no}
+            name="wo_no"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
+          <Label>Dept NO</Label>
+          <Input
+            type="text"
+            onChange={handleInputs}
+            value={invoiceData && invoiceData.dept_no}
+            name="dept_no"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
+          <Label>Dept Name</Label>
+          <Input
+            type="text"
+            onChange={handleInputs}
+            value={invoiceData && invoiceData.dept_name}
+            name="dept_name"
+          />
+        </FormGroup>
+      </Col>
+      <Col md="4">
+        <FormGroup>
           <Label>Revision</Label>
           <Input
             type="text"
@@ -113,17 +135,7 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
         </FormGroup>
       </Col>
 
-      <Col md="4">
-        <FormGroup>
-          <Label>Site Code</Label>
-          <Input
-            type="text"
-            value={invoiceData && invoiceData.site_code}
-            onChange={handleInputs}
-            name="site_code"
-          />
-        </FormGroup>
-      </Col>
+     
       <Col md="4">
         <FormGroup>
           <Label>Attention</Label>
@@ -137,15 +149,16 @@ const CreateReceipt = ({ invoiceData, handleInputs }) => {
       </Col>
       <Col md="4">
         <FormGroup>
-          <Label>Reference</Label>
+          <Label>Job Scope</Label>
           <Input
             type="textarea"
-            value={invoiceData && invoiceData.reference}
             onChange={handleInputs}
-            name="reference"
+            value={invoiceData && invoiceData.job_scope}
+            name="job_scope"
           />
         </FormGroup>
       </Col>
+
       <Col md="8">
         <FormGroup>
           <Label>Invoice Terms</Label>

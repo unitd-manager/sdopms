@@ -66,7 +66,7 @@ export default function TenderMoreDetails({
       {' '}
       <Form>
         <FormGroup>
-          <ComponentCard title="Opportunity Details"  creationModificationDate={tenderDetails}
+          <ComponentCard title="Tender Details"  creationModificationDate={tenderDetails}
           >
             <Row>
               <Col md="3">

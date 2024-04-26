@@ -113,9 +113,9 @@ const EditCostingSummaryModal = ({
 
     api.post('/tender/edit-TabCostingSummaryForm', editCostingSummaryData).then(() => {
       setEditCostingSummaryModel(false);
-      setTimeout(() => {
-        window.location.reload();
-      }, 300);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 300);
     });
   };
 

@@ -107,15 +107,6 @@ const PurchaseOrderlineItemEdit = ({
                       ></Input>
                     </FormGroup>
                     <FormGroup>
-                      <Label>Add to Stock</Label>
-                      <Input
-                        type="text"
-                        name="qty_delivered"
-                        onChange={handlePOInputs}
-                        value={product && product.qty_delivered}
-                      ></Input>
-                    </FormGroup>
-                    <FormGroup>
                       <Label>Cost Price</Label>
                       <Input
                         type="number"

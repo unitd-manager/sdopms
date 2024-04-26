@@ -6,6 +6,7 @@ import '../form-editor/editor.scss';
 import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
 import ComponentCard from '../../components/ComponentCard';
 import message from '../../components/Message';
@@ -120,6 +121,7 @@ if(totalSeconds1>totalSeconds2){
       .post('/projecttask/editTimesheet', timesheetDetails)
       .then(() => {
         message('Record edited successfully', 'success');
+        editPurchaseOrderById();
       })
       .catch(() => {
         message('Unable to edit record.', 'error');
@@ -167,7 +169,7 @@ if(totalSeconds1>totalSeconds2){
             backToList={backToList}
             module="Timesheet"
           ></ApiButton>
-
+<ToastContainer></ToastContainer>
           <ComponentCard title="Details">
             <Row>
               {/* <Col md="3">
