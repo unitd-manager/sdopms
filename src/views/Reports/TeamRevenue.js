@@ -94,7 +94,7 @@ const OverAllReport = () => {
   // };
 
 
- 
+ console.log('lineitem',lineItems);
   const viewLineToggle = (taskID,date,teamTitle) => {
     setViewLineModal(!viewLineModal);
     if (viewLineModal) {
@@ -143,24 +143,24 @@ const OverAllReport = () => {
   //     setSearchData(newData1);
   // };
 
-  const handleSearch = () => {
-    const newData = salesReport
-      .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
-      .filter((x) => {
-        const date = moment(x.date);
-        const start = moment(startDate);
-        const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date;
-        return (
-          (startDate === '' || date.isSameOrAfter(start)) &&
-          (EndDate === '' || date.isSameOrBefore(end))
-        );
-      });
-  
-    setUserSearchData(newData);
-  };
+  // const handleSearch = () => {
+  //   const newData = salesReport
+  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+  //     .filter((x) => {
+  //       const date = moment(x.date);
+  //       const start = moment(startDate);
+  //       const end = moment(EndDate).endOf('day'); // Consider the end of the day for the end date;
+  //       return (
+  //         (startDate === '' || date.isSameOrAfter(start)) &&
+  //         (EndDate === '' || date.isSameOrBefore(end))
+  //       );
+  //     });
+  // console.log('newdata',newData);
+  //   //setUserSearchData(newData);
+  // };
   
   const handleSearchData = () => {
-    const newData1 = lineItems
+    const newData1 = salesReport
       .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
       .filter((x) => {
         const date = moment(x.date);
@@ -171,10 +171,25 @@ const OverAllReport = () => {
           (EndDate === '' || date.isSameOrBefore(end))
         );
       });
-  
+      console.log('newdata1',newData1);
     setSearchData(newData1);
+    setUserSearchData(newData1);
   };
   
+
+  // const handleSearchData = () => {
+  //   const newData = salesReport
+  //     .filter((y) => y.team_title === (companyName === '' ? y.team_title : companyName))
+  //     .filter((x) =>
+  //       EndDate && startDate
+  //         ? x.date <= (EndDate === '' ? x.date : EndDate) &&
+  //           x.date >= (startDate === '' ? x.date : startDate)
+  //         : startDate
+  //         ? x.date === (startDate === '' ? x.date : startDate)
+  //         : x.date === (EndDate === '' ? x.date : EndDate),
+  //     );
+  //   setUserSearchData(newData);
+  // };
 
 
   console.log('searchData',searchData)
@@ -192,6 +207,7 @@ const OverAllReport = () => {
     numberOfEmployeesVistited + employeesPerPage,
   );
   const totalPages = Math.ceil(userSearchData.length / employeesPerPage);
+  console.log('displayEmployees',displayEmployees);
   const changePage = ({ selected }) => {
     setPage(selected);
   };
@@ -304,7 +320,7 @@ const OverAllReport = () => {
               </FormGroup>
             </Col>
             <Col md="1" className="mt-3">
-             <Button color="primary" className="shadow-none" onClick={() => { handleSearch(); handleSearchData(); }}>Go</Button>
+             <Button color="primary" className="shadow-none" onClick={() => { handleSearchData(); }}>Go</Button>
             </Col>
           </Row>
         </CardBody>
@@ -337,7 +353,7 @@ const OverAllReport = () => {
         <CardBody>
           <Row>
           <Col>
-            <PdfTeamRevenue  searchData ={searchData}></PdfTeamRevenue>
+            <PdfTeamRevenue  searchData ={userSearchData}></PdfTeamRevenue>
            </Col>
             <Col>
               <ExportReport columns={columns} data={userSearchData} />
@@ -358,7 +374,7 @@ const OverAllReport = () => {
               {displayEmployees &&
                 displayEmployees.map((element, index) => {
                   return (
-                    <tr key={element.task_history_id}>
+                    <tr>
                       <td>{index + 1}</td>
                       <td>{element.date ? moment(element.date).format('DD-MM-YYYY') : ''}</td>
                       <td>{element.team_title}</td>
@@ -393,7 +409,33 @@ const OverAllReport = () => {
                   );
                 })}
             </tbody>
-            <Modal size="xl" isOpen={viewLineModal} toggle={viewLineToggle.bind(null)}>
+           
+            {/* <tr>
+              <td><b>Total:</b></td>
+              <td></td>
+              <td></td>
+              <td></td>
+               <td><b>{totalinvoiceAmount}</b></td>
+               <td><b>{totalgsts}</b></td>
+               <td><b>{totaltotals}</b></td>
+               <td></td>
+               <td></td>
+              </tr> */}
+          </CommonTable>
+          <ReactPaginate
+            previousLabel="Previous"
+            nextLabel="Next"
+            pageCount={totalPages}
+            onPageChange={changePage}
+            containerClassName="navigationButtons"
+            previousLinkClassName="previousButton"
+            nextLinkClassName="nextButton"
+            disabledClassName="navigationDisabled"
+            activeClassName="navigationActive"
+          />
+        </CardBody>
+      </Card>
+      <Modal size="xl" isOpen={viewLineModal} toggle={viewLineToggle.bind(null)}>
               <ModalHeader style={{ backgroundColor: ' #0096FF', color: 'white' }} toggle={viewLineToggle.bind(null)}>Employee Details</ModalHeader>
               <ModalBody>
                 <FormGroup>
@@ -427,31 +469,6 @@ const OverAllReport = () => {
                 </FormGroup>
               </ModalBody>
             </Modal>
-            {/* <tr>
-              <td><b>Total:</b></td>
-              <td></td>
-              <td></td>
-              <td></td>
-               <td><b>{totalinvoiceAmount}</b></td>
-               <td><b>{totalgsts}</b></td>
-               <td><b>{totaltotals}</b></td>
-               <td></td>
-               <td></td>
-              </tr> */}
-          </CommonTable>
-          <ReactPaginate
-            previousLabel="Previous"
-            nextLabel="Next"
-            pageCount={totalPages}
-            onPageChange={changePage}
-            containerClassName="navigationButtons"
-            previousLinkClassName="previousButton"
-            nextLinkClassName="nextButton"
-            disabledClassName="navigationDisabled"
-            activeClassName="navigationActive"
-          />
-        </CardBody>
-      </Card>
     </>
   );
 };
