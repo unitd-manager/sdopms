@@ -20,7 +20,7 @@ import axios from 'axios';
 //console.log('env variable',process.env.REACT_APP_TEST_URL)
 const api = axios.create({
     // baseURL: 'http://43.228.126.245:5007',
-    baseURL:'https://sdopms.unitdtcehnologies.com:5008',
+    baseURL:'https://sdopms.unitdtechnologies.com:5008',
     //baseURL: 'http://localhost:5007',
     
     
