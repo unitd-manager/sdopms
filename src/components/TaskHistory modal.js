@@ -242,7 +242,7 @@ console.log('pipeCount',pipeCount)
             const insertedDataId = res.data.data.insertId;
             console.log('Inserted Data ID:', insertedDataId);
             console.log(insertedDataId);
-            employeesInTask.forEach((el)=>{
+            employeesInTask.forEach((el,index)=>{
               el.task_history_id=insertedDataId;
               el.employee_id=el.employeeId;
               console.log('el',el)
@@ -281,7 +281,13 @@ console.log('work',work)
                 api
               .post('/projecttask/insertWorksheetforStaff', work)
               .then(() => {
-               
+                if (index === employeesInTask.length - 1) {
+                  message('Worksheet has been created successfully.', 'success');
+                  // Reload the page
+                  setTimeout(()=>{
+                    window.location.reload();
+                  },300)
+                }
               }).catch(()=>{
 
               })
@@ -289,10 +295,8 @@ console.log('work',work)
 
               })
           })
-            message('Worksheet has been created successfully.', 'success');
-            setTimeout(()=>{
-              window.location.reload();
-            },1500)
+          
+            
          
             setTaskhistorymodal(false);
             getTaskById();
